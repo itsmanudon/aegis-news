@@ -9,12 +9,18 @@ IDs are opaque prefixed UUIDs. `new_id()` centrally generates UUID4 for Python 3
 | Source | src_ | Publisher/provider metadata |
 | RawIngestion | ing_ | Raw observation, source reference and object/hash pointer |
 | MediaAsset | media_ | Ingestion-owned content reference |
+| DocumentMediaLink | document_id + media_id | Explicit canonical document/media association |
 | NewsDocument | doc_ | Canonical text and its original temporal lineage |
 | Entity | ent_ | Organization/person/location identity |
 | EntityMention | mention_ | Document text span and declared evidence kind |
 | AssetMapping | map_ | External ISIN/provider ID or exchange symbol + venue |
 | TopicResult | within analysis | Topic prediction + confidence |
 | SentimentResult | within analysis | Model sentiment; score [-1,1], not expected return |
+| EntityExtractionResult | within analysis | Predicted surface/span, optional entity kind and confidence |
+| EntityResolutionResult | within analysis | Mention resolution prediction, including unresolved identity |
+| EmbeddingResult | within analysis | Nonempty finite vector; dimensions equal the number of values |
+| EventExtractionResult | within analysis | Proposed event type, confidence and document evidence |
+| EventClassificationResult | within analysis | Label/confidence targeting an exact event_id + event_revision |
 | AnalysisResult | ana_ | Immutable model metadata and typed outputs |
 | NewsEvent | evt_ + revision | Fact or model-derived event with supporting documents |
 | ProvenanceRecord | prov_ | Hash, operation and explicit input references |
@@ -35,10 +41,26 @@ Downstream historical consumers select `available_at <= cutoff`, including any r
 
 Entity mentions distinguish facts from model outputs; model mentions need an analysis reference. News events do the same, with optional occurrence time; event classification is a typed model output. Unresolved entity resolution is explicit (`entity_id = null`). Facts do not acquire fabricated confidence/model metadata.
 
+## Model output lifecycle
+
+All six intelligence protocols return immutable `AnalysisResult`: model output → `AnalysisResult` → a future domain service may derive canonical records. The analysis owns `analysis_id`, document context, provider, model name/version, configuration hash, creation time and actual `available_at`. Its nonempty typed outputs must match `analysis_type`: topic, sentiment, entity extraction, entity resolution, embedding, event extraction or event classification. Nested outputs are predictions, not independently persisted canonical facts; preserve their enclosing analysis when passing them between boundaries.
+
+`EntityExtractor` returns `EntityExtractionResult` predictions inside analysis, never canonical mentions. Offsets are a nonempty half-open span in the analyzed document text. A later service may create `EntityMention(evidence_kind="model_output", analysis_id=...)`; fact mentions must have no analysis ID. `EmbeddingProvider` returns an embedding analysis with finite vector values, using the same lineage as every other inference. No vector index or model inference is implemented.
+
+`EventExtractor` returns proposed event types and evidence text tied to the analyzed document, with an optional source occurrence time. Occurrence time does not determine intelligence availability. A later service may derive `NewsEvent(evidence_kind="model_output", analysis_id=...)`; extraction itself allocates no canonical event identity. `EventClassificationResult` requires both `event_id` and `event_revision >= 1`, with no default revision or implicit latest-state lookup. Historical consumers can identify the exact classified event state. Cross-record existence and evidence validation belongs to future domain services; event references within analysis JSON are not SQL foreign keys.
+
+The classification revision is an intentional correction to the pre-product domain v1 contract: old classification payloads without a revision now fail validation. No revision is inferred or backfilled into immutable historical analysis. No async v1 envelope changes are required.
+
+## Document/media association
+
+`DocumentMediaLink(document_id, media_id)` is backed by `document_media`, with a composite primary key and foreign keys to documents and media assets. A document can link multiple media assets, and a media asset can be shared by multiple documents. Duplicate links and missing endpoints are rejected. The ingestion reference still records a media asset's origin; matching ingestion IDs never establishes an association. One ingestion may create several documents, and explicit links may cross ingestion origins. No automatic backfill can safely infer those links.
+
+The link carries only endpoint IDs and schema version; roles/order wait for concrete requirements. Endpoint deletion requires explicitly removing links first (no cascade). The primary key supports document lookup, and a media ID index supports reverse lookup.
+
 An entity such as Apple Inc. can map to `NASDAQ` + `AAPL` and an ISIN; an Indian entity can map to NSE/BSE identifiers and ISIN. No price, portfolio, PnL, buy/sell or expected-return field belongs here.
 
 ## Persistence scope
 
-The initial schema contains sources, raw objects, ingestions, documents, media assets, entities, mentions, asset mappings, analyses, revisioned events and event joins, provenance records, and outbox events. Topic/sentiment outputs remain typed JSON in immutable analyses until query requirements justify projections. Users/roles/permissions/audit/signatures/entity aliases are deferred.
+The initial schema contains sources, raw objects, ingestions, documents, media assets, entities, mentions, asset mappings, analyses, revisioned events and event joins, provenance records, and outbox events. Forward migration `0002_contract_hardening` adds `document_media` without rewriting `0001_foundation`. All seven output types remain typed JSON in immutable analyses until query requirements justify projections. Users/roles/permissions/audit/signatures/entity aliases are deferred.
 
 Foreign keys preserve relationships, uniqueness constrains ingestion/outbox retries, and database checks preserve time ordering and evidence references. Application domain validation remains required before persistence; SQLAlchemy is not a substitute for canonical validation. Direct SQL type/enumeration parity and a restricted database application role are future hardening tasks.

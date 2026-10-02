@@ -1,0 +1,30 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "result_type": {
+      "const": "embedding",
+      "default": "embedding",
+      "title": "Result Type",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "values": {
+      "items": {
+        "type": "number"
+      },
+      "minItems": 1,
+      "title": "Values",
+      "type": "array"
+    }
+  },
+  "required": [
+    "values"
+  ],
+  "title": "EmbeddingResult",
+  "type": "object"
+}

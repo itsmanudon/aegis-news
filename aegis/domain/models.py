@@ -70,6 +70,11 @@ class MediaAsset(DomainRecord):
     created_at: AwareDatetime
 
 
+class DocumentMediaLink(DomainRecord):
+    document_id: DocumentId
+    media_id: MediaId
+
+
 class NewsDocument(DomainRecord):
     document_id: DocumentId
     ingestion_id: IngestionId
@@ -152,15 +157,51 @@ class EntityResolutionResult(DomainRecord):
     confidence: Confidence
 
 
+class EntityExtractionResult(DomainRecord):
+    result_type: Literal["entity_extraction"] = "entity_extraction"
+    surface: NonEmpty
+    start_offset: int = Field(ge=0)
+    end_offset: int = Field(gt=0)
+    predicted_kind: Literal["organization", "person", "location", "other"] | None = None
+    confidence: Confidence
+
+    @model_validator(mode="after")
+    def check_span(self) -> Self:
+        if self.end_offset <= self.start_offset:
+            raise ValueError("extraction offsets must form a nonempty span")
+        return self
+
+
+class EmbeddingResult(DomainRecord):
+    result_type: Literal["embedding"] = "embedding"
+    values: tuple[Annotated[float, Field(allow_inf_nan=False)], ...] = Field(min_length=1)
+
+
+class EventExtractionResult(DomainRecord):
+    result_type: Literal["event_extraction"] = "event_extraction"
+    proposed_event_type: NonEmpty
+    confidence: Confidence
+    document_id: DocumentId
+    evidence_text: str = Field(min_length=1)
+    occurred_at: AwareDatetime | None = None
+
+
 class EventClassificationResult(DomainRecord):
     result_type: Literal["event_classification"] = "event_classification"
     event_id: NewsEventId
+    event_revision: int = Field(ge=1)
     label: NonEmpty
     confidence: Confidence
 
 
 ModelOutput = Annotated[
-    TopicResult | SentimentResult | EntityResolutionResult | EventClassificationResult,
+    TopicResult
+    | SentimentResult
+    | EntityExtractionResult
+    | EntityResolutionResult
+    | EmbeddingResult
+    | EventExtractionResult
+    | EventClassificationResult,
     Field(discriminator="result_type"),
 ]
 
@@ -168,7 +209,15 @@ ModelOutput = Annotated[
 class AnalysisResult(DomainRecord):
     analysis_id: AnalysisId
     document_id: DocumentId
-    analysis_type: Literal["topic", "sentiment", "entity_resolution", "event_classification"]
+    analysis_type: Literal[
+        "topic",
+        "sentiment",
+        "entity_extraction",
+        "entity_resolution",
+        "embedding",
+        "event_extraction",
+        "event_classification",
+    ]
     provider: NonEmpty
     model_name: NonEmpty
     model_version: NonEmpty
@@ -183,6 +232,11 @@ class AnalysisResult(DomainRecord):
             raise ValueError("available_at must not precede created_at")
         if not self.outputs or any(o.result_type != self.analysis_type for o in self.outputs):
             raise ValueError("outputs must be nonempty and match analysis_type")
+        if any(
+            isinstance(o, EventExtractionResult) and o.document_id != self.document_id
+            for o in self.outputs
+        ):
+            raise ValueError("event extraction evidence must reference the analyzed document")
         return self
 
 

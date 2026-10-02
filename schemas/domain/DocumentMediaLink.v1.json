@@ -1,0 +1,27 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "document_id": {
+      "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Document Id",
+      "type": "string"
+    },
+    "media_id": {
+      "pattern": "^media_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Media Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "document_id",
+    "media_id"
+  ],
+  "title": "DocumentMediaLink",
+  "type": "object"
+}

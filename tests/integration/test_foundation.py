@@ -8,12 +8,15 @@ from sqlalchemy.orm import Session
 
 from aegis.contracts.events import DocumentNormalizedEvent
 from aegis.domain.ids import new_id
+from aegis.domain.models import AnalysisResult
 from aegis.events.outbox import stage_event
 from aegis.persistence.database import make_engine
 from aegis.persistence.models import (
     AnalysisRow,
+    DocumentMediaLinkRow,
     DocumentRow,
     IngestionRow,
+    MediaAssetRow,
     OutboxRow,
     RawObjectRow,
     SourceRow,
@@ -87,7 +90,7 @@ def test_extensions_and_schema(engine):
         assert "outbox_events" in inspect(connection).get_table_names()
         assert (
             connection.execute(text("SELECT version_num FROM alembic_version")).scalar()
-            == "0001_foundation"
+            == "0002_contract_hardening"
         )
 
 
@@ -139,7 +142,43 @@ def test_domain_write_and_outbox_are_atomic(engine, document, now):
 
 
 @pytest.mark.database
-def test_analysis_append_only_and_time_constraints(engine, document, analysis, now):
+@pytest.mark.parametrize(
+    "output",
+    [
+        dict(result_type="topic", label="notice", confidence=0.9),
+        dict(
+            result_type="entity_extraction",
+            surface="Example",
+            start_offset=0,
+            end_offset=7,
+            confidence=0.9,
+        ),
+        dict(result_type="embedding", values=[0.1, -0.2]),
+        dict(
+            result_type="event_extraction",
+            proposed_event_type="notice",
+            confidence=0.8,
+            evidence_text="published a notice",
+        ),
+        dict(
+            result_type="event_classification",
+            event_id=new_id("evt"),
+            event_revision=2,
+            label="notice",
+            confidence=0.8,
+        ),
+    ],
+)
+def test_analysis_append_only_and_time_constraints(engine, document, analysis, now, output):
+    if output["result_type"] == "event_extraction":
+        output = {**output, "document_id": document.document_id}
+    analysis = AnalysisResult.model_validate(
+        {
+            **analysis.model_dump(),
+            "analysis_type": output["result_type"],
+            "outputs": [output],
+        }
+    )
     with engine.connect() as connection:
         outer = connection.begin()
         try:
@@ -152,10 +191,24 @@ def test_analysis_append_only_and_time_constraints(engine, document, analysis, n
                 for statement in (
                     "UPDATE analyses SET model_version = '2' WHERE analysis_id = :id",
                     "DELETE FROM analyses WHERE analysis_id = :id",
+                    "TRUNCATE analyses CASCADE",
                 ):
                     with pytest.raises(DBAPIError), session.begin_nested():
                         session.execute(text(statement), {"id": analysis.analysis_id})
                 assert session.get(AnalysisRow, analysis.analysis_id).model_version == "1"
+                stored = session.get(AnalysisRow, analysis.analysis_id)
+                assert stored.outputs == [o.model_dump(mode="json") for o in analysis.outputs]
+                next_run = {
+                    **data,
+                    "analysis_id": new_id("ana"),
+                    "model_version": "2",
+                    "created_at": now + timedelta(seconds=1),
+                    "available_at": now + timedelta(seconds=2),
+                }
+                session.add(AnalysisRow(**next_run))
+                session.flush()
+                assert session.get(AnalysisRow, analysis.analysis_id).model_version == "1"
+                assert session.get(AnalysisRow, next_run["analysis_id"]).available_at > now
                 with pytest.raises(IntegrityError), session.begin_nested():
                     session.add(
                         AnalysisRow(
@@ -167,6 +220,76 @@ def test_analysis_append_only_and_time_constraints(engine, document, analysis, n
                         )
                     )
                     session.flush()
+        finally:
+            outer.rollback()
+
+
+@pytest.mark.database
+def test_explicit_document_media_links_and_foreign_keys(engine, document, now):
+    with engine.connect() as connection:
+        outer = connection.begin()
+        try:
+            with Session(connection, join_transaction_mode="create_savepoint") as session:
+                seed_document(session, document, now)
+                # A second document from the same raw ingestion is permitted.
+                second = document.model_copy(update={"document_id": new_id("doc")})
+                session.add(DocumentRow(**second.model_dump()))
+                # Media can originate from a different ingestion; association is explicit.
+                other = document.model_copy(
+                    update={
+                        "document_id": new_id("doc"),
+                        "ingestion_id": new_id("ing"),
+                        "source_id": new_id("src"),
+                    }
+                )
+                seed_document(session, other, now)
+                raw_id = session.get(IngestionRow, other.ingestion_id).raw_object_id
+                media_ids = [new_id("media"), new_id("media")]
+                for media_id in media_ids:
+                    session.add(
+                        MediaAssetRow(
+                            media_id=media_id,
+                            ingestion_id=other.ingestion_id,
+                            kind="image",
+                            raw_object_id=raw_id,
+                            created_at=now,
+                        )
+                    )
+                session.flush()
+                assert (
+                    session.query(DocumentMediaLinkRow)
+                    .filter_by(document_id=document.document_id)
+                    .count()
+                    == 0
+                )
+                pairs = [
+                    (document.document_id, media_ids[0]),
+                    (document.document_id, media_ids[1]),
+                    (second.document_id, media_ids[0]),
+                ]
+                for document_id, media_id in pairs:
+                    session.add(DocumentMediaLinkRow(document_id=document_id, media_id=media_id))
+                session.flush()
+                assert (
+                    session.query(DocumentMediaLinkRow)
+                    .filter_by(document_id=document.document_id)
+                    .count()
+                    == 2
+                )
+                assert (
+                    session.query(DocumentMediaLinkRow).filter_by(media_id=media_ids[0]).count()
+                    == 2
+                )
+                for document_id, media_id in (
+                    (new_id("doc"), media_ids[0]),
+                    (document.document_id, new_id("media")),
+                    pairs[0],  # Duplicate links are rejected as well.
+                ):
+                    with pytest.raises(IntegrityError), session.begin_nested():
+                        session.add(
+                            DocumentMediaLinkRow(document_id=document_id, media_id=media_id)
+                        )
+                        session.flush()
         finally:
             outer.rollback()
 

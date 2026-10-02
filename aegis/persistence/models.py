@@ -109,6 +109,14 @@ class EntityRow(Versioned, Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
+class DocumentMediaLinkRow(Versioned, Base):
+    __tablename__ = "document_media"
+    document_id: Mapped[str] = mapped_column(ForeignKey("documents.document_id"), primary_key=True)
+    media_id: Mapped[str] = mapped_column(
+        ForeignKey("media_assets.media_id"), primary_key=True, index=True
+    )
+
+
 class AnalysisRow(Versioned, Base):
     __tablename__ = "analyses"
     analysis_id: Mapped[str] = mapped_column(String(64), primary_key=True)

@@ -1,0 +1,65 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "end_offset": {
+      "exclusiveMinimum": 0,
+      "title": "End Offset",
+      "type": "integer"
+    },
+    "predicted_kind": {
+      "anyOf": [
+        {
+          "enum": [
+            "organization",
+            "person",
+            "location",
+            "other"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Predicted Kind"
+    },
+    "result_type": {
+      "const": "entity_extraction",
+      "default": "entity_extraction",
+      "title": "Result Type",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "start_offset": {
+      "minimum": 0,
+      "title": "Start Offset",
+      "type": "integer"
+    },
+    "surface": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Surface",
+      "type": "string"
+    }
+  },
+  "required": [
+    "surface",
+    "start_offset",
+    "end_offset",
+    "confidence"
+  ],
+  "title": "EntityExtractionResult",
+  "type": "object"
+}

@@ -1,0 +1,60 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "document_id": {
+      "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Document Id",
+      "type": "string"
+    },
+    "evidence_text": {
+      "minLength": 1,
+      "title": "Evidence Text",
+      "type": "string"
+    },
+    "occurred_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Occurred At"
+    },
+    "proposed_event_type": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Proposed Event Type",
+      "type": "string"
+    },
+    "result_type": {
+      "const": "event_extraction",
+      "default": "event_extraction",
+      "title": "Result Type",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "proposed_event_type",
+    "confidence",
+    "document_id",
+    "evidence_text"
+  ],
+  "title": "EventExtractionResult",
+  "type": "object"
+}

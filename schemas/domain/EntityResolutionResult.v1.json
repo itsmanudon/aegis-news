@@ -1,0 +1,47 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "entity_id": {
+      "anyOf": [
+        {
+          "pattern": "^ent_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Entity Id"
+    },
+    "mention_id": {
+      "pattern": "^mention_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Mention Id",
+      "type": "string"
+    },
+    "result_type": {
+      "const": "entity_resolution",
+      "default": "entity_resolution",
+      "title": "Result Type",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "mention_id",
+    "entity_id",
+    "confidence"
+  ],
+  "title": "EntityResolutionResult",
+  "type": "object"
+}

@@ -1,5 +1,100 @@
 {
   "$defs": {
+    "EmbeddingResult": {
+      "additionalProperties": false,
+      "properties": {
+        "result_type": {
+          "const": "embedding",
+          "default": "embedding",
+          "title": "Result Type",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "values": {
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1,
+          "title": "Values",
+          "type": "array"
+        }
+      },
+      "required": [
+        "values"
+      ],
+      "title": "EmbeddingResult",
+      "type": "object"
+    },
+    "EntityExtractionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "end_offset": {
+          "exclusiveMinimum": 0,
+          "title": "End Offset",
+          "type": "integer"
+        },
+        "predicted_kind": {
+          "anyOf": [
+            {
+              "enum": [
+                "organization",
+                "person",
+                "location",
+                "other"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Predicted Kind"
+        },
+        "result_type": {
+          "const": "entity_extraction",
+          "default": "entity_extraction",
+          "title": "Result Type",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "start_offset": {
+          "minimum": 0,
+          "title": "Start Offset",
+          "type": "integer"
+        },
+        "surface": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Surface",
+          "type": "string"
+        }
+      },
+      "required": [
+        "surface",
+        "start_offset",
+        "end_offset",
+        "confidence"
+      ],
+      "title": "EntityExtractionResult",
+      "type": "object"
+    },
     "EntityResolutionResult": {
       "additionalProperties": false,
       "properties": {
@@ -61,6 +156,11 @@
           "title": "Event Id",
           "type": "string"
         },
+        "event_revision": {
+          "minimum": 1,
+          "title": "Event Revision",
+          "type": "integer"
+        },
         "label": {
           "maxLength": 512,
           "minLength": 1,
@@ -82,10 +182,71 @@
       },
       "required": [
         "event_id",
+        "event_revision",
         "label",
         "confidence"
       ],
       "title": "EventClassificationResult",
+      "type": "object"
+    },
+    "EventExtractionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "document_id": {
+          "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Document Id",
+          "type": "string"
+        },
+        "evidence_text": {
+          "minLength": 1,
+          "title": "Evidence Text",
+          "type": "string"
+        },
+        "occurred_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Occurred At"
+        },
+        "proposed_event_type": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Proposed Event Type",
+          "type": "string"
+        },
+        "result_type": {
+          "const": "event_extraction",
+          "default": "event_extraction",
+          "title": "Result Type",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "proposed_event_type",
+        "confidence",
+        "document_id",
+        "evidence_text"
+      ],
+      "title": "EventExtractionResult",
       "type": "object"
     },
     "SentimentResult": {
@@ -194,7 +355,10 @@
       "enum": [
         "topic",
         "sentiment",
+        "entity_extraction",
         "entity_resolution",
+        "embedding",
+        "event_extraction",
         "event_classification"
       ],
       "title": "Analysis Type",
@@ -236,8 +400,11 @@
       "items": {
         "discriminator": {
           "mapping": {
+            "embedding": "#/$defs/EmbeddingResult",
+            "entity_extraction": "#/$defs/EntityExtractionResult",
             "entity_resolution": "#/$defs/EntityResolutionResult",
             "event_classification": "#/$defs/EventClassificationResult",
+            "event_extraction": "#/$defs/EventExtractionResult",
             "sentiment": "#/$defs/SentimentResult",
             "topic": "#/$defs/TopicResult"
           },
@@ -251,7 +418,16 @@
             "$ref": "#/$defs/SentimentResult"
           },
           {
+            "$ref": "#/$defs/EntityExtractionResult"
+          },
+          {
             "$ref": "#/$defs/EntityResolutionResult"
+          },
+          {
+            "$ref": "#/$defs/EmbeddingResult"
+          },
+          {
+            "$ref": "#/$defs/EventExtractionResult"
           },
           {
             "$ref": "#/$defs/EventClassificationResult"

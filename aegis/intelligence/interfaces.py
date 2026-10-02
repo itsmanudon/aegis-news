@@ -2,10 +2,7 @@
 
 from typing import Protocol
 
-from pydantic import BaseModel, ConfigDict, Field
-
-from aegis.domain.ids import DocumentId
-from aegis.domain.models import AnalysisResult, Entity, EntityMention, NewsDocument, NewsEvent
+from aegis.domain.models import AnalysisResult, Entity, EntityMention, NewsDocument
 
 
 class SentimentAnalyzer(Protocol):
@@ -17,7 +14,7 @@ class TopicClassifier(Protocol):
 
 
 class EntityExtractor(Protocol):
-    async def extract(self, document: NewsDocument) -> tuple[EntityMention, ...]: ...
+    async def extract(self, document: NewsDocument) -> AnalysisResult: ...
 
 
 class EntityResolver(Protocol):
@@ -32,16 +29,8 @@ class EntityResolver(Protocol):
 class EventExtractor(Protocol):
     async def extract(
         self, document: NewsDocument, entities: tuple[Entity, ...]
-    ) -> tuple[NewsEvent, ...]: ...
-
-
-class EmbeddingResult(BaseModel):
-    model_config = ConfigDict(frozen=True, extra="forbid")
-    document_id: DocumentId
-    model_name: str
-    model_version: str
-    values: tuple[float, ...] = Field(min_length=1)
+    ) -> AnalysisResult: ...
 
 
 class EmbeddingProvider(Protocol):
-    async def embed(self, document: NewsDocument) -> EmbeddingResult: ...
+    async def embed(self, document: NewsDocument) -> AnalysisResult: ...

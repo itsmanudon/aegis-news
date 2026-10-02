@@ -26,6 +26,9 @@ def main() -> None:
             for args in (
                 ("upgrade", "head"),
                 ("check",),
+                ("downgrade", "0001_foundation"),
+                ("upgrade", "head"),
+                ("check",),
                 ("downgrade", "base"),
                 ("upgrade", "head"),
                 ("check",),

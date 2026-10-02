@@ -1,6 +1,6 @@
 # Foundation handoff
 
-Branch: `chore/aegisnews-foundation`. Isolated worktree used for validation: `/private/tmp/aegisnews-foundation`. Base: initial commit `0935946`. Foundation changes are committed locally; no merge, push, cloud deployment or ingestion phase is performed. Resolve the final identifier with `git rev-parse HEAD` on this branch.
+Foundation branch: `chore/aegisnews-foundation`, pushed at `3799486a59cf495a57597db64af5229e272ac627`. Its original base is initial commit `0935946`; original local validation used `/private/tmp/aegisnews-foundation`. Contract hardening is on `chore/aegisnews-contract-hardening`, branched from that exact foundation SHA. The hardening branch is committed locally without merge or push. Resolve its final identifier with `git rev-parse HEAD`. No product implementation or cloud deployment is included.
 
 ## Delivered scope
 
@@ -26,7 +26,46 @@ The following checks were executed locally on 2026-10-02:
 
 Alternate host ports were used to avoid existing applications: API 18080, web 13000, PostgreSQL 15432, Redis 16379, MinIO 19000/19001, Temporal 17233/18233, Prometheus 19090, Grafana 13001, Loki 13100, OTLP 14318. These overrides are in an ignored local `.env`; the committed example uses conventional ports.
 
-GitHub Actions defines backend, frontend, PostgreSQL migration/transaction tests and security jobs with read-only repository permissions, bounded timeouts and cancellation of stale runs. No normal PR job needs Temporal, Kafka, cloud credentials or paid infrastructure. Hosted Actions have not been run because the branch was not pushed.
+GitHub Actions defines backend, frontend, PostgreSQL migration/transaction tests and security jobs with read-only repository permissions, bounded timeouts and cancellation of stale runs. No normal PR job needs Temporal, Kafka, cloud credentials or paid infrastructure. Hosted GitHub Actions ran successfully on foundation commit `3799486a59cf495a57597db64af5229e272ac627`: backend, frontend, migrations and security all succeeded. This hosted evidence applies to the foundation commit; the unpushed hardening commit has local validation evidence only.
+
+## Contract hardening
+
+All six model protocols now return `AnalysisResult`. New domain outputs are `EntityExtractionResult`, `EmbeddingResult` and `EventExtractionResult`; they share the existing immutable metadata/time lineage. Canonical mentions/events can later be derived with `evidence_kind="model_output"` and `analysis_id`, while facts must have no analysis reference. No derivation service or inference is implemented. Event classification requires `event_id` plus explicit `event_revision >= 1`; pre-hardening classification payloads lacking revision are intentionally rejected, without modifying old database analyses.
+
+`DocumentMediaLink` and its composite-key `document_media` table provide explicit many-to-many membership, independent of ingestion identity. Forward migration `0002_contract_hardening` adds the table and reverse index; migration `0001_foundation` and analysis append-only triggers are preserved. No implicit backfill, role/order metadata, or cascading deletion is introduced. All new outputs, existing entity resolution/classification outputs and the link are exported as public JSON schemas. Async envelopes retain v1 unchanged.
+
+### Hardening validation on Windows, 2026-10-02
+
+Locked dependencies were installed with `uv sync --frozen --python 3.12` and `pnpm.cmd install --frozen-lockfile`. GNU Make from MSYS was added to PATH. Final checks:
+
+```powershell
+$env:PATH = 'C:/msys64/usr/bin;' + $env:PATH
+make check
+uv run python scripts/verify_migrations.py
+$env:AEGIS_RUN_INTEGRATION = '1'
+uv run pytest -q -m database --tb=short
+docker compose --profile core up --build -d --wait
+docker compose --profile core up -d --wait
+$env:AEGIS_TEMPORAL_ENABLED = 'true'
+$env:AEGIS_OTEL_ENABLED = 'true'
+docker compose --profile full up --build -d --wait
+docker compose exec -T worker python scripts/temporal_smoke.py
+$env:AEGIS_REDIS_URL = 'redis://127.0.0.1:6379/0'
+$env:AEGIS_RUN_E2E = '1'
+$env:AEGIS_TEST_API_URL = 'http://127.0.0.1:28080'
+$env:AEGIS_TEST_WEB_URL = 'http://127.0.0.1:23000'
+uv run pytest -q --tb=short
+```
+
+- `make check` passed: format/lint, strict mypy, **114 passed, 11 opt-in skips**, schema drift, frontend lint/types/build.
+- Scratch migration verification passed: upgrade/check, downgrade to `0001_foundation`, upgrade/check, downgrade to base, upgrade/check. Owned scratch databases were removed. Verification also passed inside the API container (`docker compose exec -T api python scripts/verify_migrations.py`).
+- PostgreSQL-only tests: **8 passed**, including five analysis output variants with UPDATE/DELETE/TRUNCATE rejection, independent model upgrades, timestamp checks, explicit shared media, duplicate rejection and both endpoint foreign keys.
+- Core images built successfully. Initial startup attempts hit occupied ports; rerunning core with the ignored local port overrides passed. Full Compose build/start/wait passed with all services running and initialization/migration jobs completed.
+- Temporal smoke completed with `AegisNews foundation: smoke`. The full live unit/contract/security/integration/HTTP E2E suite passed: **125 passed, no skips**.
+- Initial host database attempts timed out during port reconfiguration. PostgreSQL and Redis host validation used explicit IPv4; an initial full-suite Redis localhost readiness failure was resolved by that configuration. No application behavior was changed to work around the host.
+- Two non-failing warnings remain: the existing Starlette TestClient deprecation and a Windows pytest cache permission warning.
+
+Hardening validation used API 28080, web 23000, PostgreSQL 25432, Redis 6379, MinIO 29000/29001, Temporal 27233/28233, Prometheus 29090, Grafana 23001, Loki 23100 and OTLP 24318. These are local `.env` overrides; no Compose defaults changed. The hardening commit has not been pushed or run in hosted CI.
 
 ## Limitations and intentional deferrals
 
@@ -38,4 +77,4 @@ The local publisher intentionally discards events. No outbox dispatcher, deliver
 
 ## Recommended next task
 
-**Agent 1: Ingestion + Normalization.** Branch from this foundation commit. Start with one synthetic or explicitly licensed feed path. Preserve raw bytes and source claims; establish idempotent observation, exact first-seen/ingestion times, object naming/recovery, canonical document creation, and transactional domain/outbox writes. Add a genuine NewsIngestionWorkflow incrementally with failure/retry tests. Keep model inference, trading logic and consumer-specific integrations outside that phase unless separately authorized.
+**Agent 1: Ingestion + Normalization.** Branch from the validated contract-hardening commit when it is adopted as the shared base. Start with one synthetic or explicitly licensed feed path. Preserve raw bytes and source claims; establish idempotent observation, exact first-seen/ingestion times, object naming/recovery, canonical document creation, and transactional domain/outbox writes. Add a genuine NewsIngestionWorkflow incrementally with failure/retry tests. Keep model inference, trading logic and consumer-specific integrations outside that phase unless separately authorized. Agent 0.1 stops after contract hardening.

@@ -1,0 +1,47 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "event_id": {
+      "pattern": "^evt_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_revision": {
+      "minimum": 1,
+      "title": "Event Revision",
+      "type": "integer"
+    },
+    "label": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Label",
+      "type": "string"
+    },
+    "result_type": {
+      "const": "event_classification",
+      "default": "event_classification",
+      "title": "Result Type",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "event_revision",
+    "label",
+    "confidence"
+  ],
+  "title": "EventClassificationResult",
+  "type": "object"
+}
