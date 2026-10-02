@@ -1,0 +1,99 @@
+{
+  "$defs": {
+    "EntityResolved": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_id": {
+          "pattern": "^ana_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Analysis Id",
+          "type": "string"
+        },
+        "entity_id": {
+          "pattern": "^ent_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "mention_id": {
+          "pattern": "^mention_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Mention Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_id",
+        "mention_id",
+        "analysis_id"
+      ],
+      "title": "EntityResolved",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "correlation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Correlation Id",
+      "type": "string"
+    },
+    "data": {
+      "$ref": "#/$defs/EntityResolved"
+    },
+    "event_id": {
+      "pattern": "^msg_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_type": {
+      "const": "entity.resolved.v1",
+      "default": "entity.resolved.v1",
+      "title": "Event Type",
+      "type": "string"
+    },
+    "event_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Event Version",
+      "type": "string"
+    },
+    "idempotency_key": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "producer": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Producer",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "occurred_at",
+    "producer",
+    "correlation_id",
+    "idempotency_key",
+    "data"
+  ],
+  "title": "EntityResolvedEvent",
+  "type": "object"
+}

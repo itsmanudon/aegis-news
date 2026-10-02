@@ -1,0 +1,11 @@
+{
+  "name": "aegisnews-workspace",
+  "private": true,
+  "packageManager": "pnpm@10.33.1",
+  "scripts": {
+    "web:dev": "pnpm --filter @aegisnews/web dev",
+    "web:lint": "pnpm --filter @aegisnews/web lint",
+    "web:typecheck": "pnpm --filter @aegisnews/web typecheck",
+    "web:build": "pnpm --filter @aegisnews/web build"
+  }
+}

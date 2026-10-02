@@ -1,0 +1,170 @@
+name: aegisnews
+x-python: &python
+  build:
+    context: .
+    dockerfile: infrastructure/docker/python.Dockerfile
+  environment: &python-env
+    AEGIS_DATABASE_URL: postgresql+psycopg://aegis:aegis_dev_only@postgres:5432/aegisnews
+    AEGIS_REDIS_URL: redis://redis:6379/0
+    AEGIS_S3_ENDPOINT_URL: http://minio:9000
+    AEGIS_S3_ACCESS_KEY: aegis_dev
+    AEGIS_S3_SECRET_KEY: aegis_dev_only
+    AEGIS_S3_BUCKET: aegisnews
+    AEGIS_TEMPORAL_ADDRESS: temporal:7233
+    AEGIS_TEMPORAL_ENABLED: ${AEGIS_TEMPORAL_ENABLED:-false}
+    AEGIS_OTEL_ENABLED: ${AEGIS_OTEL_ENABLED:-false}
+    AEGIS_OTEL_ENDPOINT: http://otel-collector:4318/v1/traces
+    AEGIS_LOG_FILE: /var/log/aegis/application.jsonl
+    AEGIS_CORS_ORIGINS: '${AEGIS_CORS_ORIGINS:-["http://localhost:3000"]}'
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    profiles: [core, full]
+    environment:
+      POSTGRES_USER: aegis
+      POSTGRES_PASSWORD: aegis_dev_only
+      POSTGRES_DB: aegisnews
+    ports: ["127.0.0.1:${AEGIS_POSTGRES_PORT:-5432}:5432"]
+    volumes: ["postgres-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U aegis -d aegisnews"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  redis:
+    image: redis:7.4-alpine
+    profiles: [core, full]
+    ports: ["127.0.0.1:${AEGIS_REDIS_PORT:-6379}:6379"]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  minio:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/minio.Dockerfile
+    profiles: [core, full]
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: aegis_dev
+      MINIO_ROOT_PASSWORD: aegis_dev_only
+    ports: ["127.0.0.1:${AEGIS_MINIO_PORT:-9000}:9000", "127.0.0.1:${AEGIS_MINIO_CONSOLE_PORT:-9001}:9001"]
+    volumes: ["minio-data:/data"]
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, http://localhost:9000/minio/health/live]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  minio-init:
+    <<: *python
+    profiles: [core, full]
+    depends_on:
+      minio: {condition: service_healthy}
+    command: [python, scripts/init_storage.py]
+  migrate:
+    <<: *python
+    profiles: [core, full]
+    command: [alembic, upgrade, head]
+    depends_on:
+      postgres: {condition: service_healthy}
+  api:
+    <<: *python
+    profiles: [core, full]
+    ports: ["127.0.0.1:${AEGIS_API_PORT:-8000}:8000"]
+    volumes: ["application-logs:/var/log/aegis"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+      minio-init: {condition: service_completed_successfully}
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/ready', timeout=6)"]
+      interval: 10s
+      timeout: 7s
+      retries: 20
+      start_period: 15s
+  web:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/web.Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:${AEGIS_API_PORT:-8000}
+    profiles: [core, full]
+    environment:
+      AEGIS_API_INTERNAL_URL: http://api:8000
+      NEXT_PUBLIC_API_URL: http://localhost:${AEGIS_API_PORT:-8000}
+      NEXT_TELEMETRY_DISABLED: "1"
+    ports: ["127.0.0.1:${AEGIS_WEB_PORT:-3000}:3000"]
+    depends_on:
+      api: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://localhost:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+  temporal:
+    image: temporalio/temporal:1.4.1
+    profiles: [full]
+    command: [server, start-dev, --ip, 0.0.0.0, --db-filename, /home/temporal/temporal.db]
+    ports: ["127.0.0.1:${AEGIS_TEMPORAL_PORT:-7233}:7233", "127.0.0.1:${AEGIS_TEMPORAL_UI_PORT:-8233}:8233"]
+    volumes: ["temporal-data:/home/temporal"]
+    healthcheck:
+      test: [CMD, temporal, operator, cluster, health, --address, localhost:7233]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  worker:
+    <<: *python
+    profiles: [full]
+    command: [python, -m, apps.worker.main]
+    environment:
+      <<: *python-env
+      AEGIS_LOG_FILE: ""
+    depends_on:
+      temporal: {condition: service_healthy}
+      migrate: {condition: service_completed_successfully}
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    profiles: [full]
+    volumes: ["./infrastructure/monitoring/prometheus.yaml:/etc/prometheus/prometheus.yml:ro", "prometheus-data:/prometheus"]
+    ports: ["127.0.0.1:${AEGIS_PROMETHEUS_PORT:-9090}:9090"]
+  grafana:
+    image: grafana/grafana:12.0.2
+    profiles: [full]
+    environment:
+      GF_SECURITY_ADMIN_USER: aegis_dev
+      GF_SECURITY_ADMIN_PASSWORD: aegis_dev_only
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+    volumes: ["./infrastructure/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro", "grafana-data:/var/lib/grafana"]
+    ports: ["127.0.0.1:${AEGIS_GRAFANA_PORT:-3001}:3000"]
+  loki:
+    image: grafana/loki:3.4.2
+    profiles: [full]
+    command: [-config.file=/etc/loki/local-config.yaml]
+    volumes: ["./infrastructure/monitoring/loki.yaml:/etc/loki/local-config.yaml:ro", "loki-data:/loki"]
+    ports: ["127.0.0.1:${AEGIS_LOKI_PORT:-3100}:3100"]
+  alloy:
+    image: grafana/alloy:v1.8.2
+    profiles: [full]
+    command: [run, /etc/alloy/config.alloy, --storage.path=/var/lib/alloy]
+    volumes: ["./infrastructure/monitoring/config.alloy:/etc/alloy/config.alloy:ro", "application-logs:/var/log/aegis:ro", "alloy-data:/var/lib/alloy"]
+    depends_on: [loki]
+  otel-collector:
+    image: otel/opentelemetry-collector:0.123.0
+    profiles: [full]
+    command: [--config=/etc/otel/config.yaml]
+    volumes: ["./infrastructure/monitoring/otel.yaml:/etc/otel/config.yaml:ro"]
+    ports: ["127.0.0.1:${AEGIS_OTEL_PORT:-4318}:4318"]
+
+volumes:
+  postgres-data:
+  minio-data:
+  temporal-data:
+  prometheus-data:
+  grafana-data:
+  loki-data:
+  application-logs:
+  alloy-data:

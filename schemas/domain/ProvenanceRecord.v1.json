@@ -1,0 +1,70 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "analysis_id": {
+      "anyOf": [
+        {
+          "pattern": "^ana_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Analysis Id"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    },
+    "input_ids": {
+      "items": {
+        "maxLength": 512,
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Input Ids",
+      "type": "array"
+    },
+    "operation": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Operation",
+      "type": "string"
+    },
+    "provenance_id": {
+      "pattern": "^prov_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Provenance Id",
+      "type": "string"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "subject_id": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Subject Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "provenance_id",
+    "subject_id",
+    "input_ids",
+    "operation",
+    "recorded_at",
+    "content_hash"
+  ],
+  "title": "ProvenanceRecord",
+  "type": "object"
+}

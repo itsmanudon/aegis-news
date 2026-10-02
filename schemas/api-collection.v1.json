@@ -1,0 +1,170 @@
+{
+  "$defs": {
+    "CursorPagination": {
+      "additionalProperties": false,
+      "properties": {
+        "has_more": {
+          "default": false,
+          "title": "Has More",
+          "type": "boolean"
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Cursor"
+        }
+      },
+      "title": "CursorPagination",
+      "type": "object"
+    },
+    "NewsDocument": {
+      "additionalProperties": false,
+      "properties": {
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "document_id": {
+          "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Document Id",
+          "type": "string"
+        },
+        "first_seen_at": {
+          "format": "date-time",
+          "title": "First Seen At",
+          "type": "string"
+        },
+        "ingested_at": {
+          "format": "date-time",
+          "title": "Ingested At",
+          "type": "string"
+        },
+        "ingestion_id": {
+          "pattern": "^ing_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Ingestion Id",
+          "type": "string"
+        },
+        "language": {
+          "anyOf": [
+            {
+              "maxLength": 35,
+              "minLength": 2,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Language"
+        },
+        "published_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Published At"
+        },
+        "revision": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^src_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_id",
+        "ingestion_id",
+        "source_id",
+        "title",
+        "text",
+        "first_seen_at",
+        "ingested_at",
+        "created_at"
+      ],
+      "title": "NewsDocument",
+      "type": "object"
+    },
+    "ResponseMeta": {
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "const": "v1",
+          "default": "v1",
+          "title": "Api Version",
+          "type": "string"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Request Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id"
+      ],
+      "title": "ResponseMeta",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "data": {
+      "items": {
+        "$ref": "#/$defs/NewsDocument"
+      },
+      "title": "Data",
+      "type": "array"
+    },
+    "meta": {
+      "$ref": "#/$defs/ResponseMeta"
+    },
+    "pagination": {
+      "$ref": "#/$defs/CursorPagination"
+    }
+  },
+  "required": [
+    "data",
+    "pagination",
+    "meta"
+  ],
+  "title": "CollectionResponse[NewsDocument]",
+  "type": "object"
+}

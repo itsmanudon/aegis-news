@@ -1,0 +1,3 @@
+title = "AegisNews public repository secret scanning"
+[extend]
+useDefault = true

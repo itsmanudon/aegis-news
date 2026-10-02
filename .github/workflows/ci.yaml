@@ -1,0 +1,77 @@
+name: Foundation CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.11.21"
+          enable-cache: true
+      - run: uv sync --frozen --python 3.12
+      - run: make check-backend
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: make check-web
+  migrations:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: aegis
+          POSTGRES_PASSWORD: aegis_dev_only
+          POSTGRES_DB: aegisnews
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U aegis -d aegisnews"
+          --health-interval 3s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.11.21"
+          enable-cache: true
+      - run: uv sync --frozen --python 3.12
+      - run: uv run python scripts/verify_migrations.py
+      - run: uv run alembic upgrade head
+      - run: AEGIS_RUN_INTEGRATION=1 uv run pytest -q -m database
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.11.21"
+          enable-cache: true
+      - run: uv sync --frozen --python 3.12
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: make audit
+      - run: docker run --rm -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0=/repo -v "$PWD:/repo:ro" ghcr.io/gitleaks/gitleaks:v8.24.2 git /repo --redact --no-banner --config /repo/.gitleaks.toml

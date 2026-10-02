@@ -1,0 +1,134 @@
+{
+  "$defs": {
+    "ObjectReference": {
+      "additionalProperties": false,
+      "properties": {
+        "bucket": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Bucket",
+          "type": "string"
+        },
+        "content_type": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Content Type",
+          "type": "string"
+        },
+        "key": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Key",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "size_bytes": {
+          "minimum": 0,
+          "title": "Size Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "bucket",
+        "key",
+        "sha256",
+        "size_bytes",
+        "content_type"
+      ],
+      "title": "ObjectReference",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "first_seen_at": {
+      "format": "date-time",
+      "title": "First Seen At",
+      "type": "string"
+    },
+    "idempotency_key": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "ingested_at": {
+      "format": "date-time",
+      "title": "Ingested At",
+      "type": "string"
+    },
+    "ingestion_id": {
+      "pattern": "^ing_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Ingestion Id",
+      "type": "string"
+    },
+    "object": {
+      "$ref": "#/$defs/ObjectReference"
+    },
+    "published_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Published At"
+    },
+    "raw_object_id": {
+      "pattern": "^raw_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Raw Object Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_id": {
+      "pattern": "^src_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "source_url": {
+      "anyOf": [
+        {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Url"
+    }
+  },
+  "required": [
+    "ingestion_id",
+    "source_id",
+    "raw_object_id",
+    "object",
+    "first_seen_at",
+    "ingested_at",
+    "idempotency_key"
+  ],
+  "title": "RawIngestion",
+  "type": "object"
+}

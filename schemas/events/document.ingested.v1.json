@@ -1,0 +1,93 @@
+{
+  "$defs": {
+    "DocumentIngested": {
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Document Id",
+          "type": "string"
+        },
+        "ingestion_id": {
+          "pattern": "^ing_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Ingestion Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_id",
+        "ingestion_id"
+      ],
+      "title": "DocumentIngested",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "correlation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Correlation Id",
+      "type": "string"
+    },
+    "data": {
+      "$ref": "#/$defs/DocumentIngested"
+    },
+    "event_id": {
+      "pattern": "^msg_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_type": {
+      "const": "document.ingested.v1",
+      "default": "document.ingested.v1",
+      "title": "Event Type",
+      "type": "string"
+    },
+    "event_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Event Version",
+      "type": "string"
+    },
+    "idempotency_key": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "producer": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Producer",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "occurred_at",
+    "producer",
+    "correlation_id",
+    "idempotency_key",
+    "data"
+  ],
+  "title": "DocumentIngestedEvent",
+  "type": "object"
+}

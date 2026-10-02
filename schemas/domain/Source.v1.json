@@ -1,0 +1,60 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "feed",
+        "api",
+        "upload",
+        "web"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_id": {
+      "pattern": "^src_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "url": {
+      "anyOf": [
+        {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Url"
+    }
+  },
+  "required": [
+    "source_id",
+    "name",
+    "kind",
+    "created_at"
+  ],
+  "title": "Source",
+  "type": "object"
+}

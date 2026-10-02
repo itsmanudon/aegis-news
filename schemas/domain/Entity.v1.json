@@ -1,0 +1,45 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "canonical_name": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Canonical Name",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "entity_id": {
+      "pattern": "^ent_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Entity Id",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "organization",
+        "person",
+        "location",
+        "other"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "entity_id",
+    "canonical_name",
+    "kind",
+    "created_at"
+  ],
+  "title": "Entity",
+  "type": "object"
+}

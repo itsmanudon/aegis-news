@@ -1,0 +1,59 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "entity_id": {
+      "anyOf": [
+        {
+          "pattern": "^ent_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Entity Id"
+    },
+    "label": {
+      "enum": [
+        "positive",
+        "neutral",
+        "negative",
+        "mixed"
+      ],
+      "title": "Label",
+      "type": "string"
+    },
+    "result_type": {
+      "const": "sentiment",
+      "default": "sentiment",
+      "title": "Result Type",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "score": {
+      "maximum": 1,
+      "minimum": -1,
+      "title": "Score",
+      "type": "number"
+    }
+  },
+  "required": [
+    "label",
+    "score",
+    "confidence"
+  ],
+  "title": "SentimentResult",
+  "type": "object"
+}

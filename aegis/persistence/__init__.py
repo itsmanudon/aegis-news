@@ -1,0 +1,1 @@
+"""AegisNews foundation module."""

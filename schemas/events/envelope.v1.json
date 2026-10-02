@@ -1,0 +1,669 @@
+{
+  "$defs": {
+    "AnalysisCompleted": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_id": {
+          "pattern": "^ana_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Analysis Id",
+          "type": "string"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "document_id": {
+          "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Document Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "analysis_id",
+        "document_id",
+        "available_at"
+      ],
+      "title": "AnalysisCompleted",
+      "type": "object"
+    },
+    "AnalysisCompletedEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "correlation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Correlation Id",
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/$defs/AnalysisCompleted"
+        },
+        "event_id": {
+          "pattern": "^msg_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "analysis.completed.v1",
+          "default": "analysis.completed.v1",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "event_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Event Version",
+          "type": "string"
+        },
+        "idempotency_key": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "producer": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Producer",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "occurred_at",
+        "producer",
+        "correlation_id",
+        "idempotency_key",
+        "data"
+      ],
+      "title": "AnalysisCompletedEvent",
+      "type": "object"
+    },
+    "DocumentIngested": {
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Document Id",
+          "type": "string"
+        },
+        "ingestion_id": {
+          "pattern": "^ing_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Ingestion Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_id",
+        "ingestion_id"
+      ],
+      "title": "DocumentIngested",
+      "type": "object"
+    },
+    "DocumentIngestedEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "correlation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Correlation Id",
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/$defs/DocumentIngested"
+        },
+        "event_id": {
+          "pattern": "^msg_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "document.ingested.v1",
+          "default": "document.ingested.v1",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "event_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Event Version",
+          "type": "string"
+        },
+        "idempotency_key": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "producer": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Producer",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "occurred_at",
+        "producer",
+        "correlation_id",
+        "idempotency_key",
+        "data"
+      ],
+      "title": "DocumentIngestedEvent",
+      "type": "object"
+    },
+    "DocumentNormalized": {
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Document Id",
+          "type": "string"
+        },
+        "revision": {
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_id",
+        "revision"
+      ],
+      "title": "DocumentNormalized",
+      "type": "object"
+    },
+    "DocumentNormalizedEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "correlation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Correlation Id",
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/$defs/DocumentNormalized"
+        },
+        "event_id": {
+          "pattern": "^msg_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "document.normalized.v1",
+          "default": "document.normalized.v1",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "event_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Event Version",
+          "type": "string"
+        },
+        "idempotency_key": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "producer": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Producer",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "occurred_at",
+        "producer",
+        "correlation_id",
+        "idempotency_key",
+        "data"
+      ],
+      "title": "DocumentNormalizedEvent",
+      "type": "object"
+    },
+    "EntityResolved": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_id": {
+          "pattern": "^ana_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Analysis Id",
+          "type": "string"
+        },
+        "entity_id": {
+          "pattern": "^ent_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "mention_id": {
+          "pattern": "^mention_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Mention Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_id",
+        "mention_id",
+        "analysis_id"
+      ],
+      "title": "EntityResolved",
+      "type": "object"
+    },
+    "EntityResolvedEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "correlation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Correlation Id",
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/$defs/EntityResolved"
+        },
+        "event_id": {
+          "pattern": "^msg_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "entity.resolved.v1",
+          "default": "entity.resolved.v1",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "event_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Event Version",
+          "type": "string"
+        },
+        "idempotency_key": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "producer": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Producer",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "occurred_at",
+        "producer",
+        "correlation_id",
+        "idempotency_key",
+        "data"
+      ],
+      "title": "EntityResolvedEvent",
+      "type": "object"
+    },
+    "IntegrityFailed": {
+      "additionalProperties": false,
+      "properties": {
+        "reason_code": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "subject_id": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Subject Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "subject_id",
+        "reason_code"
+      ],
+      "title": "IntegrityFailed",
+      "type": "object"
+    },
+    "IntegrityFailedEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "correlation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Correlation Id",
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/$defs/IntegrityFailed"
+        },
+        "event_id": {
+          "pattern": "^msg_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "integrity.failed.v1",
+          "default": "integrity.failed.v1",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "event_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Event Version",
+          "type": "string"
+        },
+        "idempotency_key": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "producer": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Producer",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "occurred_at",
+        "producer",
+        "correlation_id",
+        "idempotency_key",
+        "data"
+      ],
+      "title": "IntegrityFailedEvent",
+      "type": "object"
+    },
+    "NewsEventChanged": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "event_id": {
+          "pattern": "^evt_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "revision": {
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "revision",
+        "available_at"
+      ],
+      "title": "NewsEventChanged",
+      "type": "object"
+    },
+    "NewsEventCreatedEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "correlation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Correlation Id",
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/$defs/NewsEventChanged"
+        },
+        "event_id": {
+          "pattern": "^msg_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "news.event.created.v1",
+          "default": "news.event.created.v1",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "event_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Event Version",
+          "type": "string"
+        },
+        "idempotency_key": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "producer": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Producer",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "occurred_at",
+        "producer",
+        "correlation_id",
+        "idempotency_key",
+        "data"
+      ],
+      "title": "NewsEventCreatedEvent",
+      "type": "object"
+    },
+    "NewsEventUpdatedEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "correlation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Correlation Id",
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/$defs/NewsEventChanged"
+        },
+        "event_id": {
+          "pattern": "^msg_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "news.event.updated.v1",
+          "default": "news.event.updated.v1",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "event_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Event Version",
+          "type": "string"
+        },
+        "idempotency_key": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "producer": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Producer",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "occurred_at",
+        "producer",
+        "correlation_id",
+        "idempotency_key",
+        "data"
+      ],
+      "title": "NewsEventUpdatedEvent",
+      "type": "object"
+    }
+  },
+  "discriminator": {
+    "mapping": {
+      "analysis.completed.v1": "#/$defs/AnalysisCompletedEvent",
+      "document.ingested.v1": "#/$defs/DocumentIngestedEvent",
+      "document.normalized.v1": "#/$defs/DocumentNormalizedEvent",
+      "entity.resolved.v1": "#/$defs/EntityResolvedEvent",
+      "integrity.failed.v1": "#/$defs/IntegrityFailedEvent",
+      "news.event.created.v1": "#/$defs/NewsEventCreatedEvent",
+      "news.event.updated.v1": "#/$defs/NewsEventUpdatedEvent"
+    },
+    "propertyName": "event_type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/DocumentIngestedEvent"
+    },
+    {
+      "$ref": "#/$defs/DocumentNormalizedEvent"
+    },
+    {
+      "$ref": "#/$defs/AnalysisCompletedEvent"
+    },
+    {
+      "$ref": "#/$defs/EntityResolvedEvent"
+    },
+    {
+      "$ref": "#/$defs/NewsEventCreatedEvent"
+    },
+    {
+      "$ref": "#/$defs/NewsEventUpdatedEvent"
+    },
+    {
+      "$ref": "#/$defs/IntegrityFailedEvent"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "$defs": {
+    "ObjectReference": {
+      "additionalProperties": false,
+      "properties": {
+        "bucket": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Bucket",
+          "type": "string"
+        },
+        "content_type": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Content Type",
+          "type": "string"
+        },
+        "key": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Key",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "size_bytes": {
+          "minimum": 0,
+          "title": "Size Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "bucket",
+        "key",
+        "sha256",
+        "size_bytes",
+        "content_type"
+      ],
+      "title": "ObjectReference",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "ingestion_id": {
+      "pattern": "^ing_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Ingestion Id",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "image",
+        "audio",
+        "video",
+        "attachment"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "media_id": {
+      "pattern": "^media_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Media Id",
+      "type": "string"
+    },
+    "object": {
+      "$ref": "#/$defs/ObjectReference"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "media_id",
+    "ingestion_id",
+    "kind",
+    "object",
+    "created_at"
+  ],
+  "title": "MediaAsset",
+  "type": "object"
+}

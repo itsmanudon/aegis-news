@@ -1,0 +1,291 @@
+{
+  "$defs": {
+    "EntityResolutionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "entity_id": {
+          "anyOf": [
+            {
+              "pattern": "^ent_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Entity Id"
+        },
+        "mention_id": {
+          "pattern": "^mention_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Mention Id",
+          "type": "string"
+        },
+        "result_type": {
+          "const": "entity_resolution",
+          "default": "entity_resolution",
+          "title": "Result Type",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mention_id",
+        "entity_id",
+        "confidence"
+      ],
+      "title": "EntityResolutionResult",
+      "type": "object"
+    },
+    "EventClassificationResult": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "event_id": {
+          "pattern": "^evt_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "result_type": {
+          "const": "event_classification",
+          "default": "event_classification",
+          "title": "Result Type",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "label",
+        "confidence"
+      ],
+      "title": "EventClassificationResult",
+      "type": "object"
+    },
+    "SentimentResult": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "entity_id": {
+          "anyOf": [
+            {
+              "pattern": "^ent_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Entity Id"
+        },
+        "label": {
+          "enum": [
+            "positive",
+            "neutral",
+            "negative",
+            "mixed"
+          ],
+          "title": "Label",
+          "type": "string"
+        },
+        "result_type": {
+          "const": "sentiment",
+          "default": "sentiment",
+          "title": "Result Type",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "score": {
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Score",
+          "type": "number"
+        }
+      },
+      "required": [
+        "label",
+        "score",
+        "confidence"
+      ],
+      "title": "SentimentResult",
+      "type": "object"
+    },
+    "TopicResult": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "label": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "result_type": {
+          "const": "topic",
+          "default": "topic",
+          "title": "Result Type",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "confidence"
+      ],
+      "title": "TopicResult",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "analysis_id": {
+      "pattern": "^ana_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Analysis Id",
+      "type": "string"
+    },
+    "analysis_type": {
+      "enum": [
+        "topic",
+        "sentiment",
+        "entity_resolution",
+        "event_classification"
+      ],
+      "title": "Analysis Type",
+      "type": "string"
+    },
+    "available_at": {
+      "format": "date-time",
+      "title": "Available At",
+      "type": "string"
+    },
+    "configuration_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Configuration Hash",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "document_id": {
+      "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Document Id",
+      "type": "string"
+    },
+    "model_name": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Model Name",
+      "type": "string"
+    },
+    "model_version": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Model Version",
+      "type": "string"
+    },
+    "outputs": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "entity_resolution": "#/$defs/EntityResolutionResult",
+            "event_classification": "#/$defs/EventClassificationResult",
+            "sentiment": "#/$defs/SentimentResult",
+            "topic": "#/$defs/TopicResult"
+          },
+          "propertyName": "result_type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/TopicResult"
+          },
+          {
+            "$ref": "#/$defs/SentimentResult"
+          },
+          {
+            "$ref": "#/$defs/EntityResolutionResult"
+          },
+          {
+            "$ref": "#/$defs/EventClassificationResult"
+          }
+        ]
+      },
+      "title": "Outputs",
+      "type": "array"
+    },
+    "provider": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Provider",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "analysis_id",
+    "document_id",
+    "analysis_type",
+    "provider",
+    "model_name",
+    "model_version",
+    "configuration_hash",
+    "created_at",
+    "available_at",
+    "outputs"
+  ],
+  "title": "AnalysisResult",
+  "type": "object"
+}

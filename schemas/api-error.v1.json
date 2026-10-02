@@ -1,0 +1,57 @@
+{
+  "$defs": {
+    "ErrorCode": {
+      "enum": [
+        "INVALID_ARGUMENT",
+        "UNAUTHORIZED",
+        "FORBIDDEN",
+        "NOT_FOUND",
+        "CONFLICT",
+        "RATE_LIMITED",
+        "SOURCE_UNAVAILABLE",
+        "PROCESSING_FAILED",
+        "INTEGRITY_FAILED",
+        "INTERNAL_ERROR"
+      ],
+      "title": "ErrorCode",
+      "type": "string"
+    },
+    "ErrorDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/ErrorCode"
+        },
+        "message": {
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Request Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "request_id"
+      ],
+      "title": "ErrorDetail",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "error": {
+      "$ref": "#/$defs/ErrorDetail"
+    }
+  },
+  "required": [
+    "error"
+  ],
+  "title": "ApiErrorEnvelope",
+  "type": "object"
+}

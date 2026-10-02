@@ -1,0 +1,393 @@
+{
+  "components": {
+    "schemas": {
+      "ApiErrorEnvelope": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorDetail"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "title": "ApiErrorEnvelope",
+        "type": "object"
+      },
+      "DependencyStatus": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "enum": [
+              "postgres",
+              "redis",
+              "object_storage",
+              "temporal"
+            ],
+            "title": "Name",
+            "type": "string"
+          },
+          "ready": {
+            "title": "Ready",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "ready"
+        ],
+        "title": "DependencyStatus",
+        "type": "object"
+      },
+      "ErrorCode": {
+        "enum": [
+          "INVALID_ARGUMENT",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "NOT_FOUND",
+          "CONFLICT",
+          "RATE_LIMITED",
+          "SOURCE_UNAVAILABLE",
+          "PROCESSING_FAILED",
+          "INTEGRITY_FAILED",
+          "INTERNAL_ERROR"
+        ],
+        "title": "ErrorCode",
+        "type": "string"
+      },
+      "ErrorDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode"
+          },
+          "message": {
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          },
+          "request_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Request Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "request_id"
+        ],
+        "title": "ErrorDetail",
+        "type": "object"
+      },
+      "HealthStatus": {
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "const": "ok",
+            "default": "ok",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "title": "HealthStatus",
+        "type": "object"
+      },
+      "ReadinessStatus": {
+        "additionalProperties": false,
+        "properties": {
+          "dependencies": {
+            "items": {
+              "$ref": "#/components/schemas/DependencyStatus"
+            },
+            "title": "Dependencies",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "ready",
+              "not_ready"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "dependencies"
+        ],
+        "title": "ReadinessStatus",
+        "type": "object"
+      },
+      "ResponseMeta": {
+        "additionalProperties": false,
+        "properties": {
+          "api_version": {
+            "const": "v1",
+            "default": "v1",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "request_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Request Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "ResponseMeta",
+        "type": "object"
+      },
+      "SingleResponse_HealthStatus_": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/HealthStatus"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "SingleResponse[HealthStatus]",
+        "type": "object"
+      },
+      "SingleResponse_ReadinessStatus_": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ReadinessStatus"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "SingleResponse[ReadinessStatus]",
+        "type": "object"
+      },
+      "SingleResponse_SystemInfo_": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SystemInfo"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "SingleResponse[SystemInfo]",
+        "type": "object"
+      },
+      "SystemInfo": {
+        "additionalProperties": false,
+        "properties": {
+          "architecture": {
+            "const": "modular monolith + background workers",
+            "default": "modular monolith + background workers",
+            "title": "Architecture",
+            "type": "string"
+          },
+          "name": {
+            "const": "AegisNews",
+            "default": "AegisNews",
+            "title": "Name",
+            "type": "string"
+          },
+          "stage": {
+            "const": "foundation",
+            "default": "foundation",
+            "title": "Stage",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version"
+        ],
+        "title": "SystemInfo",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Foundation-only modular monolith. Domain routes are reserved, not implemented.",
+    "title": "AegisNews",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/system/info": {
+      "get": {
+        "operationId": "system_info_api_v1_system_info_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleResponse_SystemInfo_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "System Info",
+        "tags": [
+          "system"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleResponse_HealthStatus_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "system"
+        ]
+      }
+    },
+    "/ready": {
+      "get": {
+        "operationId": "ready_ready_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleResponse_ReadinessStatus_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Ready",
+        "tags": [
+          "system"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "description": "Reserved for the next product phase",
+      "name": "documents"
+    },
+    {
+      "description": "Reserved for the next product phase",
+      "name": "entities"
+    },
+    {
+      "description": "Reserved for the next product phase",
+      "name": "events"
+    },
+    {
+      "description": "Reserved for the next product phase",
+      "name": "search"
+    },
+    {
+      "description": "Reserved for the next product phase",
+      "name": "assets"
+    }
+  ]
+}
