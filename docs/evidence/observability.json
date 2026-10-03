@@ -1,0 +1,66 @@
+{
+  "result": "passed",
+  "prometheus_api_up": true,
+  "grafana_dashboard": "AegisNews Local Demo",
+  "loki_correlated_trace_examples": [
+    {
+      "message": "ai_stage_completed",
+      "logger": "aegis.worker",
+      "correlation_id": "aegis-demo-v1",
+      "trace_id": "76e4982783f95473463dda40a850748d",
+      "span_id": "f991e47d8941d20c"
+    },
+    {
+      "message": "ai_stage_completed",
+      "logger": "aegis.worker",
+      "correlation_id": "aegis-demo-v1",
+      "trace_id": "76e4982783f95473463dda40a850748d",
+      "span_id": "f936eb24ccc38872"
+    },
+    {
+      "message": "ai_stage_completed",
+      "logger": "aegis.worker",
+      "correlation_id": "aegis-demo-v1",
+      "trace_id": "befa0810189e734e788edd19784a3e77",
+      "span_id": "f3a2c38d40ea2025"
+    },
+    {
+      "message": "ai_stage_completed",
+      "logger": "aegis.worker",
+      "correlation_id": "aegis-demo-v1",
+      "trace_id": "9c99a1f00fbaf8119224467b5d1ff3e7",
+      "span_id": "ef753e031a1f6a0a"
+    },
+    {
+      "message": "ai_stage_completed",
+      "logger": "aegis.worker",
+      "correlation_id": "aegis-demo-v1",
+      "trace_id": "9c99a1f00fbaf8119224467b5d1ff3e7",
+      "span_id": "ed74ecdb7c7a441b"
+    },
+    {
+      "message": "ai_stage_completed",
+      "logger": "aegis.worker",
+      "correlation_id": "aegis-demo-v1",
+      "trace_id": "befa0810189e734e788edd19784a3e77",
+      "span_id": "e807b4db504706a1"
+    },
+    {
+      "message": "ai_stage_completed",
+      "logger": "aegis.worker",
+      "correlation_id": "aegis-demo-v1",
+      "trace_id": "76e4982783f95473463dda40a850748d",
+      "span_id": "e775d335865bb6a3"
+    },
+    {
+      "message": "ai_stage_completed",
+      "logger": "aegis.worker",
+      "correlation_id": "aegis-demo-v1",
+      "trace_id": "befa0810189e734e788edd19784a3e77",
+      "span_id": "daaa3986a88bf4e1"
+    }
+  ],
+  "otel_collector_received_spans": true,
+  "collector_matched_worker_trace_id": "76e4982783f95473463dda40a850748d",
+  "trace_storage_limitation": "Collector debug export only; no trace database/UI. Loki trace IDs and Temporal tracing preserve context; inspect collector logs for receipt."
+}

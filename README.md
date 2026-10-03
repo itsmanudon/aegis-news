@@ -1,98 +1,162 @@
 # AegisNews
 
-A standalone Secure Multimodal News Intelligence Platform, beginning as an academic Information Security + Cryptography + AI project. Its contracts and boundaries support long-term development and independent consumers.
+**Secure multimodal news intelligence, with evidence you can inspect.**
 
-**This branch contains foundation work only.** No news ingestion, AI inference, trading signals, production authentication, or cryptographic features are implemented. AegisNews has no dependency on Stockwise, portfolios, backtesting engines, or ticker applications.
+AegisNews turns historical/local articles and linked media into normalized documents,
+versioned AI analyses, entity/event evidence and signed provenance. This working
+academic prototype combines AI, Information Security, Cryptography and Multimedia.
+It makes source evidence, model predictions, availability and tampering visible.
+A signature does not establish source truth or model correctness.
 
-## Architecture
+The integrated MVP is frozen at **`v0.1.0-mvp`**. This Phase 6 branch adds assessment,
+demo reliability and presentation evidence. [Release record](docs/mvp-release.md).
 
-```text
-Next.js status shell → FastAPI /api/v1 → canonical domain/contracts
-                                      → PostgreSQL source of truth
-                                      → S3-compatible object storage
-Test trigger → Temporal workflow → Python worker activity
-Domain write + outbox write → one DB transaction → future asynchronous publisher
+![Real API document feed](docs/evidence/screenshots/dashboard.jpg)
+
+## Implemented now
+
+- Authenticated local/historical ingestion through a real Temporal workflow.
+- MinIO raw objects, normalized PostgreSQL documents and explicit image/media links.
+- Offline entities/topics/sentiment/embeddings/resolution/events; optional local models.
+- Immutable analyses with model/configuration/availability lineage; transactional outbox.
+- Scope-authorized APIs, explicit development identity and persistent security audit.
+- SHA-256 integrity, AES-256-GCM encrypted archives, Ed25519 signatures and tamper detection.
+- Real document/entity/event/search/source/audit dashboard, plus explicit mock mode.
+- OpenAPI-derived TypeScript types, deterministic demo reset/seed and measured evaluation.
+- OTel context, Prometheus, provisioned Grafana dashboard and Loki/Alloy logs.
+
+## Architecture and stack
+
+```mermaid
+flowchart LR
+    UI[Next.js analyst console] --> API[FastAPI modular monolith]
+    API --> Auth[JWT validation / scopes / audit]
+    API --> Temporal[Temporal]
+    Temporal --> Worker[Python ingestion / AI / provenance activities]
+    Worker --> PG[PostgreSQL + pgvector + pg_trgm]
+    Worker --> MinIO[Raw objects / images / encrypted archives]
+    PG --> Outbox[Transactional outbox]
+    API --> PG
+    Auth --> Redis[Redis rate limits]
+    Worker --> Obs[OTel + JSON logs / Prometheus / Grafana / Loki]
+    API --> Obs
 ```
 
-A modular monolith plus background workers. Python modules retain explicit boundaries; the API and worker share the same application package and database. Redis is ephemeral. PostgreSQL FTS, pg_trgm and pgvector are the intended search foundation. Kafka is optional future transport, behind `EventPublisher` and an outbox.
+Python 3.12+, FastAPI, Pydantic, SQLAlchemy/Alembic; Temporal; PostgreSQL; Redis;
+S3/MinIO; Next.js/React/TypeScript; standard `cryptography`; OpenTelemetry/Prometheus/
+Grafana/Loki/Alloy. Tooling: uv, pnpm, Ruff, strict mypy, pytest and Playwright.
+Modular monolith plus workers, local first. [Detailed diagrams](docs/phase6/architecture-diagrams.md).
 
-Stack: Python 3.12+, FastAPI, Pydantic, SQLAlchemy, Alembic, PostgreSQL/pgvector, Redis, S3/MinIO, Temporal; Next.js, React, TypeScript, Tailwind; OpenTelemetry, Prometheus, Grafana, Loki. Tooling: uv, Ruff, mypy, pytest, pnpm, ESLint.
+## Quickstart
 
-## Local setup
-
-Prerequisites: Git, Docker Compose v2+, Python 3.12, uv, Node 22+, pnpm 10.33.1. Docker-only startup does not require host language toolchains.
+Prerequisites: Git, Docker Engine/Desktop with Compose v2 and Python 3.12+ for the
+portable helper. No GPU, host ML installation, paid API or model download is needed.
+The first build includes source-built MinIO and may take longer.
 
 ```sh
-cp .env.example .env
-docker compose --profile core up --build -d --wait
+git clone --branch phase6/evaluation-demo-hardening https://github.com/itsmanudon/aegis-news.git
+cd aegis-news
+python scripts/demo.py start
+python scripts/demo.py token --role analyst
 ```
 
-Open [web](http://localhost:3000), [API docs](http://localhost:8000/docs), [health](http://localhost:8000/health), [readiness](http://localhost:8000/ready), and [MinIO console](http://localhost:9001). Local dummy console credentials are documented in `.env.example`. Migrations and the object-storage bucket are initialized automatically before the API starts.
+Open [dashboard](http://localhost:33000), paste the token into **Access token**, and
+click **Use token**. Tokens expire after five minutes; generate a fresh one as needed.
+Use `--role admin` for writes and `--role viewer` for insufficient-scope demonstrations.
+Tokens stay in browser memory. This is explicit local identity, not a production issuer.
+
+The helper starts an isolated `aegis-demo` stack and seeds five original synthetic
+articles, including an original PNG. It uses supplied alternate loopback ports in
+`infrastructure/demo.env.example`. Copy `.env.example` to `.env` only for separate host
+development; the helper uses its own environment file.
+
+Docker-only alternative, without host Python:
 
 ```sh
-AEGIS_TEMPORAL_ENABLED=true AEGIS_OTEL_ENABLED=true docker compose --profile full up --build -d --wait
-docker compose exec worker python scripts/temporal_smoke.py
+docker compose --env-file infrastructure/demo.env.example -p aegis-demo --profile full up --build -d --wait
+docker compose --env-file infrastructure/demo.env.example -p aegis-demo exec -T api python -m scripts.demo_seed
+docker compose --env-file infrastructure/demo.env.example -p aegis-demo exec -T api python scripts/security_dev.py token --key-id local --role analyst --subject local-demo
 ```
 
-Full profile also provides Temporal UI :8233, Prometheus :9090, Grafana :3001, Loki :3100 and an OTLP HTTP receiver :4318. The smoke workflow is a connectivity example, not a news workflow. MinIO is built from a checksummed official source release because its published images are unavailable; the first build is slower. See [local development](docs/local-development.md).
+`python scripts/demo.py reset` deletes only this local project's volumes, regenerates
+keys and reseeds. Logical content stays fixed; UUIDs/timestamps change. `stop` retains
+data. Windows uses `python`/`pnpm.cmd`; macOS/Linux may use `python3`/`pnpm`.
+[5–8 minute demo, reset and platform guide](docs/phase6/demo-guide.md).
 
-## Development and validation
+## Evaluation and performance
+
+The [CC0 gold set](ml/datasets/gold/README.md) has 16 short English cases across eight
+categories. Labels were manually authored/inspected by the agent; **independent human
+adjudication is pending**. This is a small development set, not a real-news quality estimate.
+
+| Offline task | Measured result |
+|---|---:|
+| Exact NER span precision / recall / F1 | 1.000 / 0.941 / 0.970 |
+| Typed NER F1 | 0.000; baseline emits `other` |
+| Topic accuracy / macro F1 | 0.750 / 0.567 |
+| Sentiment accuracy / macro F1 | 0.500 / 0.390 |
+| Event extraction precision / recall / F1 | 1.000 / 0.769 / 0.870 |
+| Event classification accuracy / macro F1 | 0.813 / 0.810 |
+| Resolution accuracy with gold mentions/tiny supplied candidates | 1.000 |
+| Coarse paired-document retrieval MRR / recall@3 | 0.209 / 0.188 |
+
+Light/full probes found unavailable local models; no pretrained quality result is claimed.
+Offline embeddings are lexical hash vectors, with weak category retrieval. A fresh
+five-item Docker batch measured total workflow median 1.978 s, p95 2.002 s and 1.74
+documents/s including verification. This is small local characterization, not production
+capacity. [Methods, confusions, versions, timing/resource evidence](docs/phase6/evaluation.md).
 
 ```sh
 uv sync --frozen
-pnpm install --frozen-lockfile
-uv run uvicorn apps.api.main:app --reload --port 8000 --no-access-log
-pnpm web:dev
-# In a separate terminal, when the full profile is running:
-uv run python -m apps.worker.main
-uv run python scripts/temporal_smoke.py
+uv run python -m aegis.intelligence.assessment --profile offline --output ml/evaluation/results/offline.json
+python scripts/demo.py benchmark
+python scripts/demo.py security
+python scripts/demo.py reliability
+python -m scripts.demo_observability
 ```
 
-Avoid running two workers on the same task queue unless deliberately testing multi-worker behavior. For host development, stop Compose API/web/worker while retaining dependencies; see the development guide.
+## Security and provenance
 
-```sh
-make check                 # format, lint, mypy, unit/contract/security, schema drift, web lint/types/build
-make check-integration     # live dependency, persistence, storage, Temporal tests + scratch migration roundtrip
-make check-e2e             # HTTP status-page smoke against running API and web
-make audit                 # Python and JavaScript dependency audits
-uv run python scripts/export_schemas.py
-uv run alembic upgrade head
-```
+SHA-256 hashes content; AES-GCM encrypts selected stored archives; Ed25519 signs
+canonical lineage. TLS is separate transport protection; the loopback demo uses HTTP.
+Keys are generated in a private volume, never Git. Trusted issuers/public keys and
+SQL/key administrators remain important trust boundaries.
 
-Default pytest does not need Docker, Temporal, or credentials. Live checks are opt-in and use synthetic fixtures. The HTTP E2E smoke checks SSR output; browser interaction tests with Playwright are deferred.
+![Live provenance verification](docs/evidence/screenshots/provenance-verification.jpg)
 
-## Repository structure
+The automated suite checks authentication/scopes/denial; raw/SQL/image tampering;
+AES decryption/ciphertext rejection; signatures/modified content; audit and redaction.
+Controlled changes are restored. [Threat model and crypto explanation](docs/phase6/security-and-crypto.md).
+This is internal signed provenance, not production C2PA or external trusted timestamping.
 
-```text
-apps/                 api/, web/, worker/ process entrypoints
-aegis/                domain/, contracts/ architectural core
-                      ingestion/, media/, normalization/, intelligence/
-                      entities/, events/, provenance/, security/, observability/
-                      persistence/ SQLAlchemy adapter
-ml/                   models/, training/, evaluation/, datasets/ reserved
-schemas/              openapi/, events/, domain/ exported v1 contracts
-infrastructure/       docker/, temporal/, monitoring/
-migrations/           Alembic migration history
-tests/                unit/, contract/, integration/, security/, e2e/
-docs/                 architecture, contracts, security, development, ADRs
-data/samples/         synthetic samples only
-scripts/              schema export and validation triggers
-```
+## API, repository and academic evidence
 
-## Engineering principles
+[Local OpenAPI/Swagger](http://localhost:38000/docs), [API examples](docs/phase6/api-guide.md),
+[endpoint inventory](docs/mvp-integration.md). Exported schemas drive frontend types.
 
-- Keep publication, observation, persistence and downstream availability times distinct.
-- Freeze/version analysis outputs; never replace historical inference silently.
-- Separate canonical entities from asset identifiers and facts from model outputs.
-- Use cursor pagination and stable API errors; version asynchronous envelopes.
-- Commit domain data and outbox envelopes together; publishing is at least once in the future.
-- Keep business logic independent of infrastructure adapters and downstream financial consumers.
-- Store secrets outside Git; local-only ports and dummy credentials are not a production security configuration.
+| Path | Responsibility |
+|---|---|
+| `apps/api`, `apps/worker`, `apps/web` | Process entrypoints and dashboard |
+| `aegis/` | Domain/contracts and bounded application modules |
+| `ml/` | Local model guidance, gold set and evaluation reports |
+| `migrations/`, `schemas/` | SQL history and exported contracts |
+| `scripts/`, `infrastructure/` | Reproducibility and local runtime/monitoring |
+| `tests/` | Unit/contract/security/ingestion and real infrastructure seams |
+| `docs/`, `data/samples/` | Runbooks, academic evidence and original synthetic media |
 
-Read [architecture](docs/architecture.md), [domain model](docs/domain-model.md), [API contracts](docs/api-contracts.md), [events](docs/events.md), [security boundaries](docs/security-boundaries.md) and [ADRs](docs/adr/README.md).
+[Screenshots](docs/evidence/README.md), [presentation outline and rubric mapping](docs/phase6/presentation-outline.md),
+[validation record](docs/phase6/validation.md), [ADRs](docs/adr/README.md).
+Normal CI stays CPU/offline without cloud credentials/heavy models; extended Docker/browser
+acceptance is manual. Exact executed counts, hosted URLs and warnings are in the validation record.
 
-## Current status and next phase
+## Limitations and future roadmap
 
-Implemented: versioned contracts and exported schemas; minimal API/status shell; foundational schema/outbox; typed extension ports; local infrastructure and Temporal smoke workflow; observability and CI. Product route modules are empty and return the standard 404 envelope. Models and datasets are not installed.
+Uncalibrated offline rules, English/short-input evaluation, pending human review; exact
+similarity scan, curated entity candidates and incomplete mutable-registry/link history.
+The dashboard shows real media metadata; authorized inline preview remains unavailable.
+The OTel collector debug-exports traces without durable trace storage/UI.
 
-Next phase: **Ingestion + Normalization**. Preserve raw content and its timestamps; add a single synthetic/feed ingestion path before adding AI. Read [foundation handoff](docs/foundation-handoff.md) for validation evidence and limitations.
+Next: human-adjudicated held-out evaluation, optional local-model experiments, focused
+usability/reliability improvements. Kafka, OpenSearch, Kubernetes, cloud deployment,
+Stockwise/backtester/portfolio/ticker integration and production C2PA are future ideas,
+not implemented capabilities. No trading signals or financial execution logic is present.

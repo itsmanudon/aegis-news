@@ -23,11 +23,11 @@ must always restore bytes/rows. Evidence must exclude tokens, private keys and p
   classification/confusion, resolution, event extraction and retrieval metrics.
   Write meaningful metric/error tests first; run offline and probe optional profiles
   without downloading. Record versions, actual timings and resource limits.
-- [ ] Task 2: Add isolated start/reset/seed/demo commands, image fixture and automated
+- [x] Task 2: Add isolated start/reset/seed/demo commands, image fixture and automated
   security/reliability/performance evidence using real APIs, Temporal histories,
   object storage and crypto. Test retry-after-commit plus interrupted-worker recovery,
   and ensure counts/lineage remain stable. Run from fresh demo volumes.
-- [ ] Task 3: Produce concise threat/crypto/provenance/API/observability/demo documentation,
+- [x] Task 3: Produce concise threat/crypto/provenance/API/observability/demo documentation,
   diagrams, screenshots, academic mapping and presentation outline. Polish README;
   record actual measurements and unsupported claims. No PowerPoint or deployment.
 - [ ] Task 4: Run complete practical validation, audits and drift checks; independent
@@ -59,3 +59,21 @@ must always restore bytes/rows. Evidence must exclude tokens, private keys and p
   ran three rounds; light/full one-round local-only probes returned ModelUnavailable.
   Whole-profile quality claims are explicitly disabled for partial probes. Raw reports
   include versions, configuration hashes, confusion matrices and timing/resource limits.
+- Task 2 complete: local-context reset guards failed on missing implementation then
+  four tests passed. Real post-commit Temporal retry/worker restart passed with one
+  document and six analyses. Fresh reset/seed, 14 security controls (including timed
+  restoration), recovery and all 22 original acceptance checks passed. Exact worker
+  trace IDs were matched between Loki and collector after asynchronous-export polling.
+- Ruling: collector receipt must be eventually checked and matched to a worker trace,
+  not inferred from an immediate small log tail. Initial evidence check failed before
+  that fix; final live evidence passed. Cost if wrong: missing telemetry could be
+  mistaken for a successful observability demo.
+- Task 3 complete: README, explicit future diagrams, threat/crypto/API/evaluation/demo
+  docs, rubric and presentation outline written; ten optimized real screenshots captured.
+  Grafana screenshot initially raced login completion; awaiting navigation fixed it.
+- Validation so far: 241 backend tests with every live switch enabled, no skips;
+  12 frontend tests; frontend lint/types/build/drift; Ruff and strict mypy (97 sources);
+  migration roundtrip, production dependency audits and secret guard passed.
+- Ruling: push only this Phase 6 branch to verify Linux hosted CI and manual clean-start
+  Docker acceptance. This is within the user's remote-validation exception; main/tag
+  remain frozen. Cost if wrong: public evidence or platform defects might ship unchecked.

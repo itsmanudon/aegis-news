@@ -1,0 +1,23 @@
+{
+  "result": "passed",
+  "checks": [
+    "authentication_required",
+    "authorized_scopes",
+    "insufficient_scope_denied",
+    "sha256_raw_integrity",
+    "live_provenance_verified",
+    "raw_object_tampering_detected_and_restored",
+    "database_document_tampering_detected_and_restored",
+    "linked_image_tampering_detected_and_restored",
+    "aes256gcm_decryption",
+    "aes256gcm_modified_ciphertext_rejected",
+    "ed25519_signature_verified",
+    "ed25519_modified_content_rejected",
+    "persistent_audit_events",
+    "log_and_audit_secret_redaction"
+  ],
+  "document_id": "doc_2507fab2-9acf-4628-af6a-e73bb9b1b06f",
+  "media_id": "media_158cabea-9d86-4ceb-ab52-53b9f2639352",
+  "final_verification": "valid",
+  "scope": "Controlled local synthetic data only; source text/object/image restored in finally blocks; no tokens or key bytes exported"
+}

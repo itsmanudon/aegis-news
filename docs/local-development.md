@@ -44,7 +44,7 @@ Normal CI does not require Docker/Temporal/cloud credentials. A separate Postgre
 
 ## Observability and shutdown
 
-Send `X-Request-ID: local-example` / `X-Correlation-ID: local-correlation` to `/health`; inspect the same values in API JSON logs. With OTel enabled, send a W3C `traceparent` to `/api/v1/system/info` (`/health` and `/metrics` are excluded from tracing); inspect trace IDs in the log and collector's debug export. Metrics: `/metrics`. Grafana provisions Prometheus and Loki; Loki log selector `{service="aegisnews-api"}`. Alloy reads only the application log volume. No Docker socket is mounted. File logging rotates at 10 MB with two backups; production retention/export is deferred. Restart processes after changing telemetry settings.
+Send `X-Request-ID: local-example` / `X-Correlation-ID: local-correlation` to `/health`; inspect the same values in API JSON logs. With OTel enabled, send a W3C `traceparent` to `/api/v1/system/info` (`/health` and `/metrics` are excluded from tracing); inspect trace IDs in the log and collector's debug export. Metrics: `/metrics`. Grafana provisions Prometheus and Loki; Loki log selector `{service="aegisnews"}` includes the shared API/worker log volume. Alloy reads only that volume. No Docker socket is mounted. File logging rotates at 10 MB with two backups; production retention/export is deferred. Restart processes after changing telemetry settings.
 
 ```sh
 docker compose --profile full down

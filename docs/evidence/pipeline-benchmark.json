@@ -1,0 +1,147 @@
+{
+  "result": "passed",
+  "mode": "benchmark",
+  "source_id": "src_50d27814-6113-4221-ac2e-2a13b29a436d",
+  "documents": [
+    {
+      "analyze_entities": "completed",
+      "analyze_sentiment": "completed",
+      "analyze_topics": "completed",
+      "document_id": "doc_d64900cb-352c-49d6-9496-2a963fce94e8",
+      "extract_events": "completed",
+      "generate_embedding": "completed",
+      "ingestion_id": "ing_e9138365-3b74-440a-8716-a05d3b0cac03",
+      "provenance_id": "prov_d258e078-44b0-50fc-8324-ce5b2e092405",
+      "resolve_entities": "completed"
+    },
+    {
+      "analyze_entities": "completed",
+      "analyze_sentiment": "completed",
+      "analyze_topics": "completed",
+      "document_id": "doc_c77818d9-f5c4-404d-aeab-120496be5323",
+      "extract_events": "completed",
+      "generate_embedding": "completed",
+      "ingestion_id": "ing_d298b5d2-a19c-485f-988a-bd5eb684d4a1",
+      "provenance_id": "prov_a0477c5e-2027-556c-bc01-a61c4d4d1ce9",
+      "resolve_entities": "completed"
+    },
+    {
+      "analyze_entities": "completed",
+      "analyze_sentiment": "completed",
+      "analyze_topics": "completed",
+      "document_id": "doc_aba2a07a-a525-4a21-bd74-1548ccf82ab9",
+      "extract_events": "completed",
+      "generate_embedding": "completed",
+      "ingestion_id": "ing_ef95fb17-9855-4b09-9b8c-578118518159",
+      "provenance_id": "prov_0e4177da-4896-5554-a12e-c8aaec37c66d",
+      "resolve_entities": "completed"
+    },
+    {
+      "analyze_entities": "completed",
+      "analyze_sentiment": "completed",
+      "analyze_topics": "completed",
+      "document_id": "doc_672aeb42-dd64-4846-af94-2c0c4304ce17",
+      "extract_events": "completed",
+      "generate_embedding": "completed",
+      "ingestion_id": "ing_dfea41a1-5652-4b90-aa8d-8f5501d2ab17",
+      "provenance_id": "prov_d6e80e87-198d-52ee-84db-948446b6b0a0",
+      "resolve_entities": "completed"
+    },
+    {
+      "analyze_entities": "completed",
+      "analyze_sentiment": "completed",
+      "analyze_topics": "completed",
+      "document_id": "doc_d4ae7be4-971f-4cea-94b9-443ff17500c1",
+      "extract_events": "completed",
+      "generate_embedding": "completed",
+      "ingestion_id": "ing_683f2571-dbfa-4ce0-8e82-21efbb845b8c",
+      "provenance_id": "prov_5d1c4b10-38d0-5e39-b4a9-2b09ba1bef05",
+      "resolve_entities": "completed"
+    }
+  ],
+  "workflow_ids": [
+    "ingestion-fb3d64b9f4393eba180b9342143c079fa48fa9f9c416b334b26dafcdc9413003",
+    "ingestion-8c4d3d0e70f8d870489b848e6535d44635a94a186b8f416b0489a4c617865225",
+    "ingestion-a0e0d734d395d77d981297cee74df9c2b3bceb18068d721b37ae27f46b40da7c",
+    "ingestion-13b40f29103db27f28e77bcfea4e0b37d9609d92c18636936c3677b122e2936c",
+    "ingestion-867febe734fd6a8ee421f1eebe34176635be420e55fe5face3e615511859dd06"
+  ],
+  "counts_after": {
+    "documents": 10,
+    "analyses": 60,
+    "outbox_total": 92
+  },
+  "duplicate_stable": true,
+  "media_document_id": "doc_d64900cb-352c-49d6-9496-2a963fce94e8",
+  "batch_wall_seconds_including_verification": 2.878398608999305,
+  "batch_throughput_documents_per_second": 1.737076992869408,
+  "history_latency": {
+    "prepare_ingestion": {
+      "count": 5,
+      "median_ms": 62.97,
+      "p95_ms": 74.394,
+      "total_ms": 322.791
+    },
+    "normalize_ingestion": {
+      "count": 5,
+      "median_ms": 39.361,
+      "p95_ms": 52.342,
+      "total_ms": 198.653
+    },
+    "commit_ingestion": {
+      "count": 5,
+      "median_ms": 30.054000000000002,
+      "p95_ms": 45.074000000000005,
+      "total_ms": 172.478
+    },
+    "analyze_entities": {
+      "count": 5,
+      "median_ms": 37.502,
+      "p95_ms": 54.085,
+      "total_ms": 203.36
+    },
+    "analyze_topics": {
+      "count": 5,
+      "median_ms": 47.217,
+      "p95_ms": 51.71,
+      "total_ms": 221.175
+    },
+    "analyze_sentiment": {
+      "count": 5,
+      "median_ms": 38.928999999999995,
+      "p95_ms": 59.033,
+      "total_ms": 210.53199999999998
+    },
+    "generate_embedding": {
+      "count": 5,
+      "median_ms": 39.864,
+      "p95_ms": 60.274,
+      "total_ms": 201.692
+    },
+    "resolve_entities": {
+      "count": 5,
+      "median_ms": 63.212,
+      "p95_ms": 82.074,
+      "total_ms": 333.127
+    },
+    "extract_events": {
+      "count": 5,
+      "median_ms": 52.954,
+      "p95_ms": 79.85000000000001,
+      "total_ms": 288.132
+    },
+    "record_provenance": {
+      "count": 5,
+      "median_ms": 101.473,
+      "p95_ms": 130.252,
+      "total_ms": 472.94800000000004
+    }
+  },
+  "total_pipeline": {
+    "count": 5,
+    "median_ms": 1978.154,
+    "p95_ms": 2001.6319999999998,
+    "total_ms": 9792.537
+  },
+  "protocol": "Five concurrent short synthetic items on local Docker; activity server timestamps include I/O; no scale or pure inference claim; rerun after reset for fresh-work timing"
+}
