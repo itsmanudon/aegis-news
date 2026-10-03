@@ -194,7 +194,9 @@ the pretrained quality/resource comparison.
 
 ## Limitations and next evidence
 
-The corpus is small, short, synthetic/CC0 and English-focused; it does not reflect the
+All 17 gold entities are organizations; typed NER scores do not establish person,
+location or miscellaneous entity quality. The corpus is small, short, synthetic/CC0
+and English-focused; it does not reflect the
 real-world news distribution. Manual review is limited to one agent, with no independent
 human sign-off. There is no large held-out corpus, longitudinal drift evaluation, GPU
 comparison or Full-profile result. Sentiment intentions and institutional names remain

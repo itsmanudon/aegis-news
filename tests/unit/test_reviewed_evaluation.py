@@ -1,5 +1,7 @@
 import hashlib
 import json
+import re
+import tomllib
 from pathlib import Path
 
 from aegis.intelligence.assessment import latency_report, load_assessment
@@ -68,3 +70,23 @@ def test_comparison_reports_use_identical_reviewed_inputs_and_real_light_specs()
         recorded = reports["light"]["producing_models"][task]
         assert recorded["model_name"] == spec.model_name
         assert recorded["model_version"] == spec.revision
+
+
+def test_secret_scanner_exception_requires_exact_public_hash_and_receipt_path():
+    config = tomllib.loads(Path(".gitleaks.toml").read_text())
+    assert config["extend"]["useDefault"] is True
+    rule = next(r for r in config["rules"] if r["id"] == "generic-api-key")
+    allow = rule["allowlists"][0]
+    assert allow["condition"] == "AND"
+    assert allow["regexTarget"] == "secret"
+    path = "ml/evaluation/results/gold-v2-light-artifacts.json"
+    assert any(re.fullmatch(pattern, path) for pattern in allow["paths"])
+    assert not any(re.fullmatch(pattern, "aegis/settings.py") for pattern in allow["paths"])
+    receipt = json.loads(Path(path).read_text())
+    public_hashes = {
+        h for artifact in receipt["artifacts"].values() for h in artifact["sha256"].values()
+    }
+    for pattern in allow["regexes"]:
+        assert any(re.fullmatch(pattern, h) for h in public_hashes)
+    unknown = hashlib.sha256(b"synthetic scanner positive control, no credentials").hexdigest()
+    assert not any(re.fullmatch(pattern, unknown) for pattern in allow["regexes"])

@@ -19,15 +19,16 @@ file-byte policy, tests, evidence and documentation were added.
 | Complete pipeline | Final Offline/Light each completed two fresh five-item batches, 30 immutable analyses per batch, linked media, valid provenance and stable duplicate retries |
 | Missing-model pipeline | Empty cache plus network-disabled Light completed ten fresh documents; baseline topics/events persisted, optional stages unavailable, verification/duplicates passed |
 | Ruff formatting/lint | Passed |
-| Strict mypy | Passed, 100 source files |
-| Full relevant backend suite | Final: 252 passed, one HTTP/browser E2E intentionally skipped, 22.50 s; earlier full run: 251 passed before the last added consistency test |
-| Evaluation seam suite | 14 passed; exact manifests/tampering, label preservation, fair report inputs/specs, stale pollers, local-only benchmark targets and p95 boundary |
+| Strict mypy | Passed on Windows and with Linux platform analysis, 100 source files |
+| Full relevant backend suite | Final after CI fixes: 253 passed, one HTTP/browser E2E intentionally skipped, 23.52 s; earlier full runs: 251 then 252 passed as tests were added |
+| Evaluation seam suite | 15 passed; exact manifests/tampering, label preservation, fair report inputs/specs, stale pollers, local-only targets, p95 and closed scanner exceptions |
 | Backend contracts/security/infrastructure | Included in the full suite; PostgreSQL, Redis, MinIO, actual Temporal workflow/retry/restart exercised |
 | Migrations | Scratch fresh upgrade/metadata check; downgrade to foundation/re-upgrade; downgrade to base/re-upgrade; all passed |
 | OpenAPI/JSON contract drift | Passed; no schemas changed |
 | Generated frontend types | `pnpm web:api:check` passed |
 | Frontend typecheck/production build | Passed; frontend implementation unchanged |
 | Secret guard | Passed; keys/caches/environments excluded |
+| Gitleaks v8.24.2 | Full local history passed with exact public-checksum exception; two synthetic positive controls remained detected |
 | Figure/table | Generated from comparable raw reports; confusion matrix visually inspected |
 
 Normal CI remains CPU/offline with no optional inference packages, model downloads,
@@ -36,7 +37,7 @@ Linux/offline CI and review, including the portable dataset-hash regression. Hos
 results are reported with the final handoff rather than treating workflow start as success.
 
 The final full run includes the last added report-consistency test. Category totals
-are 95 unit, 91 contract, 34 security, 16 ingestion and 16 integration passes; the
+are 96 unit, 91 contract, 34 security, 16 ingestion and 16 integration passes; the
 single HTTP/browser E2E is skipped. Earlier run counts are preserved above.
 
 ## Failure and correction record
@@ -65,6 +66,14 @@ single HTTP/browser E2E is skipped. Earlier run counts are preserved above.
    (two targeted tests passed), then the full suite passed. No product fix was needed.
 7. New scripts had routine line-length lint findings during implementation; final
    formatting/lint checks were rerun after correcting them.
+8. Hosted [run 37132473177](https://github.com/itsmanudon/aegis-news/actions/runs/37132473177)
+   passed frontend/migrations but failed Linux mypy on a Windows-only subprocess
+   constant and Gitleaks on 12 public tokenizer-checksum fields. The subprocess lookup
+   now uses a platform-safe fallback. The inherited generic-key rule has an AND
+   exception for exactly one receipt path and ten verified public checksum values;
+   no whole path, arbitrary hex string, commit or secret rule is excluded. A positive
+   control and regression check ensure unknown keys remain detected. CI workflows
+   and inference profiles remain unchanged. No history was rewritten.
 
 An existing Starlette/httpx TestClient deprecation warning remains. The HTTP E2E needs
 a running web service and is intentionally skipped in this narrow phase; local frontend
