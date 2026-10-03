@@ -1,5 +1,11 @@
 # Assessment and performance methodology
 
+Historical Phase 6 evidence below is preserved. A subsequent
+[gold v2 / real CPU Light comparison](../evaluation/light-vs-offline.md) reviewed all
+labels, retained v1, and measured pretrained models. The review is agent adjudication;
+independent human sign-off is still pending. Do not compare v1 scores directly to v2
+as though the datasets were identical. Full remains unbenchmarked.
+
 16 original CC0 English texts, 17 mentions, 13 event sentences, eight categories and
 16 coarse retrieval-partner judgments. Labels were authored before inference. Offsets,
 IDs and relevance references validate. [Annotation policy](../../ml/datasets/gold/README.md).

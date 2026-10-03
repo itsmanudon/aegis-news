@@ -86,30 +86,36 @@ data. Windows uses `python`/`pnpm.cmd`; macOS/Linux may use `python3`/`pnpm`.
 
 ## Evaluation and performance
 
-The [CC0 gold set](ml/datasets/gold/README.md) has 16 short English cases across eight
-categories. Labels were manually authored/inspected by the agent; **independent human
-adjudication is pending**. This is a small development set, not a real-news quality estimate.
+The [CC0 gold v2 set](ml/datasets/gold/README.md) has 16 short English cases across eight
+categories. Every label was reviewed before inference; two decisions changed. Review
+was performed by an agent; **independent human sign-off remains pending**. Original
+provisional labels and [Phase 6 results](docs/phase6/evaluation.md) remain preserved.
 
-| Offline task | Measured result |
-|---|---:|
-| Exact NER span precision / recall / F1 | 1.000 / 0.941 / 0.970 |
-| Typed NER F1 | 0.000; baseline emits `other` |
-| Topic accuracy / macro F1 | 0.750 / 0.567 |
-| Sentiment accuracy / macro F1 | 0.500 / 0.390 |
-| Event extraction precision / recall / F1 | 1.000 / 0.769 / 0.870 |
-| Event classification accuracy / macro F1 | 0.813 / 0.810 |
-| Resolution accuracy with gold mentions/tiny supplied candidates | 1.000 |
-| Coarse paired-document retrieval MRR / recall@3 | 0.199 / 0.188 |
+Real pretrained Light models ran locally on CPU against the same reviewed set and
+scoring code as Offline. This is a small synthetic evaluation, not real-news quality.
 
-Light/full probes found unavailable local models; no pretrained quality result is claimed.
-Offline embeddings are lexical hash vectors, with weak category retrieval. A fresh
-five-item Docker batch measured total workflow median 1.978 s, p95 2.002 s and 1.74
-documents/s including verification. This is small local characterization, not production
-capacity. [Methods, confusions, versions, timing/resource evidence](docs/phase6/evaluation.md).
+| Task | Offline | Light | Delta |
+|---|---:|---:|---:|
+| Exact NER span F1 | 0.970 | 0.970 | 0.000 |
+| Typed NER F1 | 0.000 | 0.970 | +0.970 |
+| Topic macro F1 | 0.667 | 0.667 | 0.000 |
+| Sentiment macro F1 | 0.390 | 0.491 | +0.101 |
+| Event extraction F1 | 0.818 | 0.818 | 0.000 |
+| Resolution accuracy, gold mentions/tiny supplied candidates | 1.000 | 1.000 | 0.000 |
+| Coarse paired-document retrieval MRR | 0.199 | 0.809 | +0.611 |
+
+Light uses BERT NER, FinBERT sentiment and MiniLM embeddings; topics/events/resolution
+remain baselines. Both profiles miss all mixed-sentiment labels. Warm seven-task passes
+measured 3.39/142.11 ms median, with sampled process RSS peaks 38.9/1251.3 MiB.
+Warm complete five-item Temporal batches measured workflow medians 2.510/2.612 s;
+host variability and the tiny batch prevent a reliable pipeline speed claim.
+Full has not been benchmarked. [Methods, errors, exact revisions and resources](docs/evaluation/light-vs-offline.md),
+[presentation table](docs/evaluation/evidence/comparison.md),
+[optional local reproduction](docs/evaluation/reproduce.md).
 
 ```sh
 uv sync --frozen
-uv run python -m aegis.intelligence.assessment --profile offline --output ml/evaluation/results/offline.json
+uv run python -m aegis.intelligence.assessment --dataset ml/datasets/gold/assessment-v2.json --profile offline --output .integration-results/offline-review.json
 python scripts/demo.py benchmark
 python scripts/demo.py security
 python scripts/demo.py reliability
@@ -157,7 +163,7 @@ similarity scan, curated entity candidates and incomplete mutable-registry/link 
 The dashboard shows real media metadata; authorized inline preview remains unavailable.
 The OTel collector debug-exports traces without durable trace storage/UI.
 
-Next: human-adjudicated held-out evaluation, optional local-model experiments, focused
+Next: independent human sign-off and a licensed held-out evaluation corpus, focused
 usability/reliability improvements. Kafka, OpenSearch, Kubernetes, cloud deployment,
 Stockwise/backtester/portfolio/ticker integration and production C2PA are future ideas,
 not implemented capabilities. No trading signals or financial execution logic is present.

@@ -1,5 +1,9 @@
 # Phase 6 validation ledger
 
+This is the historical Phase 6 ledger. Later evaluation-only work is recorded in the
+[gold v2 validation ledger](../evaluation/validation.md); original counts/results below
+are not claims about that later branch.
+
 Release reference: [v0.1.0-mvp record](../mvp-release.md). Phase 6 runs only on
 `phase6/evaluation-demo-hardening`; no automatic merge or second release tag.
 

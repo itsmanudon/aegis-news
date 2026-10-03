@@ -1,5 +1,13 @@
 # Original synthetic assessment set
 
+Reviewed version: [gold v2](assessment-v2.json), [review record](ADJUDICATION-v2.md),
+[field-level decisions](adjudication-v2.json), [integrity manifest](manifest-v2.json).
+The review is a single agent pass, **not independent human adjudication**. Two label
+decisions changed; all 16 texts and 17 spans are preserved, with 12 typed event
+sentences after removing the museum/company-launch mismatch. Human sign-off is pending.
+Both profiles were rerun using this exact set; [results and limitations](../../../docs/evaluation/light-vs-offline.md).
+The sections below describe the unchanged provisional v1, not a completed human review.
+
 `assessment-v1.json` contains 16 original short English items in eight categories:
 business, economics, technology, public policy, regional, commodities, cyber/security,
 and media. Texts and the schematic PNG in `data/samples/demo-image.png` are CC0-1.0.

@@ -1,5 +1,12 @@
 # Local intelligence model registry
 
+Real Light CPU execution is now measured in the
+[gold v2 comparison](../../docs/evaluation/light-vs-offline.md), with exact existing
+model revisions, artifact hashes/sizes and package versions. Offline was rerun on the
+same reviewed set. Human sign-off is pending; Full remains unbenchmarked.
+[Separate optional environment and pipeline reproduction](../../docs/evaluation/reproduce.md).
+Normal CI still installs no pretrained models.
+
 `aegis.intelligence.config` owns immutable model specifications. Providers implement the
 unchanged ports in `aegis/intelligence/interfaces.py`. No paid API, external MLflow server,
 GPU, network access or model installation is required for the offline profile or normal CI.
@@ -96,8 +103,9 @@ baseline. Rule confidence values and fuzzy scores should not be treated as calib
 
 Frozen AnalysisResult requires nonempty outputs. Empty NER/event/resolution findings raise
 `NoPredictions`; no placeholder entity/event or empty analysis is invented. Malformed model
-predictions raise `InvalidPrediction`; inference errors create no analysis. The future workflow
-should handle no-findings separately from retryable model/service failures.
+predictions raise `InvalidPrediction`; inference errors create no analysis. The integrated
+worker records unavailable/no-finding stages and continues ingestion without inventing
+intelligence records. An empty-cache Light run is included in the evaluation evidence.
 
 ## Integration
 
@@ -110,7 +118,8 @@ NewsDocument; multi-input tasks accept frozen `ResolutionRequest`, `EventRequest
 Configure the Temporal client with the SDK's
 [Pydantic v2 data converter](https://python.temporal.io/temporalio.contrib.pydantic.html)
 (`temporalio.contrib.pydantic.pydantic_data_converter`), then register the bound activities on
-the worker. The existing foundation worker/workflow is intentionally unchanged. Set suitable
+the worker. The integrated product workflow registers its document-ID activities in
+`apps.worker.main`; direct provider activities are separately testable adapters. Set suitable
 activity timeouts and concurrency for local CPU inference; no model runs inside workflow code.
 Treat `NoPredictions` and `UnsupportedLanguage` as non-retryable task outcomes. Direct library
 calls expose those typed exceptions; the activities translate them into non-retryable Temporal errors.
