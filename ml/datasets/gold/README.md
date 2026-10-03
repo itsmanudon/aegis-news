@@ -6,7 +6,7 @@
 | Gold v2 | One agent adjudication pass; never human-reviewed | [assessment-v2.json](assessment-v2.json), [decisions](adjudication-v2.json), [rationale](ADJUDICATION-v2.md), [manifest](manifest-v2.json) |
 | Gold v3 | Independent review completed by one human | [assessment-v3-human.json](assessment-v3-human.json), [manifest](manifest-v3-human.json) |
 
-Gold v3 is the current reviewed evaluation reference: all 16 cases have `status: reviewed`.
+Gold v3 is the canonical small reviewed evaluation reference: all 16 cases have `status: reviewed`.
 The human accepted every v2 label: zero changed cases/fields. It preserves all documents,
 17 entity spans/types/resolution targets, 12 typed event sentences, retrieval partners
 and two image references. Original versions and historical results remain unchanged.

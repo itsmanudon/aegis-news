@@ -62,3 +62,39 @@ but no new downgrade/migration requalification is claimed.
 
 [Final results and exact model/runtime details](gold-v3-gpu.md),
 [reproduction](gold-v3-reproduce.md), [presentation tables](evidence/gold-v3/comparison.md).
+
+## Final reconciliation checks (2026-10-04)
+
+The evaluation delta was reviewed from main `3c563a7` through `e877d9c`;
+it contains evaluation/review/benchmark evidence and supporting tools, without product
+expansion. Historical datasets/manifests and both existing release tags are preserved.
+The existing `v0.2.0-evaluation` tag identifies the earlier Phase 6 release, not Gold v3.
+
+GNU make is unavailable on this Windows host. Every `make check` recipe was executed
+directly using `uv` and `pnpm.cmd`; frontend build used `NEXT_TELEMETRY_DISABLED=1`.
+Ruff format/lint (207 files), strict mypy (105 sources), schema export drift, generated
+TypeScript drift, frontend lint/typecheck/build, and 12 frontend unit tests passed.
+The ordinary backend run passed 228 tests with 36 service-dependent skips. With the
+full local services and a separate disposable database, 260 passed and 4 skipped.
+The live Playwright flow passed against the real API; the mock suite passed 10 flows
+with 2 opt-in live/evidence skips. No expensive pretrained benchmark was repeated.
+
+`scripts.validate_gold_v3` verified all review blocks and v2/v3 manifest hashes;
+a fresh Offline evaluation completed in the ordinary environment. The secret guard
+passed, and Gitleaks v8.24.2 scanned 31 commits without leaks. The supported migration
+verifier passed upgrade/check/downgrade/re-upgrade sequences in its owned scratch database.
+The supported full demo start/seed reused existing volumes/data and confirmed duplicate
+stability and provenance verification. No demo reset or volume deletion was performed.
+
+Two initial test attempts inherited local `.env` settings: the CORS unit test expected
+port 3000 while the demo origin was 33000, and one infrastructure test inherited an old
+Temporal port. Explicit test CORS and both Temporal address variables resolved these
+environment mismatches; no application/security logic was changed. The existing
+Starlette/httpx deprecation warning remains. Windows denied deleting `.pytest_cache`;
+it remains ignored, and pytest was rerun without its cache plugin. Accessible static
+caches and old benchmark logs were removed. Useful environments, key/nonce state,
+model caches and checked-in evaluation evidence were retained. Coverage/Hugging Face
+cache exclusions and private-key build-context exclusions were added.
+
+Hosted branch/main CI and final reconciliation identifiers are reported at handoff;
+this local ledger does not assert hosted success before those runs finish.

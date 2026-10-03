@@ -8,9 +8,10 @@ academic prototype combines AI, Information Security, Cryptography and Multimedi
 It makes source evidence, model predictions, availability and tampering visible.
 A signature does not establish source truth or model correctness.
 
-The integrated MVP is frozen at **`v0.1.0-mvp`**. Evaluation, demo reliability and
-presentation evidence are released as **`v0.2.0-evaluation`**. `main` is the common
-baseline for future work. [MVP release record](docs/mvp-release.md).
+The integrated MVP is frozen at **`v0.1.0-mvp`**. **`v0.2.0-evaluation`** preserves
+the earlier evaluation/demo release. `main` includes the subsequent Gold v3 and
+CPU/GPU evidence and is the common baseline for future work.
+[MVP release record](docs/mvp-release.md).
 
 ![Real API document feed](docs/evidence/screenshots/dashboard.jpg)
 
@@ -86,7 +87,8 @@ data. Windows uses `python`/`pnpm.cmd`; macOS/Linux may use `python3`/`pnpm`.
 
 ## Evaluation and performance
 
-The [CC0 Gold v3 Human set](ml/datasets/gold/README.md) has 16 short English cases
+The [CC0 Gold v3 Human set](ml/datasets/gold/README.md) is the canonical small reviewed
+evaluation reference. It has 16 short English cases
 across eight categories, independently reviewed by one human. All v2 labels were
 accepted: zero human corrections. Original provisional/agent-adjudicated sets and
 historical results remain preserved. This small corpus does not establish real-news quality.

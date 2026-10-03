@@ -8,6 +8,13 @@
 .worktrees
 .test-tmp
 .integration-results
+.keys
+.cache
+.huggingface
+hf_cache
+coverage
+htmlcov
+*.log
 node_modules
 **/node_modules
 **/.next

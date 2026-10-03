@@ -13,6 +13,10 @@ __pycache__/
 .ruff_cache/
 .coverage
 htmlcov/
+coverage/
+.cache/huggingface/
+.huggingface/
+hf_cache/
 node_modules/
 .pnpm-store/
 .next/
