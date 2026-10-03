@@ -2,7 +2,7 @@
 
 `GET /health` is process liveness and does not inspect dependencies. `GET /ready` checks PostgreSQL connectivity + the migrated outbox table, Redis PING, and the configured S3 bucket; it checks Temporal when enabled. All probes have timeouts. Readiness failure returns HTTP 503 in the error envelope without credentials or dependency exception text. Probe results on success list required dependencies.
 
-`GET /api/v1/system/info` returns name, version, foundation stage and architecture. Reserved router modules: `/api/v1/documents`, `/entities`, `/events`, `/search`, `/assets`. No product handlers are registered. `/docs`, `/redoc` and `/openapi.json` expose generated documentation; `/metrics` uses Prometheus text format and is excluded from OpenAPI.
+`GET /api/v1/system/info` returns name, version, foundation stage and architecture. Ingestion adds Source registration, single/batch durable submission, workflow status, and canonical ingestion/document retrieval; see [ingestion operations](ingestion.md). Entity, event, search and asset product handlers remain reserved. `/docs`, `/redoc` and `/openapi.json` expose generated documentation; `/metrics` uses Prometheus text format and is excluded from OpenAPI.
 
 ```json
 {"data": {}, "meta": {"request_id": "opaque-id", "api_version": "v1"}}

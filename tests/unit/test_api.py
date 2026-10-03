@@ -22,7 +22,18 @@ def test_liveness_info_and_openapi():
         assert health.headers["x-correlation-id"] == "test-correlation"
         assert client.get("/api/v1/system/info").json()["data"]["stage"] == "foundation"
         schema = client.get("/openapi.json").json()
-        assert set(schema["paths"]) == {"/health", "/ready", "/api/v1/system/info"}
+        assert set(schema["paths"]) == {
+            "/health",
+            "/ready",
+            "/api/v1/system/info",
+            "/api/v1/sources",
+            "/api/v1/sources/{source_id}",
+            "/api/v1/ingestions",
+            "/api/v1/ingestions/batch",
+            "/api/v1/ingestions/{ingestion_id}",
+            "/api/v1/ingestion-runs/{workflow_id}",
+            "/api/v1/documents/{document_id}",
+        }
         assert schema["paths"]["/ready"]["get"]["responses"]["503"]["content"]["application/json"][
             "schema"
         ]["$ref"].endswith("ApiErrorEnvelope")

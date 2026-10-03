@@ -19,6 +19,7 @@ from aegis.contracts.api import (
     SingleResponse,
     SystemInfo,
 )
+from aegis.ingestion.http import IngestionBodyLimit
 from aegis.observability.logging import (
     configure_logging,
     correlation_id_context,
@@ -28,7 +29,7 @@ from aegis.observability.telemetry import instrument
 from aegis.settings import Settings, get_settings
 from apps.api.dependencies import ReadinessProbe
 from apps.api.errors import error_response, install_handlers
-from apps.api.routes import assets, documents, entities, events, search
+from apps.api.routes import assets, documents, entities, events, ingestions, search
 
 logger = logging.getLogger("aegis.api")
 ID_PATTERN = re.compile(r"^[A-Za-z0-9._-]{1,128}$")
@@ -62,12 +63,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             yield
         finally:
             await app.state.probe.close()
+            if hasattr(app.state, "ingestion_service"):
+                app.state.ingestion_service.repository.close()
 
     app = FastAPI(
         title="AegisNews",
         version="0.1.0",
         description=(
-            "Foundation-only modular monolith. Domain routes are reserved, not implemented."
+            "Modular monolith with durable offline ingestion and canonical document retrieval."
         ),
         lifespan=lifespan,
         responses={422: {"model": ApiErrorEnvelope}, 500: {"model": ApiErrorEnvelope}},
@@ -77,11 +80,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         ],
     )
     install_handlers(app)
+    app.state.settings = settings
+    app.add_middleware(IngestionBodyLimit)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
-        allow_methods=["GET"],
-        allow_headers=["X-Request-ID", "X-Correlation-ID"],
+        allow_methods=["GET", "POST"],
+        allow_headers=["Content-Type", "X-Request-ID", "X-Correlation-ID"],
         expose_headers=["X-Request-ID", "X-Correlation-ID"],
     )
 
@@ -160,7 +165,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             generate_latest(registry), media_type="text/plain; version=0.0.4; charset=utf-8"
         )
 
-    for module in (documents, entities, events, search, assets):
+    for module in (documents, entities, events, search, assets, ingestions):
         app.include_router(module.router, prefix="/api/v1")
     instrument(app, settings)
     return app

@@ -1,5 +1,6 @@
 from alembic import context
 
+from aegis.ingestion.repository import IngestionJournalRow  # noqa: F401
 from aegis.persistence.database import make_engine
 from aegis.persistence.models import Base
 from aegis.settings import get_settings

@@ -1,8 +1,10 @@
-"""Connectivity demonstration only; no news processing side effects."""
+"""Deterministic orchestration; I/O, clocks, parsing and IDs belong to activities."""
 
 from datetime import timedelta
+from typing import cast
 
 from temporalio import workflow
+from temporalio.common import RetryPolicy
 
 with workflow.unsafe.imports_passed_through():
     from apps.worker.activities import foundation_echo
@@ -15,3 +17,41 @@ class FoundationWorkflow:
         return await workflow.execute_activity(
             foundation_echo, name, start_to_close_timeout=timedelta(seconds=10)
         )
+
+
+@workflow.defn
+class NewsIngestionWorkflow:
+    @workflow.run
+    async def run(self, request_json: str) -> dict[str, str]:
+        retry = RetryPolicy(
+            initial_interval=timedelta(seconds=1),
+            backoff_coefficient=2,
+            maximum_interval=timedelta(seconds=30),
+            maximum_attempts=5,
+            non_retryable_error_types=["InvalidIngestion"],
+        )
+        ingestion_id = await workflow.execute_activity(
+            "prepare_ingestion",
+            args=[request_json, workflow.now().isoformat()],
+            result_type=str,
+            start_to_close_timeout=timedelta(seconds=60),
+            schedule_to_close_timeout=timedelta(minutes=5),
+            retry_policy=retry,
+        )
+        document_json = await workflow.execute_activity(
+            "normalize_ingestion",
+            ingestion_id,
+            result_type=str,
+            start_to_close_timeout=timedelta(seconds=30),
+            schedule_to_close_timeout=timedelta(minutes=3),
+            retry_policy=retry,
+        )
+        result = await workflow.execute_activity(
+            "commit_ingestion",
+            document_json,
+            result_type=dict[str, str],
+            start_to_close_timeout=timedelta(seconds=30),
+            schedule_to_close_timeout=timedelta(minutes=3),
+            retry_policy=retry,
+        )
+        return cast(dict[str, str], result)
