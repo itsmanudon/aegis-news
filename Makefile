@@ -28,3 +28,21 @@ core:
 	docker compose --profile core up --build -d --wait
 full:
 	AEGIS_TEMPORAL_ENABLED=true AEGIS_OTEL_ENABLED=true docker compose --profile full up --build -d --wait
+
+.PHONY: demo-start demo-reset demo-seed demo-security demo-benchmark demo-reliability demo-observe evaluate
+demo-start:
+	python3 scripts/demo.py start
+demo-reset:
+	python3 scripts/demo.py reset
+demo-seed:
+	python3 scripts/demo.py seed
+demo-security:
+	python3 scripts/demo.py security
+demo-benchmark:
+	python3 scripts/demo.py benchmark
+demo-reliability:
+	python3 scripts/demo.py reliability
+demo-observe:
+	python3 -m scripts.demo_observability
+evaluate:
+	uv run python -m aegis.intelligence.assessment --profile offline --output ml/evaluation/results/offline.json

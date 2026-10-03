@@ -689,6 +689,7 @@ summary {
 }
 .media-record h3 {
   margin: 12px 0 8px;
+  overflow-wrap: anywhere;
 }
 .muted {
   color: var(--muted-foreground);

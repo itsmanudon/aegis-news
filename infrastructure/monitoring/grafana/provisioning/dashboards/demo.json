@@ -1,0 +1,35 @@
+{
+  "uid": "aegis-demo",
+  "title": "AegisNews Local Demo",
+  "schemaVersion": 40,
+  "version": 1,
+  "refresh": "10s",
+  "time": {"from": "now-30m", "to": "now"},
+  "panels": [
+    {
+      "id": 1, "title": "API target availability", "type": "stat",
+      "gridPos": {"h": 5, "w": 6, "x": 0, "y": 0},
+      "datasource": {"type": "prometheus", "uid": "aegis-prometheus"},
+      "targets": [{"refId": "A", "expr": "up{job=\"aegisnews-api\"}", "instant": true}]
+    },
+    {
+      "id": 2, "title": "Requests by status", "type": "timeseries",
+      "gridPos": {"h": 8, "w": 18, "x": 6, "y": 0},
+      "datasource": {"type": "prometheus", "uid": "aegis-prometheus"},
+      "targets": [{"refId": "A", "expr": "sum by (status) (aegis_http_requests_total)", "legendFormat": "{{status}}"}]
+    },
+    {
+      "id": 3, "title": "API p95 latency (seconds)", "type": "timeseries",
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 8},
+      "datasource": {"type": "prometheus", "uid": "aegis-prometheus"},
+      "targets": [{"refId": "A", "expr": "histogram_quantile(0.95, sum by (le) (rate(aegis_http_request_duration_seconds_bucket[5m])))"}]
+    },
+    {
+      "id": 4, "title": "Demo worker correlation and trace IDs", "type": "logs",
+      "gridPos": {"h": 12, "w": 24, "x": 0, "y": 16},
+      "datasource": {"type": "loki", "uid": "aegis-loki"},
+      "targets": [{"refId": "A", "expr": "{service=\"aegisnews\"} | json | correlation_id=\"aegis-demo-v1\""}],
+      "options": {"showTime": true, "wrapLogMessage": true, "sortOrder": "Descending"}
+    }
+  ]
+}

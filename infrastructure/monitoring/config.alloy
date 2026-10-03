@@ -1,5 +1,5 @@
 local.file_match "aegis" {
-  path_targets = [{"__path__" = "/var/log/aegis/*.jsonl", "service" = "aegisnews-api"}]
+  path_targets = [{"__path__" = "/var/log/aegis/*.jsonl", "service" = "aegisnews"}]
 }
 loki.source.file "aegis" {
   targets = local.file_match.aegis.targets

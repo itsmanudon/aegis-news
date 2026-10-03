@@ -96,8 +96,8 @@ export function DocumentDetail({ id }: { id: string }) {
                 <ProvenanceCard key={id} view={view} />
                 <Panel title="Resolved entities">
                   <p className="panel-intro">
-                    Fixture associations illustrate resolution; review them
-                    against source evidence.
+                    Entity links reflect resolution output; review them against
+                    source evidence.
                   </p>
                   {view.entities.map((e) => (
                     <Link
