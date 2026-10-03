@@ -1,5 +1,9 @@
 # Gold v2: Offline versus pretrained Light
 
+Historical Gold v2 evidence is preserved below. Current independently human-reviewed
+[Gold v3 CPU/GPU results](gold-v3-gpu.md), [reproduction](gold-v3-reproduce.md),
+[validation ledger](gold-v3-validation.md).
+
 Evaluation date: 2026-10-03. Application baseline:
 `3c563a72a1c80fe50fe1fbdad25e69e8e7dfac0c`.
 Branch: `eval/human-review-light-models`; no merge, rebase or release tag.

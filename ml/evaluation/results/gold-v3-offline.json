@@ -1,0 +1,2816 @@
+{
+  "profile": "offline",
+  "execution_status": "completed",
+  "quality_metrics_valid_for_whole_profile": true,
+  "samples": 16,
+  "rounds": 1,
+  "dataset_sha256": "e6dfc30cc6f1e5bf0e9a9d68732278cba60a1997a6472e93a866988fc65c2b5e",
+  "annotation_status": "Independent human review completed",
+  "scope": "Tiny synthetic development set; not a held-out real-news quality estimate",
+  "environment": {
+    "python": "3.12.11",
+    "system": "Windows",
+    "architecture": "AMD64",
+    "gpu": "not used",
+    "download_bytes": 0,
+    "device": "cpu",
+    "cuda_runtime": null,
+    "torch_version": "2.14.1+cpu"
+  },
+  "registry": {
+    "implementation": "aegis-local-1",
+    "profile": {
+      "ner": {
+        "backend": "baseline",
+        "model_name": "capitalized-spans",
+        "revision": "1",
+        "dimensions": 64,
+        "device": "cpu",
+        "local_files_only": true,
+        "max_tokens": 256,
+        "threshold": 0.5
+      },
+      "topic": {
+        "backend": "baseline",
+        "model_name": "keyword-topics",
+        "revision": "1",
+        "dimensions": 64,
+        "device": "cpu",
+        "local_files_only": true,
+        "max_tokens": 256,
+        "threshold": 0.5
+      },
+      "sentiment": {
+        "backend": "baseline",
+        "model_name": "lexicon-sentiment",
+        "revision": "1",
+        "dimensions": 64,
+        "device": "cpu",
+        "local_files_only": true,
+        "max_tokens": 256,
+        "threshold": 0.5
+      },
+      "embedding": {
+        "backend": "baseline",
+        "model_name": "hash-vectors",
+        "revision": "1",
+        "dimensions": 64,
+        "device": "cpu",
+        "local_files_only": true,
+        "max_tokens": 256,
+        "threshold": 0.5
+      },
+      "event": {
+        "backend": "baseline",
+        "model_name": "keyword-events",
+        "revision": "1",
+        "dimensions": 64,
+        "device": "cpu",
+        "local_files_only": true,
+        "max_tokens": 256,
+        "threshold": 0.5
+      }
+    },
+    "libraries": {
+      "transformers": "4.57.6",
+      "sentence-transformers": "3.4.1",
+      "torch": "2.14.1+cpu",
+      "tokenizers": "0.22.2"
+    },
+    "taxonomies": {
+      "topics": {
+        "business.earnings": [
+          "earnings",
+          "quarterly results",
+          "profit"
+        ],
+        "business.mergers": [
+          "acquisition",
+          "acquire",
+          "merger"
+        ],
+        "markets.equities": [
+          "stocks",
+          "equities",
+          "stock market"
+        ],
+        "technology.ai": [
+          "artificial intelligence",
+          "machine learning",
+          "ai"
+        ],
+        "politics.policy": [
+          "legislation",
+          "policy",
+          "parliament",
+          "government"
+        ],
+        "regional": [
+          "municipal",
+          "regional",
+          "local council"
+        ],
+        "company": [
+          "company",
+          "executive",
+          "product launch"
+        ],
+        "commodities": [
+          "oil",
+          "copper",
+          "commodity",
+          "wheat"
+        ],
+        "economy": [
+          "inflation",
+          "interest rate",
+          "gdp",
+          "unemployment"
+        ],
+        "business": [
+          "business",
+          "revenue",
+          "trade"
+        ],
+        "markets": [
+          "bond",
+          "currency",
+          "market"
+        ],
+        "technology": [
+          "software",
+          "technology",
+          "cyber"
+        ],
+        "politics/public-policy": [
+          "election",
+          "public policy"
+        ],
+        "general": []
+      },
+      "events": {
+        "company.earnings": [
+          "earnings",
+          "quarterly results"
+        ],
+        "company.acquisition": [
+          "acquisition",
+          "acquire",
+          "merger"
+        ],
+        "company.executive_change": [
+          "appointed",
+          "resigned",
+          "new ceo"
+        ],
+        "company.product_launch": [
+          "launched",
+          "product launch",
+          "unveiled"
+        ],
+        "regulatory.action": [
+          "regulator",
+          "antitrust",
+          "fined",
+          "enforcement"
+        ],
+        "policy.change": [
+          "legislation",
+          "policy change",
+          "new law"
+        ],
+        "economy.rate_change": [
+          "rate cut",
+          "rate hike",
+          "interest rate"
+        ],
+        "commodity.supply_disruption": [
+          "supply disruption",
+          "pipeline outage",
+          "mine closure"
+        ],
+        "security.cyber_incident": [
+          "cyberattack",
+          "ransomware",
+          "data breach"
+        ],
+        "general": []
+      }
+    },
+    "lexicon": {
+      "positive": [
+        "growth",
+        "strong",
+        "gain",
+        "gains",
+        "improved",
+        "success",
+        "profit"
+      ],
+      "negative": [
+        "loss",
+        "losses",
+        "decline",
+        "weak",
+        "failed",
+        "failure",
+        "disruption"
+      ]
+    },
+    "artifacts": {},
+    "registry_hash": "e52ac5ea2e2bbe585c1c7fe8fea839dfbeac37987b288c16b29aed7d81b3714f"
+  },
+  "producing_models": {
+    "entities": {
+      "schema_version": "1",
+      "analysis_type": "entity_extraction",
+      "provider": "local-baseline",
+      "model_name": "capitalized-spans",
+      "model_version": "1",
+      "configuration_hash": "8b1d6336c166ccb27cc4add2d47a816b0ed13151d590ee5d8b2076dc69c98f0c"
+    },
+    "topics": {
+      "schema_version": "1",
+      "analysis_type": "topic",
+      "provider": "local-baseline",
+      "model_name": "keyword-topics",
+      "model_version": "1",
+      "configuration_hash": "89b0663bbafa916efc8891f325f9c44d187228a6e8faa326c1e9b6830f248d26"
+    },
+    "sentiment": {
+      "schema_version": "1",
+      "analysis_type": "sentiment",
+      "provider": "local-baseline",
+      "model_name": "lexicon-sentiment",
+      "model_version": "1",
+      "configuration_hash": "7dd65fc6ce77d3b3bb694c996fd7f371170811e34897b46fe0a9d93de2246349"
+    },
+    "embedding": {
+      "schema_version": "1",
+      "analysis_type": "embedding",
+      "provider": "local-baseline",
+      "model_name": "hash-vectors",
+      "model_version": "1",
+      "configuration_hash": "b442dfdc8b45a3df3f157a5f05e2dc303cdfde4e7ebac731c3469a272e6fc571"
+    },
+    "resolution": {
+      "schema_version": "1",
+      "analysis_type": "entity_resolution",
+      "provider": "local-baseline",
+      "model_name": "candidate-resolver",
+      "model_version": "1",
+      "configuration_hash": "67ed0e15d5914cdd84074ef90d169fedf602cd8a42957eb9b40c07fd442c3cb3"
+    },
+    "events": {
+      "schema_version": "1",
+      "analysis_type": "event_extraction",
+      "provider": "local-baseline",
+      "model_name": "keyword-events",
+      "model_version": "1",
+      "configuration_hash": "26e5691622ad72940ab6a3c8a4e32bc9309be4431ecc0d5167a1a567489ede83"
+    },
+    "event_classification": {
+      "schema_version": "1",
+      "analysis_type": "event_classification",
+      "provider": "local-baseline",
+      "model_name": "keyword-events",
+      "model_version": "1",
+      "configuration_hash": "7c4c163bcef9fa3d6f021be81f1e7e2645c44f8ecf180ed2edb93603f3f950d1"
+    }
+  },
+  "metrics": {
+    "ner": {
+      "typed": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "span_only": {
+        "precision": 1.0,
+        "recall": 0.9411764705882353,
+        "f1": 0.9696969696969697
+      },
+      "gold_count": 17,
+      "predicted_count": 16
+    },
+    "topics": {
+      "accuracy": 0.8125,
+      "micro_f1": 0.8125,
+      "macro_f1": 0.6666666666666666,
+      "support": 16,
+      "confusion_matrix": {
+        "business": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "business.earnings": {
+          "business": 1,
+          "business.earnings": 1,
+          "commodities": 0,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "commodities": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 2,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "economy": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 1,
+          "general": 1,
+          "politics.policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "general": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "politics.policy": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 2,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "regional": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 0,
+          "regional": 4,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "technology": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "general": 1,
+          "politics.policy": 0,
+          "regional": 0,
+          "technology": 1,
+          "technology.ai": 0
+        },
+        "technology.ai": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 2
+        }
+      }
+    },
+    "sentiment": {
+      "accuracy": 0.5,
+      "micro_f1": 0.5,
+      "macro_f1": 0.39015151515151514,
+      "support": 16,
+      "confusion_matrix": {
+        "mixed": {
+          "mixed": 0,
+          "negative": 2,
+          "neutral": 1,
+          "positive": 0
+        },
+        "negative": {
+          "mixed": 0,
+          "negative": 1,
+          "neutral": 2,
+          "positive": 0
+        },
+        "neutral": {
+          "mixed": 0,
+          "negative": 0,
+          "neutral": 3,
+          "positive": 0
+        },
+        "positive": {
+          "mixed": 0,
+          "negative": 0,
+          "neutral": 3,
+          "positive": 4
+        }
+      }
+    },
+    "event_classification": {
+      "accuracy": 0.75,
+      "micro_f1": 0.75,
+      "macro_f1": 0.7714285714285715,
+      "support": 16,
+      "confusion_matrix": {
+        "commodity.supply_disruption": {
+          "commodity.supply_disruption": 1,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 1,
+          "policy.change": 0,
+          "security.cyber_incident": 0
+        },
+        "company.earnings": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 1,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 1,
+          "policy.change": 0,
+          "security.cyber_incident": 0
+        },
+        "company.product_launch": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 2,
+          "economy.rate_change": 0,
+          "general": 0,
+          "policy.change": 0,
+          "security.cyber_incident": 0
+        },
+        "economy.rate_change": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 1,
+          "general": 1,
+          "policy.change": 0,
+          "security.cyber_incident": 0
+        },
+        "general": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 1,
+          "economy.rate_change": 0,
+          "general": 3,
+          "policy.change": 0,
+          "security.cyber_incident": 0
+        },
+        "policy.change": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 0,
+          "policy.change": 2,
+          "security.cyber_incident": 0
+        },
+        "security.cyber_incident": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 0,
+          "policy.change": 0,
+          "security.cyber_incident": 2
+        }
+      }
+    },
+    "event_extraction": {
+      "precision": 0.9,
+      "recall": 0.75,
+      "f1": 0.8181818181818182,
+      "gold_count": 12,
+      "predicted_count": 10
+    },
+    "resolution": {
+      "gold_mentions": 17,
+      "accuracy": 1.0,
+      "top_3_accuracy_including_correct_abstentions": 1.0,
+      "protocol": "gold mentions and supplied candidates; independent of NER"
+    },
+    "retrieval": {
+      "judged_queries": 16,
+      "mrr": 0.19865603146853147,
+      "recall_at_3": 0.1875
+    }
+  },
+  "predictions": [
+    {
+      "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "Atlas Labs",
+            "start_offset": 0,
+            "end_offset": 10,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "business.earnings",
+            "confidence": 0.75
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "positive",
+            "score": 0.6,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.3333333333333333,
+              0.0,
+              0.3333333333333333,
+              0.0,
+              0.3333333333333333,
+              0.0,
+              0.0,
+              0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.3333333333333333,
+              0.3333333333333333,
+              -0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_9a536f80-20d9-579d-af7f-14a0daead4c4",
+            "entity_id": "ent_260cfe14-3b9d-5328-83f1-6d25a3729415",
+            "confidence": 1.0
+          }
+        ],
+        "events": [
+          {
+            "schema_version": "1",
+            "result_type": "event_extraction",
+            "proposed_event_type": "company.earnings",
+            "confidence": 0.65,
+            "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+            "evidence_text": "Atlas Labs reported quarterly earnings with strong profit growth.",
+            "occurred_at": null
+          }
+        ],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_f1459436-2090-5283-85e3-10c3f57274b8",
+            "event_revision": 1,
+            "label": "company.earnings",
+            "confidence": 0.65
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "Meridian Works",
+            "start_offset": 0,
+            "end_offset": 14,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "business",
+            "confidence": 0.65
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "positive",
+            "score": 0.6,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              -0.2886751345948129,
+              0.2886751345948129,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.2886751345948129,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.2886751345948129,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.2886751345948129,
+              0.0,
+              0.0,
+              0.0,
+              0.2886751345948129,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.5773502691896258,
+              0.0,
+              0.2886751345948129,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.2886751345948129,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_298a93d0-a7d2-5603-bbb0-ee6aaa4567f8",
+            "entity_id": "ent_c92b79e6-f230-5537-ab3d-e0aed64b4389",
+            "confidence": 1.0
+          }
+        ],
+        "events": [],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_876e20f9-1fdb-5b25-ae4b-fee4467abdf8",
+            "event_revision": 1,
+            "label": "general",
+            "confidence": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "Delta Bank",
+            "start_offset": 0,
+            "end_offset": 10,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "economy",
+            "confidence": 0.75
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "neutral",
+            "score": 0.0,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              0.0,
+              0.0,
+              0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.31622776601683794,
+              0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.31622776601683794,
+              0.0,
+              0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              -0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.31622776601683794
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_1a03cfc7-7651-50ba-a0cd-492210cd8b39",
+            "entity_id": "ent_19a52ce4-5aea-560c-bd57-4ea61c288506",
+            "confidence": 1.0
+          }
+        ],
+        "events": [
+          {
+            "schema_version": "1",
+            "result_type": "event_extraction",
+            "proposed_event_type": "economy.rate_change",
+            "confidence": 0.75,
+            "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+            "evidence_text": "Delta Bank announced an interest rate hike as inflation rose.",
+            "occurred_at": null
+          }
+        ],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_7c6310e5-70f1-55b8-9041-706b930d8708",
+            "event_revision": 1,
+            "label": "economy.rate_change",
+            "confidence": 0.75
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "Reserve Council",
+            "start_offset": 0,
+            "end_offset": 15,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "general",
+            "confidence": 0.5
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "neutral",
+            "score": 0.0,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.3333333333333333,
+              0.0,
+              -0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              -0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.3333333333333333,
+              0.0,
+              0.3333333333333333
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_fb1d1226-8aee-5ece-8891-8bca7c54cf1b",
+            "entity_id": "ent_37587e6a-e774-5dea-986b-0245426ab2ba",
+            "confidence": 1.0
+          }
+        ],
+        "events": [],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_8e8a2bab-11d4-54a8-a60f-a7a5f999fb28",
+            "event_revision": 1,
+            "label": "general",
+            "confidence": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "Pixel Forge",
+            "start_offset": 0,
+            "end_offset": 11,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "technology.ai",
+            "confidence": 0.65
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "positive",
+            "score": 0.6,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.35355339059327373,
+              0.0,
+              -0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_4c2bed7d-3a42-5958-aa18-817834a254a6",
+            "entity_id": "ent_c4f06008-87c0-5f34-b690-43548e789303",
+            "confidence": 1.0
+          }
+        ],
+        "events": [
+          {
+            "schema_version": "1",
+            "result_type": "event_extraction",
+            "proposed_event_type": "company.product_launch",
+            "confidence": 0.65,
+            "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+            "evidence_text": "Pixel Forge launched new artificial intelligence software with improved reliability.",
+            "occurred_at": null
+          }
+        ],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_1fc54d8a-1017-555d-864e-1d4072ce2fc4",
+            "event_revision": 1,
+            "label": "company.product_launch",
+            "confidence": 0.65
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "Orion Systems",
+            "start_offset": 0,
+            "end_offset": 13,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "technology.ai",
+            "confidence": 0.65
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "negative",
+            "score": -0.6,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.2581988897471611,
+              0.0,
+              0.0,
+              0.2581988897471611,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.2581988897471611,
+              0.0,
+              0.0,
+              -0.5163977794943222,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.2581988897471611,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.2581988897471611,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.2581988897471611,
+              0.0,
+              0.0,
+              0.0,
+              -0.2581988897471611,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.2581988897471611,
+              0.0,
+              0.0,
+              -0.2581988897471611,
+              -0.2581988897471611,
+              0.0,
+              0.0,
+              0.0,
+              0.2581988897471611,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_2d530c8e-b5e0-558e-b936-22d2c8053340",
+            "entity_id": "ent_24961513-6d73-528f-bde7-fc6f03e22f30",
+            "confidence": 1.0
+          },
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_f1daa60d-25a0-53db-bc60-1d41251c0cdb",
+            "entity_id": null,
+            "confidence": 0.0
+          }
+        ],
+        "events": [
+          {
+            "schema_version": "1",
+            "result_type": "event_extraction",
+            "proposed_event_type": "company.product_launch",
+            "confidence": 0.65,
+            "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+            "evidence_text": "Orion Systems unveiled a machine learning tool after a failed trial.",
+            "occurred_at": null
+          }
+        ],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_7b336ab9-6213-5088-81b2-23f4cf525736",
+            "event_revision": 1,
+            "label": "company.product_launch",
+            "confidence": 0.65
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "River Parliament",
+            "start_offset": 0,
+            "end_offset": 16,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "politics.policy",
+            "confidence": 0.75
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "neutral",
+            "score": 0.0,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.30151134457776363,
+              0.0,
+              0.0,
+              0.0,
+              -0.30151134457776363,
+              0.30151134457776363,
+              0.0,
+              0.30151134457776363,
+              0.0,
+              0.30151134457776363,
+              0.0,
+              0.0,
+              0.0,
+              -0.30151134457776363,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.30151134457776363,
+              0.0,
+              0.0,
+              0.30151134457776363,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.30151134457776363,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.30151134457776363,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.30151134457776363,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_db106646-e681-5857-886b-87d16cf81c31",
+            "entity_id": "ent_5cb8a568-422c-5898-856e-3e0104947295",
+            "confidence": 1.0
+          }
+        ],
+        "events": [
+          {
+            "schema_version": "1",
+            "result_type": "event_extraction",
+            "proposed_event_type": "policy.change",
+            "confidence": 0.75,
+            "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+            "evidence_text": "River Parliament passed legislation and a new law on water permits.",
+            "occurred_at": null
+          }
+        ],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_48ca837d-15a4-5f6d-b424-80ef909cc659",
+            "event_revision": 1,
+            "label": "policy.change",
+            "confidence": 0.75
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "Metro Council",
+            "start_offset": 0,
+            "end_offset": 13,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "politics.policy",
+            "confidence": 0.65
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "neutral",
+            "score": 0.0,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.30151134457776363,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.30151134457776363,
+              -0.30151134457776363,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.30151134457776363,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.30151134457776363,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.30151134457776363,
+              0.0,
+              0.0,
+              0.30151134457776363,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.30151134457776363,
+              0.0,
+              0.30151134457776363,
+              0.30151134457776363,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.30151134457776363
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_b4497b1b-5e07-5e0e-870d-be7dba4565e2",
+            "entity_id": null,
+            "confidence": 0.0
+          }
+        ],
+        "events": [
+          {
+            "schema_version": "1",
+            "result_type": "event_extraction",
+            "proposed_event_type": "policy.change",
+            "confidence": 0.65,
+            "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+            "evidence_text": "Metro Council adopted a public policy change to protect drinking water.",
+            "occurred_at": null
+          }
+        ],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_7d59147f-53f8-5fd5-93be-0a603467a223",
+            "event_revision": 1,
+            "label": "policy.change",
+            "confidence": 0.65
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "Harbor Council",
+            "start_offset": 0,
+            "end_offset": 14,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "regional",
+            "confidence": 0.65
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "neutral",
+            "score": 0.0,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.3779644730092272,
+              0.0,
+              0.0,
+              -0.3779644730092272,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.3779644730092272,
+              0.0,
+              0.3779644730092272,
+              0.0,
+              0.0,
+              0.0,
+              -0.3779644730092272,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.3779644730092272,
+              0.0,
+              0.3779644730092272,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_ace4967f-6648-5fc1-a0bf-ba99986cfbd2",
+            "entity_id": "ent_94dcebe8-4dd1-5214-9e04-7b2191ec51ce",
+            "confidence": 1.0
+          }
+        ],
+        "events": [],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_c8f1e1c6-43e5-580e-ba29-b833d1010b88",
+            "event_revision": 1,
+            "label": "general",
+            "confidence": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "Cedar District",
+            "start_offset": 0,
+            "end_offset": 14,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "regional",
+            "confidence": 0.65
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "neutral",
+            "score": 0.0,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.7071067811865475,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.35355339059327373,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_303e7b13-1cd3-505f-917f-b75a730bfe14",
+            "entity_id": "ent_4d5bef48-808f-589c-a7cb-ae614d261609",
+            "confidence": 1.0
+          }
+        ],
+        "events": [],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_176e8754-8e44-5824-ab26-1795b0af28b4",
+            "event_revision": 1,
+            "label": "general",
+            "confidence": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "Copper Basin",
+            "start_offset": 0,
+            "end_offset": 12,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "commodities",
+            "confidence": 0.65
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "negative",
+            "score": -0.6,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              0.0,
+              -0.2773500981126146,
+              0.0,
+              -0.2773500981126146,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.5547001962252291,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.2773500981126146,
+              0.2773500981126146,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.2773500981126146,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.2773500981126146,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.2773500981126146,
+              0.0,
+              0.2773500981126146,
+              0.2773500981126146
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_c1a9e83a-e21e-556e-80fb-e78a3d7afefb",
+            "entity_id": "ent_6335f007-6ae4-5c28-bd32-ff5e398e2882",
+            "confidence": 1.0
+          }
+        ],
+        "events": [
+          {
+            "schema_version": "1",
+            "result_type": "event_extraction",
+            "proposed_event_type": "commodity.supply_disruption",
+            "confidence": 0.8500000000000001,
+            "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+            "evidence_text": "Copper Basin reported a mine closure and supply disruption after a pipeline outage.",
+            "occurred_at": null
+          }
+        ],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_bc92ae4b-eef8-5027-8e20-8485983bd8ed",
+            "event_revision": 1,
+            "label": "commodity.supply_disruption",
+            "confidence": 0.8500000000000001
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "Wheat Cooperative",
+            "start_offset": 0,
+            "end_offset": 17,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "commodities",
+            "confidence": 0.65
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "neutral",
+            "score": 0.0,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              0.0,
+              0.0,
+              0.3779644730092272,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.3779644730092272,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.3779644730092272,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.3779644730092272,
+              0.3779644730092272,
+              0.0,
+              0.0,
+              0.3779644730092272,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.3779644730092272,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_08f99a4e-0fd5-580f-b735-b24fbdfdf399",
+            "entity_id": "ent_98fc4957-241e-589d-a2ac-311c63f531c5",
+            "confidence": 1.0
+          }
+        ],
+        "events": [],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_4b2ce9a7-ef11-539f-97a2-355e7eab54cb",
+            "event_revision": 1,
+            "label": "general",
+            "confidence": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "Secure Harbor",
+            "start_offset": 0,
+            "end_offset": 13,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "technology",
+            "confidence": 0.65
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "neutral",
+            "score": 0.0,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.35355339059327373,
+              0.35355339059327373,
+              0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.35355339059327373,
+              -0.35355339059327373,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_8ee3dd41-3d4d-5ae8-99b1-6c8077208615",
+            "entity_id": "ent_915dafbf-f6ef-5582-8f09-84311f53b872",
+            "confidence": 1.0
+          }
+        ],
+        "events": [
+          {
+            "schema_version": "1",
+            "result_type": "event_extraction",
+            "proposed_event_type": "security.cyber_incident",
+            "confidence": 0.75,
+            "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+            "evidence_text": "Secure Harbor confirmed a ransomware data breach in its software.",
+            "occurred_at": null
+          }
+        ],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_eea6040c-7817-5e9e-9048-150ba5dff6b7",
+            "event_revision": 1,
+            "label": "security.cyber_incident",
+            "confidence": 0.75
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "Beacon Network",
+            "start_offset": 0,
+            "end_offset": 14,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "general",
+            "confidence": 0.5
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "negative",
+            "score": -0.6,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.3333333333333333,
+              0.0,
+              0.0,
+              0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.3333333333333333,
+              0.0,
+              0.0,
+              -0.3333333333333333,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_c438cd24-1f33-5c0d-a8f3-0799a5cd8039",
+            "entity_id": "ent_de20766a-c69d-546e-b996-ab8043e01904",
+            "confidence": 1.0
+          }
+        ],
+        "events": [
+          {
+            "schema_version": "1",
+            "result_type": "event_extraction",
+            "proposed_event_type": "security.cyber_incident",
+            "confidence": 0.65,
+            "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+            "evidence_text": "Beacon Network restored services after a cyberattack caused failure.",
+            "occurred_at": null
+          }
+        ],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_8778a3a0-6823-563d-8622-d11a0f8f9b35",
+            "event_revision": 1,
+            "label": "security.cyber_incident",
+            "confidence": 0.65
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "City Museum",
+            "start_offset": 0,
+            "end_offset": 11,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "regional",
+            "confidence": 0.65
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "neutral",
+            "score": 0.0,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.31622776601683794,
+              0.0,
+              0.0,
+              0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.6324555320336759,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_c13045fa-fda7-5900-b59a-db8d783fe7a0",
+            "entity_id": "ent_8c08a315-49f6-5547-8b94-0f804e5d0afe",
+            "confidence": 1.0
+          }
+        ],
+        "events": [
+          {
+            "schema_version": "1",
+            "result_type": "event_extraction",
+            "proposed_event_type": "company.product_launch",
+            "confidence": 0.65,
+            "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+            "evidence_text": "City Museum unveiled a technology exhibit with a regional illustration.",
+            "occurred_at": null
+          }
+        ],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_64ba0e76-0402-5845-a299-a11ed78d43d0",
+            "event_revision": 1,
+            "label": "company.product_launch",
+            "confidence": 0.65
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+      "outputs": {
+        "entities": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_extraction",
+            "surface": "Valley Gallery",
+            "start_offset": 0,
+            "end_offset": 14,
+            "predicted_kind": "other",
+            "confidence": 0.55
+          }
+        ],
+        "topics": [
+          {
+            "schema_version": "1",
+            "result_type": "topic",
+            "label": "regional",
+            "confidence": 0.65
+          }
+        ],
+        "sentiment": [
+          {
+            "schema_version": "1",
+            "result_type": "sentiment",
+            "label": "positive",
+            "score": 0.6,
+            "confidence": 0.6,
+            "entity_id": null
+          }
+        ],
+        "embedding": [
+          {
+            "schema_version": "1",
+            "result_type": "embedding",
+            "values": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.31622776601683794,
+              -0.31622776601683794,
+              0.0,
+              -0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.31622776601683794,
+              0.0,
+              0.0,
+              0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.31622776601683794,
+              0.0,
+              0.31622776601683794,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "resolution": [
+          {
+            "schema_version": "1",
+            "result_type": "entity_resolution",
+            "mention_id": "mention_a3e4db91-2350-5cb1-b406-8ad13169ff9b",
+            "entity_id": "ent_80e71265-33fc-5b26-b1e6-3ab4a8bd5012",
+            "confidence": 1.0
+          }
+        ],
+        "events": [],
+        "event_classification": [
+          {
+            "schema_version": "1",
+            "result_type": "event_classification",
+            "event_id": "evt_f43dddb1-b655-5fe0-ba46-0d5ba4e308cb",
+            "event_revision": 1,
+            "label": "general",
+            "confidence": 0.5
+          }
+        ]
+      }
+    }
+  ],
+  "nearest_neighbors": {
+    "doc_b34eac5c-f326-58d1-88f1-ecf868111f54": [
+      "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199"
+    ],
+    "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf": [
+      "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f"
+    ],
+    "doc_1caf1220-e699-56e1-ba5b-31e2995550af": [
+      "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+      "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f"
+    ],
+    "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199": [
+      "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+      "doc_f349d1cb-92c2-5856-a63c-265eb852b592"
+    ],
+    "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d": [
+      "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f"
+    ],
+    "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8": [
+      "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+      "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "doc_21856760-2c73-526b-81ed-e1b15e11408c"
+    ],
+    "doc_21856760-2c73-526b-81ed-e1b15e11408c": [
+      "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8"
+    ],
+    "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084": [
+      "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199"
+    ],
+    "doc_f349d1cb-92c2-5856-a63c-265eb852b592": [
+      "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "doc_21856760-2c73-526b-81ed-e1b15e11408c"
+    ],
+    "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06": [
+      "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199"
+    ],
+    "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf": [
+      "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199"
+    ],
+    "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f": [
+      "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "doc_3ad07721-600e-5882-b87f-85a53a44ea66"
+    ],
+    "doc_ed389241-f119-5758-bd36-2cb93d7f04e9": [
+      "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "doc_3ad07721-600e-5882-b87f-85a53a44ea66"
+    ],
+    "doc_3ad07721-600e-5882-b87f-85a53a44ea66": [
+      "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "doc_ed389241-f119-5758-bd36-2cb93d7f04e9"
+    ],
+    "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe": [
+      "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf"
+    ],
+    "doc_674c56f6-5f02-553e-998f-e2b0748c0dec": [
+      "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+      "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+      "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf"
+    ]
+  },
+  "failures": [
+    {
+      "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "task": "events",
+      "reason": "NoPredictions"
+    },
+    {
+      "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+      "task": "events",
+      "reason": "NoPredictions"
+    },
+    {
+      "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "task": "events",
+      "reason": "NoPredictions"
+    },
+    {
+      "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+      "task": "events",
+      "reason": "NoPredictions"
+    },
+    {
+      "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+      "task": "events",
+      "reason": "NoPredictions"
+    },
+    {
+      "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+      "task": "events",
+      "reason": "NoPredictions"
+    }
+  ],
+  "timing": {
+    "entities": {
+      "count": 16,
+      "median_ms": 1.4062499394640326,
+      "p95_ms": 6.890099961310625,
+      "total_ms": 30.61650018207729
+    },
+    "topics": {
+      "count": 16,
+      "median_ms": 1.7307999078184366,
+      "p95_ms": 10.174500057473779,
+      "total_ms": 37.16589976102114
+    },
+    "sentiment": {
+      "count": 16,
+      "median_ms": 1.4694499550387263,
+      "p95_ms": 2.3206002078950405,
+      "total_ms": 23.898500250652432
+    },
+    "embedding": {
+      "count": 16,
+      "median_ms": 0.8807500125840306,
+      "p95_ms": 1.2533999979496002,
+      "total_ms": 14.983199769631028
+    },
+    "resolution": {
+      "count": 16,
+      "median_ms": 0.4612499615177512,
+      "p95_ms": 1.8741998355835676,
+      "total_ms": 9.42959962412715
+    },
+    "events": {
+      "count": 16,
+      "median_ms": 1.5777500811964273,
+      "p95_ms": 5.634299945086241,
+      "total_ms": 27.131600072607398
+    },
+    "event_classification": {
+      "count": 16,
+      "median_ms": 1.6398000298067927,
+      "p95_ms": 5.609800107777119,
+      "total_ms": 31.821200158447027
+    }
+  },
+  "benchmark": {
+    "elapsed_seconds": 0.1863295000512153,
+    "documents_per_second": 85.86938727148505,
+    "python_tracemalloc_peak_bytes": 383858,
+    "memory_limitation": "Python allocations only; excludes native/GPU/process RSS",
+    "warmup": "none; first and warm iterations included"
+  },
+  "dataset_file_sha256": "02b6d3f1c8b87ef2e0108d42082276a3dd4ae767610899b1dab8c81d5f9fafef"
+}

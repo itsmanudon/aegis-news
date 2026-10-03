@@ -1,11 +1,10 @@
 # Local intelligence model registry
 
-Real Light CPU execution is now measured in the
-[gold v2 comparison](../../docs/evaluation/light-vs-offline.md), with exact existing
-model revisions, artifact hashes/sizes and package versions. Offline was rerun on the
-same reviewed set. Human sign-off is pending; Full remains unbenchmarked.
-[Separate optional environment and pipeline reproduction](../../docs/evaluation/reproduce.md).
-Normal CI still installs no pretrained models.
+Real pretrained Light CPU and RTX 4070 CUDA execution are measured against the
+[independently human-reviewed Gold v3](../../docs/evaluation/gold-v3-gpu.md).
+Pinned model revisions/thresholds remain unchanged. [Optional local CUDA reproduction](../../docs/evaluation/gold-v3-reproduce.md).
+The [historical agent-reviewed v2 comparison](../../docs/evaluation/light-vs-offline.md)
+is preserved. Full remains unbenchmarked. Normal CI installs no pretrained models or CUDA.
 
 `aegis.intelligence.config` owns immutable model specifications. Providers implement the
 unchanged ports in `aegis/intelligence/interfaces.py`. No paid API, external MLflow server,

@@ -1,5 +1,9 @@
 # Reproduce gold v2 evaluation
 
+Historical Gold v2 evidence is preserved below. Current independently human-reviewed
+[Gold v3 CPU/GPU results](gold-v3-gpu.md), [reproduction](gold-v3-reproduce.md),
+[validation ledger](gold-v3-validation.md).
+
 Use the evaluation branch or its reviewed commit; keep release tags unchanged. This
 guide evaluates the existing profiles. It does not train, tune or download Full models.
 Run from the repository root. Weight/cache directories stay outside Git. `.venv-light`,

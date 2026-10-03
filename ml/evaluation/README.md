@@ -1,5 +1,12 @@
 # Evaluation harness
 
+Current reviewed evidence: [Gold v3 Human CPU/GPU](../../docs/evaluation/gold-v3-gpu.md),
+[reproduction](../../docs/evaluation/gold-v3-reproduce.md),
+[dataset/version history](../datasets/gold/README.md). One human reviewer accepted all v2 labels.
+Fresh Offline, Light CPU and Light CUDA quality passes share unchanged scoring/model revisions.
+Normal CI remains offline/CPU; local CUDA is optional. The commands below describe the
+original JSONL harness, while Gold v3 uses `python -m scripts.evaluate_reviewed`.
+
 Run from the repository root in an installed project environment:
 
 ```sh
@@ -26,8 +33,8 @@ Other failures terminate the run rather than being reported as successful predic
 include a canonicalized dataset SHA256, document revision/text SHA256, each analysis's metadata,
 and an explicit warning that synthetic results cannot estimate real-news quality.
 
-No pretrained accuracy numbers are asserted. Running the offline profile on the supplied fixtures
+The original JSONL harness did not assert pretrained quality; fresh small-set results are linked above. Running the offline profile on the supplied fixtures
 exposes its capitalization-only NER's inability to predict organization types. Extend gold data
 with permitted, independently annotated examples and held-out splits before comparing models.
-Confidence calibration, multilingual quality, event extraction quality and embedding retrieval
-benchmarks remain future evaluation work.
+Confidence calibration, multilingual quality and large real-world evaluation remain future work.
+Gold v3 reports small-set event extraction and paired-document retrieval with explicit limitations.

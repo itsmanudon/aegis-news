@@ -1,0 +1,9 @@
+{
+  "dataset_file_sha256": "02b6d3f1c8b87ef2e0108d42082276a3dd4ae767610899b1dab8c81d5f9fafef",
+  "categorical_prediction_differences": [],
+  "maximum_absolute_numeric_delta": 6.332993507385254e-06,
+  "quality_metrics_equal": true,
+  "top_3_rankings_equal": true,
+  "numeric_tolerance": 1e-05,
+  "protocol": "All output fields compared; exact categorical equality; absolute numeric tolerance includes embeddings/confidences/sentiment scores. Analysis IDs/timestamps excluded by existing scorer."
+}

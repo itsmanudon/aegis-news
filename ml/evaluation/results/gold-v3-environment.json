@@ -1,0 +1,40 @@
+{
+  "timestamp_utc": "2026-10-03T16:52:29.412955+00:00",
+  "os": "Windows",
+  "release": "11",
+  "cpu": "Intel(R) Core(TM) i9-14900HX",
+  "ram_bytes": 34053414912,
+  "physical_cpus": 24,
+  "logical_cpus": 32,
+  "python": "3.12.11",
+  "gpu_driver_memory": "NVIDIA GeForce RTX 4070 Laptop GPU, 610.74, 8188 MiB",
+  "packages": {
+    "torch": "2.14.1+cu130",
+    "transformers": "4.57.6",
+    "sentence-transformers": "3.4.1",
+    "huggingface-hub": "0.36.2",
+    "psutil": "7.2.2",
+    "numpy": "2.5.3",
+    "tokenizers": "0.22.2",
+    "safetensors": "0.8.0"
+  },
+  "artifacts": {
+    "ProsusAI/finbert@4556d13015211d73dccd3fdd39d39232506f3e43": {
+      "revision": "4556d13015211d73dccd3fdd39d39232506f3e43",
+      "selected_payload_bytes": 438225383,
+      "matches_historical_artifact_hashes": true
+    },
+    "dslim/bert-base-NER@d1a3e8f13f8c3566299d95fcfc9a8d2382a9affc": {
+      "revision": "d1a3e8f13f8c3566299d95fcfc9a8d2382a9affc",
+      "selected_payload_bytes": 434391621,
+      "matches_historical_artifact_hashes": true
+    },
+    "sentence-transformers/all-MiniLM-L6-v2@1110a243fdf4706b3f48f1d95db1a4f5529b4d41": {
+      "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+      "selected_payload_bytes": 91607178,
+      "matches_historical_artifact_hashes": true
+    }
+  },
+  "model_network_download_bytes_this_phase": 0,
+  "disk_protocol": "Selected logical snapshot payload; verified against historical receipt. Excludes package environments, caches and disk allocation overhead. CUDA wheel download was approximately 1.9 GiB per installer; wire bytes not instrumented."
+}

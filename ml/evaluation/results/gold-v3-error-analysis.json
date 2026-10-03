@@ -1,0 +1,877 @@
+{
+  "offline": {
+    "ner": [
+      {
+        "title": "Synthetic business: Atlas Labs",
+        "false_negatives": [
+          [
+            0,
+            10,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            10,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic business: Meridian Works",
+        "false_negatives": [
+          [
+            0,
+            14,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            14,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic economics: Delta Bank",
+        "false_negatives": [
+          [
+            0,
+            10,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            10,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic economics: Reserve Council",
+        "false_negatives": [
+          [
+            0,
+            15,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            15,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic technology: Pixel Forge",
+        "false_negatives": [
+          [
+            0,
+            11,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            11,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic technology: Orion Systems",
+        "false_negatives": [
+          [
+            0,
+            13,
+            "organization"
+          ],
+          [
+            69,
+            72,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            13,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic public-policy: River Parliament",
+        "false_negatives": [
+          [
+            0,
+            16,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            16,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic public-policy: Metro Council",
+        "false_negatives": [
+          [
+            0,
+            13,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            13,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic regional: Harbor Council",
+        "false_negatives": [
+          [
+            0,
+            14,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            14,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic regional: Cedar District",
+        "false_negatives": [
+          [
+            0,
+            14,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            14,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic commodity: Copper Basin",
+        "false_negatives": [
+          [
+            0,
+            12,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            12,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic commodity: Wheat Cooperative",
+        "false_negatives": [
+          [
+            0,
+            17,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            17,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic cyber-security: Secure Harbor",
+        "false_negatives": [
+          [
+            0,
+            13,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            13,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic cyber-security: Beacon Network",
+        "false_negatives": [
+          [
+            0,
+            14,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            14,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic media: City Museum",
+        "false_negatives": [
+          [
+            0,
+            11,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            11,
+            "other"
+          ]
+        ]
+      },
+      {
+        "title": "Synthetic media: Valley Gallery",
+        "false_negatives": [
+          [
+            0,
+            14,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": [
+          [
+            0,
+            14,
+            "other"
+          ]
+        ]
+      }
+    ],
+    "topics": [
+      {
+        "title": "Synthetic business: Meridian Works",
+        "gold": "business.earnings",
+        "predicted": "business"
+      },
+      {
+        "title": "Synthetic economics: Reserve Council",
+        "gold": "economy",
+        "predicted": "general"
+      },
+      {
+        "title": "Synthetic cyber-security: Beacon Network",
+        "gold": "technology",
+        "predicted": "general"
+      }
+    ],
+    "sentiment": [
+      {
+        "title": "Synthetic economics: Reserve Council",
+        "gold": "positive",
+        "predicted": "neutral"
+      },
+      {
+        "title": "Synthetic technology: Orion Systems",
+        "gold": "mixed",
+        "predicted": "negative"
+      },
+      {
+        "title": "Synthetic public-policy: Metro Council",
+        "gold": "positive",
+        "predicted": "neutral"
+      },
+      {
+        "title": "Synthetic regional: Harbor Council",
+        "gold": "positive",
+        "predicted": "neutral"
+      },
+      {
+        "title": "Synthetic regional: Cedar District",
+        "gold": "mixed",
+        "predicted": "neutral"
+      },
+      {
+        "title": "Synthetic commodity: Wheat Cooperative",
+        "gold": "negative",
+        "predicted": "neutral"
+      },
+      {
+        "title": "Synthetic cyber-security: Secure Harbor",
+        "gold": "negative",
+        "predicted": "neutral"
+      },
+      {
+        "title": "Synthetic cyber-security: Beacon Network",
+        "gold": "mixed",
+        "predicted": "negative"
+      }
+    ],
+    "event_classification": [
+      {
+        "title": "Synthetic business: Meridian Works",
+        "gold": "company.earnings",
+        "predicted": "general"
+      },
+      {
+        "title": "Synthetic economics: Reserve Council",
+        "gold": "economy.rate_change",
+        "predicted": "general"
+      },
+      {
+        "title": "Synthetic commodity: Wheat Cooperative",
+        "gold": "commodity.supply_disruption",
+        "predicted": "general"
+      },
+      {
+        "title": "Synthetic media: City Museum",
+        "gold": "general",
+        "predicted": "company.product_launch"
+      }
+    ],
+    "event_extraction": [
+      {
+        "title": "Synthetic business: Meridian Works",
+        "false_negatives": [
+          [
+            "company.earnings",
+            "Meridian Works posted a quarterly revenue surplus after costs improved."
+          ]
+        ],
+        "false_positives": []
+      },
+      {
+        "title": "Synthetic economics: Reserve Council",
+        "false_negatives": [
+          [
+            "economy.rate_change",
+            "Reserve Council reduced borrowing costs to support the economy."
+          ]
+        ],
+        "false_positives": []
+      },
+      {
+        "title": "Synthetic commodity: Wheat Cooperative",
+        "false_negatives": [
+          [
+            "commodity.supply_disruption",
+            "Wheat Cooperative halted grain deliveries after floods."
+          ]
+        ],
+        "false_positives": []
+      },
+      {
+        "title": "Synthetic media: City Museum",
+        "false_negatives": [],
+        "false_positives": [
+          [
+            "company.product_launch",
+            "City Museum unveiled a technology exhibit with a regional illustration."
+          ]
+        ]
+      }
+    ],
+    "retrieval": [
+      {
+        "title": "Synthetic business: Atlas Labs",
+        "relevant_documents": [
+          "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf"
+        ],
+        "top_3": [
+          "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+          "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+          "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199"
+        ]
+      },
+      {
+        "title": "Synthetic business: Meridian Works",
+        "relevant_documents": [
+          "doc_b34eac5c-f326-58d1-88f1-ecf868111f54"
+        ],
+        "top_3": [
+          "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+          "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+          "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f"
+        ]
+      },
+      {
+        "title": "Synthetic economics: Delta Bank",
+        "relevant_documents": [
+          "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199"
+        ],
+        "top_3": [
+          "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+          "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+          "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f"
+        ]
+      },
+      {
+        "title": "Synthetic economics: Reserve Council",
+        "relevant_documents": [
+          "doc_1caf1220-e699-56e1-ba5b-31e2995550af"
+        ],
+        "top_3": [
+          "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+          "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+          "doc_f349d1cb-92c2-5856-a63c-265eb852b592"
+        ]
+      },
+      {
+        "title": "Synthetic technology: Pixel Forge",
+        "relevant_documents": [
+          "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8"
+        ],
+        "top_3": [
+          "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+          "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+          "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f"
+        ]
+      },
+      {
+        "title": "Synthetic technology: Orion Systems",
+        "relevant_documents": [
+          "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d"
+        ],
+        "top_3": [
+          "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+          "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+          "doc_21856760-2c73-526b-81ed-e1b15e11408c"
+        ]
+      },
+      {
+        "title": "Synthetic public-policy: River Parliament",
+        "relevant_documents": [
+          "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084"
+        ],
+        "top_3": [
+          "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+          "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+          "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8"
+        ]
+      },
+      {
+        "title": "Synthetic public-policy: Metro Council",
+        "relevant_documents": [
+          "doc_21856760-2c73-526b-81ed-e1b15e11408c"
+        ],
+        "top_3": [
+          "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+          "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+          "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199"
+        ]
+      },
+      {
+        "title": "Synthetic regional: Harbor Council",
+        "relevant_documents": [
+          "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06"
+        ],
+        "top_3": [
+          "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+          "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+          "doc_21856760-2c73-526b-81ed-e1b15e11408c"
+        ]
+      },
+      {
+        "title": "Synthetic regional: Cedar District",
+        "relevant_documents": [
+          "doc_f349d1cb-92c2-5856-a63c-265eb852b592"
+        ],
+        "top_3": [
+          "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+          "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+          "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199"
+        ]
+      },
+      {
+        "title": "Synthetic commodity: Copper Basin",
+        "relevant_documents": [
+          "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f"
+        ],
+        "top_3": [
+          "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+          "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+          "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199"
+        ]
+      },
+      {
+        "title": "Synthetic commodity: Wheat Cooperative",
+        "relevant_documents": [
+          "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf"
+        ],
+        "top_3": [
+          "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+          "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+          "doc_3ad07721-600e-5882-b87f-85a53a44ea66"
+        ]
+      },
+      {
+        "title": "Synthetic media: City Museum",
+        "relevant_documents": [
+          "doc_674c56f6-5f02-553e-998f-e2b0748c0dec"
+        ],
+        "top_3": [
+          "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+          "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+          "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf"
+        ]
+      }
+    ]
+  },
+  "light-cpu": {
+    "ner": [
+      {
+        "title": "Synthetic public-policy: River Parliament",
+        "false_negatives": [
+          [
+            0,
+            16,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": []
+      }
+    ],
+    "topics": [
+      {
+        "title": "Synthetic business: Meridian Works",
+        "gold": "business.earnings",
+        "predicted": "business"
+      },
+      {
+        "title": "Synthetic economics: Reserve Council",
+        "gold": "economy",
+        "predicted": "general"
+      },
+      {
+        "title": "Synthetic cyber-security: Beacon Network",
+        "gold": "technology",
+        "predicted": "general"
+      }
+    ],
+    "sentiment": [
+      {
+        "title": "Synthetic economics: Delta Bank",
+        "gold": "neutral",
+        "predicted": "positive"
+      },
+      {
+        "title": "Synthetic technology: Orion Systems",
+        "gold": "mixed",
+        "predicted": "positive"
+      },
+      {
+        "title": "Synthetic public-policy: River Parliament",
+        "gold": "neutral",
+        "predicted": "positive"
+      },
+      {
+        "title": "Synthetic regional: Harbor Council",
+        "gold": "positive",
+        "predicted": "neutral"
+      },
+      {
+        "title": "Synthetic regional: Cedar District",
+        "gold": "mixed",
+        "predicted": "positive"
+      },
+      {
+        "title": "Synthetic cyber-security: Beacon Network",
+        "gold": "mixed",
+        "predicted": "negative"
+      }
+    ],
+    "event_classification": [
+      {
+        "title": "Synthetic business: Meridian Works",
+        "gold": "company.earnings",
+        "predicted": "general"
+      },
+      {
+        "title": "Synthetic economics: Reserve Council",
+        "gold": "economy.rate_change",
+        "predicted": "general"
+      },
+      {
+        "title": "Synthetic commodity: Wheat Cooperative",
+        "gold": "commodity.supply_disruption",
+        "predicted": "general"
+      },
+      {
+        "title": "Synthetic media: City Museum",
+        "gold": "general",
+        "predicted": "company.product_launch"
+      }
+    ],
+    "event_extraction": [
+      {
+        "title": "Synthetic business: Meridian Works",
+        "false_negatives": [
+          [
+            "company.earnings",
+            "Meridian Works posted a quarterly revenue surplus after costs improved."
+          ]
+        ],
+        "false_positives": []
+      },
+      {
+        "title": "Synthetic economics: Reserve Council",
+        "false_negatives": [
+          [
+            "economy.rate_change",
+            "Reserve Council reduced borrowing costs to support the economy."
+          ]
+        ],
+        "false_positives": []
+      },
+      {
+        "title": "Synthetic commodity: Wheat Cooperative",
+        "false_negatives": [
+          [
+            "commodity.supply_disruption",
+            "Wheat Cooperative halted grain deliveries after floods."
+          ]
+        ],
+        "false_positives": []
+      },
+      {
+        "title": "Synthetic media: City Museum",
+        "false_negatives": [],
+        "false_positives": [
+          [
+            "company.product_launch",
+            "City Museum unveiled a technology exhibit with a regional illustration."
+          ]
+        ]
+      }
+    ],
+    "retrieval": [
+      {
+        "title": "Synthetic economics: Reserve Council",
+        "relevant_documents": [
+          "doc_1caf1220-e699-56e1-ba5b-31e2995550af"
+        ],
+        "top_3": [
+          "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+          "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+          "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf"
+        ]
+      },
+      {
+        "title": "Synthetic regional: Harbor Council",
+        "relevant_documents": [
+          "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06"
+        ],
+        "top_3": [
+          "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+          "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+          "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe"
+        ]
+      },
+      {
+        "title": "Synthetic regional: Cedar District",
+        "relevant_documents": [
+          "doc_f349d1cb-92c2-5856-a63c-265eb852b592"
+        ],
+        "top_3": [
+          "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+          "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+          "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf"
+        ]
+      }
+    ]
+  },
+  "light-gpu": {
+    "ner": [
+      {
+        "title": "Synthetic public-policy: River Parliament",
+        "false_negatives": [
+          [
+            0,
+            16,
+            "organization"
+          ]
+        ],
+        "false_positives_or_type_confusions": []
+      }
+    ],
+    "topics": [
+      {
+        "title": "Synthetic business: Meridian Works",
+        "gold": "business.earnings",
+        "predicted": "business"
+      },
+      {
+        "title": "Synthetic economics: Reserve Council",
+        "gold": "economy",
+        "predicted": "general"
+      },
+      {
+        "title": "Synthetic cyber-security: Beacon Network",
+        "gold": "technology",
+        "predicted": "general"
+      }
+    ],
+    "sentiment": [
+      {
+        "title": "Synthetic economics: Delta Bank",
+        "gold": "neutral",
+        "predicted": "positive"
+      },
+      {
+        "title": "Synthetic technology: Orion Systems",
+        "gold": "mixed",
+        "predicted": "positive"
+      },
+      {
+        "title": "Synthetic public-policy: River Parliament",
+        "gold": "neutral",
+        "predicted": "positive"
+      },
+      {
+        "title": "Synthetic regional: Harbor Council",
+        "gold": "positive",
+        "predicted": "neutral"
+      },
+      {
+        "title": "Synthetic regional: Cedar District",
+        "gold": "mixed",
+        "predicted": "positive"
+      },
+      {
+        "title": "Synthetic cyber-security: Beacon Network",
+        "gold": "mixed",
+        "predicted": "negative"
+      }
+    ],
+    "event_classification": [
+      {
+        "title": "Synthetic business: Meridian Works",
+        "gold": "company.earnings",
+        "predicted": "general"
+      },
+      {
+        "title": "Synthetic economics: Reserve Council",
+        "gold": "economy.rate_change",
+        "predicted": "general"
+      },
+      {
+        "title": "Synthetic commodity: Wheat Cooperative",
+        "gold": "commodity.supply_disruption",
+        "predicted": "general"
+      },
+      {
+        "title": "Synthetic media: City Museum",
+        "gold": "general",
+        "predicted": "company.product_launch"
+      }
+    ],
+    "event_extraction": [
+      {
+        "title": "Synthetic business: Meridian Works",
+        "false_negatives": [
+          [
+            "company.earnings",
+            "Meridian Works posted a quarterly revenue surplus after costs improved."
+          ]
+        ],
+        "false_positives": []
+      },
+      {
+        "title": "Synthetic economics: Reserve Council",
+        "false_negatives": [
+          [
+            "economy.rate_change",
+            "Reserve Council reduced borrowing costs to support the economy."
+          ]
+        ],
+        "false_positives": []
+      },
+      {
+        "title": "Synthetic commodity: Wheat Cooperative",
+        "false_negatives": [
+          [
+            "commodity.supply_disruption",
+            "Wheat Cooperative halted grain deliveries after floods."
+          ]
+        ],
+        "false_positives": []
+      },
+      {
+        "title": "Synthetic media: City Museum",
+        "false_negatives": [],
+        "false_positives": [
+          [
+            "company.product_launch",
+            "City Museum unveiled a technology exhibit with a regional illustration."
+          ]
+        ]
+      }
+    ],
+    "retrieval": [
+      {
+        "title": "Synthetic economics: Reserve Council",
+        "relevant_documents": [
+          "doc_1caf1220-e699-56e1-ba5b-31e2995550af"
+        ],
+        "top_3": [
+          "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+          "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+          "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf"
+        ]
+      },
+      {
+        "title": "Synthetic regional: Harbor Council",
+        "relevant_documents": [
+          "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06"
+        ],
+        "top_3": [
+          "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+          "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+          "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe"
+        ]
+      },
+      {
+        "title": "Synthetic regional: Cedar District",
+        "relevant_documents": [
+          "doc_f349d1cb-92c2-5856-a63c-265eb852b592"
+        ],
+        "top_3": [
+          "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+          "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+          "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf"
+        ]
+      }
+    ]
+  }
+}

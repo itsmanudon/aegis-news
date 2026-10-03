@@ -1,5 +1,9 @@
 # Gold v2 evaluation validation ledger
 
+Historical Gold v2 evidence is preserved below. Current independently human-reviewed
+[Gold v3 CPU/GPU results](gold-v3-gpu.md), [reproduction](gold-v3-reproduce.md),
+[validation ledger](gold-v3-validation.md).
+
 Date: 2026-10-03. Base: `3c563a72a1c80fe50fe1fbdad25e69e8e7dfac0c`.
 Branch: `eval/human-review-light-models`. No main merge/rebase/tag movement.
 Product providers, model specs, thresholds, rules, taxonomies, contracts and normal

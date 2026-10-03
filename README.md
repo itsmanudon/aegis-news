@@ -86,36 +86,37 @@ data. Windows uses `python`/`pnpm.cmd`; macOS/Linux may use `python3`/`pnpm`.
 
 ## Evaluation and performance
 
-The [CC0 gold v2 set](ml/datasets/gold/README.md) has 16 short English cases across eight
-categories. Every label was reviewed before inference; two decisions changed. Review
-was performed by an agent; **independent human sign-off remains pending**. Original
-provisional labels and [Phase 6 results](docs/phase6/evaluation.md) remain preserved.
+The [CC0 Gold v3 Human set](ml/datasets/gold/README.md) has 16 short English cases
+across eight categories, independently reviewed by one human. All v2 labels were
+accepted: zero human corrections. Original provisional/agent-adjudicated sets and
+historical results remain preserved. This small corpus does not establish real-news quality.
 
-Real pretrained Light models ran locally on CPU against the same reviewed set and
-scoring code as Offline. This is a small synthetic evaluation, not real-news quality.
+Fresh Offline, pretrained Light CPU and RTX 4070 CUDA runs use identical scoring,
+texts and pinned model revisions. CPU/GPU categorical predictions and metrics match.
 
-| Task | Offline | Light | Delta |
+| Task | Offline v3 | Light CPU v3 | Light GPU v3 |
 |---|---:|---:|---:|
-| Exact NER span F1 | 0.970 | 0.970 | 0.000 |
-| Typed NER F1 | 0.000 | 0.970 | +0.970 |
-| Topic macro F1 | 0.667 | 0.667 | 0.000 |
-| Sentiment macro F1 | 0.390 | 0.491 | +0.101 |
-| Event extraction F1 | 0.818 | 0.818 | 0.000 |
-| Resolution accuracy, gold mentions/tiny supplied candidates | 1.000 | 1.000 | 0.000 |
-| Coarse paired-document retrieval MRR | 0.199 | 0.809 | +0.611 |
+| Exact NER span F1 | 0.970 | 0.970 | 0.970 |
+| Typed NER F1 | 0.000 | 0.970 | 0.970 |
+| Topic macro F1 | 0.667 | 0.667 | 0.667 |
+| Sentiment macro F1 | 0.390 | 0.491 | 0.491 |
+| Event extraction F1 | 0.818 | 0.818 | 0.818 |
+| Resolution accuracy, gold mentions/tiny supplied candidates | 1.000 | 1.000 | 1.000 |
+| Coarse paired-document retrieval MRR | 0.199 | 0.809 | 0.809 |
 
 Light uses BERT NER, FinBERT sentiment and MiniLM embeddings; topics/events/resolution
-remain baselines. Both profiles miss all mixed-sentiment labels. Warm seven-task passes
-measured 3.39/142.11 ms median, with sampled process RSS peaks 38.9/1251.3 MiB.
-Warm complete five-item Temporal batches measured workflow medians 2.510/2.612 s;
-host variability and the tiny batch prevent a reliable pipeline speed claim.
-Full has not been benchmarked. [Methods, errors, exact revisions and resources](docs/evaluation/light-vs-offline.md),
-[presentation table](docs/evaluation/evidence/comparison.md),
-[optional local reproduction](docs/evaluation/reproduce.md).
+remain baselines. Both profiles miss all three mixed-sentiment cases. Warm seven-task
+medians were 3.47/140.58/62.65 ms (Offline/CPU/GPU); GPU peak allocated VRAM was 975 MiB.
+Warm complete five-item Temporal workflow medians were 2.643/2.564/1.834 s. The tiny
+batch and uncontrolled workload prevent a production-scale performance claim.
+Full remains unbenchmarked. [Gold v3 methods/errors/resources](docs/evaluation/gold-v3-gpu.md),
+[presentation tables](docs/evaluation/evidence/gold-v3/comparison.md),
+[optional local reproduction](docs/evaluation/gold-v3-reproduce.md),
+[validation ledger](docs/evaluation/gold-v3-validation.md).
 
 ```sh
 uv sync --frozen
-uv run python -m aegis.intelligence.assessment --dataset ml/datasets/gold/assessment-v2.json --profile offline --output .integration-results/offline-review.json
+uv run python -m scripts.evaluate_reviewed --profile offline --output .evaluation-tmp/gold-v3-offline.json
 python scripts/demo.py benchmark
 python scripts/demo.py security
 python scripts/demo.py reliability
@@ -158,12 +159,12 @@ acceptance is manual. Exact executed counts, hosted URLs and warnings are in the
 
 ## Limitations and future roadmap
 
-Uncalibrated offline rules, English/short-input evaluation, pending human review; exact
+Uncalibrated offline rules, small synthetic English set with only one human reviewer; exact
 similarity scan, curated entity candidates and incomplete mutable-registry/link history.
 The dashboard shows real media metadata; authorized inline preview remains unavailable.
 The OTel collector debug-exports traces without durable trace storage/UI.
 
-Next: independent human sign-off and a licensed held-out evaluation corpus, focused
+Next: a separately planned licensed real-world held-out evaluation corpus and focused
 usability/reliability improvements. Kafka, OpenSearch, Kubernetes, cloud deployment,
 Stockwise/backtester/portfolio/ticker integration and production C2PA are future ideas,
 not implemented capabilities. No trading signals or financial execution logic is present.
