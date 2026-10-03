@@ -22,6 +22,7 @@ from aegis.ingestion.runtime import make_service
 from aegis.persistence.models import AnalysisRow
 from aegis.settings import Settings
 from scripts.demo_seed import seed
+from scripts.evaluation_device import cuda_module, device_profile
 
 
 def validate_local_target(settings: Settings, url: str) -> None:
@@ -58,9 +59,13 @@ async def wait_worker(
     raise TimeoutError("benchmark worker did not poll the isolated Temporal task queue")
 
 
-async def run(profile: str, url: str, rounds: int, log: Path) -> dict[str, Any]:
+async def run(
+    profile: str, url: str, rounds: int, log: Path, device: str = "cpu"
+) -> dict[str, Any]:
     if rounds < 1:
         raise ValueError("positive warm rounds required")
+    device_profile(profile, device)
+    cuda_module(device)
     settings = Settings()
     validate_local_target(settings, url)
     client = await Client.connect(settings.temporal_address, namespace=settings.temporal_namespace)
@@ -70,6 +75,7 @@ async def run(profile: str, url: str, rounds: int, log: Path) -> dict[str, Any]:
         "AEGIS_AI_PROFILE": profile,
         "HF_HUB_OFFLINE": "1",
         "AEGIS_BENCHMARK_IDENTITY": identity,
+        "AEGIS_BENCHMARK_DEVICE": device,
     }
     log.parent.mkdir(parents=True, exist_ok=True)
     batches = []
@@ -78,13 +84,28 @@ async def run(profile: str, url: str, rounds: int, log: Path) -> dict[str, Any]:
         # Only benchmark instrumentation changes; the existing worker entrypoint runs as-is.
         entrypoint = """import asyncio, os
 from temporalio.client import Client
-from apps.worker.main import main
+import importlib
+from aegis.intelligence.engine import build_engine
+from scripts.evaluation_device import device_profile
+from scripts.benchmark_profiles import TimedRuntime
+from aegis.intelligence.providers import TaskProvider
+from aegis.intelligence.local_runtime import LocalRuntime
+worker_module = importlib.import_module('apps.worker.main')
+def benchmark_engine(name):
+    engine = build_engine(device_profile(name, os.environ['AEGIS_BENCHMARK_DEVICE']))
+    runtime = TimedRuntime()
+    for provider in (engine.entities, engine.topics, engine.sentiment,
+                     engine.embeddings, engine.events):
+        if isinstance(provider, TaskProvider) and isinstance(provider.runtime, LocalRuntime):
+            provider.runtime = runtime
+    return engine
+worker_module.build_engine = benchmark_engine
 connect = Client.connect
 async def identified_connect(*args, **kwargs):
     kwargs['identity'] = os.environ['AEGIS_BENCHMARK_IDENTITY']
     return await connect(*args, **kwargs)
 Client.connect = identified_connect
-asyncio.run(main())
+asyncio.run(worker_module.main())
 """
         worker = subprocess.Popen(
             [sys.executable, "-c", entrypoint],
@@ -112,6 +133,18 @@ asyncio.run(main())
                             {f"{row.model_name}@{row.model_version}" for row in analyses}
                         )
                         report["analyses_in_batch"] = len(analyses)
+                        report["persisted_model_counts"] = {
+                            model: sum(
+                                f"{row.model_name}@{row.model_version}" == model for row in analyses
+                            )
+                            for model in report["persisted_models"]
+                        }
+                        if profile == "light":
+                            specs = device_profile(profile, device)
+                            for spec in (specs.ner, specs.sentiment, specs.embedding):
+                                model = f"{spec.model_name}@{spec.revision}"
+                                if model not in report["persisted_models"]:
+                                    raise RuntimeError(f"pretrained pipeline stage absent: {model}")
                 finally:
                     service.repository.close()
                 batches.append(report)
@@ -121,7 +154,7 @@ asyncio.run(main())
     return {
         "profile": profile,
         "result": "passed",
-        "device": "cpu, unchanged existing profile",
+        "device": device,
         "topology": "Docker API/PostgreSQL/Redis/MinIO/Temporal; local optional Python worker",
         "batches": batches,
         "protocol": (
@@ -137,13 +170,18 @@ asyncio.run(main())
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", choices=("offline", "light"), required=True)
+    parser.add_argument("--device", choices=("cpu", "cuda:0"), default="cpu")
     parser.add_argument("--api-url", default="http://localhost:38000")
     parser.add_argument("--rounds", type=int, default=1)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     report = asyncio.run(
         run(
-            args.profile, args.api_url, args.rounds, Path(".evaluation-tmp") / f"{args.profile}.log"
+            args.profile,
+            args.api_url,
+            args.rounds,
+            Path(".evaluation-tmp") / f"{args.profile}-{args.device.replace(':', '-')}.log",
+            args.device,
         )
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)

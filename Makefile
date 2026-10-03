@@ -45,4 +45,4 @@ demo-reliability:
 demo-observe:
 	python3 -m scripts.demo_observability
 evaluate:
-	uv run python -m aegis.intelligence.assessment --profile offline --output ml/evaluation/results/offline.json
+	uv run python -m scripts.evaluate_reviewed --profile offline --output .evaluation-tmp/gold-v3-offline.json

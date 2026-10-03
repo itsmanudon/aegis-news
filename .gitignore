@@ -3,6 +3,7 @@
 !.env.example
 .venv/
 .venv-light/
+.venv-light-gpu/
 .model-cache/
 .evaluation-tmp/
 __pycache__/

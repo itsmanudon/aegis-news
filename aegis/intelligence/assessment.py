@@ -26,7 +26,7 @@ from aegis.domain.models import (
     NewsEvent,
 )
 from aegis.intelligence.config import profile
-from aegis.intelligence.engine import build_engine
+from aegis.intelligence.engine import IntelligenceEngine, build_engine
 from aegis.intelligence.errors import IntelligenceError
 from aegis.intelligence.evaluation import GoldSample, classification_metrics
 from aegis.intelligence.extensions import EventClassifier
@@ -137,7 +137,22 @@ class AssessmentSet(BaseModel):
 
 
 def load_assessment(path: Path) -> AssessmentSet:
-    return AssessmentSet.model_validate_json(path.read_text(encoding="utf-8"))
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("version") == "gold_v3_human":
+        from aegis.intelligence.review import validate_review
+
+        source = json.loads(path.with_name("assessment-v2.json").read_text(encoding="utf-8"))
+        validate_review(payload, source)
+        payload = {
+            key: value
+            for key, value in payload.items()
+            if key not in {"source_version", "review_completed_at"}
+        }
+        payload["cases"] = [
+            {key: value for key, value in case.items() if key != "adjudication"}
+            for case in payload["cases"]
+        ]
+    return AssessmentSet.model_validate(payload)
 
 
 def latency_report(samples: Sequence[float]) -> dict[str, float | int]:
@@ -173,10 +188,16 @@ def assessment_rankings(
     }
 
 
-async def assess(dataset: AssessmentSet, name: str, rounds: int = 3) -> dict[str, Any]:
+async def assess(
+    dataset: AssessmentSet,
+    name: str,
+    rounds: int = 3,
+    *,
+    engine: IntelligenceEngine | None = None,
+) -> dict[str, Any]:
     if rounds < 1:
         raise ValueError("positive benchmark rounds required")
-    engine = build_engine(name)
+    engine = engine or build_engine(name)
     latency: dict[str, list[float]] = {}
     failures: list[dict[str, str]] = []
     metadata: dict[str, Any] = {}
