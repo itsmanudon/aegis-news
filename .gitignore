@@ -10,6 +10,7 @@ __pycache__/
 .coverage
 htmlcov/
 node_modules/
+.pnpm-store/
 .next/
 *.tsbuildinfo
 apps/web/test-results/

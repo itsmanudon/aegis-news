@@ -8,8 +8,9 @@ academic prototype combines AI, Information Security, Cryptography and Multimedi
 It makes source evidence, model predictions, availability and tampering visible.
 A signature does not establish source truth or model correctness.
 
-The integrated MVP is frozen at **`v0.1.0-mvp`**. This Phase 6 branch adds assessment,
-demo reliability and presentation evidence. [Release record](docs/mvp-release.md).
+The integrated MVP is frozen at **`v0.1.0-mvp`**. Evaluation, demo reliability and
+presentation evidence are released as **`v0.2.0-evaluation`**. `main` is the common
+baseline for future work. [MVP release record](docs/mvp-release.md).
 
 ![Real API document feed](docs/evidence/screenshots/dashboard.jpg)
 
@@ -54,7 +55,7 @@ portable helper. No GPU, host ML installation, paid API or model download is nee
 The first build includes source-built MinIO and may take longer.
 
 ```sh
-git clone --branch phase6/evaluation-demo-hardening https://github.com/itsmanudon/aegis-news.git
+git clone https://github.com/itsmanudon/aegis-news.git
 cd aegis-news
 python scripts/demo.py start
 python scripts/demo.py token --role analyst
