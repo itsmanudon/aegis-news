@@ -26,6 +26,18 @@ jobs:
       - run: pnpm --filter @aegisnews/web exec playwright install --with-deps chromium
       - run: docker compose --env-file infrastructure/mvp.env.example -p aegis-integration --profile full up --build -d --wait
       - run: docker compose --env-file infrastructure/mvp.env.example -p aegis-integration exec -T api python scripts/mvp_acceptance.py
+      - name: Phase 6 reproducibility and security evidence
+        run: |
+          docker compose --env-file infrastructure/mvp.env.example -p aegis-integration exec -T api python -m scripts.demo_seed > "$RUNNER_TEMP/demo-seed.json"
+          docker compose --env-file infrastructure/mvp.env.example -p aegis-integration exec -T api python -m scripts.demo_seed --benchmark > "$RUNNER_TEMP/pipeline.json"
+          docker compose --env-file infrastructure/mvp.env.example -p aegis-integration exec -T api python -m scripts.demo_security > "$RUNNER_TEMP/security-demo.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: local-mvp-evidence
+          path: |
+            ${{ runner.temp }}/demo-seed.json
+            ${{ runner.temp }}/pipeline.json
+            ${{ runner.temp }}/security-demo.json
       - name: Live browser acceptance
         env:
           AEGIS_E2E_EXTERNAL_SERVER: "1"
@@ -49,6 +61,7 @@ jobs:
           enable-cache: true
       - run: uv sync --frozen --python 3.12
       - run: make check-backend
+      - run: uv run python -m aegis.intelligence.assessment --profile offline --rounds 1 --output /tmp/aegis-offline-assessment.json
   frontend:
     runs-on: ubuntu-latest
     timeout-minutes: 10
