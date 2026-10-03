@@ -1,0 +1,56 @@
+{
+  "dataset_version": "gold_v2",
+  "review_date": "2026-10-03",
+  "reviewer_method": "Single agent manual semantic review of every sample before new model inference; NOT independent human adjudication. Human sign-off pending. No thresholds, rules, taxonomies or weights tuned.",
+  "license": "CC0-1.0",
+  "sample_count": 16,
+  "entity_mentions": 17,
+  "event_sentences": 12,
+  "topic_labels": [
+    "business.earnings",
+    "commodities",
+    "economy",
+    "politics.policy",
+    "regional",
+    "technology",
+    "technology.ai"
+  ],
+  "sentiment_counts": {
+    "positive": 7,
+    "negative": 3,
+    "neutral": 3,
+    "mixed": 3
+  },
+  "media_samples": 2,
+  "changed_samples": 2,
+  "changed_label_decisions": 2,
+  "known_limitations": [
+    "Small synthetic English set; not representative real-world news",
+    "One agent reviewer; independent human sign-off pending; no inter-annotator agreement",
+    "Ambiguous institutional/location names, sentiment intentions, overlapping topic labels and missing cultural event subtype",
+    "Coarse one-partner retrieval judgments are incomplete",
+    "Candidate resolution is a tiny supplied-candidate task, not global linking"
+  ],
+  "files": {
+    "ml/datasets/gold/assessment-v1.json": {
+      "sha256": "449d71b36ca958dfa0bb4acf5a722c932efb9f84ed28bcdbdc5364403ad6cd4b",
+      "bytes": 34344
+    },
+    "ml/datasets/gold/assessment-v2.json": {
+      "sha256": "8d883d34bdfedeec290a5a35a9606c8aec1a85f6421166712f0c8b6c6c394a1f",
+      "bytes": 34434
+    },
+    "ml/datasets/gold/adjudication-v2.json": {
+      "sha256": "67d3b136bf4290701e461b220364703113140a3e0a58c4f0942af86c17d45615",
+      "bytes": 45488
+    },
+    "data/samples/demo-image.png": {
+      "sha256": "7272e49f2b1a00b5d287816b9d63900fd3aa1b8278230346326b434042cc0f15",
+      "bytes": 690
+    },
+    "ml/datasets/gold/ADJUDICATION-v2.md": {
+      "sha256": "7a2aa95c5d1c10dad197e0011a5f643c0c95a1bfe84a3d84a9aa83a4e8ef25b4",
+      "bytes": 7093
+    }
+  }
+}

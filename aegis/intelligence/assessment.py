@@ -4,6 +4,7 @@ import argparse
 import asyncio
 import hashlib
 import json
+import math
 import platform
 import statistics
 import time
@@ -146,7 +147,7 @@ def latency_report(samples: Sequence[float]) -> dict[str, float | int]:
     return {
         "count": len(samples),
         "median_ms": statistics.median(samples),
-        "p95_ms": ordered[min(len(ordered) - 1, int(0.95 * len(ordered)))],
+        "p95_ms": ordered[math.ceil(0.95 * len(ordered)) - 1],
         "total_ms": sum(samples),
     }
 
