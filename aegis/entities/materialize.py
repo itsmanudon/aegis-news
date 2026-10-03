@@ -3,6 +3,7 @@
 from uuid import NAMESPACE_URL, uuid5
 
 from aegis.domain.models import AnalysisResult, EntityExtractionResult, EntityMention, NewsDocument
+from aegis.entities.spans import span_matches
 
 
 def materialize_mentions(
@@ -18,7 +19,7 @@ def materialize_mentions(
     for index, output in enumerate(analysis.outputs):
         if not isinstance(output, EntityExtractionResult):
             raise ValueError("expected entity extraction output")
-        if document.text[output.start_offset : output.end_offset] != output.surface:
+        if not span_matches(document.text, output.surface, output.start_offset, output.end_offset):
             raise ValueError("extraction evidence does not match document revision")
         mentions.append(
             EntityMention(

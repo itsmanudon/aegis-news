@@ -25,6 +25,8 @@ Light works on CPU; full works on CPU but zero-shot classification is slow. GPU 
 and configurable via `ModelSpec.device`; actual memory/latency depends on hardware and text size.
 Weights are lazy-loaded and cached; zero-shot tasks share one model, and a runtime serializes
 model inference. Production workers should limit concurrent AI activities on each machine.
+Custom ModelSpecs with different inference settings may cache separate copies of otherwise
+identical weights; account for that extra memory when constructing custom profiles.
 
 The explicit `offline` profile uses capitalization NER, keyword topics/events, lexicon sentiment
 and 64-dimensional token hash vectors. Hash vectors are **not semantic embeddings**. This profile

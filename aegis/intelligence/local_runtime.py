@@ -1,13 +1,14 @@
 """Lazy, cached local Hugging Face inference; imports never download weights."""
 
 import importlib
+import operator
 from collections.abc import Sequence
 from importlib.metadata import PackageNotFoundError, version
 from threading import RLock
 from typing import Any
 
 from aegis.intelligence.config import ModelSpec
-from aegis.intelligence.errors import ModelUnavailable
+from aegis.intelligence.errors import InvalidPrediction, ModelUnavailable
 from aegis.intelligence.runtime import Prediction, normalize_vector
 
 
@@ -134,7 +135,13 @@ class LocalRuntime:
                 kinds = {"ORG": "organization", "PER": "person", "LOC": "location"}
                 for chunk, offset in chunks:
                     for item in model(chunk, aggregation_strategy="simple"):
-                        start, end = int(item["start"]) + offset, int(item["end"]) + offset
+                        try:
+                            start, end = operator.index(item["start"]), operator.index(item["end"])
+                        except (KeyError, TypeError) as exc:
+                            raise InvalidPrediction("NER offsets must be integers") from exc
+                        if not 0 <= start < end <= len(chunk):
+                            raise InvalidPrediction("NER offsets exceed inference chunk bounds")
+                        start, end = start + offset, end + offset
                         predictions.append(
                             {
                                 "surface": text[start:end],

@@ -67,6 +67,30 @@ def test_zero_shot_tasks_share_one_loaded_model(monkeypatch):
     assert topics is events is classification
 
 
+async def test_local_ner_rejects_lossy_or_out_of_chunk_offsets(news_document, monkeypatch):
+    from aegis.intelligence.config import ModelSpec
+    from aegis.intelligence.errors import InvalidPrediction
+    from aegis.intelligence.local_runtime import LocalRuntime
+    from aegis.intelligence.providers import Entities
+
+    class Model:
+        tokenizer = Tokenizer()
+
+        def __init__(self, start, end):
+            self.start, self.end = start, end
+
+        def __call__(self, text, **kwargs):
+            return [{"start": self.start, "end": self.end, "entity_group": "ORG", "score": 0.8}]
+
+    runtime = LocalRuntime()
+    spec = ModelSpec(backend="transformers", model_name="small-test", revision="a" * 40)
+    for start, end in ((0.2, 9.9), (0, len(news_document.text) + 10)):
+        model = Model(start, end)
+        monkeypatch.setattr(runtime, "_load", lambda task, spec, loaded=model: loaded)
+        with pytest.raises(InvalidPrediction):
+            await Entities(spec, runtime).extract(news_document)
+
+
 async def test_transformer_loader_uses_pinned_offline_models(news_document, monkeypatch):
     import sys
 

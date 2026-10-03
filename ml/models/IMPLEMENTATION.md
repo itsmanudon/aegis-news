@@ -25,3 +25,25 @@ Light uses NER + sentiment + MiniLM on CPU, with explicit rules for topics and e
 BART MNLI and MPNet. Offline uses deterministic baselines (including nonsemantic hash vectors)
 and is for wiring/evaluation smoke tests only. Runtime metadata includes pinned model identity,
 configuration, taxonomy, implementation and library versions. Persistence reuses analyses JSONB.
+
+## Completion record
+
+Implemented all four steps in the isolated feat/ai-intelligence worktree. Offline tests cover
+the complete pipeline, immutable envelopes, metadata/configuration hashing, provider replacement,
+model loader arguments, token windows, resolution, revisions, persistence, payload conversion,
+failure handling and independently hand-computed evaluation metrics.
+
+Independent review identified invalid upper-bound span acceptance and zero-margin exact-tie
+resolution. Both were reproduced with failing regression tests and fixed. Raw local NER offsets
+also reject lossy integer coercion and out-of-chunk bounds. Domain/contracts/interfaces remain
+unchanged. The reviewer set aside ingestion registration, candidate retrieval, canonical-event
+materialization, actual weight benchmarks and DB service checks as intentionally outside this
+branch's scope; integration/docs explicitly describe these responsibilities and limits.
+
+Custom ModelSpecs with different inference settings can cache separate copies of the same
+weights; built-in full-profile zero-shot tasks share one model. This optimization is deferred.
+No schema migration, external MLflow requirement, main edit, merge or push was made.
+
+Full checks: Ruff formatting/lint, strict mypy, pytest, schema export, offline evaluation and
+manifest export. The optional migration round-trip check could not authenticate to the local
+PostgreSQL service; no migration files changed. Pretrained weights were not downloaded in tests.

@@ -13,6 +13,7 @@ from aegis.domain.models import (
     EntityResolutionResult,
     NewsDocument,
 )
+from aegis.entities.spans import span_matches
 from aegis.intelligence.common import envelope, validate_document
 from aegis.intelligence.config import ModelSpec
 
@@ -66,7 +67,7 @@ class Resolver:
             return None, 0.0
         entity_id, score = ranks[0]
         if score < self.threshold or (
-            len(ranks) > 1 and score - ranks[1][1] < self.ambiguity_margin
+            len(ranks) > 1 and (score == ranks[1][1] or score - ranks[1][1] < self.ambiguity_margin)
         ):
             return None, 0.0
         return entity_id, score
@@ -84,7 +85,9 @@ class Resolver:
             EntityMention.model_validate(mention.model_dump())
             if mention.document_id != document.document_id:
                 raise ValueError("mention belongs to another document")
-            if document.text[mention.start_offset : mention.end_offset] != mention.surface:
+            if not span_matches(
+                document.text, mention.surface, mention.start_offset, mention.end_offset
+            ):
                 raise ValueError("mention evidence does not match document")
             entity_id, score = self.choose(self.rank(mention.surface, candidates))
             outputs.append(

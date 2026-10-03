@@ -21,6 +21,7 @@ from aegis.domain.models import (
     SentimentResult,
     TopicResult,
 )
+from aegis.entities.spans import span_matches
 from aegis.intelligence.common import envelope, validate_document
 from aegis.intelligence.config import ModelSpec
 from aegis.intelligence.errors import IntelligenceError, InvalidPrediction
@@ -78,7 +79,9 @@ class Entities(TaskProvider):
                 for p in predictions
             )
             for output in outputs:
-                if document.text[output.start_offset : output.end_offset] != output.surface:
+                if not span_matches(
+                    document.text, output.surface, output.start_offset, output.end_offset
+                ):
                     raise InvalidPrediction("NER span does not match document text")
             outputs = tuple(o for o in outputs if o.confidence >= self.spec.threshold)
         except (KeyError, TypeError, ValidationError) as exc:
@@ -145,7 +148,9 @@ class Sentiment(TaskProvider):
             EntityMention.model_validate(mention.model_dump())
             if mention.document_id != document.document_id:
                 raise ValueError("mention belongs to another document")
-            if document.text[mention.start_offset : mention.end_offset] != mention.surface:
+            if not span_matches(
+                document.text, mention.surface, mention.start_offset, mention.end_offset
+            ):
                 raise ValueError("mention span does not match document")
         sentences = []
         for match in re.finditer(r"[^.!?]+[.!?]?", document.text):

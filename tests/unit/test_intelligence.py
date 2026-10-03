@@ -280,3 +280,76 @@ async def test_invalid_confidence_is_not_filtered_away(news):
 
     with pytest.raises(InvalidPrediction):
         await Entities(profile("offline").ner, Bad()).extract(news)
+
+
+async def test_oversized_spans_fail_at_all_model_evidence_boundaries(news, now, analysis):
+    from aegis.domain.models import EntityExtractionResult, EntityMention
+    from aegis.entities.materialize import materialize_mentions
+    from aegis.intelligence.config import profile
+    from aegis.intelligence.errors import InvalidPrediction
+    from aegis.intelligence.providers import Entities, Sentiment
+    from aegis.intelligence.resolution import Resolver
+    from aegis.intelligence.runtime import BaselineRuntime
+
+    class Oversized:
+        metadata = {}
+
+        def predict(self, task, text, spec, labels=()):
+            return [
+                {
+                    "surface": text,
+                    "start": 0,
+                    "end": len(text) + 10,
+                    "kind": "organization",
+                    "score": 0.8,
+                }
+            ]
+
+    with pytest.raises(InvalidPrediction):
+        await Entities(profile("offline").ner, Oversized()).extract(news)
+    invalid = analysis.model_copy(
+        update={
+            "document_id": news.document_id,
+            "analysis_type": "entity_extraction",
+            "outputs": (
+                EntityExtractionResult(
+                    surface=news.text,
+                    start_offset=0,
+                    end_offset=len(news.text) + 10,
+                    predicted_kind="organization",
+                    confidence=0.8,
+                ),
+            ),
+        }
+    )
+    with pytest.raises(ValueError):
+        materialize_mentions(news, invalid)
+    entity = Entity(
+        entity_id=new_id("ent"), canonical_name="Acme Labs", kind="organization", created_at=now
+    )
+    mention = EntityMention(
+        mention_id=new_id("mention"),
+        document_id=news.document_id,
+        surface=news.text,
+        start_offset=0,
+        end_offset=len(news.text) + 10,
+        entity_id=entity.entity_id,
+        evidence_kind="fact",
+    )
+    with pytest.raises(ValueError):
+        await Resolver().resolve(news, (mention,), (entity,))
+    with pytest.raises(ValueError):
+        await Sentiment(profile("offline").sentiment, BaselineRuntime()).analyze_entity(
+            news, entity, (mention,)
+        )
+
+
+def test_exact_entity_ties_remain_unresolved_with_zero_margin(now):
+    from aegis.intelligence.resolution import Resolver
+
+    a = Entity(
+        entity_id=new_id("ent"), canonical_name="Acme Labs", kind="organization", created_at=now
+    )
+    b = a.model_copy(update={"entity_id": new_id("ent")})
+    resolver = Resolver(ambiguity_margin=0)
+    assert resolver.choose(resolver.rank("Acme Labs", (a, b))) == (None, 0.0)

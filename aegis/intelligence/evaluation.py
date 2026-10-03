@@ -19,6 +19,7 @@ from aegis.domain.models import (
     NewsDocument,
     NewsEvent,
 )
+from aegis.entities.spans import span_matches
 from aegis.intelligence.engine import IntelligenceEngine, build_engine
 from aegis.intelligence.errors import NoPredictions
 from aegis.intelligence.extensions import EventClassifier
@@ -79,7 +80,9 @@ class GoldSample(BaseModel):
             raise ValueError("unknown gold sentiment")
         for mention in self.mentions:
             span = mention.extraction
-            if self.document.text[span.start_offset : span.end_offset] != span.surface:
+            if not span_matches(
+                self.document.text, span.surface, span.start_offset, span.end_offset
+            ):
                 raise ValueError("gold span does not match document")
             if mention.entity_id and mention.entity_id not in {
                 c.entity_id for c in self.candidates
