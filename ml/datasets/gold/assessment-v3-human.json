@@ -1,0 +1,1147 @@
+{
+  "version": "gold_v3_human",
+  "license": "CC0-1.0",
+  "annotation_status": "Independent human review completed",
+  "cases": [
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+          "ingestion_id": "ing_b34eac5c-f326-58d1-88f1-ecf868111f54",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic business: Atlas Labs",
+          "text": "Atlas Labs reported quarterly earnings with strong profit growth.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "Atlas Labs",
+              "start_offset": 0,
+              "end_offset": 10,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_260cfe14-3b9d-5328-83f1-6d25a3729415"
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_260cfe14-3b9d-5328-83f1-6d25a3729415",
+            "canonical_name": "Atlas Labs",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "business.earnings",
+        "sentiment": "positive",
+        "event": "company.earnings",
+        "event_summary": "Atlas Labs reported quarterly earnings with strong profit growth."
+      },
+      "category": "business",
+      "expected_events": [
+        {
+          "event_type": "company.earnings",
+          "evidence_text": "Atlas Labs reported quarterly earnings with strong profit growth."
+        }
+      ],
+      "relevant_documents": [
+        "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf"
+      ],
+      "media_path": null,
+      "annotation_note": "Named lab reports financial results; exact organization span and sole supplied candidate are coherent. Strong profit growth is positive. Ambiguity: None identified within this short synthetic statement.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "business.earnings",
+          "sentiment": "positive",
+          "event": "company.earnings",
+          "entities": [
+            {
+              "surface": "Atlas Labs",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 10,
+              "entity_id": "ent_260cfe14-3b9d-5328-83f1-6d25a3729415"
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+          "ingestion_id": "ing_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic business: Meridian Works",
+          "text": "Meridian Works posted a quarterly revenue surplus after costs improved.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "Meridian Works",
+              "start_offset": 0,
+              "end_offset": 14,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_c92b79e6-f230-5537-ab3d-e0aed64b4389"
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_c92b79e6-f230-5537-ab3d-e0aed64b4389",
+            "canonical_name": "Meridian Works",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "business.earnings",
+        "sentiment": "positive",
+        "event": "company.earnings",
+        "event_summary": "Meridian Works posted a quarterly revenue surplus after costs improved."
+      },
+      "category": "business",
+      "expected_events": [
+        {
+          "event_type": "company.earnings",
+          "evidence_text": "Meridian Works posted a quarterly revenue surplus after costs improved."
+        }
+      ],
+      "relevant_documents": [
+        "doc_b34eac5c-f326-58d1-88f1-ecf868111f54"
+      ],
+      "media_path": null,
+      "annotation_note": "Quarterly revenue surplus is a financial-results report even without the literal earnings keyword; costs improved is positive. Ambiguity: Revenue surplus is nonstandard financial phrasing; retain broad earnings interpretation, not a keyword-driven label.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "business.earnings",
+          "sentiment": "positive",
+          "event": "company.earnings",
+          "entities": [
+            {
+              "surface": "Meridian Works",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 14,
+              "entity_id": "ent_c92b79e6-f230-5537-ab3d-e0aed64b4389"
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+          "ingestion_id": "ing_1caf1220-e699-56e1-ba5b-31e2995550af",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic economics: Delta Bank",
+          "text": "Delta Bank announced an interest rate hike as inflation rose.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "Delta Bank",
+              "start_offset": 0,
+              "end_offset": 10,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_19a52ce4-5aea-560c-bd57-4ea61c288506"
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_19a52ce4-5aea-560c-bd57-4ea61c288506",
+            "canonical_name": "Delta Bank",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "economy",
+        "sentiment": "neutral",
+        "event": "economy.rate_change",
+        "event_summary": "Delta Bank announced an interest rate hike as inflation rose."
+      },
+      "category": "economics",
+      "expected_events": [
+        {
+          "event_type": "economy.rate_change",
+          "evidence_text": "Delta Bank announced an interest rate hike as inflation rose."
+        }
+      ],
+      "relevant_documents": [
+        "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199"
+      ],
+      "media_path": null,
+      "annotation_note": "Named bank acts institutionally. Rate hike as inflation rose has no stated beneficiary or adverse outcome; neutral is retained. Ambiguity: Rate hikes may help savers or harm borrowers; no target-specific sentiment is asserted.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "economy",
+          "sentiment": "neutral",
+          "event": "economy.rate_change",
+          "entities": [
+            {
+              "surface": "Delta Bank",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 10,
+              "entity_id": "ent_19a52ce4-5aea-560c-bd57-4ea61c288506"
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+          "ingestion_id": "ing_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic economics: Reserve Council",
+          "text": "Reserve Council reduced borrowing costs to support the economy.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "Reserve Council",
+              "start_offset": 0,
+              "end_offset": 15,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_37587e6a-e774-5dea-986b-0245426ab2ba"
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_37587e6a-e774-5dea-986b-0245426ab2ba",
+            "canonical_name": "Reserve Council",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "economy",
+        "sentiment": "positive",
+        "event": "economy.rate_change",
+        "event_summary": "Reserve Council reduced borrowing costs to support the economy."
+      },
+      "category": "economics",
+      "expected_events": [
+        {
+          "event_type": "economy.rate_change",
+          "evidence_text": "Reserve Council reduced borrowing costs to support the economy."
+        }
+      ],
+      "relevant_documents": [
+        "doc_1caf1220-e699-56e1-ba5b-31e2995550af"
+      ],
+      "media_path": null,
+      "annotation_note": "Council acts as an institution. Reduced borrowing costs describes a rate change and a beneficial stated direction. Ambiguity: Support is a policy intention, not demonstrated economic success; neutral is also defensible.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "economy",
+          "sentiment": "positive",
+          "event": "economy.rate_change",
+          "entities": [
+            {
+              "surface": "Reserve Council",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 15,
+              "entity_id": "ent_37587e6a-e774-5dea-986b-0245426ab2ba"
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+          "ingestion_id": "ing_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic technology: Pixel Forge",
+          "text": "Pixel Forge launched new artificial intelligence software with improved reliability.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "Pixel Forge",
+              "start_offset": 0,
+              "end_offset": 11,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_c4f06008-87c0-5f34-b690-43548e789303"
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_c4f06008-87c0-5f34-b690-43548e789303",
+            "canonical_name": "Pixel Forge",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "technology.ai",
+        "sentiment": "positive",
+        "event": "company.product_launch",
+        "event_summary": "Pixel Forge launched new artificial intelligence software with improved reliability."
+      },
+      "category": "technology",
+      "expected_events": [
+        {
+          "event_type": "company.product_launch",
+          "evidence_text": "Pixel Forge launched new artificial intelligence software with improved reliability."
+        }
+      ],
+      "relevant_documents": [
+        "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8"
+      ],
+      "media_path": null,
+      "annotation_note": "Named software developer launches an AI product. Improved reliability provides explicit positive valence. Ambiguity: No independent evidence validates the reliability claim; annotate the reported statement only.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "technology.ai",
+          "sentiment": "positive",
+          "event": "company.product_launch",
+          "entities": [
+            {
+              "surface": "Pixel Forge",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 11,
+              "entity_id": "ent_c4f06008-87c0-5f34-b690-43548e789303"
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+          "ingestion_id": "ing_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic technology: Orion Systems",
+          "text": "Orion Systems unveiled a machine learning tool after a failed trial. IBM supported the launch.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "Orion Systems",
+              "start_offset": 0,
+              "end_offset": 13,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_24961513-6d73-528f-bde7-fc6f03e22f30"
+          },
+          {
+            "extraction": {
+              "surface": "IBM",
+              "start_offset": 69,
+              "end_offset": 72,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": null
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_24961513-6d73-528f-bde7-fc6f03e22f30",
+            "canonical_name": "Orion Systems",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "technology.ai",
+        "sentiment": "mixed",
+        "event": "company.product_launch",
+        "event_summary": "Orion Systems unveiled a machine learning tool after a failed trial."
+      },
+      "category": "technology",
+      "expected_events": [
+        {
+          "event_type": "company.product_launch",
+          "evidence_text": "Orion Systems unveiled a machine learning tool after a failed trial."
+        }
+      ],
+      "relevant_documents": [
+        "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d"
+      ],
+      "media_path": null,
+      "annotation_note": "Orion Systems and IBM are organizations at exact spans. Product launch follows failure, so mixed is retained. IBM has no supplied candidate and remains unresolved. Ambiguity: Launch is not proof of success; mixed reflects recovery/launch plus an explicit failed trial. Supporting an existing launch is not a second launch event.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "technology.ai",
+          "sentiment": "mixed",
+          "event": "company.product_launch",
+          "entities": [
+            {
+              "surface": "Orion Systems",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 13,
+              "entity_id": "ent_24961513-6d73-528f-bde7-fc6f03e22f30"
+            },
+            {
+              "surface": "IBM",
+              "kind": "organization",
+              "start_offset": 69,
+              "end_offset": 72,
+              "entity_id": null
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+          "ingestion_id": "ing_21856760-2c73-526b-81ed-e1b15e11408c",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic public-policy: River Parliament",
+          "text": "River Parliament passed legislation and a new law on water permits.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "River Parliament",
+              "start_offset": 0,
+              "end_offset": 16,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_5cb8a568-422c-5898-856e-3e0104947295"
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_5cb8a568-422c-5898-856e-3e0104947295",
+            "canonical_name": "River Parliament",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "politics.policy",
+        "sentiment": "neutral",
+        "event": "policy.change",
+        "event_summary": "River Parliament passed legislation and a new law on water permits."
+      },
+      "category": "public-policy",
+      "expected_events": [
+        {
+          "event_type": "policy.change",
+          "evidence_text": "River Parliament passed legislation and a new law on water permits."
+        }
+      ],
+      "relevant_documents": [
+        "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084"
+      ],
+      "media_path": null,
+      "annotation_note": "Parliament acts institutionally. Legislation changes policy with no stated valence. Ambiguity: Policy effects are unspecified.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "politics.policy",
+          "sentiment": "neutral",
+          "event": "policy.change",
+          "entities": [
+            {
+              "surface": "River Parliament",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 16,
+              "entity_id": "ent_5cb8a568-422c-5898-856e-3e0104947295"
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+          "ingestion_id": "ing_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic public-policy: Metro Council",
+          "text": "Metro Council adopted a public policy change to protect drinking water.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "Metro Council",
+              "start_offset": 0,
+              "end_offset": 13,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": null
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_0f96385d-8426-5bb1-89eb-07bf0b745182",
+            "canonical_name": "Metro Council",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          },
+          {
+            "entity_id": "ent_37757518-b631-5904-bfb7-803adf53a070",
+            "canonical_name": "Metro Council",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "politics.policy",
+        "sentiment": "positive",
+        "event": "policy.change",
+        "event_summary": "Metro Council adopted a public policy change to protect drinking water."
+      },
+      "category": "public-policy",
+      "expected_events": [
+        {
+          "event_type": "policy.change",
+          "evidence_text": "Metro Council adopted a public policy change to protect drinking water."
+        }
+      ],
+      "relevant_documents": [
+        "doc_21856760-2c73-526b-81ed-e1b15e11408c"
+      ],
+      "media_path": null,
+      "annotation_note": "Adoption of a water-protection policy is the same primary policy subject as legislation; use politics.policy consistently. Two identical council candidates require abstention. Ambiguity: politics/public-policy is an overlapping canonical label; choose the policy-specific label by subject, not model keywords. Protection is intent; neutral sentiment is defensible.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "politics.policy",
+          "sentiment": "positive",
+          "event": "policy.change",
+          "entities": [
+            {
+              "surface": "Metro Council",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 13,
+              "entity_id": null
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+          "ingestion_id": "ing_f349d1cb-92c2-5856-a63c-265eb852b592",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic regional: Harbor Council",
+          "text": "Harbor Council opened a regional library for local residents.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "Harbor Council",
+              "start_offset": 0,
+              "end_offset": 14,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_94dcebe8-4dd1-5214-9e04-7b2191ec51ce"
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_94dcebe8-4dd1-5214-9e04-7b2191ec51ce",
+            "canonical_name": "Harbor Council",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "regional",
+        "sentiment": "positive",
+        "event": "general",
+        "event_summary": "Harbor Council opened a regional library for local residents."
+      },
+      "category": "regional",
+      "expected_events": [],
+      "relevant_documents": [
+        "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06"
+      ],
+      "media_path": null,
+      "annotation_note": "Council is an institutional actor. Library opening is a community benefit under the retained annotation policy, but no existing event subtype represents it. Ambiguity: Positive valence is inferred from a new public service; neutral is defensible. Event taxonomy lacks civic-service opening.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "regional",
+          "sentiment": "positive",
+          "event": "general",
+          "entities": [
+            {
+              "surface": "Harbor Council",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 14,
+              "entity_id": "ent_94dcebe8-4dd1-5214-9e04-7b2191ec51ce"
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+          "ingestion_id": "ing_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic regional: Cedar District",
+          "text": "Cedar District repaired municipal roads after storm damage.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "Cedar District",
+              "start_offset": 0,
+              "end_offset": 14,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_4d5bef48-808f-589c-a7cb-ae614d261609"
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_4d5bef48-808f-589c-a7cb-ae614d261609",
+            "canonical_name": "Cedar District",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "regional",
+        "sentiment": "mixed",
+        "event": "general",
+        "event_summary": "Cedar District repaired municipal roads after storm damage."
+      },
+      "category": "regional",
+      "expected_events": [],
+      "relevant_documents": [
+        "doc_f349d1cb-92c2-5856-a63c-265eb852b592"
+      ],
+      "media_path": null,
+      "annotation_note": "District acts institutionally and the fixture supplies an organization candidate. Repair plus storm damage supports mixed sentiment. Ambiguity: Cedar District can denote a location or governing institution; organization is retained from its agency/candidate context. Taxonomy lacks road repair/disaster recovery.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "regional",
+          "sentiment": "mixed",
+          "event": "general",
+          "entities": [
+            {
+              "surface": "Cedar District",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 14,
+              "entity_id": "ent_4d5bef48-808f-589c-a7cb-ae614d261609"
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+          "ingestion_id": "ing_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic commodity: Copper Basin",
+          "text": "Copper Basin reported a mine closure and supply disruption after a pipeline outage.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "Copper Basin",
+              "start_offset": 0,
+              "end_offset": 12,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_6335f007-6ae4-5c28-bd32-ff5e398e2882"
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_6335f007-6ae4-5c28-bd32-ff5e398e2882",
+            "canonical_name": "Copper Basin",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "commodities",
+        "sentiment": "negative",
+        "event": "commodity.supply_disruption",
+        "event_summary": "Copper Basin reported a mine closure and supply disruption after a pipeline outage."
+      },
+      "category": "commodity",
+      "expected_events": [
+        {
+          "event_type": "commodity.supply_disruption",
+          "evidence_text": "Copper Basin reported a mine closure and supply disruption after a pipeline outage."
+        }
+      ],
+      "relevant_documents": [
+        "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f"
+      ],
+      "media_path": null,
+      "annotation_note": "Copper Basin is a reporting actor with an organization candidate. Closure/outage is adverse and fits supply disruption. Ambiguity: Name can denote a geographic basin or operator; retain institutional reading, flag type ambiguity rather than force geographic certainty.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "commodities",
+          "sentiment": "negative",
+          "event": "commodity.supply_disruption",
+          "entities": [
+            {
+              "surface": "Copper Basin",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 12,
+              "entity_id": "ent_6335f007-6ae4-5c28-bd32-ff5e398e2882"
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+          "ingestion_id": "ing_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic commodity: Wheat Cooperative",
+          "text": "Wheat Cooperative halted grain deliveries after floods.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "Wheat Cooperative",
+              "start_offset": 0,
+              "end_offset": 17,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_98fc4957-241e-589d-a2ac-311c63f531c5"
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_98fc4957-241e-589d-a2ac-311c63f531c5",
+            "canonical_name": "Wheat Cooperative",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "commodities",
+        "sentiment": "negative",
+        "event": "commodity.supply_disruption",
+        "event_summary": "Wheat Cooperative halted grain deliveries after floods."
+      },
+      "category": "commodity",
+      "expected_events": [
+        {
+          "event_type": "commodity.supply_disruption",
+          "evidence_text": "Wheat Cooperative halted grain deliveries after floods."
+        }
+      ],
+      "relevant_documents": [
+        "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf"
+      ],
+      "media_path": null,
+      "annotation_note": "Cooperative is an organization; halted deliveries after floods is adverse supply disruption even without trigger keywords. Ambiguity: Taxonomy does not separately represent flooding; retain the stated delivery-disruption event.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "commodities",
+          "sentiment": "negative",
+          "event": "commodity.supply_disruption",
+          "entities": [
+            {
+              "surface": "Wheat Cooperative",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 17,
+              "entity_id": "ent_98fc4957-241e-589d-a2ac-311c63f531c5"
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+          "ingestion_id": "ing_ed389241-f119-5758-bd36-2cb93d7f04e9",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic cyber-security: Secure Harbor",
+          "text": "Secure Harbor confirmed a ransomware data breach in its software.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "Secure Harbor",
+              "start_offset": 0,
+              "end_offset": 13,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_915dafbf-f6ef-5582-8f09-84311f53b872"
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_915dafbf-f6ef-5582-8f09-84311f53b872",
+            "canonical_name": "Secure Harbor",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "technology",
+        "sentiment": "negative",
+        "event": "security.cyber_incident",
+        "event_summary": "Secure Harbor confirmed a ransomware data breach in its software."
+      },
+      "category": "cyber-security",
+      "expected_events": [
+        {
+          "event_type": "security.cyber_incident",
+          "evidence_text": "Secure Harbor confirmed a ransomware data breach in its software."
+        }
+      ],
+      "relevant_documents": [
+        "doc_3ad07721-600e-5882-b87f-85a53a44ea66"
+      ],
+      "media_path": null,
+      "annotation_note": "Named organization reports ransomware/data breach; adverse cyber incident and technology topic are coherent. Ambiguity: No claim is made about real organizations or actual incidents.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "technology",
+          "sentiment": "negative",
+          "event": "security.cyber_incident",
+          "entities": [
+            {
+              "surface": "Secure Harbor",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 13,
+              "entity_id": "ent_915dafbf-f6ef-5582-8f09-84311f53b872"
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+          "ingestion_id": "ing_3ad07721-600e-5882-b87f-85a53a44ea66",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic cyber-security: Beacon Network",
+          "text": "Beacon Network restored services after a cyberattack caused failure.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "Beacon Network",
+              "start_offset": 0,
+              "end_offset": 14,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_de20766a-c69d-546e-b996-ab8043e01904"
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_de20766a-c69d-546e-b996-ab8043e01904",
+            "canonical_name": "Beacon Network",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "technology",
+        "sentiment": "mixed",
+        "event": "security.cyber_incident",
+        "event_summary": "Beacon Network restored services after a cyberattack caused failure."
+      },
+      "category": "cyber-security",
+      "expected_events": [
+        {
+          "event_type": "security.cyber_incident",
+          "evidence_text": "Beacon Network restored services after a cyberattack caused failure."
+        }
+      ],
+      "relevant_documents": [
+        "doc_ed389241-f119-5758-bd36-2cb93d7f04e9"
+      ],
+      "media_path": null,
+      "annotation_note": "Named network restores service following a harmful cyberattack; mixed outcome and cyber incident are explicit. Ambiguity: Network can denote infrastructure or operator; institutional agency supports organization. Restoration does not erase harm.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "technology",
+          "sentiment": "mixed",
+          "event": "security.cyber_incident",
+          "entities": [
+            {
+              "surface": "Beacon Network",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 14,
+              "entity_id": "ent_de20766a-c69d-546e-b996-ab8043e01904"
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+          "ingestion_id": "ing_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic media: City Museum",
+          "text": "City Museum unveiled a technology exhibit with a regional illustration.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "City Museum",
+              "start_offset": 0,
+              "end_offset": 11,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_8c08a315-49f6-5547-8b94-0f804e5d0afe"
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_8c08a315-49f6-5547-8b94-0f804e5d0afe",
+            "canonical_name": "City Museum",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "regional",
+        "sentiment": "neutral",
+        "event": "general",
+        "event_summary": "City Museum unveiled a technology exhibit with a regional illustration."
+      },
+      "category": "media",
+      "expected_events": [],
+      "relevant_documents": [
+        "doc_674c56f6-5f02-553e-998f-e2b0748c0dec"
+      ],
+      "media_path": "data/samples/demo-image.png",
+      "annotation_note": "Museum is an institution. A cultural exhibit opening is not evidence of a company product launch: use general and no typed extracted event. Regional is the closest existing primary-subject label. Ambiguity: Canonical taxonomy has no culture/exhibition event or topic. Technology is exhibit content, not necessarily the primary news beat; regional/general are both plausible. Report the representability gap.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "regional",
+          "sentiment": "neutral",
+          "event": "general",
+          "entities": [
+            {
+              "surface": "City Museum",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 11,
+              "entity_id": "ent_8c08a315-49f6-5547-8b94-0f804e5d0afe"
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    },
+    {
+      "sample": {
+        "document": {
+          "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+          "ingestion_id": "ing_674c56f6-5f02-553e-998f-e2b0748c0dec",
+          "source_id": "src_39213845-e905-5ce0-9a24-c7e3de0b9f25",
+          "title": "Synthetic media: Valley Gallery",
+          "text": "Valley Gallery opened a municipal photo exhibition showing improved access.",
+          "language": "en",
+          "published_at": "2020-01-01T00:00:00Z",
+          "first_seen_at": "2024-01-01T00:00:00Z",
+          "ingested_at": "2024-01-01T00:00:00Z",
+          "created_at": "2024-01-01T00:00:00Z"
+        },
+        "mentions": [
+          {
+            "extraction": {
+              "surface": "Valley Gallery",
+              "start_offset": 0,
+              "end_offset": 14,
+              "predicted_kind": "organization",
+              "confidence": 1.0
+            },
+            "entity_id": "ent_80e71265-33fc-5b26-b1e6-3ab4a8bd5012"
+          }
+        ],
+        "candidates": [
+          {
+            "entity_id": "ent_80e71265-33fc-5b26-b1e6-3ab4a8bd5012",
+            "canonical_name": "Valley Gallery",
+            "kind": "organization",
+            "created_at": "2024-01-01T00:00:00Z"
+          }
+        ],
+        "topic": "regional",
+        "sentiment": "positive",
+        "event": "general",
+        "event_summary": "Valley Gallery opened a municipal photo exhibition showing improved access."
+      },
+      "category": "media",
+      "expected_events": [],
+      "relevant_documents": [
+        "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe"
+      ],
+      "media_path": "data/samples/demo-image.png",
+      "annotation_note": "Gallery is an institution; improved access is positive. Regional/general labels retain the cultural/local-news interpretation. Ambiguity: Taxonomy lacks culture/exhibition opening. Actual sentiment toward the artwork is not specified.",
+      "adjudication": {
+        "status": "reviewed",
+        "original_labels": {
+          "topic": "regional",
+          "sentiment": "positive",
+          "event": "general",
+          "entities": [
+            {
+              "surface": "Valley Gallery",
+              "kind": "organization",
+              "start_offset": 0,
+              "end_offset": 14,
+              "entity_id": "ent_80e71265-33fc-5b26-b1e6-3ab4a8bd5012"
+            }
+          ]
+        },
+        "changes": [],
+        "notes": ""
+      }
+    }
+  ],
+  "source_version": "gold_v2"
+}

@@ -2,3 +2,4 @@
 ml/datasets/gold/*.json text eol=lf
 ml/datasets/gold/*.md text eol=lf
 ml/evaluation/results/gold-v2-*.json text eol=lf
+ml/evaluation/results/gold-v3-*.json text eol=lf

@@ -1,12 +1,35 @@
-# Original synthetic assessment set
+# Gold evaluation dataset history
 
-Reviewed version: [gold v2](assessment-v2.json), [review record](ADJUDICATION-v2.md),
-[field-level decisions](adjudication-v2.json), [integrity manifest](manifest-v2.json).
-The review is a single agent pass, **not independent human adjudication**. Two label
-decisions changed; all 16 texts and 17 spans are preserved, with 12 typed event
-sentences after removing the museum/company-launch mismatch. Human sign-off is pending.
-Both profiles were rerun using this exact set; [results and limitations](../../../docs/evaluation/light-vs-offline.md).
-The sections below describe the unchanged provisional v1, not a completed human review.
+| Version | Review status | Files |
+|---|---|---|
+| Gold v1 | Original agent-authored provisional set | [assessment-v1.json](assessment-v1.json) |
+| Gold v2 | One agent adjudication pass; never human-reviewed | [assessment-v2.json](assessment-v2.json), [decisions](adjudication-v2.json), [rationale](ADJUDICATION-v2.md), [manifest](manifest-v2.json) |
+| Gold v3 | Independent review completed by one human | [assessment-v3-human.json](assessment-v3-human.json), [manifest](manifest-v3-human.json) |
+
+Gold v3 is the current reviewed evaluation reference: all 16 cases have `status: reviewed`.
+The human accepted every v2 label: zero changed cases/fields. It preserves all documents,
+17 entity spans/types/resolution targets, 12 typed event sentences, retrieval partners
+and two image references. Original versions and historical results remain unchanged.
+
+Each case's `adjudication.original_labels` snapshots v2 topic, sentiment, event and entities
+(including offsets and resolution IDs). `pending_review` means not checked by the human;
+`reviewed` means checked. Empty `changes` means acceptance; nonempty changes require
+`field`, `old_value`, `new_value`, with `reason` when supplied, and matching current values.
+`notes` is the reviewer's text. No agent opinions were added to these review blocks.
+Inherited `annotation_note` remains historical agent-authored context, not the human's rationale.
+
+`python -m scripts.validate_gold_v3` checks review completion, original document/label
+snapshots, exact offsets, logged changes, unique IDs, taxonomy/reference validity and
+manifest hashes. It never decides whether the human's label is semantically correct.
+`--write-manifest` explicitly generates a new receipt; use it only when freezing a new
+review version, not to hide tampering. Keep a frozen dataset unchanged after benchmarking.
+
+[Gold v3 CPU/GPU evidence](../../../docs/evaluation/gold-v3-gpu.md) reports fresh runs with
+unchanged metrics/models. One reviewer, short synthetic CC0 English items, organization-heavy
+NER, incomplete retrieval judgments and tiny candidates do not establish general news quality.
+
+The sections below document the original provisional v1 methodology.
+
 
 `assessment-v1.json` contains 16 original short English items in eight categories:
 business, economics, technology, public policy, regional, commodities, cyber/security,
@@ -15,8 +38,8 @@ Names and events are fictional; IBM is merely an entity-label example, not a fac
 No article dumps, copyrighted imagery or personal data are included.
 
 Annotations were authored and manually inspected by the agent before inference.
-**Independent human adjudication is pending.** Reviewers should inspect and revise the
-labels before treating this as an academic gold standard. It is a development set,
+At v1 publication, independent human adjudication was pending; v3 records the later review.
+This remains a development-derived small set,
 not a held-out real-news test set. Do not tune the baseline to improve these scores.
 
 Each case includes human-readable text, primary topic, overall sentiment, exact entity

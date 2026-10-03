@@ -1,0 +1,48 @@
+{
+  "dataset_version": "gold_v3_human",
+  "source_version": "gold_v2",
+  "review_status": "Independent human review completed",
+  "reviewer_count": 1,
+  "reviewer_method": "Independent human review recorded by the user for all 16 cases; agent validates structure only. No model/threshold/rule tuning.",
+  "generated_at": "2026-10-03T16:40:38.547453+00:00",
+  "license": "CC0-1.0",
+  "sample_count": 16,
+  "entity_mentions": 17,
+  "event_sentences": 12,
+  "media_samples": 2,
+  "reviewed_cases": 16,
+  "changed_cases": 0,
+  "changes": 0,
+  "files": {
+    "ml/datasets/gold/assessment-v3-human.json": {
+      "sha256": "02b6d3f1c8b87ef2e0108d42082276a3dd4ae767610899b1dab8c81d5f9fafef",
+      "bytes": 42287
+    },
+    "ml/datasets/gold/assessment-v2.json": {
+      "sha256": "e8844a8d1fba59fecfd5e3e7e0298bef58ffafd17c209bba9ccf3e4770bd449b",
+      "bytes": 33599
+    },
+    "ml/datasets/gold/adjudication-v2.json": {
+      "sha256": "9f5e6e24b023f2f42641724c34151e77e4728d7cc21fad38fd1ab3a5a5ef3643",
+      "bytes": 44196
+    },
+    "ml/datasets/gold/ADJUDICATION-v2.md": {
+      "sha256": "d3f20e4f879bb01dda5c55617551672305db3ef50c02f9d662562ab56934d97a",
+      "bytes": 7048
+    },
+    "ml/datasets/gold/manifest-v2.json": {
+      "sha256": "eaac608573b2da09d4e2747712b9db3257d7529c877ab5ec9e663c771b6d5dfc",
+      "bytes": 2067
+    },
+    "data/samples/demo-image.png": {
+      "sha256": "7272e49f2b1a00b5d287816b9d63900fd3aa1b8278230346326b434042cc0f15",
+      "bytes": 690
+    }
+  },
+  "known_limitations": [
+    "One human reviewer; no inter-reviewer agreement estimate",
+    "16 short synthetic CC0 English samples, organization-heavy NER",
+    "No large real-world held-out corpus or longitudinal drift study",
+    "Incomplete coarse retrieval relevance and tiny supplied candidate sets"
+  ]
+}
