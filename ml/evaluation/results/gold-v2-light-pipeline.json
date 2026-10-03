@@ -1,0 +1,325 @@
+{
+  "profile": "light",
+  "result": "passed",
+  "device": "cpu, unchanged existing profile",
+  "topology": "Docker API/PostgreSQL/Redis/MinIO/Temporal; local optional Python worker",
+  "batches": [
+    {
+      "result": "passed",
+      "mode": "eval-light-7099b71e33f54731936bf1d00eab3940",
+      "source_id": "src_60c71647-ebb2-4ca1-9716-a45775cc26ea",
+      "documents": [
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_cc680627-f57a-4df3-aead-756256d66496",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_5724c480-aa15-4e17-b34a-2ef827ac3a2f",
+          "provenance_id": "prov_47ec2ca2-d687-5f4b-97ed-82b20e85f6d8",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_50460d85-abd2-467b-8210-60d6288e4c61",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_15fcd19a-c1e8-4d7f-91b9-41f547230cbc",
+          "provenance_id": "prov_b9b7faa3-275b-59e4-a862-1af4a2b69ee1",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_24e0aae6-257c-42ce-adf8-f2ad1aa4e16a",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_e77ef3ec-2fbd-40f2-9122-708d07cb9c1a",
+          "provenance_id": "prov_2c806261-b2aa-5d5e-8452-75ffd764793a",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_444f5f7f-e582-4a0e-8e1d-34db949337ad",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_19820800-7f25-4553-bc23-c803b8a3fe1c",
+          "provenance_id": "prov_5d029dba-24a9-57f4-ba9c-f7749a0d6ca4",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_53c3c218-cd5e-4fa0-ac6c-e45be962095e",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_c6f7f773-b898-4c87-9f4f-4081d82d076a",
+          "provenance_id": "prov_8e04c8f6-f407-5757-b6fb-eebe1213ad6d",
+          "resolve_entities": "completed"
+        }
+      ],
+      "workflow_ids": [
+        "ingestion-82ca239d0b1a4790455b61126109c7ea114cc7ba77f38e7810b4a5fd49868927",
+        "ingestion-5f47f2864eb6ba5681278b416d74bd22f4eb505c6611ec6981c2930f81122725",
+        "ingestion-b3fdf3f88847a59d970e6f73c25841f857a90679db1c04a6970fe7dc13daf6bb",
+        "ingestion-491a5d8a6a8d8feddb3e2bc29b22cfccda229f34d3735f4970e8e5adb1d4235f",
+        "ingestion-ccda1e2506a2ab99ddb74d2e2a0705d31446eeef02dfe32033d736fad48d5c6b"
+      ],
+      "counts_after": {
+        "documents": 35,
+        "analyses": 210,
+        "outbox_total": 322
+      },
+      "duplicate_stable": true,
+      "media_document_id": "doc_cc680627-f57a-4df3-aead-756256d66496",
+      "batch_wall_seconds_including_verification": 32.81680839997716,
+      "fresh_document_count": 5,
+      "batch_throughput_documents_per_second": 0.15236094683733717,
+      "history_latency": {
+        "prepare_ingestion": {
+          "count": 5,
+          "median_ms": 5446.193,
+          "p95_ms": 5593.79,
+          "total_ms": 27225.08
+        },
+        "normalize_ingestion": {
+          "count": 5,
+          "median_ms": 51.939,
+          "p95_ms": 55.077,
+          "total_ms": 250.50799999999998
+        },
+        "commit_ingestion": {
+          "count": 5,
+          "median_ms": 44.242,
+          "p95_ms": 70.506,
+          "total_ms": 240.436
+        },
+        "analyze_entities": {
+          "count": 5,
+          "median_ms": 7711.931,
+          "p95_ms": 7770.351,
+          "total_ms": 38466.562
+        },
+        "analyze_topics": {
+          "count": 5,
+          "median_ms": 84.501,
+          "p95_ms": 169.678,
+          "total_ms": 474.929
+        },
+        "analyze_sentiment": {
+          "count": 5,
+          "median_ms": 695.361,
+          "p95_ms": 808.471,
+          "total_ms": 3539.374
+        },
+        "generate_embedding": {
+          "count": 5,
+          "median_ms": 485.707,
+          "p95_ms": 543.1080000000001,
+          "total_ms": 2423.65
+        },
+        "resolve_entities": {
+          "count": 5,
+          "median_ms": 108.132,
+          "p95_ms": 158.34300000000002,
+          "total_ms": 551.831
+        },
+        "extract_events": {
+          "count": 5,
+          "median_ms": 74.182,
+          "p95_ms": 84.91600000000001,
+          "total_ms": 355.85
+        },
+        "record_provenance": {
+          "count": 5,
+          "median_ms": 146.31900000000002,
+          "p95_ms": 158.59599999999998,
+          "total_ms": 740.088
+        }
+      },
+      "total_pipeline": {
+        "count": 5,
+        "median_ms": 16458.144999999997,
+        "p95_ms": 16574.562,
+        "total_ms": 82340.093
+      },
+      "protocol": "Five concurrent short synthetic items on local Docker; activity server timestamps include I/O; no scale or pure inference claim; rerun after reset for fresh-work timing",
+      "temperature": "cold worker/model cache",
+      "persisted_models": [
+        "ProsusAI/finbert@4556d13015211d73dccd3fdd39d39232506f3e43",
+        "candidate-resolver@1",
+        "dslim/bert-base-NER@d1a3e8f13f8c3566299d95fcfc9a8d2382a9affc",
+        "keyword-events@1",
+        "keyword-topics@1",
+        "sentence-transformers/all-MiniLM-L6-v2@1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+      ],
+      "analyses_in_batch": 30
+    },
+    {
+      "result": "passed",
+      "mode": "eval-light-ef0f74b558d8479f80b29f33b3df41d0",
+      "source_id": "src_60c71647-ebb2-4ca1-9716-a45775cc26ea",
+      "documents": [
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_983dd1af-41df-411c-ab46-9666bab554f0",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_02e6f101-3900-4a27-9491-24bf8e3ee533",
+          "provenance_id": "prov_dffb8789-98b6-5e71-ad1a-f82fbe650e78",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_52b628f4-65df-4b6b-a6f7-4d4bc583375f",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_9b6bf128-b241-4c1a-92cb-f2588347e40b",
+          "provenance_id": "prov_df36797c-07f3-5c2b-b4d0-196005efd83e",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_47c2e71d-3d4d-4e56-bede-67d179b88f79",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_906e91fe-418b-4b20-b2aa-e581061c4cac",
+          "provenance_id": "prov_71048b9d-cbd3-5160-95f1-909ddf9aabac",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_103c3813-dfbf-468d-adf3-b4ce0b2ddef1",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_6bcb0bff-5e40-438a-ab74-28bb786e2ede",
+          "provenance_id": "prov_09514a4f-ffd2-59ab-a020-c4ab5dcdf96e",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_1271557c-95b3-4a85-afcf-967c1e6391d8",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_085913eb-f756-40ce-9b92-4716c28cbf1a",
+          "provenance_id": "prov_12c9b33c-7e92-5220-910b-d689a9514eb3",
+          "resolve_entities": "completed"
+        }
+      ],
+      "workflow_ids": [
+        "ingestion-a7e81125b342c905fc20cc4cd685b4e0e018dc3192462a243f0996deda75168c",
+        "ingestion-9f378d12cbb0a53a7e1ee368d21e8deecccc61dc29e4768d78f52e9d44db300b",
+        "ingestion-77f0cc32365933abd423c78dfb9fbbf5e9fb9d7307888b6a0865313e8f17c46d",
+        "ingestion-62ce8e091078ade7786bc143e2cd9bf9d86b2210212971c667fd94b91a919455",
+        "ingestion-dab52610a3ef430507671ee4d65e6004ce1700df726b3d5053547c5cb64b484a"
+      ],
+      "counts_after": {
+        "documents": 40,
+        "analyses": 240,
+        "outbox_total": 368
+      },
+      "duplicate_stable": true,
+      "media_document_id": "doc_983dd1af-41df-411c-ab46-9666bab554f0",
+      "batch_wall_seconds_including_verification": 19.89858359983191,
+      "fresh_document_count": 5,
+      "batch_throughput_documents_per_second": 0.25127416606889735,
+      "history_latency": {
+        "prepare_ingestion": {
+          "count": 5,
+          "median_ms": 72.696,
+          "p95_ms": 92.306,
+          "total_ms": 366.679
+        },
+        "normalize_ingestion": {
+          "count": 5,
+          "median_ms": 50.361999999999995,
+          "p95_ms": 55.476,
+          "total_ms": 246.345
+        },
+        "commit_ingestion": {
+          "count": 5,
+          "median_ms": 53.148,
+          "p95_ms": 81.656,
+          "total_ms": 279.492
+        },
+        "analyze_entities": {
+          "count": 5,
+          "median_ms": 135.776,
+          "p95_ms": 169.429,
+          "total_ms": 694.998
+        },
+        "analyze_topics": {
+          "count": 5,
+          "median_ms": 56.082,
+          "p95_ms": 109.618,
+          "total_ms": 316.28
+        },
+        "analyze_sentiment": {
+          "count": 5,
+          "median_ms": 135.525,
+          "p95_ms": 187.382,
+          "total_ms": 762.914
+        },
+        "generate_embedding": {
+          "count": 5,
+          "median_ms": 102.487,
+          "p95_ms": 185.446,
+          "total_ms": 586.811
+        },
+        "resolve_entities": {
+          "count": 5,
+          "median_ms": 72.603,
+          "p95_ms": 81.173,
+          "total_ms": 351.013
+        },
+        "extract_events": {
+          "count": 5,
+          "median_ms": 71.85600000000001,
+          "p95_ms": 82.966,
+          "total_ms": 313.651
+        },
+        "record_provenance": {
+          "count": 5,
+          "median_ms": 112.386,
+          "p95_ms": 122.78999999999999,
+          "total_ms": 549.1179999999999
+        }
+      },
+      "total_pipeline": {
+        "count": 5,
+        "median_ms": 2611.967,
+        "p95_ms": 2707.279,
+        "total_ms": 12996.81
+      },
+      "protocol": "Five concurrent short synthetic items on local Docker; activity server timestamps include I/O; no scale or pure inference claim; rerun after reset for fresh-work timing",
+      "temperature": "warm models",
+      "persisted_models": [
+        "ProsusAI/finbert@4556d13015211d73dccd3fdd39d39232506f3e43",
+        "candidate-resolver@1",
+        "dslim/bert-base-NER@d1a3e8f13f8c3566299d95fcfc9a8d2382a9affc",
+        "keyword-events@1",
+        "keyword-topics@1",
+        "sentence-transformers/all-MiniLM-L6-v2@1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+      ],
+      "analyses_in_batch": 30
+    }
+  ],
+  "protocol": "Identical five CC0 demo items/media per batch; fresh ingestion keys; one model-cold batch followed by warm batches; complete existing NewsIngestionWorkflow including raw storage, SQL persistence, AI, provenance/sign/encrypted archive and verification; duplicate retry verified; cold excludes download/install and worker registration; host/container workload uncontrolled; not production-scale performance"
+}

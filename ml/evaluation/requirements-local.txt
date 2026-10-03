@@ -1,0 +1,3 @@
+# Optional measurement/rendering tools. Never installed by normal CI.
+psutil==7.2.2
+matplotlib==3.11.2

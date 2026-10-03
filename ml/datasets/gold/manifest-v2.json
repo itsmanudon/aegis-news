@@ -33,24 +33,25 @@
   ],
   "files": {
     "ml/datasets/gold/assessment-v1.json": {
-      "sha256": "449d71b36ca958dfa0bb4acf5a722c932efb9f84ed28bcdbdc5364403ad6cd4b",
-      "bytes": 34344
+      "sha256": "3dddcee1890f5f32e40eec6c55b23ac8bee041bd85ba0674415f2a6a4c936a27",
+      "bytes": 33504
     },
     "ml/datasets/gold/assessment-v2.json": {
-      "sha256": "8d883d34bdfedeec290a5a35a9606c8aec1a85f6421166712f0c8b6c6c394a1f",
-      "bytes": 34434
+      "sha256": "e8844a8d1fba59fecfd5e3e7e0298bef58ffafd17c209bba9ccf3e4770bd449b",
+      "bytes": 33599
     },
     "ml/datasets/gold/adjudication-v2.json": {
-      "sha256": "67d3b136bf4290701e461b220364703113140a3e0a58c4f0942af86c17d45615",
-      "bytes": 45488
+      "sha256": "9f5e6e24b023f2f42641724c34151e77e4728d7cc21fad38fd1ab3a5a5ef3643",
+      "bytes": 44196
     },
     "data/samples/demo-image.png": {
       "sha256": "7272e49f2b1a00b5d287816b9d63900fd3aa1b8278230346326b434042cc0f15",
       "bytes": 690
     },
     "ml/datasets/gold/ADJUDICATION-v2.md": {
-      "sha256": "7a2aa95c5d1c10dad197e0011a5f643c0c95a1bfe84a3d84a9aa83a4e8ef25b4",
-      "bytes": 7093
+      "sha256": "d3f20e4f879bb01dda5c55617551672305db3ef50c02f9d662562ab56934d97a",
+      "bytes": 7048
     }
-  }
+  },
+  "file_encoding": "UTF-8, LF; .gitattributes pins evaluation files to portable exact bytes"
 }

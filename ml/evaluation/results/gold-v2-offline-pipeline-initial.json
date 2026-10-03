@@ -1,0 +1,325 @@
+{
+  "profile": "offline",
+  "result": "passed",
+  "device": "cpu, unchanged existing profile",
+  "topology": "Docker API/PostgreSQL/Redis/MinIO/Temporal; local optional Python worker",
+  "batches": [
+    {
+      "result": "passed",
+      "mode": "eval-offline-58440e3d13e340639908c5b51f58ecd7",
+      "source_id": "src_60c71647-ebb2-4ca1-9716-a45775cc26ea",
+      "documents": [
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_f4e3994e-3362-431f-8b1a-d818fdf4c84d",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_21af76cb-5d45-4fd7-99f9-0f8d78fde8ba",
+          "provenance_id": "prov_f6345c01-beac-596f-950b-cdbe5bb45dcd",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_f54f2cef-0824-47ed-9f3e-011439f289d7",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_607b3361-5dda-489c-b80b-9673da80c74e",
+          "provenance_id": "prov_709ccbd6-220c-5430-8109-059484b17606",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_22e4b59c-6e21-4c6f-a6ce-2b0ee22e567f",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_f69d6fe4-85fa-4926-93d8-e744c6556369",
+          "provenance_id": "prov_778268ce-e632-5a85-82c0-68f915eb2e1a",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_b785cdf8-0ebb-48d0-81e9-fbb9128f021b",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_07f30c32-2157-4ac3-94c8-1d61e82f378b",
+          "provenance_id": "prov_66b70d68-5441-5a11-9953-198d098b9d02",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_5e6b0a5f-dd8f-4a3c-99e6-e1843a302750",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_7529bad9-0685-4105-9cfb-3aa29a3cacaf",
+          "provenance_id": "prov_44dfa068-9186-519c-b372-4d2c9d619d80",
+          "resolve_entities": "completed"
+        }
+      ],
+      "workflow_ids": [
+        "ingestion-2f475bb91bf4d471802115db829c5476dfd9686c3960781327266c67a58afe29",
+        "ingestion-10293b8510219b293a6cd5ad7221d6cbed45217c61475da02ec02f7b2c024ec5",
+        "ingestion-68f8d5bf967b433fbd304d36d2b2781b3ff295f1bc2a66035ee805f530500a53",
+        "ingestion-cd1b79aa81b423445d15ad10f38d3ed1e39fcb065f9ff6c926cf59837d997737",
+        "ingestion-abd45690659fb8fca6ae1096c7894d99a571b652ffb92ffdcb140c18e3a658a0"
+      ],
+      "counts_after": {
+        "documents": 5,
+        "analyses": 30,
+        "outbox_total": 46
+      },
+      "duplicate_stable": true,
+      "media_document_id": "doc_f4e3994e-3362-431f-8b1a-d818fdf4c84d",
+      "batch_wall_seconds_including_verification": 25.249914500163868,
+      "fresh_document_count": 5,
+      "batch_throughput_documents_per_second": 0.19802047250368118,
+      "history_latency": {
+        "prepare_ingestion": {
+          "count": 5,
+          "median_ms": 5109.397999999999,
+          "p95_ms": 5166.48,
+          "total_ms": 25604.607
+        },
+        "normalize_ingestion": {
+          "count": 5,
+          "median_ms": 37.108000000000004,
+          "p95_ms": 53.143,
+          "total_ms": 191.529
+        },
+        "commit_ingestion": {
+          "count": 5,
+          "median_ms": 49.09,
+          "p95_ms": 52.424,
+          "total_ms": 243.873
+        },
+        "analyze_entities": {
+          "count": 5,
+          "median_ms": 49.934,
+          "p95_ms": 73.155,
+          "total_ms": 285.047
+        },
+        "analyze_topics": {
+          "count": 5,
+          "median_ms": 53.093,
+          "p95_ms": 65.983,
+          "total_ms": 258.519
+        },
+        "analyze_sentiment": {
+          "count": 5,
+          "median_ms": 52.256,
+          "p95_ms": 114.782,
+          "total_ms": 307.347
+        },
+        "generate_embedding": {
+          "count": 5,
+          "median_ms": 41.709999999999994,
+          "p95_ms": 72.675,
+          "total_ms": 235.356
+        },
+        "resolve_entities": {
+          "count": 5,
+          "median_ms": 48.851,
+          "p95_ms": 58.225,
+          "total_ms": 245.16400000000002
+        },
+        "extract_events": {
+          "count": 5,
+          "median_ms": 71.807,
+          "p95_ms": 77.958,
+          "total_ms": 335.81100000000004
+        },
+        "record_provenance": {
+          "count": 5,
+          "median_ms": 143.163,
+          "p95_ms": 163.21,
+          "total_ms": 727.2560000000001
+        }
+      },
+      "total_pipeline": {
+        "count": 5,
+        "median_ms": 7511.793,
+        "p95_ms": 7645.308,
+        "total_ms": 37543.558
+      },
+      "protocol": "Five concurrent short synthetic items on local Docker; activity server timestamps include I/O; no scale or pure inference claim; rerun after reset for fresh-work timing",
+      "temperature": "cold worker/model cache",
+      "persisted_models": [
+        "candidate-resolver@1",
+        "capitalized-spans@1",
+        "hash-vectors@1",
+        "keyword-events@1",
+        "keyword-topics@1",
+        "lexicon-sentiment@1"
+      ],
+      "analyses_in_batch": 30
+    },
+    {
+      "result": "passed",
+      "mode": "eval-offline-4ce0c965cb5f4e7ea9e5cb5201c03145",
+      "source_id": "src_60c71647-ebb2-4ca1-9716-a45775cc26ea",
+      "documents": [
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_86d5777d-5347-4db5-9dd4-7580fde1cb0c",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_cc0d8609-bcb1-4c7d-9037-780a50401dee",
+          "provenance_id": "prov_139a2655-5706-5db9-880d-37025731efb5",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_153e14e7-090a-43a1-b5c4-37dc53f868f0",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_edc92180-d1a2-4cc7-a7e6-9210c71c53ec",
+          "provenance_id": "prov_1b620a67-3704-5122-aab2-8a1807c777b5",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_5bd71169-4969-4ee8-b599-b78153d38aaf",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_69ecd51e-d756-4ff7-b716-0c8cc9cd108c",
+          "provenance_id": "prov_e90bd22e-930f-5f74-bdf3-2ddf08c898bf",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_42159061-5bdc-40f7-95c3-29995df9bbe4",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_4ef0b077-adec-4ef6-a112-b6c1f0eaad48",
+          "provenance_id": "prov_cef7b2be-a905-5677-8029-d0a87a45fe25",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_f786da4d-9e31-4f1d-868f-ab9bc9202262",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_034bc8ab-b4bd-42a1-a918-9b1371e66d27",
+          "provenance_id": "prov_7605d9be-1c9d-5b98-b72a-41247a01c921",
+          "resolve_entities": "completed"
+        }
+      ],
+      "workflow_ids": [
+        "ingestion-9d892dfecbcd363afaf82d1c383fbced247370577fc1914a0baa00e9d9aa529e",
+        "ingestion-add5ccd9e8c204b62fed02a35b0a4c1fb8c90fc2add49963a156deff0cc6f000",
+        "ingestion-1dd45251b9298e2fcfc817317f6be8258d9b4cbf93360580cc0fdfd951ac95dd",
+        "ingestion-19b34e18da70e1702e3c3d2fb8dbc82ee78548335de6862cacc1d7a45116c17d",
+        "ingestion-08e2e1eed75b077f903f04b59aad9291031a441c30be020512b8b2a8752d1789"
+      ],
+      "counts_after": {
+        "documents": 10,
+        "analyses": 60,
+        "outbox_total": 92
+      },
+      "duplicate_stable": true,
+      "media_document_id": "doc_86d5777d-5347-4db5-9dd4-7580fde1cb0c",
+      "batch_wall_seconds_including_verification": 17.221080099930987,
+      "fresh_document_count": 5,
+      "batch_throughput_documents_per_second": 0.29034183518024737,
+      "history_latency": {
+        "prepare_ingestion": {
+          "count": 5,
+          "median_ms": 68.152,
+          "p95_ms": 94.33500000000001,
+          "total_ms": 379.048
+        },
+        "normalize_ingestion": {
+          "count": 5,
+          "median_ms": 45.178000000000004,
+          "p95_ms": 77.083,
+          "total_ms": 252.175
+        },
+        "commit_ingestion": {
+          "count": 5,
+          "median_ms": 40.237,
+          "p95_ms": 47.445,
+          "total_ms": 203.144
+        },
+        "analyze_entities": {
+          "count": 5,
+          "median_ms": 40.254,
+          "p95_ms": 44.67,
+          "total_ms": 199.635
+        },
+        "analyze_topics": {
+          "count": 5,
+          "median_ms": 40.417,
+          "p95_ms": 47.47,
+          "total_ms": 202.237
+        },
+        "analyze_sentiment": {
+          "count": 5,
+          "median_ms": 34.933,
+          "p95_ms": 48.685,
+          "total_ms": 180.401
+        },
+        "generate_embedding": {
+          "count": 5,
+          "median_ms": 30.233,
+          "p95_ms": 63.443,
+          "total_ms": 176.86
+        },
+        "resolve_entities": {
+          "count": 5,
+          "median_ms": 53.614000000000004,
+          "p95_ms": 60.232,
+          "total_ms": 261.392
+        },
+        "extract_events": {
+          "count": 5,
+          "median_ms": 45.017,
+          "p95_ms": 60.055,
+          "total_ms": 240.687
+        },
+        "record_provenance": {
+          "count": 5,
+          "median_ms": 118.825,
+          "p95_ms": 133.515,
+          "total_ms": 562.096
+        }
+      },
+      "total_pipeline": {
+        "count": 5,
+        "median_ms": 1824.859,
+        "p95_ms": 1946.7369999999999,
+        "total_ms": 9208.083
+      },
+      "protocol": "Five concurrent short synthetic items on local Docker; activity server timestamps include I/O; no scale or pure inference claim; rerun after reset for fresh-work timing",
+      "temperature": "warm models",
+      "persisted_models": [
+        "candidate-resolver@1",
+        "capitalized-spans@1",
+        "hash-vectors@1",
+        "keyword-events@1",
+        "keyword-topics@1",
+        "lexicon-sentiment@1"
+      ],
+      "analyses_in_batch": 30
+    }
+  ],
+  "protocol": "Identical five CC0 demo items/media per batch; fresh ingestion keys; one model-cold batch followed by warm batches; complete existing NewsIngestionWorkflow including raw storage, SQL persistence, AI, provenance/sign/encrypted archive and verification; duplicate retry verified; cold excludes download/install and worker registration; host/container workload uncontrolled; not production-scale performance"
+}

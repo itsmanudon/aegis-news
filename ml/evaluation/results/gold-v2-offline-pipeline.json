@@ -1,0 +1,325 @@
+{
+  "profile": "offline",
+  "result": "passed",
+  "device": "cpu, unchanged existing profile",
+  "topology": "Docker API/PostgreSQL/Redis/MinIO/Temporal; local optional Python worker",
+  "batches": [
+    {
+      "result": "passed",
+      "mode": "eval-offline-e01c5014481647318741f84d7f130a9d",
+      "source_id": "src_60c71647-ebb2-4ca1-9716-a45775cc26ea",
+      "documents": [
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_575e47d2-a350-4ceb-9472-5757605b950b",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_e60aede2-b5d8-433a-836e-e678a1044967",
+          "provenance_id": "prov_fe1ce347-1c00-56f5-98b8-799f16015216",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_76154d5a-0694-4f98-94a3-5e4379de11ba",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_b1e5c213-f781-48f4-b5eb-4b16e82b9f80",
+          "provenance_id": "prov_b5f4fb92-92af-5fe2-83f9-896256468434",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_30a5c2a2-a636-4d57-9444-c4342c37d525",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_77fde758-8e1a-49a2-8337-aa5cf0567fd0",
+          "provenance_id": "prov_f6158209-e791-5694-8032-ea0c76af5f13",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_8a719931-05bb-41d5-9c3d-9dacf5b8e932",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_d162116b-f81b-4ad0-9034-292942731bca",
+          "provenance_id": "prov_8f7f81fe-2294-5690-996b-3da5e9c4ebf2",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_77a13878-5ea1-4acd-b0ed-1fa1176b6a50",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_683a1a92-5d4e-42b9-86bf-7dc4147faa3c",
+          "provenance_id": "prov_a3253fae-fd52-53b7-93b7-cc09d33c7b8e",
+          "resolve_entities": "completed"
+        }
+      ],
+      "workflow_ids": [
+        "ingestion-8f5eb01ae316ec1447b8471953e1c0b92fd0a3119e95ed694f5a104a9c46096d",
+        "ingestion-8b22c68598b22d580e170b7e64d0cd7d0aff5f2a5fae5c443dd50803d1835a03",
+        "ingestion-8e821d2e626a0f3afd7d0dcc6ba88af19ce0808cb836a37db27c05e2dd1cc8c5",
+        "ingestion-640a8aae096ad579561c3b250cef57f1c2fb6b3d60a2144a7cb838ddc078fc40",
+        "ingestion-226c65531428e94e3820f3fd1b11c85790c1d14efc71502d292bc31274e517d9"
+      ],
+      "counts_after": {
+        "documents": 25,
+        "analyses": 150,
+        "outbox_total": 230
+      },
+      "duplicate_stable": true,
+      "media_document_id": "doc_575e47d2-a350-4ceb-9472-5757605b950b",
+      "batch_wall_seconds_including_verification": 22.430821700021625,
+      "fresh_document_count": 5,
+      "batch_throughput_documents_per_second": 0.22290757186105134,
+      "history_latency": {
+        "prepare_ingestion": {
+          "count": 5,
+          "median_ms": 5091.939,
+          "p95_ms": 5140.387,
+          "total_ms": 25496.103
+        },
+        "normalize_ingestion": {
+          "count": 5,
+          "median_ms": 44.272,
+          "p95_ms": 50.565,
+          "total_ms": 190.213
+        },
+        "commit_ingestion": {
+          "count": 5,
+          "median_ms": 56.385,
+          "p95_ms": 64.705,
+          "total_ms": 264.421
+        },
+        "analyze_entities": {
+          "count": 5,
+          "median_ms": 47.900999999999996,
+          "p95_ms": 61.043,
+          "total_ms": 227.057
+        },
+        "analyze_topics": {
+          "count": 5,
+          "median_ms": 37.995000000000005,
+          "p95_ms": 62.455999999999996,
+          "total_ms": 184.56900000000002
+        },
+        "analyze_sentiment": {
+          "count": 5,
+          "median_ms": 43.004,
+          "p95_ms": 48.940999999999995,
+          "total_ms": 195.757
+        },
+        "generate_embedding": {
+          "count": 5,
+          "median_ms": 38.146,
+          "p95_ms": 55.815,
+          "total_ms": 204.024
+        },
+        "resolve_entities": {
+          "count": 5,
+          "median_ms": 53.633,
+          "p95_ms": 58.611999999999995,
+          "total_ms": 234.245
+        },
+        "extract_events": {
+          "count": 5,
+          "median_ms": 48.942,
+          "p95_ms": 60.882,
+          "total_ms": 243.63799999999998
+        },
+        "record_provenance": {
+          "count": 5,
+          "median_ms": 132.976,
+          "p95_ms": 142.692,
+          "total_ms": 615.34
+        }
+      },
+      "total_pipeline": {
+        "count": 5,
+        "median_ms": 6991.437999999999,
+        "p95_ms": 7122.668,
+        "total_ms": 35104.861
+      },
+      "protocol": "Five concurrent short synthetic items on local Docker; activity server timestamps include I/O; no scale or pure inference claim; rerun after reset for fresh-work timing",
+      "temperature": "cold worker/model cache",
+      "persisted_models": [
+        "candidate-resolver@1",
+        "capitalized-spans@1",
+        "hash-vectors@1",
+        "keyword-events@1",
+        "keyword-topics@1",
+        "lexicon-sentiment@1"
+      ],
+      "analyses_in_batch": 30
+    },
+    {
+      "result": "passed",
+      "mode": "eval-offline-1ac97d78b83744689cfac2ac7e864411",
+      "source_id": "src_60c71647-ebb2-4ca1-9716-a45775cc26ea",
+      "documents": [
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_decb46fe-cc5c-43d6-b710-6b0270bfd455",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_a905bbcd-e86f-4c13-a8c7-dabc674a065b",
+          "provenance_id": "prov_11dae1fe-c829-5078-a9c8-9bad01793060",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_a1d34df4-0cfa-48e1-8ae1-6e47ddb43936",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_5e495e7e-7464-4f65-b57a-98252a1a7fd7",
+          "provenance_id": "prov_8e101f51-ccb7-5da6-82d1-bb02d53f9202",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_e7da8a7d-3fbc-4f23-ad47-59172a8e8c32",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_48e596cb-1fa0-4f54-a6c9-21a24ad67e3a",
+          "provenance_id": "prov_2caa0030-8c80-556a-911b-7d724bb56a0f",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_992161c8-f37a-44c5-b5ea-517c37134854",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_d869874e-d3b6-45db-b393-a04166094ba3",
+          "provenance_id": "prov_cd27deee-88df-5b4e-b006-4af411f4de29",
+          "resolve_entities": "completed"
+        },
+        {
+          "analyze_entities": "completed",
+          "analyze_sentiment": "completed",
+          "analyze_topics": "completed",
+          "document_id": "doc_22f42435-dd42-4f5f-8531-7bef3307b014",
+          "extract_events": "completed",
+          "generate_embedding": "completed",
+          "ingestion_id": "ing_f18acff8-f999-4e48-b00c-95d42e0951d8",
+          "provenance_id": "prov_ba1b3788-f8eb-5564-9ebc-baab0bfa52ee",
+          "resolve_entities": "completed"
+        }
+      ],
+      "workflow_ids": [
+        "ingestion-f81023da02d5086a2973535e35f66939fcdda59cfbaff32992d8ddc232474273",
+        "ingestion-9fff62d28fea3ed13cacca9b73979666b012a545426e147a225097d714e731e1",
+        "ingestion-2c40642a77bbd495cf32d9f69e535ad0016559091efa48f31b84c483cb29b419",
+        "ingestion-396cb5ab418eb7e67bdee56f0549d83ee6016e88bdf2bc9c306c089f8cab1f28",
+        "ingestion-2069add60966dc181a1c9feef60401371adfed285457aa8dd124c331376bfca5"
+      ],
+      "counts_after": {
+        "documents": 30,
+        "analyses": 180,
+        "outbox_total": 276
+      },
+      "duplicate_stable": true,
+      "media_document_id": "doc_decb46fe-cc5c-43d6-b710-6b0270bfd455",
+      "batch_wall_seconds_including_verification": 19.871454400010407,
+      "fresh_document_count": 5,
+      "batch_throughput_documents_per_second": 0.251617214288924,
+      "history_latency": {
+        "prepare_ingestion": {
+          "count": 5,
+          "median_ms": 55.051,
+          "p95_ms": 88.964,
+          "total_ms": 325.079
+        },
+        "normalize_ingestion": {
+          "count": 5,
+          "median_ms": 48.809,
+          "p95_ms": 53.039,
+          "total_ms": 222.464
+        },
+        "commit_ingestion": {
+          "count": 5,
+          "median_ms": 46.641000000000005,
+          "p95_ms": 47.928,
+          "total_ms": 203.696
+        },
+        "analyze_entities": {
+          "count": 5,
+          "median_ms": 52.186,
+          "p95_ms": 67.94200000000001,
+          "total_ms": 260.349
+        },
+        "analyze_topics": {
+          "count": 5,
+          "median_ms": 47.498,
+          "p95_ms": 66.134,
+          "total_ms": 253.538
+        },
+        "analyze_sentiment": {
+          "count": 5,
+          "median_ms": 45.521,
+          "p95_ms": 131.726,
+          "total_ms": 292.035
+        },
+        "generate_embedding": {
+          "count": 5,
+          "median_ms": 132.713,
+          "p95_ms": 160.442,
+          "total_ms": 594.66
+        },
+        "resolve_entities": {
+          "count": 5,
+          "median_ms": 92.511,
+          "p95_ms": 188.65699999999998,
+          "total_ms": 540.976
+        },
+        "extract_events": {
+          "count": 5,
+          "median_ms": 47.079,
+          "p95_ms": 100.85,
+          "total_ms": 289.05
+        },
+        "record_provenance": {
+          "count": 5,
+          "median_ms": 108.914,
+          "p95_ms": 111.676,
+          "total_ms": 529.518
+        }
+      },
+      "total_pipeline": {
+        "count": 5,
+        "median_ms": 2509.871,
+        "p95_ms": 2644.383,
+        "total_ms": 12735.476999999999
+      },
+      "protocol": "Five concurrent short synthetic items on local Docker; activity server timestamps include I/O; no scale or pure inference claim; rerun after reset for fresh-work timing",
+      "temperature": "warm models",
+      "persisted_models": [
+        "candidate-resolver@1",
+        "capitalized-spans@1",
+        "hash-vectors@1",
+        "keyword-events@1",
+        "keyword-topics@1",
+        "lexicon-sentiment@1"
+      ],
+      "analyses_in_batch": 30
+    }
+  ],
+  "protocol": "Identical five CC0 demo items/media per batch; fresh ingestion keys; one model-cold batch followed by warm batches; complete existing NewsIngestionWorkflow including raw storage, SQL persistence, AI, provenance/sign/encrypted archive and verification; duplicate retry verified; cold excludes download/install and worker registration; host/container workload uncontrolled; not production-scale performance"
+}

@@ -1,0 +1,4 @@
+# Evaluation manifests hash portable, exact UTF-8/LF bytes on every platform.
+ml/datasets/gold/*.json text eol=lf
+ml/datasets/gold/*.md text eol=lf
+ml/evaluation/results/gold-v2-*.json text eol=lf
