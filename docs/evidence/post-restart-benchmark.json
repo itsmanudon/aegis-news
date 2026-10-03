@@ -1,0 +1,148 @@
+{
+    "result":  "passed",
+    "mode":  "benchmark",
+    "source_id":  "src_a6d1d1f7-9b9a-4437-b2f2-b37cfd97129c",
+    "documents":  [
+                      {
+                          "analyze_entities":  "completed",
+                          "analyze_sentiment":  "completed",
+                          "analyze_topics":  "completed",
+                          "document_id":  "doc_0ffe67c8-8a1e-4a27-96ec-546dde2cb1b9",
+                          "extract_events":  "completed",
+                          "generate_embedding":  "completed",
+                          "ingestion_id":  "ing_1f17e39e-9efd-4730-a924-e06bdfac87ab",
+                          "provenance_id":  "prov_daa375f1-42eb-5653-9cbd-20bcaefb4af3",
+                          "resolve_entities":  "completed"
+                      },
+                      {
+                          "analyze_entities":  "completed",
+                          "analyze_sentiment":  "completed",
+                          "analyze_topics":  "completed",
+                          "document_id":  "doc_e9176ee5-6af0-4a2d-a079-313398160e02",
+                          "extract_events":  "completed",
+                          "generate_embedding":  "completed",
+                          "ingestion_id":  "ing_9707da96-caa6-4a69-b4de-d9b25a40a4e6",
+                          "provenance_id":  "prov_19ec16fa-d241-5a6a-948d-cf660860aba5",
+                          "resolve_entities":  "completed"
+                      },
+                      {
+                          "analyze_entities":  "completed",
+                          "analyze_sentiment":  "completed",
+                          "analyze_topics":  "completed",
+                          "document_id":  "doc_c7a0651a-b6fd-4ccf-bc4e-26456073b6a0",
+                          "extract_events":  "completed",
+                          "generate_embedding":  "completed",
+                          "ingestion_id":  "ing_6850706f-dcd8-4431-bfc8-077f45e13fa6",
+                          "provenance_id":  "prov_6fb76d55-7965-56f0-a674-ff389719820c",
+                          "resolve_entities":  "completed"
+                      },
+                      {
+                          "analyze_entities":  "completed",
+                          "analyze_sentiment":  "completed",
+                          "analyze_topics":  "completed",
+                          "document_id":  "doc_35ed2e2e-81b7-4906-9496-922f0f83bada",
+                          "extract_events":  "completed",
+                          "generate_embedding":  "completed",
+                          "ingestion_id":  "ing_31ca7762-9944-4360-81ba-fbc81cc69428",
+                          "provenance_id":  "prov_3e78f67b-d70c-5abf-a76b-ad78ad96c892",
+                          "resolve_entities":  "completed"
+                      },
+                      {
+                          "analyze_entities":  "completed",
+                          "analyze_sentiment":  "completed",
+                          "analyze_topics":  "completed",
+                          "document_id":  "doc_c57a26fd-08c7-4a67-a58b-636fc7076858",
+                          "extract_events":  "completed",
+                          "generate_embedding":  "completed",
+                          "ingestion_id":  "ing_f4ddb546-f626-4f09-916d-74f47cb1b63e",
+                          "provenance_id":  "prov_20e25c4e-6620-54ff-ad0f-fddae89b85a8",
+                          "resolve_entities":  "completed"
+                      }
+                  ],
+    "workflow_ids":  [
+                         "ingestion-c648834de9e085910f12d816c33e3d2c43cbff2c56f1651d5b80ed9feed62e3d",
+                         "ingestion-fbd503c2d961132ca6d7e6af07e85f36070264a2dff3ed5b91a00ee2deb75606",
+                         "ingestion-a907abfd51dc42ecb933e1f6c21d54c7dadf752c449fb52d0baf8bb112f54630",
+                         "ingestion-1b017f8346dc27b371b6bd319ee38f87f6be40382cb5ee96561a5a7740b0b515",
+                         "ingestion-a14fe7f0bad03e14c1da4435d358be67e619515185fd28867d47d950007a033c"
+                     ],
+    "counts_after":  {
+                         "documents":  11,
+                         "analyses":  66,
+                         "outbox_total":  147
+                     },
+    "duplicate_stable":  true,
+    "media_document_id":  "doc_0ffe67c8-8a1e-4a27-96ec-546dde2cb1b9",
+    "batch_wall_seconds_including_verification":  56.97401555900069,
+    "fresh_document_count":  5,
+    "batch_throughput_documents_per_second":  0.08775930485050927,
+    "history_latency":  {
+                            "prepare_ingestion":  {
+                                                      "count":  5,
+                                                      "median_ms":  55.893,
+                                                      "p95_ms":  74.21600000000001,
+                                                      "total_ms":  303.625
+                                                  },
+                            "normalize_ingestion":  {
+                                                        "count":  5,
+                                                        "median_ms":  32.135,
+                                                        "p95_ms":  37.123000000000005,
+                                                        "total_ms":  164.106
+                                                    },
+                            "commit_ingestion":  {
+                                                     "count":  5,
+                                                     "median_ms":  39.269,
+                                                     "p95_ms":  47.025,
+                                                     "total_ms":  197.37
+                                                 },
+                            "analyze_entities":  {
+                                                     "count":  5,
+                                                     "median_ms":  36.641,
+                                                     "p95_ms":  43.646,
+                                                     "total_ms":  184.632
+                                                 },
+                            "analyze_topics":  {
+                                                   "count":  5,
+                                                   "median_ms":  33.303,
+                                                   "p95_ms":  38.807,
+                                                   "total_ms":  162.118
+                                               },
+                            "analyze_sentiment":  {
+                                                      "count":  5,
+                                                      "median_ms":  32.985,
+                                                      "p95_ms":  38.999,
+                                                      "total_ms":  148.488
+                                                  },
+                            "generate_embedding":  {
+                                                       "count":  5,
+                                                       "median_ms":  30.745,
+                                                       "p95_ms":  36.815,
+                                                       "total_ms":  137.272
+                                                   },
+                            "resolve_entities":  {
+                                                     "count":  5,
+                                                     "median_ms":  43.18,
+                                                     "p95_ms":  47.229,
+                                                     "total_ms":  206.063
+                                                 },
+                            "extract_events":  {
+                                                   "count":  5,
+                                                   "median_ms":  36.672000000000004,
+                                                   "p95_ms":  40.618,
+                                                   "total_ms":  176.674
+                                               },
+                            "record_provenance":  {
+                                                      "count":  5,
+                                                      "median_ms":  88.151,
+                                                      "p95_ms":  97.829,
+                                                      "total_ms":  431.284
+                                                  }
+                        },
+    "total_pipeline":  {
+                           "count":  5,
+                           "median_ms":  56103.007,
+                           "p95_ms":  56185.81,
+                           "total_ms":  280391.908
+                       },
+    "protocol":  "Five concurrent short synthetic items on local Docker; activity server timestamps include I/O; no scale or pure inference claim; rerun after reset for fresh-work timing"
+}

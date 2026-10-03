@@ -26,7 +26,7 @@ Release reference: [v0.1.0-mvp record](../mvp-release.md). Phase 6 runs only on
 | Observability | Prometheus up, provisioned Grafana, correlated Loki logs, matching OTel worker trace receipt |
 | Production dependency audits | Python and pnpm: no known vulnerabilities |
 | Repository secret guard | Passed |
-| Gitleaks branch history | Four implementation commits scanned, no leaks; hosted security also passed |
+| Gitleaks branch history | Five implementation/fix commits scanned, no leaks; hosted security also passed |
 | Independent review fixes | Five regressions observed RED then GREEN; full live suite 246/246 |
 | Assessment reproducibility | All metrics and nearest neighbors equal across two independent offline runs |
 
@@ -35,7 +35,11 @@ passed backend, frontend, migrations, security and optional local-mvp jobs on `0
 The latter built fresh Linux Docker services, ran 22/22 original acceptance checks,
 demo seed/benchmark/14 security checks and the live browser flow. The earlier push
 run 37109987974 was canceled by same-ref concurrency when manual dispatch started.
-The final review fixes receive another hosted run; no in-progress job is counted as success.
+Final review fixes at `b28d0b1562c3a455874c1521542d10eab7c437bb` passed all five jobs in
+[run 37110699103](https://github.com/itsmanudon/aegis-news/actions/runs/37110699103),
+including fresh Linux full-stack startup, acceptance, seed, benchmark, security and
+live browser checks. Push run 37110698757 was superseded by that manual run through
+the configured concurrency group. There were no Phase 6 hosted test failures.
 
 ## Full backend command (PowerShell)
 
@@ -97,6 +101,10 @@ rerun exited successfully. Review found inherited Compose reset configuration, r
 assessment tie ordering and incorrect inference-failure status; all were corrected and
 covered by regression tests. Fresh reset with an unrelated `COMPOSE_FILE` succeeded
 using only the pinned demo configuration, followed by security/acceptance/telemetry checks.
+Final interruption/resume passed with valid provenance. A fresh post-restart batch
+completed with median 56.103 s including initial workflow-task scheduling delay; cached
+replay then correctly reported zero fresh documents and null fresh throughput. Both
+fast and slow measurements are documented; no production latency bound is claimed.
 
 Light/full models are not installed: local-only probes reported ModelUnavailable. No
 pretrained quality, model download-size or GPU/RAM benchmark is claimed. Human gold

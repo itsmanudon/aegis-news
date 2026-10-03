@@ -56,6 +56,14 @@ showed API 141.6 MiB and worker 135.4 MiB; these are idle/current container meas
 not peaks or isolated model-memory measurements. Other local projects/builds shared
 the host. A later fresh run measured total median 2.461 s (p95 2.527 s), illustrating
 runtime variability; the published stage table below is the first recorded batch.
+After the interruption demo, a final fresh batch had median workflow latency 56.103 s
+(p95 56.186 s), wall time 56.974 s and throughput 0.0878 docs/s. An inspected Temporal
+history showed 54.678 s between initial workflow-task scheduling and start; activity
+medians were still 31–88 ms. This is observed scheduling delay after restart, not a
+measured AI slowdown or an established root-cause diagnosis. See the separate
+[post-restart report](../evidence/post-restart-benchmark.json). Cached replay then
+reported zero fresh documents and null fresh throughput. Run the deeper interruption
+exercise after the timed presentation, or allow an extra minute for recovery.
 
 Light uses pinned bert-base-NER, finbert and all-MiniLM-L6-v2 plus keyword topic/events.
 Full adds bart-large-mnli and all-mpnet-base-v2. Exact model/revision/configurations appear

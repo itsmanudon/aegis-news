@@ -19,7 +19,9 @@ are included. Fixtures/reports are public-safe; generated IDs/timestamps vary af
 | [Grafana/Loki](screenshots/grafana-loki.jpg) | Provisioned metrics/log dashboard |
 
 Raw evidence: `pipeline-benchmark.json`, `security-demo.json`, `observability.json`,
-`recovery-submission.json`, `recovery-completion.json`. Each is bounded synthetic evidence,
+`recovery-submission.json`, `recovery-completion.json`, `post-restart-benchmark.json`.
+The last captures a slow scheduling run after recovery, rather than hiding the variance.
+Each is bounded synthetic evidence,
 not general quality/capacity/security certification. AI reports live in `ml/evaluation/results/`.
 The demo benchmark is a five-item sample, not a production load test. Snapshot memory
 statistics, if included, are point-in-time values rather than measured peaks.

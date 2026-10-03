@@ -34,6 +34,8 @@ Copy tokens privately into the UI; do not paste them into public evidence.
 Development tokens expire after five minutes. Refresh at a role change/around minute five;
 do not extend issuer semantics for the demo. MinIO and Grafana use local dummy credentials
 `aegis_dev` / `aegis_dev_only`. They are not production secrets or recommended deployment credentials.
+Run optional worker-interruption exercises after the timed demo. One fresh batch after
+restart waited about 55 seconds for its initial workflow task; see evaluation.md.
 
 ## Optional reliability/deeper demo
 

@@ -30,7 +30,7 @@ must always restore bytes/rows. Evidence must exclude tokens, private keys and p
 - [x] Task 3: Produce concise threat/crypto/provenance/API/observability/demo documentation,
   diagrams, screenshots, academic mapping and presentation outline. Polish README;
   record actual measurements and unsupported claims. No PowerPoint or deployment.
-- [ ] Task 4: Run complete practical validation, audits and drift checks; independent
+- [x] Task 4: Run complete practical validation, audits and drift checks; independent
   branch review; fix material findings; commit clean Phase 6 branch. Do not merge/tag.
 
 ## Ledger
@@ -107,3 +107,10 @@ must always restore bytes/rows. Evidence must exclude tokens, private keys and p
   guard passed. Fresh reset ignored inherited unrelated COMPOSE_FILE and passed seed,
   14 security controls, 22 acceptance controls and correlated telemetry afterward.
   Final mock suite 10/10 and live/evidence 2/2 passed; final production build passed.
+- Task 4 complete: hosted run 37110699103 passed all five jobs at tested fix commit
+  b28d0b1562c3a455874c1521542d10eab7c437bb. Branch-history gitleaks scanned five commits
+  without leaks; committed files max 243 KB, ten screenshots total 1.06 MB; no personal
+  paths found in public docs/data/config. Main and tag checked remotely and unchanged.
+  Final live recovery/replay invariants passed. Slow post-restart scheduling latency
+  (56.103 s median) is retained as a separate report; earlier 1.978 s batch is not
+  misrepresented as a bound. Final branch is preserved, with no merge or new release.
