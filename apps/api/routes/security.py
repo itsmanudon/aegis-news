@@ -73,10 +73,22 @@ def verify(body: VerificationRequest, request: Request) -> SingleResponse[Verifi
     dependencies=[require_scopes("audit:read")],
 )
 def audit_events(
-    request: Request, limit: Annotated[int, Query(ge=1, le=100)] = 50
+    request: Request,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    cursor: Annotated[str | None, Query(max_length=128)] = None,
 ) -> CollectionResponse[AuditEvent]:
+    try:
+        values = request.app.state.audit.sink.recent(limit + 1, cursor)
+    except ValueError:
+        raise HTTPException(422) from None
+    more = len(values) > limit
+    next_cursor = (
+        f"{values[limit - 1].occurred_at.isoformat()}|{values[limit - 1].event_id}"
+        if more
+        else None
+    )
     return CollectionResponse(
-        data=request.app.state.audit.sink.recent(limit),
-        pagination=CursorPagination(),
+        data=values[:limit],
+        pagination=CursorPagination(has_more=more, next_cursor=next_cursor),
         meta=ResponseMeta(request_id=request.state.request_id),
     )

@@ -39,7 +39,16 @@ from aegis.security.persistence import SQLAuditSink, SQLManifestStore
 from aegis.settings import Settings, get_settings
 from apps.api.dependencies import ReadinessProbe
 from apps.api.errors import error_response, install_handlers
-from apps.api.routes import assets, documents, entities, events, ingestions, search, security
+from apps.api.routes import (
+    assets,
+    documents,
+    entities,
+    events,
+    ingestions,
+    product,
+    search,
+    security,
+)
 
 logger = logging.getLogger("aegis.api")
 ID_PATTERN = re.compile(r"^[A-Za-z0-9._-]{1,128}$")
@@ -89,7 +98,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         lifespan=lifespan,
         responses={422: {"model": ApiErrorEnvelope}, 500: {"model": ApiErrorEnvelope}},
         openapi_tags=[
-            {"name": n, "description": "Reserved for the next product phase"}
+            {"name": n, "description": "Canonical product records"}
             for n in ("documents", "entities", "events", "search", "assets")
         ],
     )
@@ -98,8 +107,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(IngestionBodyLimit)
     if settings.security_enabled:
         app.add_middleware(SecurityBodyLimit, max_bytes=settings.security_max_body_bytes)
-    app.state.token_validator = TokenValidator(settings)
-    app.state.audit_engine = make_engine(settings) if settings.environment == "production" else None
+    public_keys = dict(settings.oidc_public_keys)
+    if settings.dev_identity_enabled:
+        key_path = settings.security_key_directory / f"{settings.provenance_key_id}.ed25519.pub"
+        if key_path.exists():
+            public_keys[settings.provenance_key_id] = key_path.read_text()
+    app.state.token_validator = TokenValidator(settings, public_keys=public_keys)
+    app.state.audit_engine = (
+        make_engine(settings)
+        if settings.environment == "production" or settings.security_persist_audit
+        else None
+    )
     app.state.audit = AuditLog(
         SQLAuditSink(app.state.audit_engine) if app.state.audit_engine else MemoryAuditSink()
     )
@@ -224,6 +242,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     if settings.security_enabled:
         app.include_router(security.router, prefix="/api/v1")
     app.include_router(ingestions.router, prefix="/api/v1")
+    app.include_router(product.router, prefix="/api/v1")
     instrument(app, settings)
     return app
 

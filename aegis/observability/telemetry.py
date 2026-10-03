@@ -19,14 +19,21 @@ def sanitize_request_span(span: Span, scope: Scope) -> None:
         span.update_name("HTTP request")
 
 
-def instrument(app: FastAPI, settings: Settings) -> None:
+def configure_tracing(settings: Settings, service_name: str) -> TracerProvider | None:
     if not settings.otel_enabled:
-        return
-    provider = TracerProvider(resource=Resource.create({"service.name": "aegisnews-api"}))
+        return None
+    provider = TracerProvider(resource=Resource.create({"service.name": service_name}))
     provider.add_span_processor(
         BatchSpanProcessor(OTLPSpanExporter(endpoint=settings.otel_endpoint))
     )
     trace.set_tracer_provider(provider)
+    return provider
+
+
+def instrument(app: FastAPI, settings: Settings) -> None:
+    provider = configure_tracing(settings, "aegisnews-api")
+    if provider is None:
+        return
     FastAPIInstrumentor.instrument_app(
         app,
         tracer_provider=provider,

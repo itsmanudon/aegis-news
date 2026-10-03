@@ -1,5 +1,6 @@
 """Deterministic orchestration; I/O, clocks, parsing and IDs belong to activities."""
 
+import json
 from datetime import timedelta
 from typing import cast
 
@@ -54,4 +55,37 @@ class NewsIngestionWorkflow:
             schedule_to_close_timeout=timedelta(minutes=3),
             retry_policy=retry,
         )
-        return cast(dict[str, str], result)
+        result = cast(dict[str, str], result)
+        # JSON parsing and workflow identity are deterministic. All inference, clocks,
+        # storage, cryptography and SQL operations remain in independently retryable activities.
+        correlation_id = json.loads(request_json).get("correlation_id", "ingestion")
+        run_key = workflow.info().workflow_id
+        analysis_ids = []
+        for name in (
+            "analyze_entities",
+            "analyze_topics",
+            "analyze_sentiment",
+            "generate_embedding",
+            "resolve_entities",
+            "extract_events",
+        ):
+            outcome = await workflow.execute_activity(
+                name,
+                args=[result["document_id"], run_key, correlation_id],
+                result_type=dict[str, str],
+                start_to_close_timeout=timedelta(minutes=3),
+                schedule_to_close_timeout=timedelta(minutes=5),
+                retry_policy=retry,
+            )
+            result[name] = outcome["status"]
+            if "analysis_id" in outcome:
+                analysis_ids.append(outcome["analysis_id"])
+        result["provenance_id"] = await workflow.execute_activity(
+            "record_provenance",
+            args=[result["document_id"], run_key, analysis_ids],
+            result_type=str,
+            start_to_close_timeout=timedelta(seconds=60),
+            schedule_to_close_timeout=timedelta(minutes=3),
+            retry_policy=retry,
+        )
+        return result

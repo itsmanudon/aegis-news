@@ -9,6 +9,7 @@ from pydantic import BaseModel, TypeAdapter
 from aegis.contracts.api import ApiErrorEnvelope, CollectionResponse, SingleResponse
 from aegis.contracts.events import EVENT_MODELS, AsyncEvent
 from aegis.domain import models
+from aegis.settings import Settings
 from apps.api.main import create_app
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,7 +17,14 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def generated_schemas() -> dict[Path, str]:
     schemas: dict[Path, object] = {
-        Path("schemas/openapi/v1.json"): create_app().openapi(),
+        Path("schemas/openapi/v1.json"): create_app(
+            Settings(
+                _env_file=None,
+                security_enabled=True,
+                oidc_issuer="https://schema.invalid",
+                oidc_audience="aegisnews",
+            )
+        ).openapi(),
         Path("schemas/events/envelope.v1.json"): TypeAdapter(AsyncEvent).json_schema(),
         Path("schemas/api-error.v1.json"): ApiErrorEnvelope.model_json_schema(),
         Path("schemas/api-single.v1.json"): SingleResponse[models.NewsDocument].model_json_schema(),

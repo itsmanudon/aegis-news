@@ -241,10 +241,9 @@ def test_source_api_persistence_and_retrieval(repository):
         assert http.get("/api/v1/sources/" + new_id("src")).status_code == 404
 
 
-async def test_real_temporal_submission_identity_and_status(repository, submission):
+async def test_real_temporal_submission_identity_and_status(repository, submission, tmp_path):
     from datetime import timedelta
 
-    from temporalio.testing import WorkflowEnvironment
     from temporalio.worker import Worker
 
     from aegis.ingestion.submissions import TemporalSubmissions
@@ -255,7 +254,7 @@ async def test_real_temporal_submission_identity_and_status(repository, submissi
     if os.environ.get("AEGIS_INGESTION_TEST_TEMPORAL") != "1":
         pytest.skip("Set AEGIS_INGESTION_TEST_TEMPORAL=1 to run an SDK local Temporal server")
     activities = IngestionActivities(IngestionService(repository, MemoryStorage(), "test"))
-    async with await WorkflowEnvironment.start_local() as env:
+    async with await temporal_environment() as env:
         queue = "test-ingestion-" + uuid4().hex
         client = TemporalSubmissions(Settings(temporal_task_queue=queue))
         client.client = env.client
@@ -263,7 +262,12 @@ async def test_real_temporal_submission_identity_and_status(repository, submissi
             env.client,
             task_queue=queue,
             workflows=[NewsIngestionWorkflow],
-            activities=[activities.prepare, activities.normalize, activities.commit],
+            activities=[
+                activities.prepare,
+                activities.normalize,
+                activities.commit,
+                *integrated_activities(activities.service, tmp_path),
+            ],
         ):
             first = await client.submit(submission)
             second = await client.submit(submission)
@@ -278,7 +282,7 @@ async def test_real_temporal_submission_identity_and_status(repository, submissi
             assert repository.get_document(status["result"]["document_id"])
             with pytest.raises(LookupError):
                 await client.status("missing-" + uuid4().hex)
-    assert count(repository, OutboxRow) == 2
+    assert count(repository, OutboxRow) == 5
 
 
 async def test_concurrent_prepare_returns_one_ingestion(repository, submission):
@@ -369,11 +373,10 @@ async def test_default_observation_precedes_object_write(repository, submission)
     assert document.first_seen_at <= storage.first_write_at
 
 
-async def test_temporal_pipeline_with_real_activities_and_api(repository, submission):
+async def test_temporal_pipeline_with_real_activities_and_api(repository, submission, tmp_path):
     from datetime import timedelta
 
     from fastapi.testclient import TestClient
-    from temporalio.testing import WorkflowEnvironment
     from temporalio.worker import Worker
 
     from aegis.settings import Settings
@@ -386,13 +389,18 @@ async def test_temporal_pipeline_with_real_activities_and_api(repository, submis
     storage = MemoryStorage()
     service = IngestionService(repository, storage, "test")
     activities = IngestionActivities(service)
-    async with await WorkflowEnvironment.start_local() as env:
+    async with await temporal_environment() as env:
         queue = "test-ingestion-" + uuid4().hex
         async with Worker(
             env.client,
             task_queue=queue,
             workflows=[NewsIngestionWorkflow],
-            activities=[activities.prepare, activities.normalize, activities.commit],
+            activities=[
+                activities.prepare,
+                activities.normalize,
+                activities.commit,
+                *integrated_activities(activities.service, tmp_path),
+            ],
         ):
             result = await env.client.execute_workflow(
                 NewsIngestionWorkflow.run,
@@ -404,7 +412,7 @@ async def test_temporal_pipeline_with_real_activities_and_api(repository, submis
     document = repository.get_document(result["document_id"])
     assert result["ingestion_id"] == document.ingestion_id
     assert count(repository, DocumentMediaLinkRow) == 1
-    assert count(repository, OutboxRow) == 2
+    assert count(repository, OutboxRow) == 5
     app = create_app(Settings())
     app.state.ingestion_service = service
     with TestClient(app) as http:
@@ -417,10 +425,9 @@ async def test_temporal_pipeline_with_real_activities_and_api(repository, submis
         assert http.get("/api/v1/documents/" + new_id("doc")).status_code == 404
 
 
-async def test_live_minio_temporal_acceptance(repository, submission):
+async def test_live_minio_temporal_acceptance(repository, submission, tmp_path):
     from datetime import timedelta
 
-    from temporalio.testing import WorkflowEnvironment
     from temporalio.worker import Worker
 
     from aegis.media.s3 import S3ObjectStorage
@@ -442,13 +449,18 @@ async def test_live_minio_temporal_acceptance(repository, submission):
     service = IngestionService(repository, storage, bucket)
     activities = IngestionActivities(service)
     try:
-        async with await WorkflowEnvironment.start_local() as env:
+        async with await temporal_environment() as env:
             queue = "test-ingestion-" + uuid4().hex
             async with Worker(
                 env.client,
                 task_queue=queue,
                 workflows=[NewsIngestionWorkflow],
-                activities=[activities.prepare, activities.normalize, activities.commit],
+                activities=[
+                    activities.prepare,
+                    activities.normalize,
+                    activities.commit,
+                    *integrated_activities(activities.service, tmp_path),
+                ],
             ):
                 result = await env.client.execute_workflow(
                     NewsIngestionWorkflow.run,
@@ -463,7 +475,7 @@ async def test_live_minio_temporal_acceptance(repository, submission):
         )
         assert repository.get_document(result["document_id"]).title == "Historic notice"
         assert count(repository, DocumentMediaLinkRow) == 1
-        assert count(repository, OutboxRow) == 2
+        assert count(repository, OutboxRow) == 5
         from fastapi.testclient import TestClient
 
         from aegis.settings import Settings
@@ -479,3 +491,30 @@ async def test_live_minio_temporal_acceptance(repository, submission):
         for item in storage.client.list_objects_v2(Bucket=bucket).get("Contents", []):
             await storage.delete_object(item["Key"])
         storage.client.delete_bucket(Bucket=bucket)
+
+
+async def temporal_environment():
+    from temporalio.client import Client
+    from temporalio.testing import WorkflowEnvironment
+
+    address = os.environ.get("AEGIS_TEMPORAL_TEST_ADDRESS")
+    if address:
+        return WorkflowEnvironment.from_client(await Client.connect(address))
+    return await WorkflowEnvironment.start_local()
+
+
+def integrated_activities(service, directory):
+    from aegis.intelligence.engine import build_engine
+    from aegis.intelligence.pipeline import AnalysisPipeline
+    from aegis.provenance.service import ProvenanceService
+    from aegis.security.crypto import StandardCryptoProvider
+    from aegis.security.keys import FileKeyProvider, generate_development_keys
+    from apps.worker.intelligence_activities import IntelligenceActivities
+
+    generate_development_keys(directory, "test")
+    pipeline = AnalysisPipeline(
+        service.repository,
+        ProvenanceService(StandardCryptoProvider(FileKeyProvider(directory))),
+        "test",
+    )
+    return IntelligenceActivities(service, build_engine("offline"), pipeline).registered()

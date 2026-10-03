@@ -3,7 +3,7 @@ from datetime import UTC, datetime
 from typing import Any, Literal
 
 from fastapi import APIRouter, Request
-from pydantic import BaseModel, ConfigDict, Field, HttpUrl
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, HttpUrl
 from temporalio.service import RPCError
 
 from aegis.contracts.api import ErrorCode, ResponseMeta, SingleResponse
@@ -14,6 +14,7 @@ from aegis.ingestion.repository import IngestionRepository
 from aegis.ingestion.runtime import make_service
 from aegis.ingestion.submissions import TemporalSubmissions
 from aegis.normalization.article import parse_article
+from aegis.security.auth import product_access
 from apps.api.errors import ApiException
 
 router = APIRouter(tags=["ingestion"])
@@ -61,7 +62,12 @@ def response(request: Request, data: Any) -> SingleResponse[Any]:
     return SingleResponse(data=data, meta=ResponseMeta(request_id=request.state.request_id))
 
 
-@router.post("/sources", response_model=SingleResponse[Source], status_code=201)
+@router.post(
+    "/sources",
+    response_model=SingleResponse[Source],
+    status_code=201,
+    dependencies=[product_access("sources:write")],
+)
 def create_source(body: SourceCreate, request: Request) -> SingleResponse[Any]:
     source = Source(
         source_id=new_id("src"),
@@ -70,10 +76,16 @@ def create_source(body: SourceCreate, request: Request) -> SingleResponse[Any]:
         url=body.url,
         created_at=datetime.now(UTC),
     )
-    return response(request, repository(request).create_source(source))
+    value = repository(request).create_source(source)
+    audit_action(request, "source_modification", source.source_id)
+    return response(request, value)
 
 
-@router.get("/sources/{source_id}", response_model=SingleResponse[Source])
+@router.get(
+    "/sources/{source_id}",
+    response_model=SingleResponse[Source],
+    dependencies=[product_access("sources:read")],
+)
 def get_source(source_id: str, request: Request) -> SingleResponse[Any]:
     try:
         return response(request, repository(request).get_source(source_id))
@@ -81,16 +93,28 @@ def get_source(source_id: str, request: Request) -> SingleResponse[Any]:
         raise ApiException(ErrorCode.NOT_FOUND, "Source not found", 404) from exc
 
 
-@router.post("/ingestions", response_model=SingleResponse[dict[str, str]], status_code=202)
+@router.post(
+    "/ingestions",
+    response_model=SingleResponse[dict[str, str]],
+    status_code=202,
+    dependencies=[product_access("ingestions:write")],
+)
 async def submit(body: IngestionRequest, request: Request) -> SingleResponse[Any]:
     validate(body)
     try:
-        return response(request, await submissions(request).submit(body))
+        value = await submissions(request).submit(body)
+        await asyncio.to_thread(audit_action, request, "ingestion_created", value["workflow_id"])
+        return response(request, value)
     except (RPCError, TimeoutError, OSError) as exc:
         raise ApiException(ErrorCode.SOURCE_UNAVAILABLE, "Temporal unavailable", 503) from exc
 
 
-@router.post("/ingestions/batch", response_model=SingleResponse[dict[str, Any]], status_code=202)
+@router.post(
+    "/ingestions/batch",
+    response_model=SingleResponse[dict[str, Any]],
+    status_code=202,
+    dependencies=[product_access("ingestions:write")],
+)
 async def submit_batch(body: BatchRequest, request: Request) -> SingleResponse[Any]:
     for item in body.items:
         validate(item)
@@ -101,10 +125,16 @@ async def submit_batch(body: BatchRequest, request: Request) -> SingleResponse[A
         raise ApiException(
             ErrorCode.SOURCE_UNAVAILABLE, "Batch submission interrupted; retry the same batch", 503
         ) from exc
+    for result in results:
+        await asyncio.to_thread(audit_action, request, "ingestion_created", result["workflow_id"])
     return response(request, {"submissions": results})
 
 
-@router.get("/ingestion-runs/{workflow_id}", response_model=SingleResponse[dict[str, Any]])
+@router.get(
+    "/ingestion-runs/{workflow_id}",
+    response_model=SingleResponse[dict[str, Any]],
+    dependencies=[product_access("documents:read")],
+)
 async def get_run(workflow_id: str, request: Request) -> SingleResponse[Any]:
     try:
         return response(request, await submissions(request).status(workflow_id))
@@ -114,7 +144,11 @@ async def get_run(workflow_id: str, request: Request) -> SingleResponse[Any]:
         raise ApiException(ErrorCode.SOURCE_UNAVAILABLE, "Temporal unavailable", 503) from exc
 
 
-@router.get("/ingestions/{ingestion_id}", response_model=SingleResponse[RawIngestion])
+@router.get(
+    "/ingestions/{ingestion_id}",
+    response_model=SingleResponse[RawIngestion],
+    dependencies=[product_access("documents:read")],
+)
 async def get_ingestion(ingestion_id: str, request: Request) -> SingleResponse[Any]:
     try:
         value = await asyncio.to_thread(repository(request).get_ingestion, ingestion_id)
@@ -123,10 +157,29 @@ async def get_ingestion(ingestion_id: str, request: Request) -> SingleResponse[A
         raise ApiException(ErrorCode.NOT_FOUND, "Ingestion not found", 404) from exc
 
 
-@router.get("/documents/{document_id}", response_model=SingleResponse[NewsDocument])
-async def get_document(document_id: str, request: Request) -> SingleResponse[Any]:
+@router.get(
+    "/documents/{document_id}",
+    response_model=SingleResponse[NewsDocument],
+    dependencies=[product_access("documents:read")],
+)
+async def get_document(
+    document_id: str, request: Request, as_of: AwareDatetime | None = None
+) -> SingleResponse[Any]:
     try:
         value = await asyncio.to_thread(repository(request).get_document, document_id)
+        if as_of and value.created_at > as_of:
+            raise LookupError("not available at cutoff")
         return response(request, value)
     except LookupError as exc:
         raise ApiException(ErrorCode.NOT_FOUND, "Document not found", 404) from exc
+
+
+def audit_action(request: Request, action: str, subject: str) -> None:
+    principal = getattr(request.state, "principal", None)
+    request.app.state.audit.emit(
+        action,
+        subject=subject,
+        actor=principal.issuer + ":" + principal.subject if principal else None,
+        request_id=request.state.request_id,
+        outcome="success",
+    )

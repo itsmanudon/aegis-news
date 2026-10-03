@@ -17,6 +17,7 @@ ROLE_SCOPES = {
             "events:read",
             "sources:read",
             "sources:write",
+            "ingestions:write",
             "audit:read",
             "security:verify",
             "admin:users",
@@ -24,7 +25,7 @@ ROLE_SCOPES = {
     ),
     "analyst": frozenset({"documents:read", "events:read", "sources:read", "security:verify"}),
     "viewer": frozenset({"documents:read", "events:read", "sources:read"}),
-    "source_manager": frozenset({"sources:read", "sources:write"}),
+    "source_manager": frozenset({"sources:read", "sources:write", "ingestions:write"}),
     "security_auditor": frozenset({"audit:read", "security:verify"}),
 }
 KNOWN_SCOPES = ROLE_SCOPES["admin"]
@@ -127,8 +128,10 @@ async def authenticate(
         )
         request.state.principal = principal
     except ValueError:
-        request.app.state.audit.emit(
-            "authentication_failure", request_id=getattr(request.state, "request_id", "")
+        await run_in_threadpool(
+            request.app.state.audit.emit,
+            "authentication_failure",
+            request_id=getattr(request.state, "request_id", ""),
         )
         raise HTTPException(401, headers={"WWW-Authenticate": "Bearer"}) from None
     await enforce_rate_limit(request, "principal:" + principal.issuer + ":" + principal.subject)
@@ -148,7 +151,8 @@ async def enforce_rate_limit(request: Request, identity: str) -> None:
     except Exception:
         raise HTTPException(503) from None
     if not allowed:
-        request.app.state.audit.emit(
+        await run_in_threadpool(
+            request.app.state.audit.emit,
             "rate_limit_denied",
             request_id=getattr(request.state, "request_id", ""),
         )
@@ -170,5 +174,29 @@ def require_scopes(*scopes: str) -> Any:
             )
             raise HTTPException(403)
         return principal
+
+    return Depends(authorize)
+
+
+def product_access(scope: str) -> Any:
+    """Explicit unsecured local mode; secured products share resource-server authorization."""
+    if scope not in KNOWN_SCOPES:
+        raise ValueError("unknown scope")
+
+    async def authorize(
+        request: Request,
+        credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)],
+    ) -> None:
+        if not request.app.state.settings.security_enabled:
+            return
+        principal = await authenticate(request, credentials)
+        if not principal.permits(scope):
+            await run_in_threadpool(
+                request.app.state.audit.emit,
+                "permission_denied",
+                actor=principal.issuer + ":" + principal.subject,
+                request_id=request.state.request_id,
+            )
+            raise HTTPException(403)
 
     return Depends(authorize)

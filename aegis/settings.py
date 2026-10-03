@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     temporal_namespace: str = "default"
     temporal_task_queue: str = "aegis-foundation"
     temporal_enabled: bool = False
+    ai_profile: Literal["offline", "light", "full"] = "offline"
+    provenance_key_id: str = "local"
+    security_persist_audit: bool = False
     cors_origins: list[str] = ["http://localhost:3000"]
     log_file: str = ""
     otel_enabled: bool = False

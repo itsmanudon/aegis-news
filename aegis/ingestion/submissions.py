@@ -8,6 +8,7 @@ from typing import Any
 
 from temporalio.client import Client, WorkflowExecutionStatus
 from temporalio.common import WorkflowIDConflictPolicy, WorkflowIDReusePolicy
+from temporalio.contrib.opentelemetry import TracingInterceptor
 from temporalio.exceptions import WorkflowAlreadyStartedError
 from temporalio.service import RPCError, RPCStatusCode
 
@@ -35,11 +36,15 @@ class TemporalSubmissions:
                         Client.connect(
                             self.settings.temporal_address,
                             namespace=self.settings.temporal_namespace,
+                            interceptors=[TracingInterceptor()]
+                            if self.settings.otel_enabled
+                            else [],
                         ),
                         timeout=5,
                     )
                 except RuntimeError as exc:
                     raise ConnectionError("Temporal unavailable") from exc
+            assert self.client is not None
             return self.client
 
     async def submit(self, request: IngestionRequest) -> dict[str, str]:

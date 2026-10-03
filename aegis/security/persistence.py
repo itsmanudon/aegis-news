@@ -3,13 +3,13 @@
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import JSON, DateTime, String, insert, select
+from sqlalchemy import JSON, DateTime, String, insert, select, tuple_
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Mapped, mapped_column
 
 from aegis.persistence.models import Base
-from aegis.security.audit import AuditEvent
+from aegis.security.audit import AuditEvent, parse_audit_cursor
 
 
 class AuditEventRow(Base):
@@ -39,13 +39,19 @@ class SQLAuditSink:
         with self.engine.begin() as connection:
             connection.execute(insert(AuditEventRow).values(**event.model_dump()))
 
-    def recent(self, limit: int) -> tuple[AuditEvent, ...]:
-        with self.engine.connect() as connection:
-            rows = connection.execute(
-                select(AuditEventRow.__table__)
-                .order_by(AuditEventRow.occurred_at.desc(), AuditEventRow.event_id.desc())
-                .limit(max(1, min(limit, 100)))
+    def recent(self, limit: int, cursor: str | None = None) -> tuple[AuditEvent, ...]:
+        query = (
+            select(AuditEventRow.__table__)
+            .order_by(AuditEventRow.occurred_at.desc(), AuditEventRow.event_id.desc())
+            .limit(max(1, min(limit, 101)))
+        )
+        if cursor:
+            timestamp, event_id = parse_audit_cursor(cursor)
+            query = query.where(
+                tuple_(AuditEventRow.occurred_at, AuditEventRow.event_id) < (timestamp, event_id)
             )
+        with self.engine.connect() as connection:
+            rows = connection.execute(query)
             return tuple(AuditEvent.model_validate(dict(row)) for row in rows.mappings())
 
 

@@ -33,6 +33,16 @@ def test_liveness_info_and_openapi():
             "/api/v1/ingestions/{ingestion_id}",
             "/api/v1/ingestion-runs/{workflow_id}",
             "/api/v1/documents/{document_id}",
+            "/api/v1/documents",
+            "/api/v1/documents/{document_id}/intelligence",
+            "/api/v1/documents/{document_id}/similar",
+            "/api/v1/documents/{document_id}/verify",
+            "/api/v1/entities",
+            "/api/v1/entities/{entity_id}",
+            "/api/v1/entities/{entity_id}/documents",
+            "/api/v1/events",
+            "/api/v1/events/{event_id}",
+            "/api/v1/search",
         }
         assert schema["paths"]["/ready"]["get"]["responses"]["503"]["content"]["application/json"][
             "schema"

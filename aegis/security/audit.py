@@ -17,6 +17,7 @@ ACTIONS = frozenset(
         "permission_denied",
         "sensitive_document_read",
         "source_modification",
+        "ingestion_created",
         "integrity_verification",
         "signature_verification",
         "security_change",
@@ -39,7 +40,7 @@ class AuditEvent(BaseModel):
 
 class AuditSink(Protocol):
     def append(self, event: AuditEvent) -> None: ...
-    def recent(self, limit: int) -> tuple[AuditEvent, ...]: ...
+    def recent(self, limit: int, cursor: str | None = None) -> tuple[AuditEvent, ...]: ...
 
 
 class MemoryAuditSink:
@@ -58,8 +59,12 @@ class MemoryAuditSink:
         with self._lock:
             self._events.append(event)
 
-    def recent(self, limit: int) -> tuple[AuditEvent, ...]:
-        return self.events[-max(1, min(limit, 100)) :][::-1]
+    def recent(self, limit: int, cursor: str | None = None) -> tuple[AuditEvent, ...]:
+        events = sorted(self.events, key=lambda e: (e.occurred_at, e.event_id), reverse=True)
+        if cursor:
+            cutoff = parse_audit_cursor(cursor)
+            events = [e for e in events if (e.occurred_at, e.event_id) < cutoff]
+        return tuple(events[: max(1, min(limit, 101))])
 
 
 class AuditLog:
@@ -98,3 +103,11 @@ class AuditLog:
         logging.getLogger("aegis.audit").info(
             "security_audit", extra={"audit_event": event.model_dump(mode="json")}
         )
+
+
+def parse_audit_cursor(cursor: str) -> tuple[datetime, str]:
+    timestamp, event_id = cursor.split("|", 1)
+    date = datetime.fromisoformat(timestamp)
+    if date.tzinfo is None or not event_id or len(cursor) > 128:
+        raise ValueError("invalid audit cursor")
+    return date, event_id
