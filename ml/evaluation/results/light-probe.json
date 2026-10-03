@@ -1,0 +1,1539 @@
+{
+  "annotation_status": "Agent-authored and manually inspected; independent human adjudication pending",
+  "benchmark": {
+    "documents_per_second": 64.76382454229362,
+    "elapsed_seconds": 0.2470515000168234,
+    "memory_limitation": "Python allocations only; excludes native/GPU/process RSS",
+    "python_tracemalloc_peak_bytes": 280854,
+    "warmup": "none; first and warm iterations included"
+  },
+  "dataset_sha256": "10dbf026231ca6fed353c4f8249124aea761c591ced8d13367e2049e5a0ee025",
+  "environment": {
+    "architecture": "AMD64",
+    "download_bytes": 0,
+    "gpu": "not used",
+    "python": "3.12.11",
+    "system": "Windows"
+  },
+  "execution_status": "partial: optional models unavailable",
+  "failures": [
+    {
+      "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "reason": "NoPredictions",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+      "reason": "NoPredictions",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "reason": "NoPredictions",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+      "reason": "NoPredictions",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+      "reason": "NoPredictions",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+      "reason": "NoPredictions",
+      "task": "events"
+    }
+  ],
+  "metrics": {
+    "event_classification": {
+      "accuracy": 0.8125,
+      "confusion_matrix": {
+        "commodity.supply_disruption": {
+          "commodity.supply_disruption": 1,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 1,
+          "policy.change": 0,
+          "security.cyber_incident": 0
+        },
+        "company.earnings": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 1,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 1,
+          "policy.change": 0,
+          "security.cyber_incident": 0
+        },
+        "company.product_launch": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 3,
+          "economy.rate_change": 0,
+          "general": 0,
+          "policy.change": 0,
+          "security.cyber_incident": 0
+        },
+        "economy.rate_change": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 1,
+          "general": 1,
+          "policy.change": 0,
+          "security.cyber_incident": 0
+        },
+        "general": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 3,
+          "policy.change": 0,
+          "security.cyber_incident": 0
+        },
+        "policy.change": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 0,
+          "policy.change": 2,
+          "security.cyber_incident": 0
+        },
+        "security.cyber_incident": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 0,
+          "policy.change": 0,
+          "security.cyber_incident": 2
+        }
+      },
+      "macro_f1": 0.8095238095238094,
+      "micro_f1": 0.8125,
+      "support": 16
+    },
+    "event_extraction": {
+      "f1": 0.8695652173913044,
+      "gold_count": 13,
+      "precision": 1.0,
+      "predicted_count": 10,
+      "recall": 0.7692307692307693
+    },
+    "ner": {
+      "gold_count": 17,
+      "predicted_count": 0,
+      "span_only": {
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "typed": {
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0
+      }
+    },
+    "resolution": {
+      "accuracy": 1.0,
+      "gold_mentions": 17,
+      "protocol": "gold mentions and supplied candidates; independent of NER",
+      "top_3_accuracy_including_correct_abstentions": 1.0
+    },
+    "retrieval": {
+      "judged_queries": 16,
+      "mrr": 0,
+      "recall_at_3": 0.0
+    },
+    "sentiment": {
+      "accuracy": 0.0,
+      "confusion_matrix": {
+        "mixed": {
+          "mixed": 0,
+          "negative": 0,
+          "neutral": 0,
+          "positive": 0,
+          "unavailable": 3
+        },
+        "negative": {
+          "mixed": 0,
+          "negative": 0,
+          "neutral": 0,
+          "positive": 0,
+          "unavailable": 3
+        },
+        "neutral": {
+          "mixed": 0,
+          "negative": 0,
+          "neutral": 0,
+          "positive": 0,
+          "unavailable": 3
+        },
+        "positive": {
+          "mixed": 0,
+          "negative": 0,
+          "neutral": 0,
+          "positive": 0,
+          "unavailable": 7
+        },
+        "unavailable": {
+          "mixed": 0,
+          "negative": 0,
+          "neutral": 0,
+          "positive": 0,
+          "unavailable": 0
+        }
+      },
+      "macro_f1": 0.0,
+      "micro_f1": 0.0,
+      "support": 16
+    },
+    "topics": {
+      "accuracy": 0.75,
+      "confusion_matrix": {
+        "business": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "business.earnings": {
+          "business": 1,
+          "business.earnings": 1,
+          "commodities": 0,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "commodities": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 2,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "economy": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 1,
+          "general": 1,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "general": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "politics.policy": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 1,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "politics/public-policy": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 1,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "regional": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 4,
+          "technology": 0,
+          "technology.ai": 0
+        },
+        "technology": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "general": 1,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 1,
+          "technology.ai": 0
+        },
+        "technology.ai": {
+          "business": 0,
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "general": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 2
+        }
+      },
+      "macro_f1": 0.5666666666666667,
+      "micro_f1": 0.75,
+      "support": 16
+    }
+  },
+  "nearest_neighbors": {},
+  "predictions": [
+    {
+      "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.65,
+            "event_id": "evt_f1459436-2090-5283-85e3-10c3f57274b8",
+            "event_revision": 1,
+            "label": "company.earnings",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [
+          {
+            "confidence": 0.65,
+            "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+            "evidence_text": "Atlas Labs reported quarterly earnings with strong profit growth.",
+            "occurred_at": null,
+            "proposed_event_type": "company.earnings",
+            "result_type": "event_extraction",
+            "schema_version": "1"
+          }
+        ],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_260cfe14-3b9d-5328-83f1-6d25a3729415",
+            "mention_id": "mention_9a536f80-20d9-579d-af7f-14a0daead4c4",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.75,
+            "label": "business.earnings",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.5,
+            "event_id": "evt_876e20f9-1fdb-5b25-ae4b-fee4467abdf8",
+            "event_revision": 1,
+            "label": "general",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_c92b79e6-f230-5537-ab3d-e0aed64b4389",
+            "mention_id": "mention_298a93d0-a7d2-5603-bbb0-ee6aaa4567f8",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.65,
+            "label": "business",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.75,
+            "event_id": "evt_7c6310e5-70f1-55b8-9041-706b930d8708",
+            "event_revision": 1,
+            "label": "economy.rate_change",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [
+          {
+            "confidence": 0.75,
+            "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+            "evidence_text": "Delta Bank announced an interest rate hike as inflation rose.",
+            "occurred_at": null,
+            "proposed_event_type": "economy.rate_change",
+            "result_type": "event_extraction",
+            "schema_version": "1"
+          }
+        ],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_19a52ce4-5aea-560c-bd57-4ea61c288506",
+            "mention_id": "mention_1a03cfc7-7651-50ba-a0cd-492210cd8b39",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.75,
+            "label": "economy",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.5,
+            "event_id": "evt_8e8a2bab-11d4-54a8-a60f-a7a5f999fb28",
+            "event_revision": 1,
+            "label": "general",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_37587e6a-e774-5dea-986b-0245426ab2ba",
+            "mention_id": "mention_fb1d1226-8aee-5ece-8891-8bca7c54cf1b",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.5,
+            "label": "general",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.65,
+            "event_id": "evt_1fc54d8a-1017-555d-864e-1d4072ce2fc4",
+            "event_revision": 1,
+            "label": "company.product_launch",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [
+          {
+            "confidence": 0.65,
+            "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+            "evidence_text": "Pixel Forge launched new artificial intelligence software with improved reliability.",
+            "occurred_at": null,
+            "proposed_event_type": "company.product_launch",
+            "result_type": "event_extraction",
+            "schema_version": "1"
+          }
+        ],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_c4f06008-87c0-5f34-b690-43548e789303",
+            "mention_id": "mention_4c2bed7d-3a42-5958-aa18-817834a254a6",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.65,
+            "label": "technology.ai",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.65,
+            "event_id": "evt_7b336ab9-6213-5088-81b2-23f4cf525736",
+            "event_revision": 1,
+            "label": "company.product_launch",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [
+          {
+            "confidence": 0.65,
+            "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+            "evidence_text": "Orion Systems unveiled a machine learning tool after a failed trial.",
+            "occurred_at": null,
+            "proposed_event_type": "company.product_launch",
+            "result_type": "event_extraction",
+            "schema_version": "1"
+          }
+        ],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_24961513-6d73-528f-bde7-fc6f03e22f30",
+            "mention_id": "mention_2d530c8e-b5e0-558e-b936-22d2c8053340",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          },
+          {
+            "confidence": 0.0,
+            "entity_id": null,
+            "mention_id": "mention_f1daa60d-25a0-53db-bc60-1d41251c0cdb",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.65,
+            "label": "technology.ai",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.75,
+            "event_id": "evt_48ca837d-15a4-5f6d-b424-80ef909cc659",
+            "event_revision": 1,
+            "label": "policy.change",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [
+          {
+            "confidence": 0.75,
+            "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+            "evidence_text": "River Parliament passed legislation and a new law on water permits.",
+            "occurred_at": null,
+            "proposed_event_type": "policy.change",
+            "result_type": "event_extraction",
+            "schema_version": "1"
+          }
+        ],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_5cb8a568-422c-5898-856e-3e0104947295",
+            "mention_id": "mention_db106646-e681-5857-886b-87d16cf81c31",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.75,
+            "label": "politics.policy",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.65,
+            "event_id": "evt_7d59147f-53f8-5fd5-93be-0a603467a223",
+            "event_revision": 1,
+            "label": "policy.change",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [
+          {
+            "confidence": 0.65,
+            "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+            "evidence_text": "Metro Council adopted a public policy change to protect drinking water.",
+            "occurred_at": null,
+            "proposed_event_type": "policy.change",
+            "result_type": "event_extraction",
+            "schema_version": "1"
+          }
+        ],
+        "resolution": [
+          {
+            "confidence": 0.0,
+            "entity_id": null,
+            "mention_id": "mention_b4497b1b-5e07-5e0e-870d-be7dba4565e2",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.65,
+            "label": "politics.policy",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.5,
+            "event_id": "evt_c8f1e1c6-43e5-580e-ba29-b833d1010b88",
+            "event_revision": 1,
+            "label": "general",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_94dcebe8-4dd1-5214-9e04-7b2191ec51ce",
+            "mention_id": "mention_ace4967f-6648-5fc1-a0bf-ba99986cfbd2",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.65,
+            "label": "regional",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.5,
+            "event_id": "evt_176e8754-8e44-5824-ab26-1795b0af28b4",
+            "event_revision": 1,
+            "label": "general",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_4d5bef48-808f-589c-a7cb-ae614d261609",
+            "mention_id": "mention_303e7b13-1cd3-505f-917f-b75a730bfe14",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.65,
+            "label": "regional",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.8500000000000001,
+            "event_id": "evt_bc92ae4b-eef8-5027-8e20-8485983bd8ed",
+            "event_revision": 1,
+            "label": "commodity.supply_disruption",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [
+          {
+            "confidence": 0.8500000000000001,
+            "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+            "evidence_text": "Copper Basin reported a mine closure and supply disruption after a pipeline outage.",
+            "occurred_at": null,
+            "proposed_event_type": "commodity.supply_disruption",
+            "result_type": "event_extraction",
+            "schema_version": "1"
+          }
+        ],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_6335f007-6ae4-5c28-bd32-ff5e398e2882",
+            "mention_id": "mention_c1a9e83a-e21e-556e-80fb-e78a3d7afefb",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.65,
+            "label": "commodities",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.5,
+            "event_id": "evt_4b2ce9a7-ef11-539f-97a2-355e7eab54cb",
+            "event_revision": 1,
+            "label": "general",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_98fc4957-241e-589d-a2ac-311c63f531c5",
+            "mention_id": "mention_08f99a4e-0fd5-580f-b735-b24fbdfdf399",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.65,
+            "label": "commodities",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.75,
+            "event_id": "evt_eea6040c-7817-5e9e-9048-150ba5dff6b7",
+            "event_revision": 1,
+            "label": "security.cyber_incident",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [
+          {
+            "confidence": 0.75,
+            "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+            "evidence_text": "Secure Harbor confirmed a ransomware data breach in its software.",
+            "occurred_at": null,
+            "proposed_event_type": "security.cyber_incident",
+            "result_type": "event_extraction",
+            "schema_version": "1"
+          }
+        ],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_915dafbf-f6ef-5582-8f09-84311f53b872",
+            "mention_id": "mention_8ee3dd41-3d4d-5ae8-99b1-6c8077208615",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.65,
+            "label": "technology",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.65,
+            "event_id": "evt_8778a3a0-6823-563d-8622-d11a0f8f9b35",
+            "event_revision": 1,
+            "label": "security.cyber_incident",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [
+          {
+            "confidence": 0.65,
+            "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+            "evidence_text": "Beacon Network restored services after a cyberattack caused failure.",
+            "occurred_at": null,
+            "proposed_event_type": "security.cyber_incident",
+            "result_type": "event_extraction",
+            "schema_version": "1"
+          }
+        ],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_de20766a-c69d-546e-b996-ab8043e01904",
+            "mention_id": "mention_c438cd24-1f33-5c0d-a8f3-0799a5cd8039",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.5,
+            "label": "general",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.65,
+            "event_id": "evt_64ba0e76-0402-5845-a299-a11ed78d43d0",
+            "event_revision": 1,
+            "label": "company.product_launch",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [
+          {
+            "confidence": 0.65,
+            "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+            "evidence_text": "City Museum unveiled a technology exhibit with a regional illustration.",
+            "occurred_at": null,
+            "proposed_event_type": "company.product_launch",
+            "result_type": "event_extraction",
+            "schema_version": "1"
+          }
+        ],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_8c08a315-49f6-5547-8b94-0f804e5d0afe",
+            "mention_id": "mention_c13045fa-fda7-5900-b59a-db8d783fe7a0",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.65,
+            "label": "regional",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    },
+    {
+      "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [
+          {
+            "confidence": 0.5,
+            "event_id": "evt_f43dddb1-b655-5fe0-ba46-0d5ba4e308cb",
+            "event_revision": 1,
+            "label": "general",
+            "result_type": "event_classification",
+            "schema_version": "1"
+          }
+        ],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_80e71265-33fc-5b26-b1e6-3ab4a8bd5012",
+            "mention_id": "mention_a3e4db91-2350-5cb1-b406-8ad13169ff9b",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": [
+          {
+            "confidence": 0.65,
+            "label": "regional",
+            "result_type": "topic",
+            "schema_version": "1"
+          }
+        ]
+      }
+    }
+  ],
+  "producing_models": {
+    "event_classification": {
+      "analysis_type": "event_classification",
+      "configuration_hash": "7c4c163bcef9fa3d6f021be81f1e7e2645c44f8ecf180ed2edb93603f3f950d1",
+      "model_name": "keyword-events",
+      "model_version": "1",
+      "provider": "local-baseline",
+      "schema_version": "1"
+    },
+    "events": {
+      "analysis_type": "event_extraction",
+      "configuration_hash": "26e5691622ad72940ab6a3c8a4e32bc9309be4431ecc0d5167a1a567489ede83",
+      "model_name": "keyword-events",
+      "model_version": "1",
+      "provider": "local-baseline",
+      "schema_version": "1"
+    },
+    "resolution": {
+      "analysis_type": "entity_resolution",
+      "configuration_hash": "67ed0e15d5914cdd84074ef90d169fedf602cd8a42957eb9b40c07fd442c3cb3",
+      "model_name": "candidate-resolver",
+      "model_version": "1",
+      "provider": "local-baseline",
+      "schema_version": "1"
+    },
+    "topics": {
+      "analysis_type": "topic",
+      "configuration_hash": "89b0663bbafa916efc8891f325f9c44d187228a6e8faa326c1e9b6830f248d26",
+      "model_name": "keyword-topics",
+      "model_version": "1",
+      "provider": "local-baseline",
+      "schema_version": "1"
+    }
+  },
+  "profile": "light",
+  "quality_metrics_valid_for_whole_profile": false,
+  "registry": {
+    "artifacts": {},
+    "implementation": "aegis-local-1",
+    "lexicon": {
+      "negative": [
+        "loss",
+        "losses",
+        "decline",
+        "weak",
+        "failed",
+        "failure",
+        "disruption"
+      ],
+      "positive": [
+        "growth",
+        "strong",
+        "gain",
+        "gains",
+        "improved",
+        "success",
+        "profit"
+      ]
+    },
+    "libraries": {
+      "sentence-transformers": "uninstalled",
+      "tokenizers": "uninstalled",
+      "torch": "uninstalled",
+      "transformers": "uninstalled"
+    },
+    "profile": {
+      "embedding": {
+        "backend": "sentence-transformers",
+        "device": "cpu",
+        "dimensions": 384,
+        "local_files_only": true,
+        "max_tokens": 256,
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+        "threshold": 0.5
+      },
+      "event": {
+        "backend": "baseline",
+        "device": "cpu",
+        "dimensions": 64,
+        "local_files_only": true,
+        "max_tokens": 256,
+        "model_name": "keyword-events",
+        "revision": "1",
+        "threshold": 0.5
+      },
+      "ner": {
+        "backend": "transformers",
+        "device": "cpu",
+        "dimensions": 64,
+        "local_files_only": true,
+        "max_tokens": 256,
+        "model_name": "dslim/bert-base-NER",
+        "revision": "d1a3e8f13f8c3566299d95fcfc9a8d2382a9affc",
+        "threshold": 0.5
+      },
+      "sentiment": {
+        "backend": "transformers",
+        "device": "cpu",
+        "dimensions": 64,
+        "local_files_only": true,
+        "max_tokens": 256,
+        "model_name": "ProsusAI/finbert",
+        "revision": "4556d13015211d73dccd3fdd39d39232506f3e43",
+        "threshold": 0.5
+      },
+      "topic": {
+        "backend": "baseline",
+        "device": "cpu",
+        "dimensions": 64,
+        "local_files_only": true,
+        "max_tokens": 256,
+        "model_name": "keyword-topics",
+        "revision": "1",
+        "threshold": 0.5
+      }
+    },
+    "registry_hash": "93723852dee03c0106f6dc7459d870fd413ca27e3e6609d3d17713c9750f6e56",
+    "taxonomies": {
+      "events": {
+        "commodity.supply_disruption": [
+          "supply disruption",
+          "pipeline outage",
+          "mine closure"
+        ],
+        "company.acquisition": [
+          "acquisition",
+          "acquire",
+          "merger"
+        ],
+        "company.earnings": [
+          "earnings",
+          "quarterly results"
+        ],
+        "company.executive_change": [
+          "appointed",
+          "resigned",
+          "new ceo"
+        ],
+        "company.product_launch": [
+          "launched",
+          "product launch",
+          "unveiled"
+        ],
+        "economy.rate_change": [
+          "rate cut",
+          "rate hike",
+          "interest rate"
+        ],
+        "general": [],
+        "policy.change": [
+          "legislation",
+          "policy change",
+          "new law"
+        ],
+        "regulatory.action": [
+          "regulator",
+          "antitrust",
+          "fined",
+          "enforcement"
+        ],
+        "security.cyber_incident": [
+          "cyberattack",
+          "ransomware",
+          "data breach"
+        ]
+      },
+      "topics": {
+        "business": [
+          "business",
+          "revenue",
+          "trade"
+        ],
+        "business.earnings": [
+          "earnings",
+          "quarterly results",
+          "profit"
+        ],
+        "business.mergers": [
+          "acquisition",
+          "acquire",
+          "merger"
+        ],
+        "commodities": [
+          "oil",
+          "copper",
+          "commodity",
+          "wheat"
+        ],
+        "company": [
+          "company",
+          "executive",
+          "product launch"
+        ],
+        "economy": [
+          "inflation",
+          "interest rate",
+          "gdp",
+          "unemployment"
+        ],
+        "general": [],
+        "markets": [
+          "bond",
+          "currency",
+          "market"
+        ],
+        "markets.equities": [
+          "stocks",
+          "equities",
+          "stock market"
+        ],
+        "politics.policy": [
+          "legislation",
+          "policy",
+          "parliament",
+          "government"
+        ],
+        "politics/public-policy": [
+          "election",
+          "public policy"
+        ],
+        "regional": [
+          "municipal",
+          "regional",
+          "local council"
+        ],
+        "technology": [
+          "software",
+          "technology",
+          "cyber"
+        ],
+        "technology.ai": [
+          "artificial intelligence",
+          "machine learning",
+          "ai"
+        ]
+      }
+    }
+  },
+  "rounds": 1,
+  "samples": 16,
+  "scope": "Tiny synthetic development set; not a held-out real-news quality estimate",
+  "timing": {
+    "embedding": {
+      "count": 16,
+      "median_ms": 1.343949930742383,
+      "p95_ms": 2.3720001336187124,
+      "total_ms": 25.89489985257387
+    },
+    "entities": {
+      "count": 16,
+      "median_ms": 1.5086500206962228,
+      "p95_ms": 6.730199791491032,
+      "total_ms": 33.41629961505532
+    },
+    "event_classification": {
+      "count": 16,
+      "median_ms": 2.107399981468916,
+      "p95_ms": 4.32800012640655,
+      "total_ms": 37.496600300073624
+    },
+    "events": {
+      "count": 16,
+      "median_ms": 2.016150043345988,
+      "p95_ms": 8.347699884325266,
+      "total_ms": 41.341899894177914
+    },
+    "resolution": {
+      "count": 16,
+      "median_ms": 0.6544999778270721,
+      "p95_ms": 1.2999000027775764,
+      "total_ms": 11.901600286364555
+    },
+    "sentiment": {
+      "count": 16,
+      "median_ms": 1.7792499857023358,
+      "p95_ms": 9.078599978238344,
+      "total_ms": 34.55079975537956
+    },
+    "topics": {
+      "count": 16,
+      "median_ms": 2.2693000501021743,
+      "p95_ms": 12.797300005331635,
+      "total_ms": 47.668600687757134
+    }
+  }
+}

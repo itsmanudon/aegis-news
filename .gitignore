@@ -32,6 +32,11 @@ data/*
 !data/samples/README.md
 ml/datasets/*
 !ml/datasets/README.md
+!ml/datasets/gold/
+ml/datasets/gold/*
+!ml/datasets/gold/*.json
+!ml/datasets/gold/*.jsonl
+!ml/datasets/gold/*.md
 
 .test-tmp/
 .integration-results/

@@ -1,0 +1,1365 @@
+{
+  "annotation_status": "Agent-authored and manually inspected; independent human adjudication pending",
+  "benchmark": {
+    "documents_per_second": 99.0187857213674,
+    "elapsed_seconds": 0.16158549999818206,
+    "memory_limitation": "Python allocations only; excludes native/GPU/process RSS",
+    "python_tracemalloc_peak_bytes": 226174,
+    "warmup": "none; first and warm iterations included"
+  },
+  "dataset_sha256": "10dbf026231ca6fed353c4f8249124aea761c591ced8d13367e2049e5a0ee025",
+  "environment": {
+    "architecture": "AMD64",
+    "download_bytes": 0,
+    "gpu": "not used",
+    "python": "3.12.11",
+    "system": "Windows"
+  },
+  "execution_status": "partial: optional models unavailable",
+  "failures": [
+    {
+      "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    },
+    {
+      "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+      "reason": "ModelUnavailable",
+      "task": "entities"
+    },
+    {
+      "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+      "reason": "ModelUnavailable",
+      "task": "topics"
+    },
+    {
+      "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+      "reason": "ModelUnavailable",
+      "task": "sentiment"
+    },
+    {
+      "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+      "reason": "ModelUnavailable",
+      "task": "embedding"
+    },
+    {
+      "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+      "reason": "ModelUnavailable",
+      "task": "events"
+    },
+    {
+      "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+      "reason": "ModelUnavailable",
+      "task": "event_classification"
+    }
+  ],
+  "metrics": {
+    "event_classification": {
+      "accuracy": 0.0,
+      "confusion_matrix": {
+        "commodity.supply_disruption": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 0,
+          "policy.change": 0,
+          "security.cyber_incident": 0,
+          "unavailable": 2
+        },
+        "company.earnings": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 0,
+          "policy.change": 0,
+          "security.cyber_incident": 0,
+          "unavailable": 2
+        },
+        "company.product_launch": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 0,
+          "policy.change": 0,
+          "security.cyber_incident": 0,
+          "unavailable": 3
+        },
+        "economy.rate_change": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 0,
+          "policy.change": 0,
+          "security.cyber_incident": 0,
+          "unavailable": 2
+        },
+        "general": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 0,
+          "policy.change": 0,
+          "security.cyber_incident": 0,
+          "unavailable": 3
+        },
+        "policy.change": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 0,
+          "policy.change": 0,
+          "security.cyber_incident": 0,
+          "unavailable": 2
+        },
+        "security.cyber_incident": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 0,
+          "policy.change": 0,
+          "security.cyber_incident": 0,
+          "unavailable": 2
+        },
+        "unavailable": {
+          "commodity.supply_disruption": 0,
+          "company.earnings": 0,
+          "company.product_launch": 0,
+          "economy.rate_change": 0,
+          "general": 0,
+          "policy.change": 0,
+          "security.cyber_incident": 0,
+          "unavailable": 0
+        }
+      },
+      "macro_f1": 0.0,
+      "micro_f1": 0.0,
+      "support": 16
+    },
+    "event_extraction": {
+      "f1": 0.0,
+      "gold_count": 13,
+      "precision": 0.0,
+      "predicted_count": 0,
+      "recall": 0.0
+    },
+    "ner": {
+      "gold_count": 17,
+      "predicted_count": 0,
+      "span_only": {
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "typed": {
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0
+      }
+    },
+    "resolution": {
+      "accuracy": 1.0,
+      "gold_mentions": 17,
+      "protocol": "gold mentions and supplied candidates; independent of NER",
+      "top_3_accuracy_including_correct_abstentions": 1.0
+    },
+    "retrieval": {
+      "judged_queries": 16,
+      "mrr": 0,
+      "recall_at_3": 0.0
+    },
+    "sentiment": {
+      "accuracy": 0.0,
+      "confusion_matrix": {
+        "mixed": {
+          "mixed": 0,
+          "negative": 0,
+          "neutral": 0,
+          "positive": 0,
+          "unavailable": 3
+        },
+        "negative": {
+          "mixed": 0,
+          "negative": 0,
+          "neutral": 0,
+          "positive": 0,
+          "unavailable": 3
+        },
+        "neutral": {
+          "mixed": 0,
+          "negative": 0,
+          "neutral": 0,
+          "positive": 0,
+          "unavailable": 3
+        },
+        "positive": {
+          "mixed": 0,
+          "negative": 0,
+          "neutral": 0,
+          "positive": 0,
+          "unavailable": 7
+        },
+        "unavailable": {
+          "mixed": 0,
+          "negative": 0,
+          "neutral": 0,
+          "positive": 0,
+          "unavailable": 0
+        }
+      },
+      "macro_f1": 0.0,
+      "micro_f1": 0.0,
+      "support": 16
+    },
+    "topics": {
+      "accuracy": 0.0,
+      "confusion_matrix": {
+        "business.earnings": {
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0,
+          "unavailable": 2
+        },
+        "commodities": {
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0,
+          "unavailable": 2
+        },
+        "economy": {
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0,
+          "unavailable": 2
+        },
+        "politics.policy": {
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0,
+          "unavailable": 1
+        },
+        "politics/public-policy": {
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0,
+          "unavailable": 1
+        },
+        "regional": {
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0,
+          "unavailable": 4
+        },
+        "technology": {
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0,
+          "unavailable": 2
+        },
+        "technology.ai": {
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0,
+          "unavailable": 2
+        },
+        "unavailable": {
+          "business.earnings": 0,
+          "commodities": 0,
+          "economy": 0,
+          "politics.policy": 0,
+          "politics/public-policy": 0,
+          "regional": 0,
+          "technology": 0,
+          "technology.ai": 0,
+          "unavailable": 0
+        }
+      },
+      "macro_f1": 0.0,
+      "micro_f1": 0.0,
+      "support": 16
+    }
+  },
+  "nearest_neighbors": {},
+  "predictions": [
+    {
+      "document_id": "doc_b34eac5c-f326-58d1-88f1-ecf868111f54",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_260cfe14-3b9d-5328-83f1-6d25a3729415",
+            "mention_id": "mention_9a536f80-20d9-579d-af7f-14a0daead4c4",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_c92b79e6-f230-5537-ab3d-e0aed64b4389",
+            "mention_id": "mention_298a93d0-a7d2-5603-bbb0-ee6aaa4567f8",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_19a52ce4-5aea-560c-bd57-4ea61c288506",
+            "mention_id": "mention_1a03cfc7-7651-50ba-a0cd-492210cd8b39",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_37587e6a-e774-5dea-986b-0245426ab2ba",
+            "mention_id": "mention_fb1d1226-8aee-5ece-8891-8bca7c54cf1b",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_c4f06008-87c0-5f34-b690-43548e789303",
+            "mention_id": "mention_4c2bed7d-3a42-5958-aa18-817834a254a6",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_24961513-6d73-528f-bde7-fc6f03e22f30",
+            "mention_id": "mention_2d530c8e-b5e0-558e-b936-22d2c8053340",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          },
+          {
+            "confidence": 0.0,
+            "entity_id": null,
+            "mention_id": "mention_f1daa60d-25a0-53db-bc60-1d41251c0cdb",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_21856760-2c73-526b-81ed-e1b15e11408c",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_5cb8a568-422c-5898-856e-3e0104947295",
+            "mention_id": "mention_db106646-e681-5857-886b-87d16cf81c31",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 0.0,
+            "entity_id": null,
+            "mention_id": "mention_b4497b1b-5e07-5e0e-870d-be7dba4565e2",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_94dcebe8-4dd1-5214-9e04-7b2191ec51ce",
+            "mention_id": "mention_ace4967f-6648-5fc1-a0bf-ba99986cfbd2",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_4d5bef48-808f-589c-a7cb-ae614d261609",
+            "mention_id": "mention_303e7b13-1cd3-505f-917f-b75a730bfe14",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_6335f007-6ae4-5c28-bd32-ff5e398e2882",
+            "mention_id": "mention_c1a9e83a-e21e-556e-80fb-e78a3d7afefb",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_98fc4957-241e-589d-a2ac-311c63f531c5",
+            "mention_id": "mention_08f99a4e-0fd5-580f-b735-b24fbdfdf399",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_915dafbf-f6ef-5582-8f09-84311f53b872",
+            "mention_id": "mention_8ee3dd41-3d4d-5ae8-99b1-6c8077208615",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_de20766a-c69d-546e-b996-ab8043e01904",
+            "mention_id": "mention_c438cd24-1f33-5c0d-a8f3-0799a5cd8039",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_8c08a315-49f6-5547-8b94-0f804e5d0afe",
+            "mention_id": "mention_c13045fa-fda7-5900-b59a-db8d783fe7a0",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    },
+    {
+      "document_id": "doc_674c56f6-5f02-553e-998f-e2b0748c0dec",
+      "outputs": {
+        "embedding": [],
+        "entities": [],
+        "event_classification": [],
+        "events": [],
+        "resolution": [
+          {
+            "confidence": 1.0,
+            "entity_id": "ent_80e71265-33fc-5b26-b1e6-3ab4a8bd5012",
+            "mention_id": "mention_a3e4db91-2350-5cb1-b406-8ad13169ff9b",
+            "result_type": "entity_resolution",
+            "schema_version": "1"
+          }
+        ],
+        "sentiment": [],
+        "topics": []
+      }
+    }
+  ],
+  "producing_models": {
+    "resolution": {
+      "analysis_type": "entity_resolution",
+      "configuration_hash": "67ed0e15d5914cdd84074ef90d169fedf602cd8a42957eb9b40c07fd442c3cb3",
+      "model_name": "candidate-resolver",
+      "model_version": "1",
+      "provider": "local-baseline",
+      "schema_version": "1"
+    }
+  },
+  "profile": "full",
+  "quality_metrics_valid_for_whole_profile": false,
+  "registry": {
+    "artifacts": {},
+    "implementation": "aegis-local-1",
+    "lexicon": {
+      "negative": [
+        "loss",
+        "losses",
+        "decline",
+        "weak",
+        "failed",
+        "failure",
+        "disruption"
+      ],
+      "positive": [
+        "growth",
+        "strong",
+        "gain",
+        "gains",
+        "improved",
+        "success",
+        "profit"
+      ]
+    },
+    "libraries": {
+      "sentence-transformers": "uninstalled",
+      "tokenizers": "uninstalled",
+      "torch": "uninstalled",
+      "transformers": "uninstalled"
+    },
+    "profile": {
+      "embedding": {
+        "backend": "sentence-transformers",
+        "device": "cpu",
+        "dimensions": 768,
+        "local_files_only": true,
+        "max_tokens": 256,
+        "model_name": "sentence-transformers/all-mpnet-base-v2",
+        "revision": "e8c3b32edf5434bc2275fc9bab85f82640a19130",
+        "threshold": 0.5
+      },
+      "event": {
+        "backend": "transformers",
+        "device": "cpu",
+        "dimensions": 64,
+        "local_files_only": true,
+        "max_tokens": 256,
+        "model_name": "facebook/bart-large-mnli",
+        "revision": "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce",
+        "threshold": 0.5
+      },
+      "ner": {
+        "backend": "transformers",
+        "device": "cpu",
+        "dimensions": 64,
+        "local_files_only": true,
+        "max_tokens": 256,
+        "model_name": "dslim/bert-base-NER",
+        "revision": "d1a3e8f13f8c3566299d95fcfc9a8d2382a9affc",
+        "threshold": 0.5
+      },
+      "sentiment": {
+        "backend": "transformers",
+        "device": "cpu",
+        "dimensions": 64,
+        "local_files_only": true,
+        "max_tokens": 256,
+        "model_name": "ProsusAI/finbert",
+        "revision": "4556d13015211d73dccd3fdd39d39232506f3e43",
+        "threshold": 0.5
+      },
+      "topic": {
+        "backend": "transformers",
+        "device": "cpu",
+        "dimensions": 64,
+        "local_files_only": true,
+        "max_tokens": 256,
+        "model_name": "facebook/bart-large-mnli",
+        "revision": "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce",
+        "threshold": 0.5
+      }
+    },
+    "registry_hash": "2ce5c65fb0c6ea4e5e84c72a5332ff279131cdb70c49df17b4642ed949061929",
+    "taxonomies": {
+      "events": {
+        "commodity.supply_disruption": [
+          "supply disruption",
+          "pipeline outage",
+          "mine closure"
+        ],
+        "company.acquisition": [
+          "acquisition",
+          "acquire",
+          "merger"
+        ],
+        "company.earnings": [
+          "earnings",
+          "quarterly results"
+        ],
+        "company.executive_change": [
+          "appointed",
+          "resigned",
+          "new ceo"
+        ],
+        "company.product_launch": [
+          "launched",
+          "product launch",
+          "unveiled"
+        ],
+        "economy.rate_change": [
+          "rate cut",
+          "rate hike",
+          "interest rate"
+        ],
+        "general": [],
+        "policy.change": [
+          "legislation",
+          "policy change",
+          "new law"
+        ],
+        "regulatory.action": [
+          "regulator",
+          "antitrust",
+          "fined",
+          "enforcement"
+        ],
+        "security.cyber_incident": [
+          "cyberattack",
+          "ransomware",
+          "data breach"
+        ]
+      },
+      "topics": {
+        "business": [
+          "business",
+          "revenue",
+          "trade"
+        ],
+        "business.earnings": [
+          "earnings",
+          "quarterly results",
+          "profit"
+        ],
+        "business.mergers": [
+          "acquisition",
+          "acquire",
+          "merger"
+        ],
+        "commodities": [
+          "oil",
+          "copper",
+          "commodity",
+          "wheat"
+        ],
+        "company": [
+          "company",
+          "executive",
+          "product launch"
+        ],
+        "economy": [
+          "inflation",
+          "interest rate",
+          "gdp",
+          "unemployment"
+        ],
+        "general": [],
+        "markets": [
+          "bond",
+          "currency",
+          "market"
+        ],
+        "markets.equities": [
+          "stocks",
+          "equities",
+          "stock market"
+        ],
+        "politics.policy": [
+          "legislation",
+          "policy",
+          "parliament",
+          "government"
+        ],
+        "politics/public-policy": [
+          "election",
+          "public policy"
+        ],
+        "regional": [
+          "municipal",
+          "regional",
+          "local council"
+        ],
+        "technology": [
+          "software",
+          "technology",
+          "cyber"
+        ],
+        "technology.ai": [
+          "artificial intelligence",
+          "machine learning",
+          "ai"
+        ]
+      }
+    }
+  },
+  "rounds": 1,
+  "samples": 16,
+  "scope": "Tiny synthetic development set; not a held-out real-news quality estimate",
+  "timing": {
+    "embedding": {
+      "count": 16,
+      "median_ms": 1.2696998892351985,
+      "p95_ms": 1.909899991005659,
+      "total_ms": 21.90100005827844
+    },
+    "entities": {
+      "count": 16,
+      "median_ms": 1.2923500034958124,
+      "p95_ms": 6.519800052046776,
+      "total_ms": 27.21120067872107
+    },
+    "event_classification": {
+      "count": 16,
+      "median_ms": 1.3572999741882086,
+      "p95_ms": 2.0838999189436436,
+      "total_ms": 23.770099505782127
+    },
+    "events": {
+      "count": 16,
+      "median_ms": 1.541400095447898,
+      "p95_ms": 2.3505999706685543,
+      "total_ms": 25.386099936440587
+    },
+    "resolution": {
+      "count": 16,
+      "median_ms": 0.5854999180883169,
+      "p95_ms": 1.117300009354949,
+      "total_ms": 10.884299408644438
+    },
+    "sentiment": {
+      "count": 16,
+      "median_ms": 1.243300037458539,
+      "p95_ms": 2.4329000152647495,
+      "total_ms": 21.98779978789389
+    },
+    "topics": {
+      "count": 16,
+      "median_ms": 1.191900111734867,
+      "p95_ms": 1.8007000908255577,
+      "total_ms": 20.41479991748929
+    }
+  }
+}
