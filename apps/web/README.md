@@ -16,6 +16,12 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 
 Use the header's Data mode selector to switch while navigating. The selection lasts for the current app session; a full reload restores the environment default. Switching recreates the TanStack Query client, query observers, mutation state and identity context. Real mode never falls back to fixtures.
 
+## Integrated real mode
+
+Compose builds the console in real mode. Paste a five-minute development token from `scripts/security_dev.py token --key-id local --role admin` into the header. Tokens stay in memory; changing identity destroys the query cache. See [the local MVP runbook](../../docs/mvp-integration.md) for exact commands. Production access tokens come from an external OIDC provider.
+
+Real mode supports documents/intelligence, entities, events, title/text search, live provenance verification, sources, scoped source creation/ingestion, workflow status, and authorized audit reads. Similarity is available through the API. Integrity is unverified until an actual check; feed-wide verified/failed filtering explicitly reports unavailable. Source editing and a production login redirect are deferred.
+
 ## Screens
 
 - Dashboard: evidence counts, integrity review queue, timeline and latest documents.
@@ -28,7 +34,7 @@ Use the header's Data mode selector to switch while navigating. The selection la
 - Audit/security: simulated identity and role context, audit outcome filtering.
 - Sources/admin: read-only registry and explicit administration integration boundary.
 
-All source names, articles, hashes, signatures, models and audit records are fictional. Mock verification returns a typed presentation fixture; it does not perform cryptography. Source facts mean statements attributed to a source, not independently established truth. Model outputs are assessments and confidence is model-reported.
+In mock mode, all source names, articles, hashes, signatures, models and audit records are fictional. Mock verification returns a typed presentation fixture; it does not perform cryptography. Source facts mean statements attributed to a source, not independently established truth. Model outputs are assessments and confidence is model-reported.
 
 ## Architecture and contracts
 

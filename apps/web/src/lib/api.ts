@@ -152,52 +152,42 @@ export function createMockAdapter(latency = 180): AnalystAdapter {
     },
   };
 }
-export function createRealAdapter(
-  baseUrl: string,
-  transport: typeof fetch = fetch,
-): AnalystAdapter {
+function unwrap<T>(result: {
+  data?: T;
+  error?: unknown;
+  response: Response;
+}): T {
+  if (result.error) {
+    const envelope = result.error as components["schemas"]["ApiErrorEnvelope"];
+    throw new ApiClientError(
+      envelope.error?.code ?? "PROCESSING_FAILED",
+      envelope.error?.message ?? "Unexpected API response",
+      envelope.error?.request_id,
+      result.response.status,
+    );
+  }
+  if (!result.data)
+    throw new ApiClientError(
+      "PROCESSING_FAILED",
+      "The API returned an empty response.",
+    );
+  return result.data;
+}
+function realClient(baseUrl: string, transport: typeof fetch, token: string) {
   const client = createClient<paths>({
     baseUrl,
-    fetch: transport,
     credentials: "omit",
-  });
-  const unavailable = async (): Promise<never> => {
-    throw new ApiClientError(
-      "CAPABILITY_UNAVAILABLE",
-      "This capability is not registered in the current API contract. Switch to mock data to explore the console.",
-    );
-  };
-  return {
-    async system(signal) {
+    fetch: async (input) => {
+      const request = new Request(input);
+      const deadline = AbortSignal.timeout(10000);
       try {
-        const deadline = AbortSignal.timeout(10000);
-        const { data, error, response } = await client.GET(
-          "/api/v1/system/info",
-          { signal: signal ? AbortSignal.any([signal, deadline]) : deadline },
+        return await transport(
+          new Request(request, {
+            signal: AbortSignal.any([request.signal, deadline]),
+          }),
         );
-        if (error)
-          throw new ApiClientError(
-            error.error.code,
-            error.error.message,
-            error.error.request_id,
-            response.status,
-          );
-        if (
-          !data ||
-          !data.data ||
-          !data.meta ||
-          typeof data.data.version !== "string"
-        )
-          throw new ApiClientError(
-            "PROCESSING_FAILED",
-            "The API returned an unexpected system response.",
-          );
-        return data;
       } catch (error) {
-        if (
-          error instanceof ApiClientError ||
-          (error instanceof DOMException && error.name === "AbortError")
-        )
+        if (error instanceof DOMException && error.name === "AbortError")
           throw error;
         if (error instanceof DOMException && error.name === "TimeoutError")
           throw new ApiClientError(
@@ -210,14 +200,197 @@ export function createRealAdapter(
         );
       }
     },
-    documents: unavailable,
-    document: unavailable,
-    entities: unavailable,
-    entity: unavailable,
-    events: unavailable,
-    sources: unavailable,
-    audit: unavailable,
-    verify: unavailable,
+  });
+  client.use({
+    onRequest({ request }) {
+      if (token) request.headers.set("Authorization", `Bearer ${token}`);
+      return request;
+    },
+  });
+  return client;
+}
+export function createRealAdapter(
+  baseUrl: string,
+  transport: typeof fetch = fetch,
+  token = "",
+): AnalystAdapter {
+  const client = realClient(baseUrl, transport, token);
+  async function detail(
+    id: string,
+    signal?: AbortSignal,
+    cutoff?: string,
+  ): Promise<DocumentView> {
+    const result = unwrap(
+      await client.GET("/api/v1/documents/{document_id}/intelligence", {
+        params: { path: { document_id: id }, query: { as_of: cutoff } },
+        signal,
+      }),
+    );
+    return { ...result.data, integrity: "unverified" };
+  }
+  return {
+    async system(signal) {
+      return unwrap(await client.GET("/api/v1/system/info", { signal }));
+    },
+    async documents(filters, signal) {
+      if (filters.integrity && filters.integrity !== "unverified") {
+        throw new ApiClientError(
+          "CAPABILITY_UNAVAILABLE",
+          "Verify a document to inspect its current integrity. Feed-wide integrity filtering is unavailable.",
+        );
+      }
+      const values: DocumentView[] = [];
+      let cursor: string | undefined;
+      do {
+        const result = unwrap(
+          await client.GET(
+            filters.query ? "/api/v1/search" : "/api/v1/documents",
+            {
+              params: {
+                query: {
+                  q: filters.query,
+                  source_id: filters.sourceId,
+                  as_of: filters.cutoff,
+                  limit: 100,
+                  cursor,
+                },
+              },
+              signal,
+            },
+          ),
+        );
+        // Bound concurrent requests while assembling canonical intelligence.
+        for (const document of result.data)
+          values.push(
+            await detail(document.document_id, signal, filters.cutoff),
+          );
+        cursor = result.pagination.next_cursor ?? undefined;
+      } while (cursor);
+      return values;
+    },
+    document: detail,
+    async entities(signal) {
+      const values: components["schemas"]["Entity"][] = [];
+      let cursor: string | undefined;
+      do {
+        const r = unwrap(
+          await client.GET("/api/v1/entities", {
+            params: { query: { limit: 100, cursor } },
+            signal,
+          }),
+        );
+        values.push(...r.data);
+        cursor = r.pagination.next_cursor ?? undefined;
+      } while (cursor);
+      return values;
+    },
+    async entity(id, signal) {
+      return unwrap(
+        await client.GET("/api/v1/entities/{entity_id}", {
+          params: { path: { entity_id: id } },
+          signal,
+        }),
+      ).data;
+    },
+    async events(signal) {
+      const values: components["schemas"]["NewsEvent"][] = [];
+      let cursor: string | undefined;
+      do {
+        const r = unwrap(
+          await client.GET("/api/v1/events", {
+            params: { query: { limit: 100, cursor } },
+            signal,
+          }),
+        );
+        values.push(...r.data);
+        cursor = r.pagination.next_cursor ?? undefined;
+      } while (cursor);
+      return values;
+    },
+    async sources(signal) {
+      const values: components["schemas"]["Source"][] = [];
+      let cursor: string | undefined;
+      do {
+        const r = unwrap(
+          await client.GET("/api/v1/sources", {
+            params: { query: { limit: 100, cursor } },
+            signal,
+          }),
+        );
+        values.push(...r.data);
+        cursor = r.pagination.next_cursor ?? undefined;
+      } while (cursor);
+      return values;
+    },
+    async audit(signal) {
+      const result = unwrap(
+        await client.GET("/api/v1/security/audit", { signal }),
+      );
+      return result.data.map((v) => ({
+        id: v.event_id,
+        at: v.occurred_at,
+        action: v.action,
+        actor: v.actor_hash ?? "anonymous",
+        subject: v.subject_hash ?? "?",
+        outcome:
+          v.outcome === "success"
+            ? "allowed"
+            : v.outcome === "failure"
+              ? "denied"
+              : "warning",
+      }));
+    },
+    async verify(id, signal) {
+      const value = unwrap(
+        await client.POST("/api/v1/documents/{document_id}/verify", {
+          params: { path: { document_id: id } },
+          signal,
+        }),
+      ).data;
+      return {
+        result: value.valid ? "verified" : "failed",
+        signature: value.signature_valid ? "valid" : "invalid",
+        checkedAt: new Date().toISOString(),
+        simulated: false,
+        reason: value.reason,
+      };
+    },
+    async createSource(body) {
+      return unwrap(await client.POST("/api/v1/sources", { body })).data;
+    },
+    async ingest(body) {
+      return unwrap(await client.POST("/api/v1/ingestions", { body })).data;
+    },
+    async ingestionRun(id) {
+      return unwrap(
+        await client.GET("/api/v1/ingestion-runs/{workflow_id}", {
+          params: { path: { workflow_id: id } },
+        }),
+      ).data;
+    },
+  };
+}
+export function createRealIdentity(
+  baseUrl: string,
+  token: string,
+): IdentityPort {
+  return {
+    async session(signal) {
+      if (!token)
+        return { state: "anonymous", roles: [], scopes: [], simulated: false };
+      const value = unwrap(
+        await realClient(baseUrl, fetch, token).GET("/api/v1/security/me", {
+          signal,
+        }),
+      ).data;
+      return {
+        state: "authenticated",
+        displayName: value.subject,
+        roles: value.roles,
+        scopes: value.scopes,
+        simulated: false,
+      };
+    },
   };
 }
 export const mockIdentity: IdentityPort = {

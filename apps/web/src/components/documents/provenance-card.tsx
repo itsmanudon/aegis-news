@@ -12,7 +12,11 @@ export function ProvenanceCard({ view }: { view: DocumentView }) {
   return (
     <Panel
       title="Provenance / integrity"
-      action={<Badge tone={view.integrity}>{view.integrity}</Badge>}
+      action={
+        <Badge tone={verification.data?.result ?? view.integrity}>
+          {verification.data?.result ?? view.integrity}
+        </Badge>
+      }
     >
       <p className="panel-intro">
         {mode === "mock"
@@ -22,7 +26,9 @@ export function ProvenanceCard({ view }: { view: DocumentView }) {
       <dl className="metadata">
         <dt>Content hash (SHA-256)</dt>
         <dd className="hash">
-          {view.provenance.at(-1)?.content_hash ?? "Unavailable"}
+          {view.provenance.find(
+            (p) => p.subject_id === view.document.document_id,
+          )?.content_hash ?? "Unavailable"}
         </dd>
         <dt>Signature state</dt>
         <dd>{verification.data?.signature ?? "Not checked in this session"}</dd>

@@ -22,7 +22,7 @@ export function Feed({ search = false }: { search?: boolean }) {
         title={search ? "Search intelligence" : "News / documents"}
         description={
           search
-            ? "Search source text, titles, source names and resolved entities in the fixture corpus."
+            ? "Search article titles and source text."
             : "Review incoming evidence with source and intelligence availability kept separate."
         }
       />
@@ -38,7 +38,7 @@ export function Feed({ search = false }: { search?: boolean }) {
           <input
             id="document-query"
             type="search"
-            placeholder="Title, text, source or entity…"
+            placeholder="Title or article text…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -95,9 +95,10 @@ export function Feed({ search = false }: { search?: boolean }) {
       </form>
       {cutoff && (
         <p className="notice">
-          Includes documents first seen by the cutoff. Model outputs, entities
-          and events are shown only after availability. Detail pages show the
-          complete current record.
+          Real API includes documents persisted by the cutoff; mock mode uses
+          fixture first-seen times. Model outputs, entities and events are shown
+          only after availability. Detail pages show the complete current
+          record.
         </p>
       )}
       <div className="results-heading">

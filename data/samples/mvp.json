@@ -1,0 +1,7 @@
+[
+  {"title":"Atlas Labs reports growth and merger", "text":"Atlas Labs announced a merger with Cedar Works. Profit growth improved after strong software sales.", "published_at":"2020-01-10T09:00:00Z", "entity":"Atlas Labs", "kind":"organization"},
+  {"title":"Harbor Council reviews regional inflation", "text":"Harbor Council announced an interest rate policy review as inflation and economic growth slowed. The regional economy faces risk from declining demand.", "published_at":"2020-02-12T09:00:00Z", "entity":"Harbor Council", "kind":"organization"},
+  {"title":"Cedar Works launches research software", "text":"Cedar Works launched new software for technology research. The product launch improved efficiency and delivered positive results.", "published_at":"2020-03-15T09:00:00Z", "entity":"Cedar Works", "kind":"organization"},
+  {"title":"River District announces transport policy", "text":"River District announced a policy change in government legislation for public transport. The council approved regulation following a public election debate.", "published_at":"2020-04-18T09:00:00Z", "entity":"River District", "kind":"location"},
+  {"title":"Atlas Labs opens a technology workshop", "text":"Atlas Labs launched a software workshop with Cedar Works. Technology researchers welcomed strong growth and improved access.", "published_at":"2020-05-20T09:00:00Z", "entity":"Atlas Labs", "kind":"organization", "media":true}
+]

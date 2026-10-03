@@ -128,6 +128,19 @@ test("real mode clears fixture records and identity, makes only contracted reque
   const requested: string[] = [];
   await page.route("http://localhost:8000/**", async (route) => {
     requested.push(new URL(route.request().url()).pathname);
+    if (!route.request().url().includes("/system/info")) {
+      await route.fulfill({
+        status: 401,
+        json: {
+          error: {
+            code: "UNAUTHORIZED",
+            message: "Token required",
+            request_id: "real-1",
+          },
+        },
+      });
+      return;
+    }
     await route.fulfill({
       json: {
         data: {
@@ -144,14 +157,23 @@ test("real mode clears fixture records and identity, makes only contracted reque
   await expect(page.locator("tbody tr")).toHaveCount(6);
   await page.getByLabel("Data mode").selectOption("real");
   await expect(
-    page.getByRole("heading", { name: "Integration pending" }),
+    page.getByText("Token required", { exact: true }).first(),
   ).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(0);
-  await expect(page.getByText("Authentication not connected")).toBeVisible();
+  await expect(
+    page.locator(".identity").getByText("Token required"),
+  ).toBeVisible();
   await page.getByRole("link", { name: "Dashboard", exact: true }).click();
   await expect(page.getByText("Connected", { exact: true })).toBeVisible();
   expect(requested.length).toBeGreaterThan(0);
-  expect(new Set(requested)).toEqual(new Set(["/api/v1/system/info"]));
+  expect(new Set(requested)).toEqual(
+    new Set([
+      "/api/v1/documents",
+      "/api/v1/sources",
+      "/api/v1/events",
+      "/api/v1/system/info",
+    ]),
+  );
   await page.getByLabel("Data mode").selectOption("mock");
   await expect(page.getByText("Simulated identity")).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(6);
@@ -163,9 +185,11 @@ test("network failure and missing document have recoverable states", async ({
   await page.goto("/");
   await page.getByLabel("Data mode").selectOption("real");
   await expect(
-    page.getByText(
-      "Unable to reach the API. Check the API address and connection.",
-    ),
+    page
+      .getByText(
+        "Unable to reach the API. Check the API address and connection.",
+      )
+      .first(),
   ).toBeVisible();
   await page.getByLabel("Data mode").selectOption("mock");
   await page.goto("/documents/unknown");

@@ -1,6 +1,10 @@
 import type { components } from "./generated/domain";
 import type { components as ApiComponents } from "./generated/api";
-export type Domain = components["schemas"];
+export type Domain = {
+  [K in keyof components["schemas"]]: K extends keyof ApiComponents["schemas"]
+    ? ApiComponents["schemas"][K]
+    : components["schemas"][K];
+};
 export type SystemResponse =
   ApiComponents["schemas"]["SingleResponse_SystemInfo_"];
 export type Mode = "mock" | "real";
@@ -42,11 +46,19 @@ export type Session = {
   displayName?: string;
   roles: string[];
   simulated: boolean;
+  scopes?: string[];
 };
 export interface IdentityPort {
   session(signal?: AbortSignal): Promise<Session>;
 }
 export interface AnalystAdapter {
+  createSource?(
+    body: ApiComponents["schemas"]["SourceCreate"],
+  ): Promise<Domain["Source"]>;
+  ingest?(
+    body: ApiComponents["schemas"]["IngestionRequest"],
+  ): Promise<Record<string, string>>;
+  ingestionRun?(id: string): Promise<Record<string, unknown>>;
   system(signal?: AbortSignal): Promise<SystemResponse>;
   documents(
     filters: DocumentFilters,

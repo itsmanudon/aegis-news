@@ -10,6 +10,7 @@ COPY apps/worker ./apps/worker
 COPY migrations ./migrations
 COPY alembic.ini ./
 COPY scripts ./scripts
+COPY data/samples ./data/samples
 RUN uv sync --frozen --no-dev --no-editable && useradd --uid 10001 --create-home aegis && mkdir -p /var/log/aegis && chown aegis:aegis /var/log/aegis
 ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1
 USER aegis

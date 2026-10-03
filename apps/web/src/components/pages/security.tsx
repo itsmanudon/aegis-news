@@ -29,17 +29,19 @@ export function Security() {
             <dd>
               {session?.simulated
                 ? "Mock identity adapter"
-                : "OIDC integration pending"}
+                : "Bearer token verified by the API"}
             </dd>
           </dl>
         </Panel>
         <Panel title="Security integration">
           <p className="panel-intro">
-            Session display is not an authorization decision. Server
-            permissions, signed verification and durable audit history will be
-            supplied by the security service.
+            The API enforces scopes for protected actions. Verification checks
+            live content and signed lineage; audit history records access
+            decisions.
           </p>
-          <Badge tone="unverified">Integration pending</Badge>
+          <Badge tone="unverified">
+            {session?.simulated ? "Simulated audit" : "Server authorization"}
+          </Badge>
         </Panel>
       </div>
       <div className="standalone-filter">

@@ -388,7 +388,7 @@ def similar(
               ORDER BY document_id, available_at DESC, analysis_id DESC
             )
             SELECT b.document_id, b.model_name, b.embedding <=> a.embedding AS distance
-            FROM vectors a JOIN vectors b ON a.model_name=b.model_name 
+            FROM vectors a JOIN vectors b ON a.model_name=b.model_name
               AND a.model_version=b.model_version
               AND a.provider=b.provider AND a.configuration_hash=b.configuration_hash
             JOIN documents d ON d.document_id=b.document_id

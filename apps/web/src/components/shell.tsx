@@ -15,7 +15,7 @@ const navigation = [
 ];
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { mode, setMode, session } = useConsole();
+  const { mode, setMode, session, setAccessToken } = useConsole();
   const [open, setOpen] = useState(false);
   return (
     <div className="console">
@@ -89,7 +89,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
               <small>
                 {session?.simulated
                   ? "Simulated identity"
-                  : "Authentication not connected"}
+                  : session?.state === "authenticated"
+                    ? "Authenticated"
+                    : "Token required"}
               </small>
             </span>
           </div>
@@ -100,8 +102,33 @@ export function Shell({ children }: { children: React.ReactNode }) {
         >
           {mode === "mock"
             ? "MOCK WORKSPACE · Fictional sources, model results, audit entries and verification. All timestamps are UTC."
-            : "REAL API · Only registered capabilities are available. Authentication awaits integration. All timestamps are UTC."}
+            : "REAL API · Only registered capabilities are available. Protected actions require authorization. All timestamps are UTC."}
         </div>
+        {mode === "real" && (
+          <form
+            className="filter-bar"
+            onSubmit={(event) => {
+              event.preventDefault();
+              const data = new FormData(event.currentTarget);
+              setAccessToken(String(data.get("token") ?? "").trim());
+              event.currentTarget.reset();
+            }}
+          >
+            <label>
+              Access token{" "}
+              <input
+                type="password"
+                name="token"
+                autoComplete="off"
+                placeholder="Paste development or OIDC token"
+              />
+            </label>
+            <button type="submit">Use token</button>
+            <button type="button" onClick={() => setAccessToken("")}>
+              Sign out
+            </button>
+          </form>
+        )}
         <main id="main-content" tabIndex={-1}>
           {children}
         </main>

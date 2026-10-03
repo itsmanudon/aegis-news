@@ -12,12 +12,30 @@ x-python: &python
     AEGIS_S3_BUCKET: aegisnews
     AEGIS_TEMPORAL_ADDRESS: temporal:7233
     AEGIS_TEMPORAL_ENABLED: ${AEGIS_TEMPORAL_ENABLED:-false}
+    AEGIS_AI_PROFILE: ${AEGIS_AI_PROFILE:-offline}
+    AEGIS_ENVIRONMENT: development
+    AEGIS_SECURITY_ENABLED: "true"
+    AEGIS_DEV_IDENTITY_ENABLED: "true"
+    AEGIS_OIDC_ISSUER: http://aegis.local
+    AEGIS_OIDC_AUDIENCE: aegisnews
+    AEGIS_OIDC_ALGORITHMS: '["EdDSA"]'
+    AEGIS_SECURITY_KEY_DIRECTORY: /var/lib/aegis/keys
+    AEGIS_PROVENANCE_KEY_ID: local
+    AEGIS_SECURITY_PERSIST_AUDIT: "true"
+    AEGIS_SECURITY_RATE_BACKEND: redis
+    AEGIS_SECURITY_RATE_LIMIT: "1000"
     AEGIS_OTEL_ENABLED: ${AEGIS_OTEL_ENABLED:-false}
     AEGIS_OTEL_ENDPOINT: http://otel-collector:4318/v1/traces
     AEGIS_LOG_FILE: /var/log/aegis/application.jsonl
     AEGIS_CORS_ORIGINS: '${AEGIS_CORS_ORIGINS:-["http://localhost:3000"]}'
 
 services:
+  keys-init:
+    <<: *python
+    profiles: [core, full]
+    user: "0:0"
+    command: [python, scripts/init_dev_keys.py]
+    volumes: ["development-keys:/var/lib/aegis/keys"]
   postgres:
     image: pgvector/pgvector:pg16
     profiles: [core, full]
@@ -73,8 +91,9 @@ services:
     <<: *python
     profiles: [core, full]
     ports: ["127.0.0.1:${AEGIS_API_PORT:-8000}:8000"]
-    volumes: ["application-logs:/var/log/aegis"]
+    volumes: ["application-logs:/var/log/aegis", "development-keys:/var/lib/aegis/keys:ro"]
     depends_on:
+      keys-init: {condition: service_completed_successfully}
       migrate: {condition: service_completed_successfully}
       redis: {condition: service_healthy}
       minio-init: {condition: service_completed_successfully}
@@ -90,6 +109,7 @@ services:
       dockerfile: infrastructure/docker/web.Dockerfile
       args:
         NEXT_PUBLIC_API_URL: http://localhost:${AEGIS_API_PORT:-8000}
+        NEXT_PUBLIC_DATA_MODE: real
     profiles: [core, full]
     environment:
       AEGIS_API_INTERNAL_URL: http://api:8000
@@ -118,10 +138,13 @@ services:
     <<: *python
     profiles: [full]
     command: [python, -m, apps.worker.main]
+    volumes: ["application-logs:/var/log/aegis", "development-keys:/var/lib/aegis/keys"]
     environment:
       <<: *python-env
-      AEGIS_LOG_FILE: ""
+      AEGIS_LOG_FILE: /var/log/aegis/worker.jsonl
     depends_on:
+      keys-init: {condition: service_completed_successfully}
+      minio-init: {condition: service_completed_successfully}
       temporal: {condition: service_healthy}
       migrate: {condition: service_completed_successfully}
   prometheus:
@@ -160,6 +183,7 @@ services:
     ports: ["127.0.0.1:${AEGIS_OTEL_PORT:-4318}:4318"]
 
 volumes:
+  development-keys:
   postgres-data:
   minio-data:
   temporal-data:

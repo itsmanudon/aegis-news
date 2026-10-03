@@ -32,3 +32,6 @@ data/*
 !data/samples/README.md
 ml/datasets/*
 !ml/datasets/README.md
+
+.test-tmp/
+.integration-results/

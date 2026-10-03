@@ -6,7 +6,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import {
-  anonymousIdentity,
+  createRealIdentity,
   createMockAdapter,
   createRealAdapter,
   mockIdentity,
@@ -20,16 +20,21 @@ type ConsoleContext = {
   setMode: (mode: Mode) => void;
   adapter: AnalystAdapter;
   session: Session | undefined;
+  setAccessToken: (token: string) => void;
 };
 const Context = createContext<ConsoleContext | null>(null);
 function SessionProvider({
   mode,
   setMode,
   children,
+  token,
+  setAccessToken,
 }: {
   mode: Mode;
   setMode: (mode: Mode) => void;
   children: React.ReactNode;
+  token: string;
+  setAccessToken: (token: string) => void;
 }) {
   const adapter = useMemo(
     () =>
@@ -37,17 +42,27 @@ function SessionProvider({
         ? createMockAdapter()
         : createRealAdapter(
             process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000",
+            fetch,
+            token,
           ),
-    [mode],
+    [mode, token],
   );
-  const identity = mode === "mock" ? mockIdentity : anonymousIdentity;
+  const identity =
+    mode === "mock"
+      ? mockIdentity
+      : createRealIdentity(
+          process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000",
+          token,
+        );
   const { data: session } = useQuery({
     queryKey: ["session", mode],
     queryFn: ({ signal }) => identity.session(signal),
     retry: false,
   });
   return (
-    <Context.Provider value={{ mode, setMode, adapter, session }}>
+    <Context.Provider
+      value={{ mode, setMode, adapter, session, setAccessToken }}
+    >
       {children}
     </Context.Provider>
   );
@@ -56,10 +71,14 @@ function IsolatedQueries({
   mode,
   setMode,
   children,
+  token,
+  setAccessToken,
 }: {
   mode: Mode;
   setMode: (mode: Mode) => void;
   children: React.ReactNode;
+  token: string;
+  setAccessToken: (token: string) => void;
 }) {
   const [client] = useState(
     () =>
@@ -76,7 +95,12 @@ function IsolatedQueries({
   );
   return (
     <QueryClientProvider client={client}>
-      <SessionProvider mode={mode} setMode={setMode}>
+      <SessionProvider
+        mode={mode}
+        setMode={setMode}
+        token={token}
+        setAccessToken={setAccessToken}
+      >
         {children}
       </SessionProvider>
     </QueryClientProvider>
@@ -84,9 +108,16 @@ function IsolatedQueries({
 }
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<Mode>(defaultMode);
+  const [token, setAccessToken] = useState("");
   // Remounting destroys data and identity observers on mode changes, including mutations.
   return (
-    <IsolatedQueries key={mode} mode={mode} setMode={setMode}>
+    <IsolatedQueries
+      key={`${mode}:${token}`}
+      mode={mode}
+      setMode={setMode}
+      token={token}
+      setAccessToken={setAccessToken}
+    >
       {children}
     </IsolatedQueries>
   );

@@ -45,14 +45,33 @@ describe("analyst data boundary", () => {
       result: "unverified",
     });
   });
-  it("does not request unregistered endpoints or fall back to mocks", async () => {
-    const transport = vi.fn();
-    const client = createRealAdapter("https://api.example.test", transport);
+  it("requests real product endpoints and never falls back to fixtures", async () => {
+    const transport = vi.fn(async (input: RequestInfo | URL) => {
+      expect(input).toBeInstanceOf(Request);
+      return new Response(
+        JSON.stringify({
+          error: {
+            code: "UNAUTHORIZED",
+            message: "Token required",
+            request_id: "auth-1",
+          },
+        }),
+        { status: 401, headers: { "Content-Type": "application/json" } },
+      );
+    });
+    const client = createRealAdapter(
+      "https://api.example.test",
+      transport,
+      "test-token",
+    );
     await expect(client.documents({})).rejects.toMatchObject({
-      code: "CAPABILITY_UNAVAILABLE",
+      code: "UNAUTHORIZED",
     });
     await expect(client.verify("doc")).rejects.toBeInstanceOf(ApiClientError);
-    expect(transport).not.toHaveBeenCalled();
+    expect(transport).toHaveBeenCalledTimes(2);
+    const request = transport.mock.calls[0][0] as Request;
+    expect(request.headers.get("Authorization")).toBe("Bearer test-token");
+    expect(request.url).toContain("/api/v1/documents");
   });
   it("calls the generated system path and preserves server request IDs on errors", async () => {
     const transport = vi.fn(
