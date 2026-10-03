@@ -151,6 +151,27 @@ def latency_report(samples: Sequence[float]) -> dict[str, float | int]:
     }
 
 
+def assessment_rankings(
+    embeddings: dict[str, AnalysisResult], as_of: datetime
+) -> dict[str, list[str]]:
+    documents = {value.analysis_id: key for key, value in embeddings.items()}
+    return {
+        doc_id: [
+            documents[analysis_id]
+            for analysis_id, _ in sorted(
+                similar_analyses(
+                    query,
+                    tuple(v for k, v in embeddings.items() if k != doc_id),
+                    as_of=as_of,
+                    limit=len(embeddings),
+                ),
+                key=lambda item: (-item[1], documents[item[0]]),
+            )
+        ]
+        for doc_id, query in embeddings.items()
+    }
+
+
 async def assess(dataset: AssessmentSet, name: str, rounds: int = 3) -> dict[str, Any]:
     if rounds < 1:
         raise ValueError("positive benchmark rounds required")
@@ -288,18 +309,7 @@ async def assess(dataset: AssessmentSet, name: str, rounds: int = 3) -> dict[str
     finally:
         tracemalloc.stop()
     elapsed = time.perf_counter() - started
-    rankings = {
-        doc_id: [
-            next(key for key, value in embeddings.items() if value.analysis_id == analysis_id)
-            for analysis_id, _ in similar_analyses(
-                query,
-                tuple(v for k, v in embeddings.items() if k != doc_id),
-                as_of=datetime.now(UTC),
-                limit=len(dataset.cases),
-            )
-        ]
-        for doc_id, query in embeddings.items()
-    }
+    rankings = assessment_rankings(embeddings, datetime.now(UTC))
     metrics = {
         "ner": span_report(gold_spans, predicted_spans),
         "topics": classification_report([c.sample.topic for c in dataset.cases], labels["topics"]),
@@ -328,14 +338,18 @@ async def assess(dataset: AssessmentSet, name: str, rounds: int = 3) -> dict[str
             3,
         ),
     }
+    unexpected_errors = any(
+        f["reason"] not in {"NoPredictions", "ModelUnavailable"} for f in failures
+    )
+    unavailable = any(f["reason"] == "ModelUnavailable" for f in failures)
     return {
         "profile": name,
-        "execution_status": "partial: optional models unavailable"
-        if any(f["reason"] == "ModelUnavailable" for f in failures)
+        "execution_status": "failed: inference errors"
+        if unexpected_errors
+        else "partial: optional models unavailable"
+        if unavailable
         else "completed",
-        "quality_metrics_valid_for_whole_profile": not any(
-            f["reason"] == "ModelUnavailable" for f in failures
-        ),
+        "quality_metrics_valid_for_whole_profile": not (unexpected_errors or unavailable),
         "samples": len(dataset.cases),
         "rounds": rounds,
         "dataset_sha256": hashlib.sha256(dataset.model_dump_json().encode()).hexdigest(),
@@ -379,6 +393,8 @@ def main() -> None:
         args.output.write_text(serialized, encoding="utf-8")
     else:
         print(serialized, end="")
+    if report["execution_status"] == "failed: inference errors":
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

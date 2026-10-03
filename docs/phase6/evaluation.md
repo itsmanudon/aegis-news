@@ -21,7 +21,9 @@ Classification separately predicts an annotated summary, retaining event ID/revi
 Thirteen gold sentences produce ten matches; three paraphrases are missed. No extraction
 on three general items is a correct empty prediction. Retrieval excludes self and ranks
 compatible vectors; one manually chosen category partner per query is a coarse, incomplete
-relevance judgment. Nearest-neighbor examples are in the raw report, indexed by stable IDs.
+relevance judgment. Exact score ties use stable document IDs within assessment tooling;
+random analysis IDs cannot change the measured ranking. Nearest-neighbor examples are
+in the raw report, indexed by stable IDs.
 
 | Offline task | Precision | Recall | F1 / macro F1 | Accuracy |
 |---|---:|---:|---:|---:|
@@ -33,7 +35,7 @@ relevance judgment. Nearest-neighbor examples are in the raw report, indexed by 
 | Event classification | — | — | 0.810 | 0.813 |
 | Candidate resolution | — | — | — | 1.000 |
 
-Retrieval MRR 0.2094, recall@3 0.1875. Hash collisions/shared words often outrank the
+Retrieval MRR 0.1987, recall@3 0.1875. Hash collisions/shared words often outrank the
 category partner; this is lexical hashing, not learned semantics. [Offline raw report](../../ml/evaluation/results/offline.json).
 
 ## Profiles, versions and resources
@@ -45,6 +47,9 @@ Three rounds cover 48 document passes, including cold/warm overhead and `tracema
 Python allocation peak is about 0.5 MB; native allocations, process RSS and Docker memory
 are excluded. Provider medians are approximately 0.5–2.2 ms on the recorded Windows CPU
 environment. No GPU or downloads. Short texts and tracing overhead prevent extrapolation.
+Valid empty `NoPredictions` outcomes retain their denominators. Unexpected inference
+errors invalidate whole-profile claims and cause a nonzero CLI exit after writing
+diagnostics; unavailable optional models remain an explicitly partial local-only probe.
 
 Docker reported 32 logical CPUs and 15.47 GiB available memory. A post-demo snapshot
 showed API 141.6 MiB and worker 135.4 MiB; these are idle/current container measurements,

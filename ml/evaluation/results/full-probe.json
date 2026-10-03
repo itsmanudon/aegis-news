@@ -1,10 +1,10 @@
 {
   "annotation_status": "Agent-authored and manually inspected; independent human adjudication pending",
   "benchmark": {
-    "documents_per_second": 99.0187857213674,
-    "elapsed_seconds": 0.16158549999818206,
+    "documents_per_second": 114.08581961615916,
+    "elapsed_seconds": 0.1402453000191599,
     "memory_limitation": "Python allocations only; excludes native/GPU/process RSS",
-    "python_tracemalloc_peak_bytes": 226174,
+    "python_tracemalloc_peak_bytes": 196291,
     "warmup": "none; first and warm iterations included"
   },
   "dataset_sha256": "10dbf026231ca6fed353c4f8249124aea761c591ced8d13367e2049e5a0ee025",
@@ -1321,45 +1321,45 @@
   "timing": {
     "embedding": {
       "count": 16,
-      "median_ms": 1.2696998892351985,
-      "p95_ms": 1.909899991005659,
-      "total_ms": 21.90100005827844
+      "median_ms": 1.1344000231474638,
+      "p95_ms": 1.6985998954623938,
+      "total_ms": 20.082299830392003
     },
     "entities": {
       "count": 16,
-      "median_ms": 1.2923500034958124,
-      "p95_ms": 6.519800052046776,
-      "total_ms": 27.21120067872107
+      "median_ms": 1.142399967648089,
+      "p95_ms": 5.80210005864501,
+      "total_ms": 23.822200717404485
     },
     "event_classification": {
       "count": 16,
-      "median_ms": 1.3572999741882086,
-      "p95_ms": 2.0838999189436436,
-      "total_ms": 23.770099505782127
+      "median_ms": 1.1653500841930509,
+      "p95_ms": 1.7546000890433788,
+      "total_ms": 19.651800161227584
     },
     "events": {
       "count": 16,
-      "median_ms": 1.541400095447898,
-      "p95_ms": 2.3505999706685543,
-      "total_ms": 25.386099936440587
+      "median_ms": 1.1618999997153878,
+      "p95_ms": 1.6199001111090183,
+      "total_ms": 19.31079989299178
     },
     "resolution": {
       "count": 16,
-      "median_ms": 0.5854999180883169,
-      "p95_ms": 1.117300009354949,
-      "total_ms": 10.884299408644438
+      "median_ms": 0.5643999902531505,
+      "p95_ms": 1.2052999809384346,
+      "total_ms": 9.881900856271386
     },
     "sentiment": {
       "count": 16,
-      "median_ms": 1.243300037458539,
-      "p95_ms": 2.4329000152647495,
-      "total_ms": 21.98779978789389
+      "median_ms": 1.1533499928191304,
+      "p95_ms": 1.8487998750060797,
+      "total_ms": 18.96939962171018
     },
     "topics": {
       "count": 16,
-      "median_ms": 1.191900111734867,
-      "p95_ms": 1.8007000908255577,
-      "total_ms": 20.41479991748929
+      "median_ms": 1.1503000278025866,
+      "p95_ms": 1.660600071772933,
+      "total_ms": 19.579799845814705
     }
   }
 }

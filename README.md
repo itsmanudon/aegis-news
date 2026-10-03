@@ -98,7 +98,7 @@ adjudication is pending**. This is a small development set, not a real-news qual
 | Event extraction precision / recall / F1 | 1.000 / 0.769 / 0.870 |
 | Event classification accuracy / macro F1 | 0.813 / 0.810 |
 | Resolution accuracy with gold mentions/tiny supplied candidates | 1.000 |
-| Coarse paired-document retrieval MRR / recall@3 | 0.209 / 0.188 |
+| Coarse paired-document retrieval MRR / recall@3 | 0.199 / 0.188 |
 
 Light/full probes found unavailable local models; no pretrained quality result is claimed.
 Offline embeddings are lexical hash vectors, with weak category retrieval. A fresh

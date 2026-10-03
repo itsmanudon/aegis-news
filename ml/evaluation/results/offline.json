@@ -1,10 +1,10 @@
 {
   "annotation_status": "Agent-authored and manually inspected; independent human adjudication pending",
   "benchmark": {
-    "documents_per_second": 69.5625962011745,
-    "elapsed_seconds": 0.6900259999092668,
+    "documents_per_second": 92.90473025142761,
+    "elapsed_seconds": 0.5166583000682294,
     "memory_limitation": "Python allocations only; excludes native/GPU/process RSS",
-    "python_tracemalloc_peak_bytes": 508006,
+    "python_tracemalloc_peak_bytes": 499549,
     "warmup": "none; first and warm iterations included"
   },
   "dataset_sha256": "10dbf026231ca6fed353c4f8249124aea761c591ced8d13367e2049e5a0ee025",
@@ -209,7 +209,7 @@
     },
     "retrieval": {
       "judged_queries": 16,
-      "mrr": 0.195753552003552,
+      "mrr": 0.19865603146853147,
       "recall_at_3": 0.1875
     },
     "sentiment": {
@@ -397,7 +397,7 @@
     "doc_2b45e0d7-6c30-52ef-9bae-dc0e7631ed06": [
       "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
       "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
-      "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe"
+      "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199"
     ],
     "doc_3ad07721-600e-5882-b87f-85a53a44ea66": [
       "doc_1caf1220-e699-56e1-ba5b-31e2995550af",
@@ -412,7 +412,7 @@
     "doc_3e665ba4-3c75-5287-b0ab-21fa2ddf5084": [
       "doc_3b99a33c-4c66-531a-a2ec-5930cdb367cf",
       "doc_f349d1cb-92c2-5856-a63c-265eb852b592",
-      "doc_3ad07721-600e-5882-b87f-85a53a44ea66"
+      "doc_1cd9b470-b98d-5340-b4fb-c19b7d0a3199"
     ],
     "doc_5a5a5b78-a9a2-5ca2-a6fb-bbf2eefeb4bf": [
       "doc_3ad07721-600e-5882-b87f-85a53a44ea66",
@@ -427,7 +427,7 @@
     "doc_9fe9f6d2-fa7c-5249-ae61-c753a82d146d": [
       "doc_21856760-2c73-526b-81ed-e1b15e11408c",
       "doc_ed389241-f119-5758-bd36-2cb93d7f04e9",
-      "doc_f349d1cb-92c2-5856-a63c-265eb852b592"
+      "doc_012e9d28-55e5-5dfa-8fe3-8605ddd0f32f"
     ],
     "doc_a7d33857-65ba-5957-a1f6-c0b6c7271abe": [
       "doc_c3029b54-bf2b-58fc-8e43-85b097c92fc8",
@@ -2849,45 +2849,45 @@
   "timing": {
     "embedding": {
       "count": 48,
-      "median_ms": 1.1704500066116452,
-      "p95_ms": 1.839800039306283,
-      "total_ms": 65.1339003816247
+      "median_ms": 0.965300016105175,
+      "p95_ms": 1.3076001778244972,
+      "total_ms": 47.685699770227075
     },
     "entities": {
       "count": 48,
-      "median_ms": 1.816699979826808,
-      "p95_ms": 3.7083998322486877,
-      "total_ms": 109.46960072033107
+      "median_ms": 1.499550067819655,
+      "p95_ms": 2.1246999967843294,
+      "total_ms": 79.02030064724386
     },
     "event_classification": {
       "count": 48,
-      "median_ms": 2.239299938082695,
-      "p95_ms": 3.602700075134635,
-      "total_ms": 115.08619971573353
+      "median_ms": 1.8107000505551696,
+      "p95_ms": 2.3805000819265842,
+      "total_ms": 90.96530126407743
     },
     "events": {
       "count": 48,
-      "median_ms": 1.9258500542491674,
-      "p95_ms": 7.734799990430474,
-      "total_ms": 110.52960017696023
+      "median_ms": 1.6878501046448946,
+      "p95_ms": 2.729400061070919,
+      "total_ms": 77.85630086436868
     },
     "resolution": {
       "count": 48,
-      "median_ms": 0.5632000975310802,
-      "p95_ms": 1.2057998683303595,
-      "total_ms": 34.13340030238032
+      "median_ms": 0.4814999410882592,
+      "p95_ms": 0.7515000179409981,
+      "total_ms": 25.661799358204007
     },
     "sentiment": {
       "count": 48,
-      "median_ms": 1.7690000822767615,
-      "p95_ms": 2.416200004518032,
-      "total_ms": 89.12870124913752
+      "median_ms": 1.4686000067740679,
+      "p95_ms": 1.8108999356627464,
+      "total_ms": 72.1319003496319
     },
     "topics": {
       "count": 48,
-      "median_ms": 2.3054000921547413,
-      "p95_ms": 4.085300024598837,
-      "total_ms": 136.67540065944195
+      "median_ms": 1.8513499526306987,
+      "p95_ms": 2.5241998955607414,
+      "total_ms": 102.46859979815781
     }
   }
 }

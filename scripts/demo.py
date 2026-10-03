@@ -5,6 +5,7 @@ import json
 import os
 import subprocess
 from pathlib import Path
+from typing import Any
 from uuid import uuid4
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +16,8 @@ def compose_command(*args: str) -> list[str]:
     return [
         "docker",
         "compose",
+        "-f",
+        str(ROOT / "compose.yaml"),
         "--env-file",
         str(ROOT / "infrastructure/demo.env.example"),
         "-p",
@@ -32,10 +35,17 @@ def validate_reset_context(context: str, host: str) -> None:
         raise ValueError("Demo reset requires a standard local Docker context/socket")
 
 
+def validate_reset_volumes(configuration: dict[str, Any]) -> None:
+    for key, volume in configuration.get("volumes", {}).items():
+        if volume.get("external") or volume.get("name") != f"{PROJECT}_{key}":
+            raise ValueError("Demo reset refuses volumes outside its dedicated project")
+
+
 def run(*args: str, capture: bool = False) -> str:
     result = subprocess.run(
         compose_command(*args),
         cwd=ROOT,
+        env={key: value for key, value in os.environ.items() if not key.startswith("COMPOSE_")},
         check=True,
         text=True,
         stdout=subprocess.PIPE if capture else None,
@@ -84,6 +94,7 @@ def main() -> None:
             ).strip()
         )
         validate_reset_context(context, host)
+        validate_reset_volumes(json.loads(run("config", "--format", "json", capture=True)))
         print("Removing only the local aegis-demo project's containers and volumes.")
         run("down", "--volumes", "--remove-orphans")
         run("up", "--build", "-d", "--wait")

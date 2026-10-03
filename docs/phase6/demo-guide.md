@@ -10,7 +10,9 @@ python scripts/demo.py token --role admin
 
 Reset removes only the fixed `aegis-demo` project's local containers/volumes, including
 old keys, and recreates five known synthetic articles. Other projects remain untouched.
-It refuses remote contexts/hosts. Ordinary `start` and `seed` are idempotent. New UUIDs/
+It refuses remote contexts/hosts and volumes whose resolved names escape `aegis-demo`.
+The helper pins `compose.yaml` explicitly and strips inherited Compose overrides.
+Ordinary `start` and `seed` are idempotent. New UUIDs/
 availability times reflect actual persistence; reset does not fabricate historical knowledge.
 Copy tokens privately into the UI; do not paste them into public evidence.
 
