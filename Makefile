@@ -8,6 +8,8 @@ check-backend:
 	uv run python scripts/scan_secrets.py
 	uv run python scripts/export_schemas.py --check
 check-web:
+	pnpm web:api:check
+	pnpm web:test
 	pnpm web:lint
 	pnpm web:typecheck
 	NEXT_TELEMETRY_DISABLED=1 pnpm web:build

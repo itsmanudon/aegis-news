@@ -18,5 +18,5 @@ def test_running_api_and_web_status():
         page = client.get(web)
         assert page.status_code == 200
         assert "AegisNews" in page.text
-        assert "Online" in page.text
-        assert "Ready" in page.text
+        assert "Operational overview" in page.text
+        assert "Intelligence console" in page.text

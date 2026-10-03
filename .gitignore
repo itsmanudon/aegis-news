@@ -12,6 +12,8 @@ htmlcov/
 node_modules/
 .next/
 *.tsbuildinfo
+apps/web/test-results/
+apps/web/playwright-report/
 .DS_Store
 *.log
 *.pem

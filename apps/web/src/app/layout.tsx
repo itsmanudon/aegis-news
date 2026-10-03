@@ -1,9 +1,25 @@
 import type { Metadata } from "next";
+import { Providers } from "@/components/providers";
+import { Shell } from "@/components/shell";
 import "./globals.css";
 export const metadata: Metadata = {
-  title: "AegisNews · Foundation",
-  description: "Secure Multimodal News Intelligence Platform foundation",
+  title: {
+    default: "AegisNews · Intelligence console",
+    template: "%s · AegisNews",
+  },
+  description:
+    "Source evidence, model intelligence and integrity review for analysts.",
 };
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body>{children}</body></html>;
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="en">
+      <body>
+        <Providers>
+          <Shell>{children}</Shell>
+        </Providers>
+      </body>
+    </html>
+  );
 }
