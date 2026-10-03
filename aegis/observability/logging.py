@@ -1,6 +1,7 @@
 import json
 import logging
 import logging.handlers
+import re
 from contextvars import ContextVar
 from datetime import UTC, datetime
 
@@ -10,6 +11,16 @@ request_id_context: ContextVar[str] = ContextVar("request_id", default="")
 correlation_id_context: ContextVar[str] = ContextVar("correlation_id", default="")
 
 
+def redact_message(message: str) -> str:
+    message = re.sub(r"(?i)\bBearer\s+[^\s,;\"\x27]+", "Bearer [redacted]", message)
+    message = re.sub(
+        r"eyJ[A-Za-z0-9_-]{12,}\.[A-Za-z0-9_-]{12,}\.[A-Za-z0-9_-]{12,}", "[redacted]", message
+    )
+    return re.sub(
+        r"(?i)\b(password|token|secret|api_key)\s*[=:]\s*[^\s,;]+", r"\1=[redacted]", message
+    )
+
+
 class JsonFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         span = trace.get_current_span().get_span_context()
@@ -17,7 +28,7 @@ class JsonFormatter(logging.Formatter):
             "timestamp": datetime.now(UTC).isoformat(),
             "level": record.levelname,
             "logger": record.name,
-            "message": record.getMessage(),
+            "message": redact_message(record.getMessage()),
             "request_id": request_id_context.get(),
             "correlation_id": correlation_id_context.get(),
             "trace_id": f"{span.trace_id:032x}" if span.is_valid else None,
@@ -26,6 +37,8 @@ class JsonFormatter(logging.Formatter):
         for name in ("method", "route", "status_code", "duration_ms", "error_type"):
             if hasattr(record, name):
                 payload[name] = getattr(record, name)
+        if record.name == "aegis.audit" and hasattr(record, "audit_event"):
+            payload["audit_event"] = record.audit_event
         # Deliberately omit exception text/tracebacks, URLs and request payloads.
         return json.dumps(payload)
 

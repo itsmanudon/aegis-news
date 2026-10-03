@@ -5,6 +5,7 @@ check-backend:
 	uv run ruff check .
 	uv run mypy
 	uv run pytest -q
+	uv run python scripts/scan_secrets.py
 	uv run python scripts/export_schemas.py --check
 check-web:
 	pnpm web:lint

@@ -3,6 +3,7 @@ from alembic import context
 from aegis.ingestion.repository import IngestionJournalRow  # noqa: F401
 from aegis.persistence.database import make_engine
 from aegis.persistence.models import Base
+from aegis.security import persistence as security_persistence  # noqa: F401
 from aegis.settings import get_settings
 
 target_metadata = Base.metadata

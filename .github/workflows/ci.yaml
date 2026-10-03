@@ -58,6 +58,13 @@ jobs:
   security:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    services:
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd 'redis-cli ping'
+          --health-interval 3s --health-timeout 3s --health-retries 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -74,4 +81,6 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: make audit
+      - run: uv run python scripts/scan_secrets.py
+      - run: AEGIS_RUN_INTEGRATION=1 uv run pytest -q tests/security/test_security_services.py -m 'integration and not database'
       - run: docker run --rm -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0=/repo -v "$PWD:/repo:ro" ghcr.io/gitleaks/gitleaks:v8.24.2 git /repo --redact --no-banner --config /repo/.gitleaks.toml

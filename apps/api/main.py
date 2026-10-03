@@ -8,6 +8,7 @@ from uuid import uuid4
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_client import CollectorRegistry, Counter, Histogram, generate_latest
+from redis.asyncio import Redis
 from starlette.responses import Response
 
 from aegis.contracts.api import (
@@ -26,10 +27,19 @@ from aegis.observability.logging import (
     request_id_context,
 )
 from aegis.observability.telemetry import instrument
+from aegis.persistence.database import make_engine
+from aegis.provenance.service import ProvenanceService
+from aegis.security.abuse import MemoryRateLimiter, RedisRateLimiter
+from aegis.security.audit import AuditLog, MemoryAuditSink
+from aegis.security.auth import TokenValidator, require_scopes
+from aegis.security.crypto import StandardCryptoProvider
+from aegis.security.keys import FileKeyProvider
+from aegis.security.middleware import SecurityBodyLimit
+from aegis.security.persistence import SQLAuditSink, SQLManifestStore
 from aegis.settings import Settings, get_settings
 from apps.api.dependencies import ReadinessProbe
 from apps.api.errors import error_response, install_handlers
-from apps.api.routes import assets, documents, entities, events, ingestions, search
+from apps.api.routes import assets, documents, entities, events, ingestions, search, security
 
 logger = logging.getLogger("aegis.api")
 ID_PATTERN = re.compile(r"^[A-Za-z0-9._-]{1,128}$")
@@ -65,6 +75,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             await app.state.probe.close()
             if hasattr(app.state, "ingestion_service"):
                 app.state.ingestion_service.repository.close()
+            if app.state.security_redis is not None:
+                await app.state.security_redis.aclose()
+            if app.state.audit_engine is not None:
+                app.state.audit_engine.dispose()
 
     app = FastAPI(
         title="AegisNews",
@@ -82,11 +96,34 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     install_handlers(app)
     app.state.settings = settings
     app.add_middleware(IngestionBodyLimit)
+    if settings.security_enabled:
+        app.add_middleware(SecurityBodyLimit, max_bytes=settings.security_max_body_bytes)
+    app.state.token_validator = TokenValidator(settings)
+    app.state.audit_engine = make_engine(settings) if settings.environment == "production" else None
+    app.state.audit = AuditLog(
+        SQLAuditSink(app.state.audit_engine) if app.state.audit_engine else MemoryAuditSink()
+    )
+    app.state.provenance = ProvenanceService(
+        StandardCryptoProvider(FileKeyProvider(settings.security_key_directory)),
+        SQLManifestStore(app.state.audit_engine) if app.state.audit_engine else None,
+    )
+    app.state.security_redis = (
+        Redis.from_url(
+            settings.redis_url.get_secret_value(), socket_connect_timeout=2, socket_timeout=2
+        )
+        if settings.security_rate_backend == "redis"
+        else None
+    )
+    app.state.rate_limiter = (
+        RedisRateLimiter(app.state.security_redis, settings.security_rate_limit)
+        if app.state.security_redis
+        else MemoryRateLimiter(settings.security_rate_limit)
+    )
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
-        allow_methods=["GET", "POST"],
-        allow_headers=["Content-Type", "X-Request-ID", "X-Correlation-ID"],
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
+        allow_headers=["Authorization", "Content-Type", "X-Request-ID", "X-Correlation-ID"],
         expose_headers=["X-Request-ID", "X-Correlation-ID"],
     )
 
@@ -111,6 +148,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 )
             response.headers["X-Request-ID"] = request_id
             response.headers["X-Correlation-ID"] = correlation_id
+            response.headers["X-Content-Type-Options"] = "nosniff"
+            response.headers["X-Frame-Options"] = "DENY"
+            response.headers["Referrer-Policy"] = "no-referrer"
+            if settings.security_enabled and request.url.path.startswith("/api/"):
+                response.headers["Cache-Control"] = "no-store"
+            if settings.environment == "production":
+                response.headers["Strict-Transport-Security"] = "max-age=31536000"
             route = getattr(request.scope.get("route"), "path", "unmatched")
             elapsed = perf_counter() - start
             requests.labels(request.method, route, str(response.status_code)).inc()
@@ -165,8 +209,21 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             generate_latest(registry), media_type="text/plain; version=0.0.4; charset=utf-8"
         )
 
-    for module in (documents, entities, events, search, assets, ingestions):
-        app.include_router(module.router, prefix="/api/v1")
+    for module, scope in (
+        (documents, "documents:read"),
+        (entities, "documents:read"),
+        (events, "events:read"),
+        (search, "documents:read"),
+        (assets, "documents:read"),
+    ):
+        app.include_router(
+            module.router,
+            prefix="/api/v1",
+            dependencies=[require_scopes(scope)] if settings.security_enabled else [],
+        )
+    if settings.security_enabled:
+        app.include_router(security.router, prefix="/api/v1")
+    app.include_router(ingestions.router, prefix="/api/v1")
     instrument(app, settings)
     return app
 
