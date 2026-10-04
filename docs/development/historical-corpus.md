@@ -4,6 +4,7 @@ AG News populates the **real local API/dashboard** for development of search,
 intelligence views and workflow reliability. It is not Gold evaluation data, a
 representative news benchmark, production coverage or human-verified intelligence.
 [Gold v3](../../ml/datasets/gold/README.md) remains the evaluation reference.
+Measured smoke/load results and UX observations are in the [load ledger](historical-corpus-results.md).
 
 ## Corpus and distribution
 
@@ -70,6 +71,7 @@ often abstain (`NoPredictions`); workflow completion does not imply every option
 analysis produced output or that intelligence is correct. Reports separate unavailable
 stages. Unresolved names remain mentions/model output; no canonical entities are invented.
 No Light/Full sweep or reanalysis system is included.
+Offline similarity uses hash vectors; neighbors demonstrate wiring, not pretrained semantic quality.
 
 One dedicated source is reused: **AG News Historical Development Corpus**. Its URL
 identifies the dataset, not individual publishers. Titles/descriptions are converted to

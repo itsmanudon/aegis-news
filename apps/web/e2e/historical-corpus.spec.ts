@@ -50,5 +50,20 @@ test("historical corpus: real search, document intelligence, provenance and prod
     .getByRole("link", { name: "Events / timeline", exact: true })
     .click();
   await expect(page.locator(".timeline > li").first()).toBeVisible();
+  await page.getByRole("link", { name: "Documents", exact: true }).click();
+  await page
+    .getByLabel("Filter documents")
+    .fill(process.env.AEGIS_HISTORICAL_TITLE!);
+  await page
+    .getByLabel("Source", { exact: true })
+    .selectOption(process.env.AEGIS_HISTORICAL_SOURCE_ID!);
+  await expect(
+    page
+      .getByRole("link", {
+        name: process.env.AEGIS_HISTORICAL_TITLE!,
+        exact: true,
+      })
+      .first(),
+  ).toBeVisible();
   expect(errors).toEqual([]);
 });
