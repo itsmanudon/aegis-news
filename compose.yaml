@@ -89,6 +89,13 @@ services:
       postgres: {condition: service_healthy}
   api:
     <<: *python
+    environment:
+      <<: *python-env
+      AEGIS_NEWSDATA_API_KEY: ${AEGIS_NEWSDATA_API_KEY:-}
+      AEGIS_GNEWS_API_KEY: ${AEGIS_GNEWS_API_KEY:-}
+      AEGIS_NEWSAPI_API_KEY: ${AEGIS_NEWSAPI_API_KEY:-}
+      AEGIS_YOUTUBE_API_KEY: ${AEGIS_YOUTUBE_API_KEY:-}
+      AEGIS_PROVIDER_INGESTION_API_URL: http://127.0.0.1:8000
     profiles: [core, full]
     ports: ["127.0.0.1:${AEGIS_API_PORT:-8000}:8000"]
     volumes: ["application-logs:/var/log/aegis", "development-keys:/var/lib/aegis/keys:ro"]

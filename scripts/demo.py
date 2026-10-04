@@ -18,6 +18,7 @@ def compose_command(*args: str) -> list[str]:
         "compose",
         "-f",
         str(ROOT / "compose.yaml"),
+        *(["--env-file", str(ROOT / ".env")] if (ROOT / ".env").exists() else []),
         "--env-file",
         str(ROOT / "infrastructure/demo.env.example"),
         "-p",

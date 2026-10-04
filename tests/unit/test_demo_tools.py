@@ -6,7 +6,8 @@ from scripts.demo import ROOT, compose_command, validate_reset_context
 def test_demo_commands_always_use_one_isolated_project():
     command = compose_command("down", "--volumes")
     assert command[command.index("-p") + 1] == "aegis-demo"
-    assert "demo.env.example" in command[command.index("--env-file") + 1]
+    env_files = [command[i + 1] for i, part in enumerate(command) if part == "--env-file"]
+    assert env_files[-1] == str(ROOT / "infrastructure/demo.env.example")
     assert "--volumes" in command
 
 

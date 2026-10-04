@@ -34,6 +34,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/documents/{document_id}/acquisition": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Acquisition */
+        get: operations["acquisition_api_v1_documents__document_id__acquisition_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/documents/{document_id}/intelligence": {
         parameters: {
             query?: never;
@@ -238,6 +255,91 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/provider-articles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Article List */
+        get: operations["article_list_api_v1_provider_articles_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/provider-runs/{run_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Run */
+        get: operations["get_run_api_v1_provider_runs__run_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Providers */
+        get: operations["providers_api_v1_providers_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/providers/fetch-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Fetch All */
+        post: operations["fetch_all_api_v1_providers_fetch_all_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/providers/{provider}/fetch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Fetch */
+        post: operations["fetch_api_v1_providers__provider__fetch_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/search": {
         parameters: {
             query?: never;
@@ -358,6 +460,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/youtube-references": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Video List */
+        get: operations["video_list_api_v1_youtube_references_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/youtube-references/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refresh */
+        post: operations["refresh_api_v1_youtube_references_refresh_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/youtube-references/{video_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Video */
+        delete: operations["delete_video_api_v1_youtube_references__video_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -438,6 +591,36 @@ export interface components {
         ApiErrorEnvelope: {
             error: components["schemas"]["ErrorDetail"];
         };
+        /** ArticleEvidence */
+        ArticleEvidence: {
+            /**
+             * Acquired At
+             * Format: date-time
+             */
+            acquired_at: string;
+            /** Article Url */
+            article_url?: string | null;
+            /** Author */
+            author?: string | null;
+            /**
+             * Content Kind
+             * @enum {string}
+             */
+            content_kind: "provider excerpt" | "headline only";
+            /** Image Url */
+            image_url?: string | null;
+            /**
+             * Provider
+             * @enum {string}
+             */
+            provider: "newsdata" | "gnews" | "newsapi" | "gdelt" | "youtube";
+            /** Provider Item Id */
+            provider_item_id?: string | null;
+            /** Publisher Name */
+            publisher_name?: string | null;
+            /** Video Url */
+            video_url?: string | null;
+        };
         /** AuditEvent */
         AuditEvent: {
             /** Action */
@@ -497,6 +680,13 @@ export interface components {
             meta: components["schemas"]["ResponseMeta"];
             pagination: components["schemas"]["CursorPagination"];
         };
+        /** CollectionResponse[ProviderArticleView] */
+        CollectionResponse_ProviderArticleView_: {
+            /** Data */
+            data: components["schemas"]["ProviderArticleView"][];
+            meta: components["schemas"]["ResponseMeta"];
+            pagination: components["schemas"]["CursorPagination"];
+        };
         /** CollectionResponse[SimilarDocument] */
         CollectionResponse_SimilarDocument_: {
             /** Data */
@@ -508,6 +698,13 @@ export interface components {
         CollectionResponse_Source_: {
             /** Data */
             data: components["schemas"]["Source"][];
+            meta: components["schemas"]["ResponseMeta"];
+            pagination: components["schemas"]["CursorPagination"];
+        };
+        /** CollectionResponse[YouTubeReference] */
+        CollectionResponse_YouTubeReference_: {
+            /** Data */
+            data: components["schemas"]["YouTubeReference"][];
             meta: components["schemas"]["ResponseMeta"];
             pagination: components["schemas"]["CursorPagination"];
         };
@@ -717,6 +914,26 @@ export interface components {
              * @constant
              */
             schema_version: "1";
+        };
+        /** FetchOptions */
+        FetchOptions: {
+            /** Country */
+            country?: ("in" | "us") | null;
+            /**
+             * Limit
+             * @default 3
+             */
+            limit: number;
+            /**
+             * Query
+             * @default technology
+             */
+            query: string;
+            /**
+             * Retry Failed
+             * @default false
+             */
+            retry_failed: boolean;
         };
         /** HealthStatus */
         HealthStatus: {
@@ -944,6 +1161,130 @@ export interface components {
             /** Subject Id */
             subject_id: string;
         };
+        /** ProviderArticleView */
+        ProviderArticleView: {
+            /**
+             * Acquired At
+             * Format: date-time
+             */
+            acquired_at: string;
+            /** Article Id */
+            article_id: string;
+            /** Document Id */
+            document_id?: string | null;
+            /**
+             * Evidence
+             * @default []
+             */
+            evidence: components["schemas"]["ArticleEvidence"][];
+            /** Published At */
+            published_at?: string | null;
+            /** Source Id */
+            source_id: string;
+            /** Title */
+            title: string;
+            /** Workflow Id */
+            workflow_id?: string | null;
+        };
+        /** ProviderOutcome */
+        ProviderOutcome: {
+            /**
+             * Duplicates
+             * @default 0
+             */
+            duplicates: number;
+            /** Error */
+            error?: string | null;
+            /**
+             * Fetched
+             * @default 0
+             */
+            fetched: number;
+            /**
+             * Images
+             * @default 0
+             */
+            images: number;
+            /**
+             * Provider
+             * @enum {string}
+             */
+            provider: "newsdata" | "gnews" | "newsapi" | "gdelt" | "youtube";
+            /**
+             * Requests
+             * @default 0
+             */
+            requests: number;
+            /**
+             * Skipped
+             * @default 0
+             */
+            skipped: number;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "submitted" | "disabled" | "failed";
+            /**
+             * Submitted
+             * @default 0
+             */
+            submitted: number;
+            /**
+             * Videos
+             * @default 0
+             */
+            videos: number;
+            /**
+             * Workflow Ids
+             * @default []
+             */
+            workflow_ids: string[];
+        };
+        /** ProviderRun */
+        ProviderRun: {
+            /** Completed At */
+            completed_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Outcomes
+             * @default []
+             */
+            outcomes: components["schemas"]["ProviderOutcome"][];
+            /** Run Id */
+            run_id: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "running" | "submitted" | "interrupted";
+            /**
+             * Workflow Statuses
+             * @default {}
+             */
+            workflow_statuses: {
+                [key: string]: string;
+            };
+        };
+        /** ProviderStatus */
+        ProviderStatus: {
+            /** Enabled */
+            enabled: boolean;
+            /**
+             * Mode
+             * @default manual local development
+             */
+            mode: string;
+            /**
+             * Provider
+             * @enum {string}
+             */
+            provider: "newsdata" | "gnews" | "newsapi" | "gdelt" | "youtube";
+        };
         /** RawIngestion */
         RawIngestion: {
             /**
@@ -1076,6 +1417,11 @@ export interface components {
             data: components["schemas"]["NewsEvent"];
             meta: components["schemas"]["ResponseMeta"];
         };
+        /** SingleResponse[ProviderRun] */
+        SingleResponse_ProviderRun_: {
+            data: components["schemas"]["ProviderRun"];
+            meta: components["schemas"]["ResponseMeta"];
+        };
         /** SingleResponse[RawIngestion] */
         SingleResponse_RawIngestion_: {
             data: components["schemas"]["RawIngestion"];
@@ -1109,12 +1455,32 @@ export interface components {
             };
             meta: components["schemas"]["ResponseMeta"];
         };
+        /** SingleResponse[dict[str, int]] */
+        SingleResponse_dict_str__int__: {
+            /** Data */
+            data: {
+                [key: string]: number;
+            };
+            meta: components["schemas"]["ResponseMeta"];
+        };
         /** SingleResponse[dict[str, str]] */
         SingleResponse_dict_str__str__: {
             /** Data */
             data: {
                 [key: string]: string;
             };
+            meta: components["schemas"]["ResponseMeta"];
+        };
+        /** SingleResponse[tuple[ArticleEvidence, ...]] */
+        SingleResponse_tuple_ArticleEvidence__________: {
+            /** Data */
+            data: components["schemas"]["ArticleEvidence"][];
+            meta: components["schemas"]["ResponseMeta"];
+        };
+        /** SingleResponse[tuple[ProviderStatus, ...]] */
+        SingleResponse_tuple_ProviderStatus__________: {
+            /** Data */
+            data: components["schemas"]["ProviderStatus"][];
             meta: components["schemas"]["ResponseMeta"];
         };
         /** Source */
@@ -1216,6 +1582,33 @@ export interface components {
             /** Valid */
             valid: boolean;
         };
+        /** YouTubeReference */
+        YouTubeReference: {
+            /** Channel Id */
+            channel_id: string;
+            /** Channel Title */
+            channel_title: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /**
+             * Last Refreshed At
+             * Format: date-time
+             */
+            last_refreshed_at?: string;
+            /** Published At */
+            published_at?: string | null;
+            /** Thumbnail Url */
+            thumbnail_url?: string | null;
+            /** Title */
+            title: string;
+            /** Video Id */
+            video_id: string;
+            /** Youtube Url */
+            youtube_url: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -1290,6 +1683,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SingleResponse_NewsDocument_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    acquisition_api_v1_documents__document_id__acquisition_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SingleResponse_tuple_ArticleEvidence__________"];
                 };
             };
             /** @description Unprocessable Entity */
@@ -1812,6 +2245,211 @@ export interface operations {
             };
         };
     };
+    article_list_api_v1_provider_articles_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionResponse_ProviderArticleView_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    get_run_api_v1_provider_runs__run_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SingleResponse_ProviderRun_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    providers_api_v1_providers_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SingleResponse_tuple_ProviderStatus__________"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    fetch_all_api_v1_providers_fetch_all_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FetchOptions"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SingleResponse_ProviderRun_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    fetch_api_v1_providers__provider__fetch_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: "newsdata" | "gnews" | "newsapi" | "gdelt" | "youtube";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FetchOptions"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SingleResponse_ProviderRun_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
     documents_api_v1_search_get: {
         parameters: {
             query?: {
@@ -2117,6 +2755,125 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SingleResponse_SystemInfo_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    video_list_api_v1_youtube_references_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionResponse_YouTubeReference_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    refresh_api_v1_youtube_references_refresh_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SingleResponse_dict_str__int__"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    delete_video_api_v1_youtube_references__video_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                video_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SingleResponse_dict_str__str__"];
                 };
             };
             /** @description Unprocessable Entity */

@@ -136,6 +136,107 @@
         "title": "ApiErrorEnvelope",
         "type": "object"
       },
+      "ArticleEvidence": {
+        "properties": {
+          "acquired_at": {
+            "format": "date-time",
+            "title": "Acquired At",
+            "type": "string"
+          },
+          "article_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Article Url"
+          },
+          "author": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author"
+          },
+          "content_kind": {
+            "enum": [
+              "provider excerpt",
+              "headline only"
+            ],
+            "title": "Content Kind",
+            "type": "string"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "provider": {
+            "enum": [
+              "newsdata",
+              "gnews",
+              "newsapi",
+              "gdelt",
+              "youtube"
+            ],
+            "title": "Provider",
+            "type": "string"
+          },
+          "provider_item_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider Item Id"
+          },
+          "publisher_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publisher Name"
+          },
+          "video_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Video Url"
+          }
+        },
+        "required": [
+          "provider",
+          "acquired_at",
+          "content_kind"
+        ],
+        "title": "ArticleEvidence",
+        "type": "object"
+      },
       "AuditEvent": {
         "additionalProperties": false,
         "properties": {
@@ -312,6 +413,31 @@
         "title": "CollectionResponse[NewsEvent]",
         "type": "object"
       },
+      "CollectionResponse_ProviderArticleView_": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ProviderArticleView"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/CursorPagination"
+          }
+        },
+        "required": [
+          "data",
+          "pagination",
+          "meta"
+        ],
+        "title": "CollectionResponse[ProviderArticleView]",
+        "type": "object"
+      },
       "CollectionResponse_SimilarDocument_": {
         "additionalProperties": false,
         "properties": {
@@ -360,6 +486,31 @@
           "meta"
         ],
         "title": "CollectionResponse[Source]",
+        "type": "object"
+      },
+      "CollectionResponse_YouTubeReference_": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/YouTubeReference"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/CursorPagination"
+          }
+        },
+        "required": [
+          "data",
+          "pagination",
+          "meta"
+        ],
+        "title": "CollectionResponse[YouTubeReference]",
         "type": "object"
       },
       "CursorPagination": {
@@ -887,6 +1038,47 @@
           "evidence_text"
         ],
         "title": "EventExtractionResult",
+        "type": "object"
+      },
+      "FetchOptions": {
+        "additionalProperties": false,
+        "properties": {
+          "country": {
+            "anyOf": [
+              {
+                "enum": [
+                  "in",
+                  "us"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country"
+          },
+          "limit": {
+            "default": 3,
+            "maximum": 30.0,
+            "minimum": 1.0,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "query": {
+            "default": "technology",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Query",
+            "type": "string"
+          },
+          "retry_failed": {
+            "default": false,
+            "title": "Retry Failed",
+            "type": "boolean"
+          }
+        },
+        "title": "FetchOptions",
         "type": "object"
       },
       "HealthStatus": {
@@ -1448,6 +1640,248 @@
         "title": "ProvenanceRecord",
         "type": "object"
       },
+      "ProviderArticleView": {
+        "properties": {
+          "acquired_at": {
+            "format": "date-time",
+            "title": "Acquired At",
+            "type": "string"
+          },
+          "article_id": {
+            "title": "Article Id",
+            "type": "string"
+          },
+          "document_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Document Id"
+          },
+          "evidence": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ArticleEvidence"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          },
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "workflow_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workflow Id"
+          }
+        },
+        "required": [
+          "article_id",
+          "acquired_at",
+          "title",
+          "source_id"
+        ],
+        "title": "ProviderArticleView",
+        "type": "object"
+      },
+      "ProviderOutcome": {
+        "properties": {
+          "duplicates": {
+            "default": 0,
+            "title": "Duplicates",
+            "type": "integer"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "fetched": {
+            "default": 0,
+            "title": "Fetched",
+            "type": "integer"
+          },
+          "images": {
+            "default": 0,
+            "title": "Images",
+            "type": "integer"
+          },
+          "provider": {
+            "enum": [
+              "newsdata",
+              "gnews",
+              "newsapi",
+              "gdelt",
+              "youtube"
+            ],
+            "title": "Provider",
+            "type": "string"
+          },
+          "requests": {
+            "default": 0,
+            "title": "Requests",
+            "type": "integer"
+          },
+          "skipped": {
+            "default": 0,
+            "title": "Skipped",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "submitted",
+              "disabled",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "submitted": {
+            "default": 0,
+            "title": "Submitted",
+            "type": "integer"
+          },
+          "videos": {
+            "default": 0,
+            "title": "Videos",
+            "type": "integer"
+          },
+          "workflow_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Workflow Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "provider",
+          "status"
+        ],
+        "title": "ProviderOutcome",
+        "type": "object"
+      },
+      "ProviderRun": {
+        "properties": {
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "outcomes": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ProviderOutcome"
+            },
+            "title": "Outcomes",
+            "type": "array"
+          },
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "running",
+              "submitted",
+              "interrupted"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "workflow_statuses": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "default": {},
+            "title": "Workflow Statuses",
+            "type": "object"
+          }
+        },
+        "required": [
+          "run_id",
+          "created_at",
+          "status"
+        ],
+        "title": "ProviderRun",
+        "type": "object"
+      },
+      "ProviderStatus": {
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "mode": {
+            "default": "manual local development",
+            "title": "Mode",
+            "type": "string"
+          },
+          "provider": {
+            "enum": [
+              "newsdata",
+              "gnews",
+              "newsapi",
+              "gdelt",
+              "youtube"
+            ],
+            "title": "Provider",
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "enabled"
+        ],
+        "title": "ProviderStatus",
+        "type": "object"
+      },
       "RawIngestion": {
         "additionalProperties": false,
         "properties": {
@@ -1802,6 +2236,23 @@
         "title": "SingleResponse[NewsEvent]",
         "type": "object"
       },
+      "SingleResponse_ProviderRun_": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ProviderRun"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "SingleResponse[ProviderRun]",
+        "type": "object"
+      },
       "SingleResponse_RawIngestion_": {
         "additionalProperties": false,
         "properties": {
@@ -1906,6 +2357,27 @@
         "title": "SingleResponse[dict[str, Any]]",
         "type": "object"
       },
+      "SingleResponse_dict_str__int__": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Data",
+            "type": "object"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "SingleResponse[dict[str, int]]",
+        "type": "object"
+      },
       "SingleResponse_dict_str__str__": {
         "additionalProperties": false,
         "properties": {
@@ -1925,6 +2397,48 @@
           "meta"
         ],
         "title": "SingleResponse[dict[str, str]]",
+        "type": "object"
+      },
+      "SingleResponse_tuple_ArticleEvidence__________": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ArticleEvidence"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "SingleResponse[tuple[ArticleEvidence, ...]]",
+        "type": "object"
+      },
+      "SingleResponse_tuple_ProviderStatus__________": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ProviderStatus"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "SingleResponse[tuple[ProviderStatus, ...]]",
         "type": "object"
       },
       "Source": {
@@ -2149,6 +2663,80 @@
         ],
         "title": "VerificationResult",
         "type": "object"
+      },
+      "YouTubeReference": {
+        "additionalProperties": false,
+        "properties": {
+          "channel_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Channel Id",
+            "type": "string"
+          },
+          "channel_title": {
+            "maxLength": 512,
+            "title": "Channel Title",
+            "type": "string"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "last_refreshed_at": {
+            "format": "date-time",
+            "title": "Last Refreshed At",
+            "type": "string"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          },
+          "thumbnail_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Thumbnail Url"
+          },
+          "title": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "video_id": {
+            "pattern": "^[A-Za-z0-9_-]{11}$",
+            "title": "Video Id",
+            "type": "string"
+          },
+          "youtube_url": {
+            "title": "Youtube Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "video_id",
+          "title",
+          "channel_id",
+          "channel_title",
+          "youtube_url",
+          "expires_at"
+        ],
+        "title": "YouTubeReference",
+        "type": "object"
       }
     },
     "securitySchemes": {
@@ -2372,6 +2960,63 @@
         "summary": "Get Document",
         "tags": [
           "ingestion"
+        ]
+      }
+    },
+    "/api/v1/documents/{document_id}/acquisition": {
+      "get": {
+        "operationId": "acquisition_api_v1_documents__document_id__acquisition_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "document_id",
+            "required": true,
+            "schema": {
+              "title": "Document Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleResponse_tuple_ArticleEvidence__________"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Acquisition",
+        "tags": [
+          "providers"
         ]
       }
     },
@@ -3257,6 +3902,316 @@
         ]
       }
     },
+    "/api/v1/provider-articles": {
+      "get": {
+        "operationId": "article_list_api_v1_provider_articles_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionResponse_ProviderArticleView_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Article List",
+        "tags": [
+          "providers"
+        ]
+      }
+    },
+    "/api/v1/provider-runs/{run_id}": {
+      "get": {
+        "operationId": "get_run_api_v1_provider_runs__run_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleResponse_ProviderRun_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Run",
+        "tags": [
+          "providers"
+        ]
+      }
+    },
+    "/api/v1/providers": {
+      "get": {
+        "operationId": "providers_api_v1_providers_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleResponse_tuple_ProviderStatus__________"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Providers",
+        "tags": [
+          "providers"
+        ]
+      }
+    },
+    "/api/v1/providers/fetch-all": {
+      "post": {
+        "operationId": "fetch_all_api_v1_providers_fetch_all_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FetchOptions"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleResponse_ProviderRun_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Fetch All",
+        "tags": [
+          "providers"
+        ]
+      }
+    },
+    "/api/v1/providers/{provider}/fetch": {
+      "post": {
+        "operationId": "fetch_api_v1_providers__provider__fetch_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "provider",
+            "required": true,
+            "schema": {
+              "enum": [
+                "newsdata",
+                "gnews",
+                "newsapi",
+                "gdelt",
+                "youtube"
+              ],
+              "title": "Provider",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FetchOptions"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleResponse_ProviderRun_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Fetch",
+        "tags": [
+          "providers"
+        ]
+      }
+    },
     "/api/v1/search": {
       "get": {
         "operationId": "documents_api_v1_search_get",
@@ -3798,6 +4753,186 @@
         "summary": "System Info",
         "tags": [
           "system"
+        ]
+      }
+    },
+    "/api/v1/youtube-references": {
+      "get": {
+        "operationId": "video_list_api_v1_youtube_references_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 11,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionResponse_YouTubeReference_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Video List",
+        "tags": [
+          "providers"
+        ]
+      }
+    },
+    "/api/v1/youtube-references/refresh": {
+      "post": {
+        "operationId": "refresh_api_v1_youtube_references_refresh_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleResponse_dict_str__int__"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Refresh",
+        "tags": [
+          "providers"
+        ]
+      }
+    },
+    "/api/v1/youtube-references/{video_id}": {
+      "delete": {
+        "operationId": "delete_video_api_v1_youtube_references__video_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "video_id",
+            "required": true,
+            "schema": {
+              "title": "Video Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleResponse_dict_str__str__"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Video",
+        "tags": [
+          "providers"
         ]
       }
     },

@@ -24,6 +24,11 @@ class Settings(BaseSettings):
     temporal_task_queue: str = "aegis-foundation"
     temporal_enabled: bool = False
     ai_profile: Literal["offline", "light", "full"] = "offline"
+    newsdata_api_key: SecretStr = SecretStr("")
+    gnews_api_key: SecretStr = SecretStr("")
+    newsapi_api_key: SecretStr = SecretStr("")
+    youtube_api_key: SecretStr = SecretStr("")
+    provider_ingestion_api_url: str = "http://127.0.0.1:8000"
     provenance_key_id: str = "local"
     security_persist_audit: bool = False
     cors_origins: list[str] = ["http://localhost:3000"]

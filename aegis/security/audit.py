@@ -23,6 +23,7 @@ ACTIONS = frozenset(
         "security_change",
         "admin_change",
         "rate_limit_denied",
+        "provider_fetch",
     }
 )
 

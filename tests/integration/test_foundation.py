@@ -90,7 +90,7 @@ def test_extensions_and_schema(engine):
         assert "outbox_events" in inspect(connection).get_table_names()
         assert (
             connection.execute(text("SELECT version_num FROM alembic_version")).scalar()
-            == "mvp_merge_0001"
+            == "live_providers_0001"
         )
 
 

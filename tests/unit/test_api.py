@@ -43,6 +43,15 @@ def test_liveness_info_and_openapi():
             "/api/v1/events",
             "/api/v1/events/{event_id}",
             "/api/v1/search",
+            "/api/v1/providers",
+            "/api/v1/providers/{provider}/fetch",
+            "/api/v1/providers/fetch-all",
+            "/api/v1/provider-runs/{run_id}",
+            "/api/v1/provider-articles",
+            "/api/v1/documents/{document_id}/acquisition",
+            "/api/v1/youtube-references",
+            "/api/v1/youtube-references/refresh",
+            "/api/v1/youtube-references/{video_id}",
         }
         assert schema["paths"]["/ready"]["get"]["responses"]["503"]["content"]["application/json"][
             "schema"

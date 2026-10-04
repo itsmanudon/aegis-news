@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import re
 from collections.abc import AsyncIterator, Awaitable, Callable
@@ -29,6 +30,7 @@ from aegis.observability.logging import (
 from aegis.observability.telemetry import instrument
 from aegis.persistence.database import make_engine
 from aegis.provenance.service import ProvenanceService
+from aegis.providers.service import ProviderMetrics
 from aegis.security.abuse import MemoryRateLimiter, RedisRateLimiter
 from aegis.security.audit import AuditLog, MemoryAuditSink
 from aegis.security.auth import TokenValidator, require_scopes
@@ -46,6 +48,7 @@ from apps.api.routes import (
     events,
     ingestions,
     product,
+    providers,
     search,
     security,
 )
@@ -78,9 +81,33 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         configure_logging(settings.log_file)
         app.state.probe = ReadinessProbe(settings)
+
+        async def retention() -> None:
+            while True:
+                try:
+                    service = providers.runner_from_app(app)
+                    await providers.initialize(app, service)
+                    await asyncio.to_thread(service.store.prune)
+                except Exception:
+                    logger.warning("provider_retention_unavailable")
+                await asyncio.sleep(3600)
+
+        retention_task = asyncio.create_task(retention())
         try:
             yield
         finally:
+            retention_task.cancel()
+            from contextlib import suppress
+
+            with suppress(asyncio.CancelledError):
+                await retention_task
+            tasks = tuple(app.state.provider_tasks)
+            for task in tasks:
+                task.cancel()
+            if tasks:
+                await asyncio.gather(*tasks, return_exceptions=True)
+            if hasattr(app.state, "provider_engine"):
+                app.state.provider_engine.dispose()
             await app.state.probe.close()
             if hasattr(app.state, "ingestion_service"):
                 app.state.ingestion_service.repository.close()
@@ -104,6 +131,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     install_handlers(app)
     app.state.settings = settings
+    app.state.provider_metrics = ProviderMetrics(registry)
+    app.state.provider_tasks = set()
+    app.state.provider_active = False
+    app.state.provider_initialized = False
+    app.state.provider_initialization_lock = asyncio.Lock()
     app.add_middleware(IngestionBodyLimit)
     if settings.security_enabled:
         app.add_middleware(SecurityBodyLimit, max_bytes=settings.security_max_body_bytes)
@@ -243,6 +275,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.include_router(security.router, prefix="/api/v1")
     app.include_router(ingestions.router, prefix="/api/v1")
     app.include_router(product.router, prefix="/api/v1")
+    app.include_router(providers.router, prefix="/api/v1")
     instrument(app, settings)
     return app
 
