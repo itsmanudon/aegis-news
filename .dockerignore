@@ -1,4 +1,5 @@
 .git
+.data
 .venv
 .venv-light
 .venv-light-gpu

@@ -116,6 +116,9 @@ Full remains unbenchmarked. [Gold v3 methods/errors/resources](docs/evaluation/g
 [optional local reproduction](docs/evaluation/gold-v3-reproduce.md),
 [validation ledger](docs/evaluation/gold-v3-validation.md).
 
+For real dashboard volume, use the optional [historical development corpus loader](docs/development/historical-corpus.md).
+Its locally cached news is separate from Gold evaluation data and is never committed.
+
 ```sh
 uv sync --frozen
 uv run python -m scripts.evaluate_reviewed --profile offline --output .evaluation-tmp/gold-v3-offline.json
