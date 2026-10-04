@@ -167,3 +167,7 @@ allowlisted audit events. Fixed provider names label counters, never URLs/headli
 use run workflow statuses to confirm actual completion. Counters reset on API restart.
 Fixtures are original synthetic examples; normal CI never fetches external APIs.
 Schema and generated TypeScript drift checks remain mandatory.
+
+Measured local outcomes, failures and validation are recorded in the
+[acceptance ledger](live-provider-validation.md). GDELT was network-unavailable
+during that run; key presence must never be shown as successful live acceptance.
