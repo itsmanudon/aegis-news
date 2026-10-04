@@ -8,12 +8,19 @@ export function Feed({ search = false }: { search?: boolean }) {
     [sourceId, setSourceId] = useState(""),
     [integrity, setIntegrity] = useState(""),
     [cutoff, setCutoff] = useState("");
+  const [position, setPosition] = useState({
+    key: "",
+    cursor: undefined as string | undefined,
+  });
+  const filterKey = JSON.stringify([query, sourceId, integrity, cutoff]);
+  const cursor = position.key === filterKey ? position.cursor : undefined;
   const utcCutoff = cutoff ? `${cutoff}:00Z` : undefined;
   const records = useDocuments({
     query,
     sourceId,
     integrity,
     cutoff: utcCutoff,
+    cursor,
   });
   const sources = useSources();
   return (
@@ -114,6 +121,22 @@ export function Feed({ search = false }: { search?: boolean }) {
         retry={records.refetch}
       >
         <DocumentTable documents={records.data ?? []} />
+        <div className="filter-bar">
+          <Button
+            disabled={!cursor}
+            onClick={() => setPosition({ key: filterKey, cursor: undefined })}
+          >
+            First page
+          </Button>
+          <Button
+            disabled={!records.data?.nextCursor || records.isFetching}
+            onClick={() =>
+              setPosition({ key: filterKey, cursor: records.data?.nextCursor })
+            }
+          >
+            Next page
+          </Button>
+        </div>
       </QueryState>
     </>
   );

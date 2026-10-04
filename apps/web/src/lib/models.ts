@@ -18,6 +18,7 @@ export type Verification = {
   reason: string;
 };
 export type DocumentView = {
+  intelligenceLoaded?: boolean;
   document: Domain["NewsDocument"];
   source: Domain["Source"];
   analyses: Domain["AnalysisResult"][];
@@ -28,11 +29,14 @@ export type DocumentView = {
   integrity: IntegrityState;
 };
 export type DocumentFilters = {
+  cursor?: string;
+  entityId?: string;
   query?: string;
   sourceId?: string;
   integrity?: string;
   cutoff?: string;
 };
+export type DocumentList = DocumentView[] & { nextCursor?: string };
 export type AuditEntry = {
   id: string;
   at: string;
@@ -63,7 +67,7 @@ export interface AnalystAdapter {
   documents(
     filters: DocumentFilters,
     signal?: AbortSignal,
-  ): Promise<DocumentView[]>;
+  ): Promise<DocumentList>;
   document(id: string, signal?: AbortSignal): Promise<DocumentView>;
   entities(signal?: AbortSignal): Promise<Domain["Entity"][]>;
   entity(id: string, signal?: AbortSignal): Promise<Domain["Entity"]>;

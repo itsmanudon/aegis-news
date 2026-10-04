@@ -4,6 +4,7 @@ import type {
   AnalystAdapter,
   DocumentFilters,
   DocumentView,
+  DocumentList,
   IdentityPort,
   IntegrityState,
 } from "./models";
@@ -89,9 +90,18 @@ export function createMockAdapter(latency = 180): AnalystAdapter {
       };
     },
     async documents(filters, signal) {
-      const result = filterDocuments(filters);
+      const result = filterDocuments(filters).filter(
+        (v) =>
+          !filters.entityId ||
+          v.entities.some((e) => e.entity_id === filters.entityId),
+      );
       await wait(signal);
-      return structuredClone(result);
+      const start = filters.cursor ? Number(filters.cursor) : 0;
+      const page: DocumentList = structuredClone(
+        result.slice(start, start + 20),
+      );
+      if (start + 20 < result.length) page.nextCursor = String(start + 20);
+      return page;
     },
     async document(id, signal) {
       await wait(signal);
@@ -239,9 +249,8 @@ export function createRealAdapter(
           "Verify a document to inspect its current integrity. Feed-wide integrity filtering is unavailable.",
         );
       }
-      const values: DocumentView[] = [];
-      let cursor: string | undefined;
-      do {
+      const values: DocumentList = [];
+      {
         const result = unwrap(
           await client.GET(
             filters.query ? "/api/v1/search" : "/api/v1/documents",
@@ -251,21 +260,39 @@ export function createRealAdapter(
                   q: filters.query,
                   source_id: filters.sourceId,
                   as_of: filters.cutoff,
-                  limit: 100,
-                  cursor,
+                  entity_id: filters.entityId,
+                  limit: 20,
+                  cursor: filters.cursor,
                 },
               },
               signal,
             },
           ),
         );
-        // Bound concurrent requests while assembling canonical intelligence.
-        for (const document of result.data)
-          values.push(
-            await detail(document.document_id, signal, filters.cutoff),
+        const sourceValues = await this.sources(signal);
+        for (const document of result.data) {
+          const source = sourceValues.find(
+            (s) => s.source_id === document.source_id,
           );
-        cursor = result.pagination.next_cursor ?? undefined;
-      } while (cursor);
+          if (!source)
+            throw new ApiClientError(
+              "NOT_FOUND",
+              "Document source is unavailable.",
+            );
+          values.push({
+            document,
+            source,
+            intelligenceLoaded: false,
+            analyses: [],
+            entities: [],
+            events: [],
+            media: [],
+            provenance: [],
+            integrity: "unverified",
+          });
+        }
+        values.nextCursor = result.pagination.next_cursor ?? undefined;
+      }
       return values;
     },
     document: detail,

@@ -38,10 +38,8 @@ export function Entities() {
 }
 export function EntityDetail({ id }: { id: string }) {
   const entity = useEntity(id),
-    records = useDocuments();
-  const related =
-    records.data?.filter((v) => v.entities.some((e) => e.entity_id === id)) ??
-    [];
+    records = useDocuments({ entityId: id });
+  const related = records.data ?? [];
   return (
     <>
       <Link className="back-link" href="/entities">

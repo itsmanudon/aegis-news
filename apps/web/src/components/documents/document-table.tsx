@@ -41,7 +41,9 @@ export function DocumentTable({ documents }: { documents: DocumentView[] }) {
                 <Timestamp value={v.document.first_seen_at} />
               </td>
               <td>
-                {v.analyses.length ? (
+                {v.intelligenceLoaded === false ? (
+                  <span>Open detail for analysis</span>
+                ) : v.analyses.length ? (
                   <>
                     <Badge tone="model">Model assessment</Badge>
                     <span className="row-meta">

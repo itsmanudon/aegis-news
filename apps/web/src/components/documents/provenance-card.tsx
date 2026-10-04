@@ -23,6 +23,9 @@ export function ProvenanceCard({ view }: { view: DocumentView }) {
           ? "Fixture states illustrate verification outcomes. No cryptographic check is performed."
           : "Verification results are supplied by the integrity service."}
       </p>
+      {view.intelligenceLoaded === false && (
+        <p>Open document detail for the complete provenance chain.</p>
+      )}
       <dl className="metadata">
         <dt>Content hash (SHA-256)</dt>
         <dd className="hash">

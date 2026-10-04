@@ -2,6 +2,41 @@ import { describe, expect, it, vi } from "vitest";
 import { createMockAdapter, createRealAdapter, ApiClientError } from "./api";
 
 describe("analyst data boundary", () => {
+  it("loads one cursor page without eagerly requesting document intelligence", async () => {
+    const fixtures = await createMockAdapter(0).documents({});
+    const transport = vi.fn(async (input: RequestInfo | URL) => {
+      const url = new URL((input as Request).url);
+      if (url.pathname.includes("/intelligence"))
+        throw new Error("Unexpected eager intelligence request");
+      const data =
+        url.pathname === "/api/v1/sources"
+          ? fixtures.map((v) => v.source)
+          : fixtures.map((v) => v.document);
+      return new Response(
+        JSON.stringify({
+          data,
+          pagination: {
+            has_more: url.pathname !== "/api/v1/sources",
+            next_cursor:
+              url.pathname !== "/api/v1/sources" ? "next-page" : null,
+          },
+          meta: {},
+        }),
+        { headers: { "Content-Type": "application/json" } },
+      );
+    });
+    const adapter = createRealAdapter("https://api.example.test", transport);
+    const page = await adapter.documents({});
+    expect(page).toHaveLength(fixtures.length);
+    expect(page.nextCursor).toBe("next-page");
+    expect(transport.mock.calls).toHaveLength(2);
+    expect(
+      transport.mock.calls.some(([r]) =>
+        (r as Request).url.includes("/intelligence"),
+      ),
+    ).toBe(false);
+    expect(page[0].intelligenceLoaded).toBe(false);
+  });
   it("filters source, search and integrity together", async () => {
     const client = createMockAdapter(0);
     const all = await client.documents({});

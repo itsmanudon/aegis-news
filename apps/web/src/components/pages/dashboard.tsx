@@ -23,14 +23,16 @@ export function Dashboard() {
       />
       <div className="overview-strip" aria-label="Workspace counts">
         <div>
-          <span>Documents in workspace</span>
+          <span>Documents on loaded page</span>
           <strong>{records.data ? documents.length : "—"}</strong>
         </div>
         <div>
           <span>Model assessments</span>
           <strong>
             {records.data
-              ? documents.reduce((n, v) => n + v.analyses.length, 0)
+              ? documents.some((v) => v.intelligenceLoaded === false)
+                ? "On detail"
+                : documents.reduce((n, v) => n + v.analyses.length, 0)
               : "—"}
           </strong>
         </div>
@@ -76,7 +78,7 @@ export function Dashboard() {
                 <p>
                   {v.integrity === "failed"
                     ? "Signature mismatch in fixture. Hold for review."
-                    : "Unsigned source material. Independent verification required."}
+                    : "Integrity not checked in this session. Open detail to verify."}
                 </p>
               </div>
             ))}
