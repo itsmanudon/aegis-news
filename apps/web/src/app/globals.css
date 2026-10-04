@@ -1,4 +1,43 @@
 @import "tailwindcss";
+
+.external-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 16px;
+}
+.external-card {
+  border: 1px solid var(--border, #d6dfea);
+  border-radius: 6px;
+  overflow: hidden;
+  background: white;
+}
+.external-card-body {
+  padding: 16px;
+}
+.external-card-body h3 {
+  margin: 12px 0;
+}
+.external-card-body p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+.external-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background: #eef2f6;
+}
+.image-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #526478;
+  font-size: 14px;
+}
+.provider-status {
+  display: inline-block;
+  margin: 4px 12px 4px 0;
+}
 :root {
   --background: #f3f6fa;
   --foreground: #182b40;

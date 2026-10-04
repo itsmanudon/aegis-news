@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { AcquisitionEvidence } from "../multimedia";
 import { useDocument } from "@/lib/queries";
 import { AnalysisPanel } from "../documents/analysis-panel";
 import { ProvenanceCard } from "../documents/provenance-card";
@@ -93,6 +94,7 @@ export function DocumentDetail({ id }: { id: string }) {
                 </Panel>
               </div>
               <div className="detail-secondary">
+                <AcquisitionEvidence values={view.acquisition ?? []} />
                 <ProvenanceCard key={id} view={view} />
                 <Panel title="Resolved entities">
                   <p className="panel-intro">

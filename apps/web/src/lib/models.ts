@@ -18,6 +18,7 @@ export type Verification = {
   reason: string;
 };
 export type DocumentView = {
+  acquisition?: ApiComponents["schemas"]["ArticleEvidence"][];
   intelligenceLoaded?: boolean;
   document: Domain["NewsDocument"];
   source: Domain["Source"];
@@ -56,6 +57,23 @@ export interface IdentityPort {
   session(signal?: AbortSignal): Promise<Session>;
 }
 export interface AnalystAdapter {
+  providerArticles?(
+    cursor?: string,
+    signal?: AbortSignal,
+  ): Promise<
+    ApiComponents["schemas"]["CollectionResponse_ProviderArticleView_"]
+  >;
+  videos?(
+    signal?: AbortSignal,
+  ): Promise<ApiComponents["schemas"]["CollectionResponse_YouTubeReference_"]>;
+  providers?(
+    signal?: AbortSignal,
+  ): Promise<ApiComponents["schemas"]["ProviderStatus"][]>;
+  fetchProvider?(
+    provider: ApiComponents["schemas"]["ProviderStatus"]["provider"] | "all",
+    body: ApiComponents["schemas"]["FetchOptions"],
+  ): Promise<ApiComponents["schemas"]["ProviderRun"]>;
+  providerRun?(id: string): Promise<ApiComponents["schemas"]["ProviderRun"]>;
   createSource?(
     body: ApiComponents["schemas"]["SourceCreate"],
   ): Promise<Domain["Source"]>;

@@ -172,6 +172,8 @@ test("real mode clears fixture records and identity, makes only contracted reque
       "/api/v1/sources",
       "/api/v1/events",
       "/api/v1/system/info",
+      "/api/v1/provider-articles",
+      "/api/v1/youtube-references",
     ]),
   );
   await page.getByLabel("Data mode").selectOption("mock");

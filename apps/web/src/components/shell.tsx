@@ -6,6 +6,7 @@ import { useConsole } from "./providers";
 const navigation = [
   ["/", "Dashboard"],
   ["/documents", "Documents"],
+  ["/multimedia", "Multimedia"],
   ["/entities", "Entities"],
   ["/events", "Events / timeline"],
   ["/search", "Search"],

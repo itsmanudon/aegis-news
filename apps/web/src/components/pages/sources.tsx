@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { ProviderAdmin } from "../provider-admin";
 import { useConsole } from "../providers";
 import { useSources } from "@/lib/queries";
 import { Timestamp } from "../documents/time-rail";
@@ -30,6 +31,7 @@ export function Sources() {
         Source and ingestion writes require an authorized identity. Processing
         status is reported by the server.
       </p>
+      <ProviderAdmin />
       <QueryState
         pending={records.isPending}
         error={records.error}

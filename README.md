@@ -117,6 +117,11 @@ Full remains unbenchmarked. [Gold v3 methods/errors/resources](docs/evaluation/g
 [validation ledger](docs/evaluation/gold-v3-validation.md).
 
 For real dashboard volume, use the optional [historical development corpus loader](docs/development/historical-corpus.md).
+
+For small current/delayed batches, see [manual live multimedia providers](docs/development/live-providers.md).
+Real API mode includes publisher image references and refreshable YouTube metadata at
+`/multimedia`; provider keys remain backend-only. These development feeds are separate
+from the canonical Gold v3 evaluation reference.
 Its locally cached news is separate from Gold evaluation data and is never committed.
 
 ```sh

@@ -236,9 +236,52 @@ export function createRealAdapter(
         signal,
       }),
     );
-    return { ...result.data, integrity: "unverified" };
+    const acquisition = unwrap(
+      await client.GET("/api/v1/documents/{document_id}/acquisition", {
+        params: { path: { document_id: id } },
+        signal,
+      }),
+    ).data;
+    return { ...result.data, acquisition, integrity: "unverified" };
   }
   return {
+    async providerArticles(cursor, signal) {
+      return unwrap(
+        await client.GET("/api/v1/provider-articles", {
+          params: { query: { limit: 12, cursor } },
+          signal,
+        }),
+      );
+    },
+    async videos(signal) {
+      return unwrap(
+        await client.GET("/api/v1/youtube-references", {
+          params: { query: { limit: 10 } },
+          signal,
+        }),
+      );
+    },
+    async providers(signal) {
+      return unwrap(await client.GET("/api/v1/providers", { signal })).data;
+    },
+    async fetchProvider(provider, body) {
+      return provider === "all"
+        ? unwrap(await client.POST("/api/v1/providers/fetch-all", { body }))
+            .data
+        : unwrap(
+            await client.POST("/api/v1/providers/{provider}/fetch", {
+              params: { path: { provider } },
+              body,
+            }),
+          ).data;
+    },
+    async providerRun(id) {
+      return unwrap(
+        await client.GET("/api/v1/provider-runs/{run_id}", {
+          params: { path: { run_id: id } },
+        }),
+      ).data;
+    },
     async system(signal) {
       return unwrap(await client.GET("/api/v1/system/info", { signal }));
     },

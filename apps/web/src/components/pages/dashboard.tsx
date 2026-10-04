@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { MultimediaFeed } from "../multimedia";
 import { useDocuments, useEvents, useSystem } from "@/lib/queries";
 import { DocumentTable } from "../documents/document-table";
 import { Timestamp } from "../documents/time-rail";
@@ -134,6 +135,7 @@ export function Dashboard() {
           />
         </QueryState>
       </Panel>
+      <MultimediaFeed compact />
     </>
   );
 }
