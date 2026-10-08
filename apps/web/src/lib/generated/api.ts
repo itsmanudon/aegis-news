@@ -1,5 +1,39 @@
 // Generated from checked-in schemas. Run pnpm api:generate; do not edit.
 export interface paths {
+    "/api/v1/analytics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Analytics */
+        get: operations["analytics_api_v1_analytics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/discovery": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Discovery */
+        get: operations["discovery_api_v1_discovery_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/documents": {
         parameters: {
             query?: never;
@@ -460,6 +494,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/topics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Topics */
+        get: operations["topics_api_v1_topics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/topics/{topic_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Topic */
+        get: operations["topic_api_v1_topics__topic_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/topics/{topic_id}/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Topic Documents */
+        get: operations["topic_documents_api_v1_topics__topic_id__documents_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/youtube-references": {
         parameters: {
             query?: never;
@@ -587,6 +672,57 @@ export interface components {
              */
             schema_version: "1";
         };
+        /** AnalyticsReport */
+        AnalyticsReport: {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            /** Classified Count */
+            classified_count: number;
+            /** Coverage */
+            coverage: components["schemas"]["CoverageBucket"][];
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Limitations */
+            limitations: string[];
+            /** Models */
+            models: components["schemas"]["ModelDistribution"][];
+            /** Models Other Count */
+            models_other_count: number;
+            /** No Assessment Count */
+            no_assessment_count: number;
+            /** Population Count */
+            population_count: number;
+            /** Selection Policy */
+            selection_policy: string;
+            /** Sentiment */
+            sentiment: components["schemas"]["SentimentDistribution"][];
+            /** Source Id */
+            source_id?: string | null;
+            /** Sources */
+            sources: components["schemas"]["SourceDistribution"][];
+            /** Sources Other Count */
+            sources_other_count: number;
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /**
+             * Time Basis
+             * @enum {string}
+             */
+            time_basis: "published_at" | "first_seen_at";
+            /** Topic Id */
+            topic_id?: string | null;
+            /** Unknown Time Count */
+            unknown_time_count: number;
+        };
         /** ApiErrorEnvelope */
         ApiErrorEnvelope: {
             error: components["schemas"]["ErrorDetail"];
@@ -708,6 +844,18 @@ export interface components {
             meta: components["schemas"]["ResponseMeta"];
             pagination: components["schemas"]["CursorPagination"];
         };
+        /** CoverageBucket */
+        CoverageBucket: {
+            /** Classified Count */
+            classified_count: number;
+            /**
+             * Day
+             * Format: date
+             */
+            day: string;
+            /** Document Count */
+            document_count: number;
+        };
         /** CursorPagination */
         CursorPagination: {
             /**
@@ -727,6 +875,11 @@ export interface components {
             name: "postgres" | "redis" | "object_storage" | "temporal";
             /** Ready */
             ready: boolean;
+        };
+        /** DocumentDiscoveryItem */
+        DocumentDiscoveryItem: {
+            document: components["schemas"]["NewsDocument"];
+            source: components["schemas"]["Source"];
         };
         /** DocumentIntelligence */
         DocumentIntelligence: {
@@ -1028,6 +1181,28 @@ export interface components {
              * @enum {string}
              */
             kind: "image" | "attachment";
+        };
+        /** ModelDistribution */
+        ModelDistribution: {
+            /** Document Count */
+            document_count: number;
+            /** Model Name */
+            model_name: string;
+            /** Model Version */
+            model_version: string;
+            /** Provider */
+            provider: string;
+        };
+        /** ModelIdentity */
+        ModelIdentity: {
+            /** Configuration Hash */
+            configuration_hash: string;
+            /** Model Name */
+            model_name: string;
+            /** Model Version */
+            model_version: string;
+            /** Provider */
+            provider: string;
         };
         /** NewsDocument */
         NewsDocument: {
@@ -1338,6 +1513,16 @@ export interface components {
             /** Request Id */
             request_id: string;
         };
+        /** SentimentDistribution */
+        SentimentDistribution: {
+            /** Document Count */
+            document_count: number;
+            /**
+             * Label
+             * @enum {string}
+             */
+            label: "positive" | "neutral" | "negative" | "mixed";
+        };
         /** SentimentResult */
         SentimentResult: {
             /** Confidence */
@@ -1386,6 +1571,11 @@ export interface components {
             document: components["schemas"]["NewsDocument"];
             /** Model Name */
             model_name: string;
+        };
+        /** SingleResponse[AnalyticsReport] */
+        SingleResponse_AnalyticsReport_: {
+            data: components["schemas"]["AnalyticsReport"];
+            meta: components["schemas"]["ResponseMeta"];
         };
         /** SingleResponse[DocumentIntelligence] */
         SingleResponse_DocumentIntelligence_: {
@@ -1442,6 +1632,11 @@ export interface components {
             data: components["schemas"]["SystemInfo"];
             meta: components["schemas"]["ResponseMeta"];
         };
+        /** SingleResponse[TopicSummary] */
+        SingleResponse_TopicSummary_: {
+            data: components["schemas"]["TopicSummary"];
+            meta: components["schemas"]["ResponseMeta"];
+        };
         /** SingleResponse[VerificationResult] */
         SingleResponse_VerificationResult_: {
             data: components["schemas"]["VerificationResult"];
@@ -1483,6 +1678,42 @@ export interface components {
             data: components["schemas"]["ProviderStatus"][];
             meta: components["schemas"]["ResponseMeta"];
         };
+        /** SnapshotCollectionResponse[DocumentDiscoveryItem] */
+        SnapshotCollectionResponse_DocumentDiscoveryItem_: {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            /** Data */
+            data: components["schemas"]["DocumentDiscoveryItem"][];
+            meta: components["schemas"]["ResponseMeta"];
+            pagination: components["schemas"]["CursorPagination"];
+        };
+        /** SnapshotCollectionResponse[TopicMembership] */
+        SnapshotCollectionResponse_TopicMembership_: {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            /** Data */
+            data: components["schemas"]["TopicMembership"][];
+            meta: components["schemas"]["ResponseMeta"];
+            pagination: components["schemas"]["CursorPagination"];
+        };
+        /** SnapshotCollectionResponse[TopicSummary] */
+        SnapshotCollectionResponse_TopicSummary_: {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            /** Data */
+            data: components["schemas"]["TopicSummary"][];
+            meta: components["schemas"]["ResponseMeta"];
+            pagination: components["schemas"]["CursorPagination"];
+        };
         /** Source */
         Source: {
             /**
@@ -1520,6 +1751,15 @@ export interface components {
             /** Url */
             url?: string | null;
         };
+        /** SourceDistribution */
+        SourceDistribution: {
+            /** Document Count */
+            document_count: number;
+            /** Name */
+            name: string;
+            /** Source Id */
+            source_id: string;
+        };
         /** SystemInfo */
         SystemInfo: {
             /**
@@ -1543,6 +1783,21 @@ export interface components {
             /** Version */
             version: string;
         };
+        /** TopicMembership */
+        TopicMembership: {
+            /** Analysis Id */
+            analysis_id: string;
+            /**
+             * Available At
+             * Format: date-time
+             */
+            available_at: string;
+            /** Confidence */
+            confidence: number;
+            document: components["schemas"]["NewsDocument"];
+            model: components["schemas"]["ModelIdentity"];
+            source: components["schemas"]["Source"];
+        };
         /** TopicResult */
         TopicResult: {
             /** Confidence */
@@ -1560,6 +1815,33 @@ export interface components {
              * @constant
              */
             schema_version: "1";
+        };
+        /** TopicSummary */
+        TopicSummary: {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            /** Document Count */
+            document_count: number;
+            /**
+             * First Available At
+             * Format: date-time
+             */
+            first_available_at: string;
+            /** Label */
+            label: string;
+            /**
+             * Latest Available At
+             * Format: date-time
+             */
+            latest_available_at: string;
+            model: components["schemas"]["ModelIdentity"];
+            /** Selection Policy */
+            selection_policy: string;
+            /** Topic Id */
+            topic_id: string;
         };
         /** VerificationRequest */
         VerificationRequest: {
@@ -1618,6 +1900,100 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    analytics_api_v1_analytics_get: {
+        parameters: {
+            query: {
+                start: string;
+                end: string;
+                as_of?: string | null;
+                time_basis?: "published_at" | "first_seen_at";
+                source_id?: string | null;
+                topic_id?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SingleResponse_AnalyticsReport_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    discovery_api_v1_discovery_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string | null;
+                as_of?: string | null;
+                order?: "published_at" | "first_seen_at";
+                q?: string;
+                source_id?: string | null;
+                topic_id?: string | null;
+                start?: string | null;
+                end?: string | null;
+                time_basis?: "published_at" | "first_seen_at";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SnapshotCollectionResponse_DocumentDiscoveryItem_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
     documents_api_v1_documents_get: {
         parameters: {
             query?: {
@@ -2755,6 +3131,135 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SingleResponse_SystemInfo_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    topics_api_v1_topics_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string | null;
+                as_of?: string | null;
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SnapshotCollectionResponse_TopicSummary_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    topic_api_v1_topics__topic_id__get: {
+        parameters: {
+            query?: {
+                as_of?: string | null;
+            };
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SingleResponse_TopicSummary_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    topic_documents_api_v1_topics__topic_id__documents_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string | null;
+                as_of?: string | null;
+            };
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SnapshotCollectionResponse_TopicMembership_"];
                 };
             };
             /** @description Unprocessable Entity */

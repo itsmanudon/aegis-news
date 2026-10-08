@@ -38,8 +38,16 @@ export function RemoteImage({
   url?: string | null;
   alt: string;
 }) {
-  const [failed, setFailed] = useState(false);
   const src = safeExternalUrl(url);
+  // Provider metadata can refresh a failed URL without replacing its article.
+  // Scope the failure to this URL so a new reference can load normally.
+  return (
+    <RemoteImageReference key={src ?? "unavailable"} src={src} alt={alt} />
+  );
+}
+
+function RemoteImageReference({ src, alt }: { src?: string; alt: string }) {
+  const [failed, setFailed] = useState(false);
   return src && !failed ? (
     // Remote references are loaded by the browser, never copied to MinIO or proxied.
     // eslint-disable-next-line @next/next/no-img-element

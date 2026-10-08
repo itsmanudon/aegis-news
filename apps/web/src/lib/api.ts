@@ -13,6 +13,33 @@ import type {
   AuditList,
 } from "./models";
 import { documents, entities, sources, audit } from "./fixtures";
+import {
+  fixtureTopics,
+  fixtureTopicDocuments,
+  fixtureDiscovery,
+  fixtureAnalytics,
+} from "./intelligence-fixtures";
+
+function discoveryViews(
+  values: components["schemas"]["DocumentDiscoveryItem"][],
+  asOf: string,
+  nextCursor?: string | null,
+) {
+  return Object.assign(
+    values.map(({ document, source }): DocumentView => ({
+      document,
+      source,
+      analyses: [],
+      entities: [],
+      events: [],
+      media: [],
+      provenance: [],
+      integrity: "unverified",
+      intelligenceLoaded: false,
+    })),
+    { asOf, nextCursor: nextCursor ?? undefined },
+  );
+}
 
 export class ApiClientError extends Error {
   constructor(
@@ -91,6 +118,34 @@ function fixturePage<T>(records: T[], cursor?: string): BoundedList<T> {
 export function createMockAdapter(latency = 180): AnalystAdapter {
   const wait = (signal?: AbortSignal) => pause(latency, signal);
   return {
+    async topics(filters, signal) {
+      await wait(signal);
+      return fixtureTopics(filters);
+    },
+    async topic(id, cutoff, signal) {
+      await wait(signal);
+      return (
+        fixtureTopics({ cutoff }).data.find((value) => value.topic_id === id) ??
+        missing("Topic")
+      );
+    },
+    async topicDocuments(id, filters, signal) {
+      await wait(signal);
+      return fixtureTopicDocuments(id, filters);
+    },
+    async discovery(filters, signal) {
+      await wait(signal);
+      const result = fixtureDiscovery(filters);
+      return discoveryViews(
+        result.data,
+        result.as_of,
+        result.pagination.next_cursor,
+      );
+    },
+    async analytics(filters, signal) {
+      await wait(signal);
+      return fixtureAnalytics(filters);
+    },
     async system(signal) {
       await wait(signal);
       return {
@@ -258,6 +313,88 @@ export function createRealAdapter(
     return { ...result.data, integrity: "unverified" };
   }
   return {
+    async topics(filters, signal) {
+      signal?.throwIfAborted();
+      return unwrap(
+        await client.GET("/api/v1/topics", {
+          params: {
+            query: {
+              limit: 20,
+              cursor: filters.cursor,
+              as_of: filters.cutoff,
+              q: filters.query ?? "",
+            },
+          },
+          signal,
+        }),
+      );
+    },
+    async topic(id, cutoff, signal) {
+      signal?.throwIfAborted();
+      return unwrap(
+        await client.GET("/api/v1/topics/{topic_id}", {
+          params: { path: { topic_id: id }, query: { as_of: cutoff } },
+          signal,
+        }),
+      ).data;
+    },
+    async topicDocuments(id, filters, signal) {
+      signal?.throwIfAborted();
+      return unwrap(
+        await client.GET("/api/v1/topics/{topic_id}/documents", {
+          params: {
+            path: { topic_id: id },
+            query: { limit: 20, cursor: filters.cursor, as_of: filters.cutoff },
+          },
+          signal,
+        }),
+      );
+    },
+    async discovery(filters, signal) {
+      signal?.throwIfAborted();
+      const result = unwrap(
+        await client.GET("/api/v1/discovery", {
+          params: {
+            query: {
+              limit: 20,
+              cursor: filters.cursor,
+              as_of: filters.cutoff,
+              order: filters.order ?? "published_at",
+              q: filters.query ?? "",
+              source_id: filters.sourceId,
+              topic_id: filters.topicId,
+              start: filters.start,
+              end: filters.end,
+              time_basis: filters.timeBasis ?? "first_seen_at",
+            },
+          },
+          signal,
+        }),
+      );
+      return discoveryViews(
+        result.data,
+        result.as_of,
+        result.pagination.next_cursor,
+      );
+    },
+    async analytics(filters, signal) {
+      signal?.throwIfAborted();
+      return unwrap(
+        await client.GET("/api/v1/analytics", {
+          params: {
+            query: {
+              start: filters.start,
+              end: filters.end,
+              as_of: filters.cutoff,
+              time_basis: filters.timeBasis ?? "first_seen_at",
+              topic_id: filters.topicId,
+              source_id: filters.sourceId,
+            },
+          },
+          signal,
+        }),
+      ).data;
+    },
     async acquisition(id, signal) {
       return unwrap(
         await client.GET("/api/v1/documents/{document_id}/acquisition", {
@@ -274,10 +411,10 @@ export function createRealAdapter(
         }),
       );
     },
-    async videos(signal) {
+    async videos(signal, cursor) {
       return unwrap(
         await client.GET("/api/v1/youtube-references", {
-          params: { query: { limit: 10 } },
+          params: { query: { limit: 10, cursor } },
           signal,
         }),
       );

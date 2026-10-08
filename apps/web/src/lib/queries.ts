@@ -1,7 +1,52 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { useConsole } from "@/components/providers";
-import type { DocumentFilters } from "./models";
+import type {
+  DocumentFilters,
+  TopicFilters,
+  DiscoveryFilters,
+  AnalyticsFilters,
+} from "./models";
+export function useTopics(filters: TopicFilters = {}) {
+  const { adapter, mode } = useConsole();
+  return useQuery({
+    queryKey: [mode, "topics", filters],
+    queryFn: ({ signal }) => adapter.topics!(filters, signal),
+    enabled: !!adapter.topics,
+  });
+}
+export function useTopic(id: string, cutoff?: string) {
+  const { adapter, mode } = useConsole();
+  return useQuery({
+    queryKey: [mode, "topic", id, cutoff],
+    queryFn: ({ signal }) => adapter.topic!(id, cutoff, signal),
+    enabled: !!adapter.topic,
+  });
+}
+export function useTopicDocuments(id: string, filters: TopicFilters = {}) {
+  const { adapter, mode } = useConsole();
+  return useQuery({
+    queryKey: [mode, "topic-documents", id, filters],
+    queryFn: ({ signal }) => adapter.topicDocuments!(id, filters, signal),
+    enabled: !!adapter.topicDocuments,
+  });
+}
+export function useDiscovery(filters: DiscoveryFilters = {}) {
+  const { adapter, mode } = useConsole();
+  return useQuery({
+    queryKey: [mode, "discovery", filters],
+    queryFn: ({ signal }) => adapter.discovery!(filters, signal),
+    enabled: !!adapter.discovery,
+  });
+}
+export function useAnalytics(filters: AnalyticsFilters) {
+  const { adapter, mode } = useConsole();
+  return useQuery({
+    queryKey: [mode, "analytics", filters],
+    queryFn: ({ signal }) => adapter.analytics!(filters, signal),
+    enabled: !!adapter.analytics,
+  });
+}
 export function useDocuments(filters: DocumentFilters = {}) {
   const { adapter, mode } = useConsole();
   return useQuery({

@@ -10,7 +10,7 @@ const newsLinks = [
   ["/search", "Search"],
   ["/entities", "Entities"],
   ["/events", "Events / Timeline"],
-  ["/multimedia", "Multimedia"],
+  ["/multimedia", "Media Lab"],
   ["/provenance", "Verification"],
 ] as const;
 const operationsLinks = [

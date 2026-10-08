@@ -123,6 +123,145 @@
         "title": "AnalysisResult",
         "type": "object"
       },
+      "AnalyticsReport": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "classified_count": {
+            "minimum": 0.0,
+            "title": "Classified Count",
+            "type": "integer"
+          },
+          "coverage": {
+            "items": {
+              "$ref": "#/components/schemas/CoverageBucket"
+            },
+            "title": "Coverage",
+            "type": "array"
+          },
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Limitations",
+            "type": "array"
+          },
+          "models": {
+            "items": {
+              "$ref": "#/components/schemas/ModelDistribution"
+            },
+            "title": "Models",
+            "type": "array"
+          },
+          "models_other_count": {
+            "minimum": 0.0,
+            "title": "Models Other Count",
+            "type": "integer"
+          },
+          "no_assessment_count": {
+            "minimum": 0.0,
+            "title": "No Assessment Count",
+            "type": "integer"
+          },
+          "population_count": {
+            "minimum": 0.0,
+            "title": "Population Count",
+            "type": "integer"
+          },
+          "selection_policy": {
+            "title": "Selection Policy",
+            "type": "string"
+          },
+          "sentiment": {
+            "items": {
+              "$ref": "#/components/schemas/SentimentDistribution"
+            },
+            "title": "Sentiment",
+            "type": "array"
+          },
+          "source_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Id"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/SourceDistribution"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "sources_other_count": {
+            "minimum": 0.0,
+            "title": "Sources Other Count",
+            "type": "integer"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          },
+          "time_basis": {
+            "enum": [
+              "published_at",
+              "first_seen_at"
+            ],
+            "title": "Time Basis",
+            "type": "string"
+          },
+          "topic_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Topic Id"
+          },
+          "unknown_time_count": {
+            "minimum": 0.0,
+            "title": "Unknown Time Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "as_of",
+          "time_basis",
+          "population_count",
+          "classified_count",
+          "no_assessment_count",
+          "unknown_time_count",
+          "coverage",
+          "sources",
+          "sources_other_count",
+          "sentiment",
+          "models",
+          "models_other_count",
+          "selection_policy",
+          "limitations"
+        ],
+        "title": "AnalyticsReport",
+        "type": "object"
+      },
       "ApiErrorEnvelope": {
         "additionalProperties": false,
         "properties": {
@@ -513,6 +652,33 @@
         "title": "CollectionResponse[YouTubeReference]",
         "type": "object"
       },
+      "CoverageBucket": {
+        "additionalProperties": false,
+        "properties": {
+          "classified_count": {
+            "minimum": 0.0,
+            "title": "Classified Count",
+            "type": "integer"
+          },
+          "day": {
+            "format": "date",
+            "title": "Day",
+            "type": "string"
+          },
+          "document_count": {
+            "minimum": 0.0,
+            "title": "Document Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "day",
+          "document_count",
+          "classified_count"
+        ],
+        "title": "CoverageBucket",
+        "type": "object"
+      },
       "CursorPagination": {
         "additionalProperties": false,
         "properties": {
@@ -560,6 +726,23 @@
           "ready"
         ],
         "title": "DependencyStatus",
+        "type": "object"
+      },
+      "DocumentDiscoveryItem": {
+        "additionalProperties": false,
+        "properties": {
+          "document": {
+            "$ref": "#/components/schemas/NewsDocument"
+          },
+          "source": {
+            "$ref": "#/components/schemas/Source"
+          }
+        },
+        "required": [
+          "document",
+          "source"
+        ],
+        "title": "DocumentDiscoveryItem",
         "type": "object"
       },
       "DocumentIntelligence": {
@@ -1331,6 +1514,72 @@
         "title": "MediaInput",
         "type": "object"
       },
+      "ModelDistribution": {
+        "additionalProperties": false,
+        "properties": {
+          "document_count": {
+            "minimum": 0.0,
+            "title": "Document Count",
+            "type": "integer"
+          },
+          "model_name": {
+            "title": "Model Name",
+            "type": "string"
+          },
+          "model_version": {
+            "title": "Model Version",
+            "type": "string"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "model_name",
+          "model_version",
+          "document_count"
+        ],
+        "title": "ModelDistribution",
+        "type": "object"
+      },
+      "ModelIdentity": {
+        "additionalProperties": false,
+        "properties": {
+          "configuration_hash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Configuration Hash",
+            "type": "string"
+          },
+          "model_name": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Model Name",
+            "type": "string"
+          },
+          "model_version": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Model Version",
+            "type": "string"
+          },
+          "provider": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Provider",
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "model_name",
+          "model_version",
+          "configuration_hash"
+        ],
+        "title": "ModelIdentity",
+        "type": "object"
+      },
       "NewsDocument": {
         "additionalProperties": false,
         "properties": {
@@ -2012,6 +2261,32 @@
         "title": "ResponseMeta",
         "type": "object"
       },
+      "SentimentDistribution": {
+        "additionalProperties": false,
+        "properties": {
+          "document_count": {
+            "minimum": 0.0,
+            "title": "Document Count",
+            "type": "integer"
+          },
+          "label": {
+            "enum": [
+              "positive",
+              "neutral",
+              "negative",
+              "mixed"
+            ],
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "document_count"
+        ],
+        "title": "SentimentDistribution",
+        "type": "object"
+      },
       "SentimentResult": {
         "additionalProperties": false,
         "properties": {
@@ -2132,6 +2407,23 @@
           "model_name"
         ],
         "title": "SimilarDocument",
+        "type": "object"
+      },
+      "SingleResponse_AnalyticsReport_": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AnalyticsReport"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "SingleResponse[AnalyticsReport]",
         "type": "object"
       },
       "SingleResponse_DocumentIntelligence_": {
@@ -2321,6 +2613,23 @@
         "title": "SingleResponse[SystemInfo]",
         "type": "object"
       },
+      "SingleResponse_TopicSummary_": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/TopicSummary"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "SingleResponse[TopicSummary]",
+        "type": "object"
+      },
       "SingleResponse_VerificationResult_": {
         "additionalProperties": false,
         "properties": {
@@ -2441,6 +2750,99 @@
         "title": "SingleResponse[tuple[ProviderStatus, ...]]",
         "type": "object"
       },
+      "SnapshotCollectionResponse_DocumentDiscoveryItem_": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/DocumentDiscoveryItem"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/CursorPagination"
+          }
+        },
+        "required": [
+          "data",
+          "pagination",
+          "meta",
+          "as_of"
+        ],
+        "title": "SnapshotCollectionResponse[DocumentDiscoveryItem]",
+        "type": "object"
+      },
+      "SnapshotCollectionResponse_TopicMembership_": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/TopicMembership"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/CursorPagination"
+          }
+        },
+        "required": [
+          "data",
+          "pagination",
+          "meta",
+          "as_of"
+        ],
+        "title": "SnapshotCollectionResponse[TopicMembership]",
+        "type": "object"
+      },
+      "SnapshotCollectionResponse_TopicSummary_": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/TopicSummary"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/CursorPagination"
+          }
+        },
+        "required": [
+          "data",
+          "pagination",
+          "meta",
+          "as_of"
+        ],
+        "title": "SnapshotCollectionResponse[TopicSummary]",
+        "type": "object"
+      },
       "Source": {
         "additionalProperties": false,
         "properties": {
@@ -2541,6 +2943,31 @@
         "title": "SourceCreate",
         "type": "object"
       },
+      "SourceDistribution": {
+        "additionalProperties": false,
+        "properties": {
+          "document_count": {
+            "minimum": 0.0,
+            "title": "Document Count",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id",
+          "name",
+          "document_count"
+        ],
+        "title": "SourceDistribution",
+        "type": "object"
+      },
       "SystemInfo": {
         "additionalProperties": false,
         "properties": {
@@ -2571,6 +2998,46 @@
           "version"
         ],
         "title": "SystemInfo",
+        "type": "object"
+      },
+      "TopicMembership": {
+        "additionalProperties": false,
+        "properties": {
+          "analysis_id": {
+            "pattern": "^ana_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Analysis Id",
+            "type": "string"
+          },
+          "available_at": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          },
+          "confidence": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence",
+            "type": "number"
+          },
+          "document": {
+            "$ref": "#/components/schemas/NewsDocument"
+          },
+          "model": {
+            "$ref": "#/components/schemas/ModelIdentity"
+          },
+          "source": {
+            "$ref": "#/components/schemas/Source"
+          }
+        },
+        "required": [
+          "document",
+          "source",
+          "analysis_id",
+          "confidence",
+          "available_at",
+          "model"
+        ],
+        "title": "TopicMembership",
         "type": "object"
       },
       "TopicResult": {
@@ -2606,6 +3073,60 @@
           "confidence"
         ],
         "title": "TopicResult",
+        "type": "object"
+      },
+      "TopicSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "document_count": {
+            "minimum": 0.0,
+            "title": "Document Count",
+            "type": "integer"
+          },
+          "first_available_at": {
+            "format": "date-time",
+            "title": "First Available At",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "latest_available_at": {
+            "format": "date-time",
+            "title": "Latest Available At",
+            "type": "string"
+          },
+          "model": {
+            "$ref": "#/components/schemas/ModelIdentity"
+          },
+          "selection_policy": {
+            "title": "Selection Policy",
+            "type": "string"
+          },
+          "topic_id": {
+            "title": "Topic Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "topic_id",
+          "label",
+          "model",
+          "document_count",
+          "first_available_at",
+          "latest_available_at",
+          "as_of",
+          "selection_policy"
+        ],
+        "title": "TopicSummary",
         "type": "object"
       },
       "VerificationRequest": {
@@ -2753,6 +3274,340 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/analytics": {
+      "get": {
+        "operationId": "analytics_api_v1_analytics_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "start",
+            "required": true,
+            "schema": {
+              "format": "date-time",
+              "title": "Start",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "end",
+            "required": true,
+            "schema": {
+              "format": "date-time",
+              "title": "End",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "as_of",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "As Of"
+            }
+          },
+          {
+            "in": "query",
+            "name": "time_basis",
+            "required": false,
+            "schema": {
+              "default": "published_at",
+              "enum": [
+                "published_at",
+                "first_seen_at"
+              ],
+              "title": "Time Basis",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "source_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^src_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "topic_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 32777,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Topic Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleResponse_AnalyticsReport_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Analytics",
+        "tags": [
+          "intelligence"
+        ]
+      }
+    },
+    "/api/v1/discovery": {
+      "get": {
+        "operationId": "discovery_api_v1_discovery_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 25,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 32768,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "as_of",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "As Of"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "schema": {
+              "default": "published_at",
+              "enum": [
+                "published_at",
+                "first_seen_at"
+              ],
+              "title": "Order",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "default": "",
+              "maxLength": 200,
+              "title": "Q",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "source_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^src_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "topic_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 32777,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Topic Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start"
+            }
+          },
+          {
+            "in": "query",
+            "name": "end",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End"
+            }
+          },
+          {
+            "in": "query",
+            "name": "time_basis",
+            "required": false,
+            "schema": {
+              "default": "published_at",
+              "enum": [
+                "published_at",
+                "first_seen_at"
+              ],
+              "title": "Time Basis",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SnapshotCollectionResponse_DocumentDiscoveryItem_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Discovery",
+        "tags": [
+          "intelligence"
+        ]
+      }
+    },
     "/api/v1/documents": {
       "get": {
         "operationId": "documents_api_v1_documents_get",
@@ -4753,6 +5608,288 @@
         "summary": "System Info",
         "tags": [
           "system"
+        ]
+      }
+    },
+    "/api/v1/topics": {
+      "get": {
+        "operationId": "topics_api_v1_topics_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 25,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 32768,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "as_of",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "As Of"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "default": "",
+              "maxLength": 200,
+              "title": "Q",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SnapshotCollectionResponse_TopicSummary_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Topics",
+        "tags": [
+          "intelligence"
+        ]
+      }
+    },
+    "/api/v1/topics/{topic_id}": {
+      "get": {
+        "operationId": "topic_api_v1_topics__topic_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "title": "Topic Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "as_of",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "As Of"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleResponse_TopicSummary_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Topic",
+        "tags": [
+          "intelligence"
+        ]
+      }
+    },
+    "/api/v1/topics/{topic_id}/documents": {
+      "get": {
+        "operationId": "topic_documents_api_v1_topics__topic_id__documents_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "title": "Topic Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 25,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 32768,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "as_of",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "As Of"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SnapshotCollectionResponse_TopicMembership_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Topic Documents",
+        "tags": [
+          "intelligence"
         ]
       }
     },

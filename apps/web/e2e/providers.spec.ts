@@ -18,9 +18,9 @@ test("real provider articles, image references, video metadata and provenance", 
     page.getByRole("heading", { name: "Provider Articles", exact: true }),
   ).toBeVisible();
   await expect(page.locator(".external-card").first()).toBeVisible();
-  await page.getByRole("link", { name: "Multimedia", exact: true }).click();
+  await page.getByRole("link", { name: "Media Lab", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Multimedia news", exact: true }),
+    page.getByRole("heading", { name: "Media Lab", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Open on YouTube ↗" }).first(),

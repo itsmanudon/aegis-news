@@ -46,6 +46,18 @@ export type EntityList = BoundedList<Domain["Entity"]>;
 export type EventList = BoundedList<Domain["NewsEvent"]>;
 export type SourceList = BoundedList<Domain["Source"]>;
 export type AuditList = BoundedList<AuditEntry>;
+export type DiscoveryList = DocumentList & { asOf: string };
+export type TopicFilters = { cursor?: string; cutoff?: string; query?: string };
+export type AnalyticsFilters = {
+  start: string;
+  end: string;
+  cutoff?: string;
+  timeBasis?: "published_at" | "first_seen_at";
+  topicId?: string;
+  sourceId?: string;
+};
+export type DiscoveryFilters = TopicFilters &
+  Partial<AnalyticsFilters> & { order?: "published_at" | "first_seen_at" };
 export type AuditEntry = {
   id: string;
   at: string;
@@ -67,6 +79,32 @@ export interface IdentityPort {
   session(signal?: AbortSignal): Promise<Session>;
 }
 export interface AnalystAdapter {
+  topics?(
+    filters: TopicFilters,
+    signal?: AbortSignal,
+  ): Promise<
+    ApiComponents["schemas"]["SnapshotCollectionResponse_TopicSummary_"]
+  >;
+  topic?(
+    id: string,
+    cutoff?: string,
+    signal?: AbortSignal,
+  ): Promise<ApiComponents["schemas"]["TopicSummary"]>;
+  topicDocuments?(
+    id: string,
+    filters: TopicFilters,
+    signal?: AbortSignal,
+  ): Promise<
+    ApiComponents["schemas"]["SnapshotCollectionResponse_TopicMembership_"]
+  >;
+  discovery?(
+    filters: DiscoveryFilters,
+    signal?: AbortSignal,
+  ): Promise<DiscoveryList>;
+  analytics?(
+    filters: AnalyticsFilters,
+    signal?: AbortSignal,
+  ): Promise<ApiComponents["schemas"]["AnalyticsReport"]>;
   acquisition?(
     id: string,
     signal?: AbortSignal,
@@ -79,6 +117,7 @@ export interface AnalystAdapter {
   >;
   videos?(
     signal?: AbortSignal,
+    cursor?: string,
   ): Promise<ApiComponents["schemas"]["CollectionResponse_YouTubeReference_"]>;
   providers?(
     signal?: AbortSignal,

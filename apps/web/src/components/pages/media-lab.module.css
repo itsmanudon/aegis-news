@@ -1,0 +1,338 @@
+.page {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.page :global(.page-heading h1) {
+  font:
+    500 clamp(36px, 4vw, 54px)/1.12 var(--font-editorial),
+    Georgia,
+    serif;
+}
+.page :global(.page-heading .eyebrow) {
+  color: var(--teal);
+}
+.boundary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 16px 40px;
+  padding: 20px 0;
+  border-top: 1px solid var(--dividers);
+  border-bottom: 1px solid var(--dividers);
+  color: var(--supporting);
+  margin-bottom: 40px;
+}
+.boundary strong {
+  color: var(--teal);
+  font-size: 14px;
+  font-weight: 600;
+}
+.boundary p {
+  margin: 0;
+  max-width: 78ch;
+  font-size: 13px;
+}
+.section {
+  margin-top: 44px;
+  min-width: 0;
+}
+.sectionHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--ink);
+}
+.sectionHeading h2 {
+  margin: 0;
+  font:
+    500 30px/1.25 var(--font-editorial),
+    Georgia,
+    serif;
+}
+.sectionHeading > span,
+.count {
+  font-size: 12px;
+  color: var(--supporting);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.intro {
+  max-width: 86ch;
+  color: var(--supporting);
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 14px 0 24px;
+}
+.count {
+  margin: 20px 0;
+}
+.articleGrid,
+.videoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 36px 28px;
+  align-items: start;
+}
+.articleGrid > :first-child {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 24px;
+}
+.reference {
+  min-width: 0;
+  border-bottom: 1px solid var(--dividers);
+  padding-bottom: 24px;
+}
+.figure {
+  margin: 0 0 18px;
+}
+.figure :global(.external-image) {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: contain;
+  border-radius: var(--radius-panel);
+  background: var(--filter-region);
+}
+.figure :global(.image-fallback) {
+  display: grid;
+  place-items: center;
+  color: var(--supporting);
+  font-size: 13px;
+}
+.videoFigure :global(.external-image) {
+  aspect-ratio: 16 / 9;
+}
+.figure figcaption {
+  font-size: 12px;
+  color: var(--supporting);
+  margin: 8px 0 0;
+}
+.referenceBody h3 {
+  margin: 12px 0;
+  font:
+    500 26px/1.25 var(--font-editorial),
+    Georgia,
+    serif;
+}
+.articleGrid > :first-child h3 {
+  font-size: 32px;
+}
+.attribution {
+  margin: 0 0 18px;
+  font-size: 13px;
+  color: var(--supporting);
+}
+.times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 26px;
+  margin: 18px 0;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.times dt,
+.facts dt {
+  color: var(--supporting);
+}
+.times dd,
+.facts dd {
+  margin: 6px 0 0;
+  min-width: 0;
+}
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 24px;
+  margin: 18px 0;
+  font-size: 12px;
+}
+.facts code,
+.objectName {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  font-size: 13px;
+  margin: 20px 0;
+}
+.links > span {
+  color: var(--supporting);
+}
+.referenceBody > :global(details) {
+  margin-top: 20px;
+}
+.acquisition + .acquisition {
+  border-top: 1px solid var(--dividers);
+  padding-top: 16px;
+  margin-top: 20px;
+}
+.acquisition > p {
+  margin: 0;
+  font-size: 13px;
+}
+.note {
+  font-size: 12px;
+  color: var(--supporting);
+  line-height: 1.75;
+}
+.unavailable {
+  border-left: 3px solid var(--dividers);
+  padding: 6px 0 6px 20px;
+  margin: 24px 0 32px;
+}
+.unavailable h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.unavailable p {
+  font-size: 13px;
+  color: var(--supporting);
+  max-width: 80ch;
+  margin: 0;
+}
+.selector {
+  padding: 22px 24px;
+  margin: 24px 0;
+  border: 1px solid var(--dividers);
+  border-radius: var(--radius-panel);
+  background: var(--filter-region);
+}
+.storyControl {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  max-width: 760px;
+}
+.storyControl label {
+  font-size: 13px;
+  font-weight: 500;
+}
+.selector select {
+  width: 100%;
+  min-width: 0;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--dividers);
+  border-radius: var(--radius-control);
+  padding: 11px 14px;
+}
+.prompt {
+  color: var(--supporting);
+  padding: 16px 0;
+  font-size: 13px;
+}
+.storedRecords {
+  margin-top: 30px;
+  max-width: 960px;
+}
+.storyIdentity h3 {
+  margin: 12px 0;
+  font:
+    500 30px/1.25 var(--font-editorial),
+    Georgia,
+    serif;
+}
+.storyIdentity > p {
+  font-size: 13px;
+  color: var(--supporting);
+}
+.assets {
+  margin: 26px 0;
+}
+.asset {
+  padding: 24px 0;
+  border-top: 1px solid var(--dividers);
+}
+.assetHeading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+}
+.assetHeading > span:last-child {
+  font-size: 12px;
+  color: var(--supporting);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.objectName {
+  font-family: var(--font-technical);
+  font-size: 16px;
+  font-weight: 500;
+  margin: 18px 0;
+}
+.provenance {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.provenance li {
+  border-top: 1px solid var(--dividers);
+  padding-top: 16px;
+  margin-top: 20px;
+}
+.provenance p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+}
+@media (max-width: 1100px) {
+  .articleGrid,
+  .videoGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 24px;
+  }
+  .articleGrid > :first-child {
+    grid-column: auto;
+    display: block;
+  }
+  .articleGrid > :first-child h3 {
+    font-size: 26px;
+  }
+}
+@media (max-width: 700px) {
+  .boundary,
+  .articleGrid,
+  .videoGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .boundary {
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+  .sectionHeading h2 {
+    font-size: 28px;
+  }
+  .section {
+    margin-top: 34px;
+  }
+  .facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .selector {
+    padding: 18px;
+  }
+}
+@media (max-width: 350px) {
+  .page :global(.page-heading h1) {
+    font-size: 32px;
+  }
+  .sectionHeading h2,
+  .storyIdentity h3 {
+    font-size: 26px;
+  }
+  .selector {
+    padding: 16px;
+  }
+}
