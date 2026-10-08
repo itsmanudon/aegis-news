@@ -39,17 +39,17 @@ test("historical corpus: real search, document intelligence, provenance and prod
   await expect(
     page.getByRole("heading", { name: "Model-Generated Intelligence" }),
   ).toBeVisible();
-  await expect(page.getByText("keyword-topics / 1")).toBeVisible();
+  await expect(page.locator(".analysis-record > p").filter({ hasText: "keyword-topics / 1" }).first()).toBeVisible();
   await page.getByRole("button", { name: "Verify Integrity" }).click();
   await expect(page.locator(".verification-result")).toContainText("Verified");
   await page.getByRole("link", { name: "Entities", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Entity Register", exact: true }),
+    page.getByRole("heading", { name: "Entity Directory", exact: true }),
   ).toBeVisible();
   await page
     .getByRole("link", { name: "Events / Timeline", exact: true })
     .click();
-  await expect(page.locator(".timeline > li").first()).toBeVisible();
+  await expect(page.locator(".event-record").first()).toBeVisible();
   await page.getByRole("link", { name: "Documents", exact: true }).click();
   await page
     .getByLabel("Filter Documents")

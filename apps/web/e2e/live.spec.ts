@@ -43,7 +43,7 @@ test("live MVP: authenticated feed, intelligence, verification, entities, events
   await page
     .getByRole("link", { name: "Events / Timeline", exact: true })
     .click();
-  await expect(page.locator(".timeline > li").first()).toBeVisible();
+  await expect(page.locator(".event-record").first()).toBeVisible();
   await page.getByRole("link", { name: "Search", exact: true }).click();
   await page.getByLabel("Search Terms").fill("Atlas");
   await expect(

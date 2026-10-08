@@ -1,0 +1,219 @@
+.page {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.page :global(.page-heading h1) {
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: clamp(34px, 4vw, 54px);
+  font-weight: 500;
+  line-height: 1.12;
+  max-width: 26ch;
+}
+.page :global(.page-heading .eyebrow) {
+  color: var(--teal);
+}
+.caption {
+  font-size: 13px;
+  color: var(--supporting);
+  line-height: 1.8;
+  max-width: 82ch;
+  margin: 0 0 24px;
+}
+.count {
+  font-size: 12px;
+  color: var(--supporting);
+  font-variant-numeric: tabular-nums lining-nums;
+  margin: 28px 0 16px;
+}
+.directory {
+  border-bottom: 1px solid var(--dividers);
+}
+.entity {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 28px 48px;
+  padding: 32px 0;
+  border-top: 1px solid var(--dividers);
+}
+.entity h2 {
+  margin: 12px 0 18px;
+  font:
+    500 34px/1.2 var(--font-editorial),
+    Georgia,
+    serif;
+}
+.entity h2 a {
+  color: var(--ink);
+}
+.entity h2 a:hover {
+  color: var(--teal);
+}
+.entityMain > a {
+  font-size: 13px;
+}
+.entityMeta {
+  min-width: 0;
+}
+.entityMeta :global(.evidence-times) {
+  margin-top: 0;
+}
+.entityMeta :global(details) {
+  margin-top: 20px;
+}
+.identitySummary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-size: 13px;
+  color: var(--supporting);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.identitySummary > span:last-child {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.identityDisclosure {
+  max-width: 560px;
+  margin: 28px 0 40px;
+}
+.linked {
+  margin-top: 40px;
+}
+.sectionHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-top: 28px;
+  border-top: 1px solid var(--ink);
+  margin-bottom: 14px;
+}
+.sectionHeading h2 {
+  font:
+    500 30px/1.25 var(--font-editorial),
+    Georgia,
+    serif;
+  margin: 0;
+}
+.sectionHeading > span {
+  color: var(--supporting);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.timeline {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0 0 0 24px;
+  border-left: 1px solid var(--dividers);
+}
+.event {
+  position: relative;
+  padding: 0 0 32px 16px;
+  margin: 0 0 32px;
+  border-bottom: 1px solid var(--dividers);
+  min-width: 0;
+}
+.event::before {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  background: var(--paper);
+  border: 2px solid var(--teal);
+  border-radius: 50%;
+  left: -30px;
+  top: 5px;
+}
+.event h2 {
+  font:
+    500 30px/1.25 var(--font-editorial),
+    Georgia,
+    serif;
+  margin: 14px 0 20px;
+  max-width: 40ch;
+}
+.eventTop {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.eventTop > span:last-child {
+  font-size: 12px;
+  color: var(--supporting);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.eventTimes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 40px;
+  margin: 0 0 24px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.eventTimes dt {
+  color: var(--supporting);
+  margin-bottom: 8px;
+}
+.eventTimes dd {
+  margin: 0;
+}
+.eventLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  font-size: 13px;
+}
+.event > :global(details) {
+  max-width: 760px;
+}
+.filters {
+  margin: 24px 0;
+}
+@media (max-width: 700px) {
+  .entity {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+    padding: 26px 0;
+  }
+  .entity h2 {
+    font-size: 30px;
+  }
+  .identitySummary {
+    align-items: flex-start;
+  }
+  .identitySummary > span:last-child {
+    align-items: flex-start;
+  }
+  .timeline {
+    padding-left: 14px;
+  }
+  .event {
+    padding-left: 10px;
+  }
+  .event::before {
+    left: -20px;
+  }
+  .event h2 {
+    font-size: 27px;
+  }
+  .eventTimes {
+    gap: 20px 26px;
+  }
+  .filters label {
+    min-width: 0;
+    width: 100%;
+  }
+}
+@media (max-width: 350px) {
+  .page :global(.page-heading h1) {
+    font-size: 32px;
+  }
+  .event h2,
+  .entity h2 {
+    font-size: 26px;
+  }
+}

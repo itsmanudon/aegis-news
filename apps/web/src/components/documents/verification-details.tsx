@@ -1,8 +1,22 @@
 import type { Verification } from "@/lib/models";
 import { Timestamp } from "./time-rail";
-export function VerificationDetails({ value }: { value: Verification }) {
+export function VerificationDetails({
+  value,
+  workspace = false,
+}: {
+  value: Verification;
+  workspace?: boolean;
+}) {
   const label = (result?: boolean) =>
-    result === undefined ? "Not Reported" : result ? "Passed" : "Not Valid";
+    result === undefined
+      ? workspace
+        ? "Unavailable (Not Reported)"
+        : "Not Reported"
+      : result
+        ? "Passed"
+        : workspace
+          ? "Failed"
+          : "Not Valid";
   return (
     <>
       <dl className="verification-checks">
@@ -11,14 +25,18 @@ export function VerificationDetails({ value }: { value: Verification }) {
           <dd>{label(value.contentVerified)}</dd>
         </div>
         <div>
-          <dt>Chain Validity</dt>
+          <dt>{workspace ? "Provenance Chain" : "Chain Validity"}</dt>
           <dd>{label(value.chainValid)}</dd>
         </div>
         <div>
           <dt>Digital Signature</dt>
           <dd>
             {value.signatureValid === undefined
-              ? value.signature
+              ? workspace
+                ? value.simulated
+                  ? `Simulated ${value.signature === "valid" ? "Valid" : value.signature === "invalid" ? "Invalid" : "Unsigned"}`
+                  : "Unavailable (Not Reported)"
+                : value.signature
               : label(value.signatureValid)}
           </dd>
         </div>

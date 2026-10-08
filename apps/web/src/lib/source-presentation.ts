@@ -54,3 +54,12 @@ export function extractionSpan(
   const span = characters.slice(start, end).join("");
   return span === surface ? span : undefined;
 }
+export function entityTypeLabel(kind?: string | null) {
+  const names: Record<string, string> = {
+    organization: "Organization",
+    person: "Person",
+    location: "Location",
+    other: "Other",
+  };
+  return kind ? (names[kind] ?? kind) : "Unknown";
+}

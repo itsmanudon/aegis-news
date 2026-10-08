@@ -2,7 +2,11 @@ import type { Domain } from "@/lib/models";
 import { Badge, Empty, Panel } from "../ui/console";
 import { Timestamp } from "./time-rail";
 import { EvidenceDisclosure } from "../ui/evidence-disclosure";
-import { extractionSpan, assessmentLabel } from "@/lib/source-presentation";
+import {
+  extractionSpan,
+  assessmentLabel,
+  entityTypeLabel,
+} from "@/lib/source-presentation";
 import styles from "./analysis-panel.module.css";
 export function AnalysisPanel({
   analyses,
@@ -42,6 +46,17 @@ export function AnalysisPanel({
                   <span>Confidence {Math.round(o.confidence * 100)}%</span>
                 )}
                 {"score" in o && <span>Score {o.score}</span>}
+                {o.result_type === "entity_extraction" && (
+                  <span>
+                    Predicted Entity Type: {entityTypeLabel(o.predicted_kind)}
+                  </span>
+                )}
+                {o.result_type === "event_extraction" && (
+                  <div className={styles.extraction}>
+                    <span>Model-Reported Occurrence</span>
+                    <Timestamp value={o.occurred_at} />
+                  </div>
+                )}
                 {"values" in o && (
                   <span>
                     {o.values.length} vector values. No topic meaning is

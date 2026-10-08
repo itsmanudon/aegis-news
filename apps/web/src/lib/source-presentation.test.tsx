@@ -10,6 +10,70 @@ import { VerificationDetails } from "../components/documents/verification-detail
 import { AnalysisPanel } from "../components/documents/analysis-panel";
 
 describe("source-first presentation", () => {
+  it("does not infer unsigned or simulated real verification from missing subchecks", () => {
+    const html = renderToStaticMarkup(
+      <VerificationDetails
+        workspace
+        value={{
+          result: "failed",
+          signature: "unsigned",
+          simulated: false,
+          reason: "Missing fields",
+          responseReceivedAt: "2026-10-03T08:00:00Z",
+        }}
+      />,
+    );
+    expect(html).toContain("Provenance Chain");
+    expect(html).not.toContain("Simulated Unsigned");
+    expect(html).not.toContain("<dd>unsigned</dd>");
+    expect(html.match(/Unavailable \(Not Reported\)/g)).toHaveLength(3);
+  });
+  it("presents actual predicted kinds and extraction occurrence times without inventing missing values", () => {
+    const html = renderToStaticMarkup(
+      <AnalysisPanel
+        analyses={[
+          {
+            ...documents[0].analyses[0],
+            outputs: [
+              {
+                result_type: "entity_extraction",
+                schema_version: "1",
+                surface: "Port",
+                start_offset: 0,
+                end_offset: 4,
+                confidence: 0,
+                predicted_kind: "location",
+              },
+              {
+                result_type: "event_extraction",
+                schema_version: "1",
+                document_id: documents[0].document.document_id,
+                proposed_event_type: "disruption",
+                evidence_text: "Port disruption reported",
+                confidence: 0.5,
+                occurred_at: "2026-10-03T08:00:00Z",
+              },
+              {
+                result_type: "event_extraction",
+                schema_version: "1",
+                document_id: documents[0].document.document_id,
+                proposed_event_type: "outage",
+                evidence_text: "Unknown time",
+                confidence: 0,
+                occurred_at: null,
+              },
+            ],
+          },
+        ]}
+        sourceText="Port"
+      />,
+    );
+    expect(html).toContain("Predicted Entity Type");
+    expect(html).toContain("Location");
+    expect(html).toContain("Model-Reported Occurrence");
+    expect(html).toContain('dateTime="2026-10-03T08:00:00.000Z"');
+    expect(html).toContain("Unknown");
+  });
   it("never upgrades unknown capture extent to a complete publisher article", () => {
     expect(contentExtent(documents[0])).toBe(
       "Captured Text · Extent Unconfirmed",

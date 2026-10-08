@@ -3,6 +3,36 @@ import { createMockAdapter, createRealAdapter } from "./api";
 import { documents, entities } from "./fixtures";
 
 describe("bounded intelligence browsing", () => {
+  it("cancels a bounded event read without losing the authorization boundary", async () => {
+    const controller = new AbortController();
+    const transport = vi.fn(
+      (input: RequestInfo | URL) =>
+        new Promise<Response>((_resolve, reject) => {
+          const request = input as Request;
+          expect(request.headers.get("Authorization")).toBe(
+            "Bearer synthetic-cancel-page",
+          );
+          if (request.signal.aborted) reject(request.signal.reason);
+          else
+            request.signal.addEventListener(
+              "abort",
+              () => reject(request.signal.reason),
+              { once: true },
+            );
+        }),
+    );
+    const pending = createRealAdapter(
+      "https://api.example.test",
+      transport,
+      "synthetic-cancel-page",
+    ).events(controller.signal, "opaque+/==");
+    const assertion = expect(pending).rejects.toMatchObject({
+      name: "AbortError",
+    });
+    controller.abort();
+    await assertion;
+    expect(transport).toHaveBeenCalledOnce();
+  });
   for (const subject of ["entities", "events"] as const) {
     it(`reads one ${subject} page and preserves opaque cursors and authorization`, async () => {
       const calls: Request[] = [];

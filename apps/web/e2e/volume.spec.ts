@@ -35,12 +35,12 @@ test("real corpus: unfiltered dashboard and paginated register use bounded reque
   await expect(page.locator("tbody tr").first()).not.toHaveText(title);
   await page.getByRole("link", { name: "Entities", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Entity Register", exact: true }),
+    page.getByRole("heading", { name: "Entity Directory", exact: true }),
   ).toBeVisible();
   await page
     .getByRole("link", { name: "Events / Timeline", exact: true })
     .click();
-  await expect(page.locator(".timeline > li").first()).toBeVisible();
+  await expect(page.locator(".event-record").first()).toBeVisible();
   expect(intelligence).toHaveLength(0);
   expect(statuses).not.toContain(429);
   expect(statuses.length).toBeLessThan(30);

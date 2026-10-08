@@ -17,7 +17,7 @@
 .output {
   background: var(--filter-region) !important;
   border-left-color: var(--teal) !important;
-  border-radius: var(--radius-small);
+  border-radius: var(--radius-panel);
   color: var(--ink);
   font-variant-numeric: tabular-nums lining-nums;
 }

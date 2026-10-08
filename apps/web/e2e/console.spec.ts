@@ -97,7 +97,7 @@ test("timeline evidence filtering and security source shells", async ({
 }) => {
   await page.goto("/events");
   await page.getByLabel("Evidence Kind").selectOption("model_output");
-  await expect(page.locator(".timeline > li")).toHaveCount(1);
+  await expect(page.locator(".event-record")).toHaveCount(1);
   await expect(page.getByText("Model Output", { exact: true })).toBeVisible();
   await page
     .getByRole("link", { name: "Operations & Security", exact: true })
@@ -223,14 +223,15 @@ test("network failure and missing document have recoverable states", async ({
 });
 test("provenance view shows operation evidence", async ({ page }) => {
   await page.goto("/provenance");
+  await page.getByLabel("Select Document", { exact: true }).selectOption(doc);
   await page
     .locator("summary")
     .filter({ hasText: "Provenance Operations" })
     .first()
     .click();
   await expect(
-    page.getByRole("heading", { name: "Provenance / Integrity", exact: true }),
-  ).toHaveCount(7);
+    page.getByRole("heading", { name: "Verification Inspector", exact: true }),
+  ).toHaveCount(1);
   await page
     .locator("summary")
     .filter({ hasText: "Operation Evidence" })

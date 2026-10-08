@@ -92,22 +92,29 @@ export function Dashboard() {
         </Panel>
         <Panel
           title="Intelligence Timeline"
-          action={<Link href="/events">All Events</Link>}
+          action={<Link href="/events">Browse Events</Link>}
         >
           <QueryState
             pending={events.isPending}
             error={events.error}
             retry={events.refetch}
           >
+            <p className="muted">
+              A sample from the loaded event page; not a global recency ranking.
+            </p>
             <ol className="timeline compact">
               {events.data?.slice(0, 3).map((e) => (
-                <li key={e.event_id}>
+                <li key={`${e.event_id}:${e.revision}`}>
                   <small>
                     Available <Timestamp value={e.available_at} />
                   </small>
-                  <Link href={`/documents/${e.document_ids[0]}`}>
-                    {e.summary}
-                  </Link>
+                  {e.document_ids[0] ? (
+                    <Link href={`/documents/${e.document_ids[0]}`}>
+                      {e.summary}
+                    </Link>
+                  ) : (
+                    <p>{e.summary}</p>
+                  )}
                   <Badge tone={e.evidence_kind === "fact" ? "fact" : "model"}>
                     {e.evidence_kind === "fact"
                       ? "Source Fact"

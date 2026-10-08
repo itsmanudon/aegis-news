@@ -1,0 +1,16 @@
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 0;
+  border-top: 1px solid var(--dividers);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.pager p {
+  flex: 1 1 240px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--supporting);
+}

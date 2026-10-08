@@ -1,5 +1,5 @@
 import { EntityDetail } from "@/components/pages/entities";
-export const metadata = { title: "Entity detail" };
+export const metadata = { title: "Entity Detail" };
 export default async function Page({
   params,
 }: {
