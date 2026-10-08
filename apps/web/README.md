@@ -40,11 +40,16 @@ Real mode supports documents/intelligence, entities, events, title/text search, 
 - Operations (`/operations`): loaded-page evidence counts, integrity review queue,
   timeline and document register. Unchecked and failed records both await review;
   they are not counted as confirmed integrity failures.
-- Documents: title/text/source/entity search, source and integrity filters, UTC knowledge cutoff.
-- Document detail: attributed body, four-stage timestamps, models/confidence/version, entities, events, media metadata, provenance operations and simulated verification.
+- Documents/Search: source-first editorial rows, literal excerpts, loaded-page
+  counts, shareable filters and opaque cursor pagination. Desktop offers an
+  explicit Evidence Table; mobile always uses readable editorial rows. Expanded
+  rows reveal already loaded evidence without intelligence requests.
+- Story Detail: attributed captured text, publisher link and content extent,
+  four-stage timestamps, separate model assessments, linked evidence and a
+  compact desktop evidence rail. Detailed mobile evidence follows the reading
+  content. Acquisition failures do not hide the primary source report.
 - Entities: canonical register, entity detail and associated documents.
 - Events: source/model filter; order by occurrence or intelligence availability.
-- Search: fixture full-text discovery with shared evidence filters.
 - Provenance: hashes, operation input/subject IDs, signed/unsigned/failed example outcomes.
 - Audit/security: simulated identity and role context, audit outcome filtering.
 - Sources/admin: read-only registry and explicit administration integration boundary.
@@ -75,10 +80,29 @@ and session presentation types compose the current backend responses.
 `openapi-fetch` uses generated path types for the registered product, identity,
 audit, verification and provider endpoints. Document feeds use one bounded
 20-record page without eager per-row intelligence. Full intelligence and
-acquisition evidence load on document detail. Real search uses literal
+acquisition evidence load through independent queries on document detail; optional
+acquisition keeps the same authenticated transport, deadline and cancellation.
+Real search uses literal
 title/text matching; fixture search additionally matches fictional source/entity
 names. Feed-wide verified/failed filtering remains explicitly unavailable in real
 mode. Real mode never falls back to fixture success.
+
+`EvidenceDisclosure` uses native details/summary semantics, a labelled region and
+Escape-to-close with focus restoration. The optional expanded register uses valid
+table rows with a spanning cell and explicit `aria-expanded` buttons. Technical
+IDs/hashes stay inside disclosures; source text and model output are distinct.
+Filter values (`q`, `source`, `integrity`, `cutoff`), `cursor` and desktop `view`
+are restored from the URL. Filter changes clear the cursor; pagination preserves
+opaque values. Identity and tokens are never serialized into URLs.
+Changing Data Mode clears an adapter-specific cursor while retaining filters;
+the existing identity/query-client remount remains intact.
+
+The frontend verification composition retains `contentVerified`, `chainValid`
+and `signatureValid` from the existing backend response. Only an explicit check
+sets them. `responseReceivedAt` is browser receipt time, not server-attested time.
+Mock outcomes are simulated and absent subchecks remain unreported. See the
+[Phase 1B handoff](../../docs/frontend-phase1b.md) for decisions, the complete file
+manifest, screenshots and validation evidence.
 
 The fixture cutoff is a development demonstration: documents use `first_seen_at`, assessments/events use `available_at`, and entity associations are withheld until document intelligence is available. Publication time may be unknown. Detail pages intentionally open the complete current record and the feed tells analysts this. Production historical guarantees require backend cutoff-bound pagination and association availability; this branch does not claim backtesting support.
 
@@ -96,7 +120,7 @@ pnpm web:test:e2e
 
 Unit/component tests exercise combined filtering, empty records, knowledge cutoffs, missing IDs, verification outcomes, real-mode isolation, error request IDs, cancellation/deadlines, timestamp normalization and model labels. Playwright exercises major mocked flows, source/security shells, mobile keyboard navigation, unavailable capabilities and connection failures. It intercepts the system endpoint in real-mode tests; no backend branches are needed. CI runs the unit/drift checks through `make check-web`, then installs Chromium and runs Playwright.
 
-For systems with a preinstalled compatible Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to its executable path. If Windows process cleanup prevents the Playwright-managed Next server from exiting, start a mock Next server on port 3104 yourself and set `AEGIS_E2E_EXTERNAL_SERVER=1` for the test process. The standard Linux/CI command manages its own server. Screenshots/traces go to ignored `test-results`.
+For systems with a preinstalled compatible Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to its executable path. If Windows process cleanup prevents the Playwright-managed Next server from exiting, start a mock Next server on port 3104 yourself and set `AEGIS_E2E_EXTERNAL_SERVER=1` for the test process. The standard Linux/CI command manages its own server. Screenshots/traces go to ignored `test-results`. Optionally set `AEGIS_SCREENSHOT_DIR` to an existing local directory for the reproducible Phase 1B visual-review captures; no golden baselines are updated.
 
 The existing Python stack smoke test checks server-rendered Discover and Operations labels while retaining independent API liveness/readiness checks. That live-stack test still requires its original Compose services; it is separate from the mocked browser suite.
 
@@ -107,8 +131,9 @@ The existing Python stack smoke test checks server-rendered Discover and Operati
    contracts. Preserve envelope/request ID/cursor semantics when extending them.
 2. Agent 3: supply OIDC session state and server authorization through `IdentityPort`; choose credentials/CSRF behavior from that contract. Current real transport explicitly omits credentials.
 3. Real verification and provenance operations use current contracts. Mock
-   outcomes remain visibly simulated. More complete verification presentation and
-   server-attested check timestamps belong to later frontend/contract work.
+   outcomes remain visibly simulated. Separate content, chain and signature
+   results are displayed; a server-attested check timestamp would require an
+   approved contract extension.
 4. API origin must allow the actual web origin via existing CORS configuration. Only `NEXT_PUBLIC_*` configuration reaches the browser.
 5. Source creation, ingestion and manual provider acquisition already exist with
    scoped server authorization. Source editing, users/roles/policies, production
