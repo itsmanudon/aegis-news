@@ -48,9 +48,15 @@ Real mode supports documents/intelligence, entities, events, title/text search, 
   four-stage timestamps, separate model assessments, linked evidence and a
   compact desktop evidence rail. Detailed mobile evidence follows the reading
   content. Acquisition failures do not hide the primary source report.
-- Entities: canonical register, entity detail and associated documents.
-- Events: source/model filter; order by occurrence or intelligence availability.
-- Provenance: hashes, operation input/subject IDs, signed/unsigned/failed example outcomes.
+- Entities: editorial canonical directory and research detail, technical identity
+  disclosures and paginated source evidence. Expansion uses already loaded data.
+- Events: bounded revision pages, distinct source/model categories, occurrence and
+  availability timestamps, supporting links and analysis-reference disclosures.
+  Sorting/filtering applies to the loaded page, not global chronology.
+- Verification (`/provenance`): a paginated document selector and one focused
+  inspector. Select a document, inspect operations, run an explicit authorized
+  check and review separate content, chain and signature outcomes. Mock results
+  remain simulated; indeterminate outcomes are Unavailable rather than Failed.
 - Audit/security: simulated identity and role context, audit outcome filtering.
 - Sources/admin: read-only registry and explicit administration integration boundary.
 
@@ -104,6 +110,17 @@ Mock outcomes are simulated and absent subchecks remain unreported. See the
 [Phase 1B handoff](../../docs/frontend-phase1b.md) for decisions, the complete file
 manifest, screenshots and validation evidence.
 
+Entity and event adapter methods now return one 20-record page with an optional
+opaque `nextCursor`. Their optional cursor argument follows the existing signal
+argument, preserving existing callers. `useEntities`/`useEvents` scope query keys
+by mode and cursor. Associated-document paging uses the existing entity filter
+and bounded document contract. Operations shows a sample of the loaded event
+page with revision-safe keys. Source-registry pagination remains unchanged.
+The verification inspector mounts a document query only after selection; changing
+selection or its selector page destroys old mutation state and cancels requests.
+Mode/identity remounts retain the shared cache boundary. No verification is run
+automatically. See the [Phase 1C handoff](../../docs/frontend-phase1c.md).
+
 The fixture cutoff is a development demonstration: documents use `first_seen_at`, assessments/events use `available_at`, and entity associations are withheld until document intelligence is available. Publication time may be unknown. Detail pages intentionally open the complete current record and the feed tells analysts this. Production historical guarantees require backend cutoff-bound pagination and association availability; this branch does not claim backtesting support.
 
 ## Verification
@@ -120,7 +137,7 @@ pnpm web:test:e2e
 
 Unit/component tests exercise combined filtering, empty records, knowledge cutoffs, missing IDs, verification outcomes, real-mode isolation, error request IDs, cancellation/deadlines, timestamp normalization and model labels. Playwright exercises major mocked flows, source/security shells, mobile keyboard navigation, unavailable capabilities and connection failures. It intercepts the system endpoint in real-mode tests; no backend branches are needed. CI runs the unit/drift checks through `make check-web`, then installs Chromium and runs Playwright.
 
-For systems with a preinstalled compatible Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to its executable path. If Windows process cleanup prevents the Playwright-managed Next server from exiting, start a mock Next server on port 3104 yourself and set `AEGIS_E2E_EXTERNAL_SERVER=1` for the test process. The standard Linux/CI command manages its own server. Screenshots/traces go to ignored `test-results`. Optionally set `AEGIS_SCREENSHOT_DIR` to an existing local directory for the reproducible Phase 1B visual-review captures; no golden baselines are updated.
+For systems with a preinstalled compatible Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to its executable path. If Windows process cleanup prevents the Playwright-managed Next server from exiting, start a mock Next server on port 3104 yourself and set `AEGIS_E2E_EXTERNAL_SERVER=1` for the test process. The standard Linux/CI command manages its own server. Screenshots/traces go to ignored `test-results`. Optionally set `AEGIS_SCREENSHOT_DIR` to an existing local directory for the reproducible Phase 1B and Phase 1C visual-review captures; no golden baselines are updated.
 
 The existing Python stack smoke test checks server-rendered Discover and Operations labels while retaining independent API liveness/readiness checks. That live-stack test still requires its original Compose services; it is separate from the mocked browser suite.
 
@@ -138,5 +155,6 @@ The existing Python stack smoke test checks server-rendered Discover and Operati
 5. Source creation, ingestion and manual provider acquisition already exist with
    scoped server authorization. Source editing, users/roles/policies, production
    login flows, authorized media previews/downloads and durable audit export remain
-   deferred. Cursor APIs exist; audit/entity/event UI pagination needs further work.
+   deferred. Entity/event UI cursor browsing is implemented; audit UI pagination
+   remains deferred.
 6. No backend ingestion, inference, cryptography, OAuth server, trading, backtesting, Kafka or deployment is implemented.

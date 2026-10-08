@@ -82,3 +82,36 @@ Changes to filters clear pagination. Counts describe the loaded page; no global
 recency, importance, corpus total or backward cursor is inferred.
 Changing Data Mode also clears pagination: an opaque cursor belongs to the
 adapter that issued it, while filter values remain shareable.
+
+## Entity Research, Events and Verification
+
+Entity Directory emphasizes canonical name and recorded type. Keep creation
+metadata aligned and put technical IDs/schema versions in native disclosures.
+Do not infer biographies, aliases, relationships or global linked-record counts.
+Entity Detail presents paginated associated source evidence using the editorial
+rows. Expansion reveals loaded evidence; extra intelligence stays on Story
+Detail rather than being requested per row.
+
+Events display source statements and model outputs with separate Occurred and
+Intelligence Available metadata. Unknown occurrence times remain Unknown. Key
+every revision by event ID plus revision. Only sort/filter the loaded page when
+the cursor API orders records by identity/revision. Show revision-safe supporting
+links and available analysis references without generating an event taxonomy.
+Distinguish multiple document destinations with ordinal labels and actual
+reference identification; do not fetch titles for every event link.
+
+Verification uses one selected document and one evidence inspector. The selector
+precedes the inspector in DOM order and stacks above it on mobile. No check runs
+until the explicit action. Distinguish Not Checked, Checking, Passed, Failed,
+Unavailable and Simulated Mock Result. An unverified/indeterminate mock result
+is Unavailable, never an invented failure. Missing real subchecks remain
+unreported; do not infer unsigned evidence from an error or missing records.
+Preserve the supported Content Integrity, Provenance Chain and Digital Signature
+outcomes, operations/hashes/input/subject references and browser receipt label.
+Selection, selector pagination, identity and mode changes clear mutation state
+and cancel old requests. No new cryptography or server authorization is added.
+
+Use 12px compact model-output strips consistently with other inner evidence
+surfaces. Preserve actual entity-extraction predicted type and event-extraction
+occurrence values, including Unknown when absent. These remain model reports,
+not established classifications or facts.
