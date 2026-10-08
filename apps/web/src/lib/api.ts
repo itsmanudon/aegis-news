@@ -150,7 +150,7 @@ export function createMockAdapter(latency = 180): AnalystAdapter {
             : result === "failed"
               ? "invalid"
               : "unsigned",
-        checkedAt: new Date().toISOString(),
+        responseReceivedAt: new Date().toISOString(),
         simulated: true,
         reason:
           result === "verified"
@@ -236,15 +236,17 @@ export function createRealAdapter(
         signal,
       }),
     );
-    const acquisition = unwrap(
-      await client.GET("/api/v1/documents/{document_id}/acquisition", {
-        params: { path: { document_id: id } },
-        signal,
-      }),
-    ).data;
-    return { ...result.data, acquisition, integrity: "unverified" };
+    return { ...result.data, integrity: "unverified" };
   }
   return {
+    async acquisition(id, signal) {
+      return unwrap(
+        await client.GET("/api/v1/documents/{document_id}/acquisition", {
+          params: { path: { document_id: id } },
+          signal,
+        }),
+      ).data;
+    },
     async providerArticles(cursor, signal) {
       return unwrap(
         await client.GET("/api/v1/provider-articles", {
@@ -420,7 +422,10 @@ export function createRealAdapter(
       return {
         result: value.valid ? "verified" : "failed",
         signature: value.signature_valid ? "valid" : "invalid",
-        checkedAt: new Date().toISOString(),
+        contentVerified: value.content_verified,
+        chainValid: value.chain_valid,
+        signatureValid: value.signature_valid,
+        responseReceivedAt: new Date().toISOString(),
         simulated: false,
         reason: value.reason,
       };

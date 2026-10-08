@@ -88,7 +88,8 @@ export function ProvenanceCard({ view }: { view: DocumentView }) {
             {verification.data.reason}
           </p>
           <small>
-            Checked <Timestamp value={verification.data.checkedAt} />
+            Response Received At{" "}
+            <Timestamp value={verification.data.responseReceivedAt} />
           </small>
         </div>
       )}

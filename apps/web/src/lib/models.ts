@@ -13,7 +13,10 @@ export type IntegrityState = "verified" | "failed" | "unverified";
 export type Verification = {
   result: IntegrityState;
   signature: "valid" | "invalid" | "unsigned";
-  checkedAt: string;
+  responseReceivedAt: string;
+  contentVerified?: boolean;
+  chainValid?: boolean;
+  signatureValid?: boolean;
   simulated: boolean;
   reason: string;
 };
@@ -57,6 +60,10 @@ export interface IdentityPort {
   session(signal?: AbortSignal): Promise<Session>;
 }
 export interface AnalystAdapter {
+  acquisition?(
+    id: string,
+    signal?: AbortSignal,
+  ): Promise<ApiComponents["schemas"]["ArticleEvidence"][]>;
   providerArticles?(
     cursor?: string,
     signal?: AbortSignal,

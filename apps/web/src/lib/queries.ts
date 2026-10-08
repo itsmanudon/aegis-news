@@ -16,6 +16,14 @@ export function useDocument(id: string) {
     queryFn: ({ signal }) => adapter.document(id, signal),
   });
 }
+export function useAcquisition(id: string, enabled = true) {
+  const { adapter, mode } = useConsole();
+  return useQuery({
+    queryKey: [mode, "document-acquisition", id],
+    queryFn: ({ signal }) => adapter.acquisition!(id, signal),
+    enabled: enabled && !!adapter.acquisition,
+  });
+}
 export function useEntity(id: string) {
   const { adapter, mode } = useConsole();
   return useQuery({

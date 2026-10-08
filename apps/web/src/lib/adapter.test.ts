@@ -2,6 +2,82 @@ import { describe, expect, it, vi } from "vitest";
 import { createMockAdapter, createRealAdapter, ApiClientError } from "./api";
 
 describe("analyst data boundary", () => {
+  it("keeps primary story reads independent of optional acquisition failures", async () => {
+    const view = await createMockAdapter(0).document(
+      "doc_00000000-0000-4000-8000-000000000001",
+    );
+    const transport = vi.fn(async (input: RequestInfo | URL) => {
+      const request = input as Request;
+      expect(request.headers.get("Authorization")).toBe(
+        "Bearer synthetic-token",
+      );
+      const optional = request.url.endsWith("/acquisition");
+      return new Response(
+        JSON.stringify(
+          optional
+            ? {
+                error: {
+                  code: "FORBIDDEN",
+                  message: "Acquisition access denied",
+                  request_id: "optional-403",
+                },
+              }
+            : { data: view, meta: {} },
+        ),
+        {
+          status: optional ? 403 : 200,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+    });
+    const adapter = createRealAdapter(
+      "https://api.example.test",
+      transport,
+      "synthetic-token",
+    );
+    await expect(
+      adapter.document(view.document.document_id),
+    ).resolves.toMatchObject({
+      document: view.document,
+      integrity: "unverified",
+    });
+    expect(transport).toHaveBeenCalledTimes(1);
+    await expect(
+      adapter.acquisition!(view.document.document_id),
+    ).rejects.toMatchObject({ code: "FORBIDDEN", requestId: "optional-403" });
+  });
+  it("preserves distinct verification subchecks and labels the local receipt instant", async () => {
+    const transport = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            data: {
+              valid: false,
+              content_verified: false,
+              chain_valid: true,
+              signature_valid: true,
+              reason: "Synthetic content mismatch",
+            },
+            meta: {},
+          }),
+          { headers: { "Content-Type": "application/json" } },
+        ),
+    );
+    const value = await createRealAdapter(
+      "https://api.example.test",
+      transport,
+    ).verify("synthetic-document");
+    expect(value).toMatchObject({
+      result: "failed",
+      contentVerified: false,
+      chainValid: true,
+      signatureValid: true,
+      signature: "valid",
+      simulated: false,
+    });
+    expect(Number.isNaN(Date.parse(value.responseReceivedAt))).toBe(false);
+    expect(value).not.toHaveProperty("checkedAt");
+  });
   it("loads one cursor page without eagerly requesting document intelligence", async () => {
     const fixtures = await createMockAdapter(0).documents({});
     const transport = vi.fn(async (input: RequestInfo | URL) => {
