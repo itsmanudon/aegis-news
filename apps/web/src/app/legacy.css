@@ -630,6 +630,68 @@
     padding: 16px 0;
     font-variant-numeric: tabular-nums lining-nums;
   }
+  .evidence-times,
+  .verification-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 28px;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums lining-nums;
+    margin: 14px 0;
+  }
+  .evidence-times dt,
+  .verification-checks dt {
+    color: var(--supporting);
+    margin-bottom: 5px;
+  }
+  .evidence-times dd,
+  .verification-checks dd {
+    margin: 0;
+  }
+  .verification-checks {
+    display: grid;
+    gap: 12px;
+  }
+  .receipt-time {
+    font-size: 12px;
+    display: grid;
+    gap: 6px;
+  }
+  .loaded-evidence {
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+  .loaded-evidence p {
+    margin-bottom: 14px;
+  }
+  .loaded-evidence .expanded-source > span {
+    color: var(--supporting);
+    font-size: 11px;
+  }
+  .expanded-source > p {
+    font:
+      18px/1.7 var(--font-editorial),
+      Georgia,
+      serif;
+    max-width: 65ch;
+    margin-top: 8px;
+  }
+  .loaded-assessment {
+    padding: 8px 0;
+    border-top: 1px solid var(--dividers);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .expanded-table-row > td {
+    padding: 20px;
+    background: var(--filter-region);
+  }
+  .expanded-table-row .loaded-evidence {
+    background: var(--surface);
+    border: 1px solid var(--dividers);
+    border-radius: var(--radius-panel);
+    padding: 20px;
+  }
   button:not(.button) {
     min-height: 44px;
     padding: 9px 13px;

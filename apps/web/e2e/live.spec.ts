@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { expectReaderModel } from "./reader-actions";
 
 test.use({ trace: "off" }); // Access Tokens must not enter trace artifacts.
 test("live MVP: authenticated feed, intelligence, verification, entities, events, search and ingestion", async ({
@@ -15,7 +16,9 @@ test("live MVP: authenticated feed, intelligence, verification, entities, events
   await page.goto("/documents");
   await page.getByLabel("Access Token").fill(process.env.AEGIS_E2E_TOKEN!);
   await page.getByRole("button", { name: "Use Token" }).click();
-  await expect(page.locator("tbody tr").first()).toBeVisible();
+  await expect(
+    page.locator("tbody tr, .editorial-result").first(),
+  ).toBeVisible();
   await page
     .getByRole("link", {
       name: "Atlas Labs reports growth and merger",
@@ -26,7 +29,7 @@ test("live MVP: authenticated feed, intelligence, verification, entities, events
   await expect(
     page.getByRole("heading", { name: "Model-Generated Intelligence" }),
   ).toBeVisible();
-  await expect(page.getByText("keyword-topics / 1")).toBeVisible();
+  await expectReaderModel(page, "keyword-topics / 1");
   await page.getByRole("button", { name: "Verify Integrity" }).click();
   await expect(page.locator(".verification-result")).toContainText("Verified");
   await page.getByRole("link", { name: "Entities", exact: true }).click();
@@ -34,21 +37,27 @@ test("live MVP: authenticated feed, intelligence, verification, entities, events
     page.getByRole("heading", { name: "Atlas Labs", exact: true }),
   ).toBeVisible();
   await page.getByRole("link", { name: "Inspect Entity" }).first().click();
-  await expect(page.locator("tbody tr").first()).toBeVisible();
+  await expect(
+    page.locator("tbody tr, .editorial-result").first(),
+  ).toBeVisible();
   await page
     .getByRole("link", { name: "Events / Timeline", exact: true })
     .click();
   await expect(page.locator(".timeline > li").first()).toBeVisible();
   await page.getByRole("link", { name: "Search", exact: true }).click();
   await page.getByLabel("Search Terms").fill("Atlas");
-  await expect(page.locator("tbody tr").first()).toBeVisible();
+  await expect(
+    page.locator("tbody tr, .editorial-result").first(),
+  ).toBeVisible();
   await page
     .getByRole("link", { name: "Operations & Security", exact: true })
     .click();
   await page
     .getByRole("link", { name: "Audit / Security", exact: true })
     .click();
-  await expect(page.locator("tbody tr").first()).toBeVisible();
+  await expect(
+    page.locator("tbody tr, .editorial-result").first(),
+  ).toBeVisible();
   await page
     .getByRole("link", { name: "Sources / Admin", exact: true })
     .click();

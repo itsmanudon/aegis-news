@@ -78,7 +78,7 @@ test("Discover presents attributed archive evidence without ranking or integrity
   ).toBeVisible();
   await page.getByRole("link", { name: headline, exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Source Facts", exact: true }),
+    page.getByRole("heading", { name: "Source Reporting", exact: true }),
   ).toBeVisible();
 });
 
@@ -151,7 +151,7 @@ test("editorial and existing pages reflow with local fonts and with fallback fon
       ),
     ).toBeTruthy();
     await page.goto("/documents");
-    await expect(page.locator("tbody tr")).toHaveCount(6);
+    await expect(page.locator(".editorial-result")).toHaveCount(6);
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -184,13 +184,11 @@ test("long source strings and media titles wrap at narrow mobile width", async (
     const path = new URL(route.request().url()).pathname;
     const data =
       path === "/api/v1/documents"
-        ? documents
-            .slice(0, 4)
-            .map(({ document }) => ({
-              ...document,
-              title: token,
-              text: `https://source.example.org/${token}`,
-            }))
+        ? documents.slice(0, 4).map(({ document }) => ({
+            ...document,
+            title: token,
+            text: `https://source.example.org/${token}`,
+          }))
         : path === "/api/v1/sources"
           ? documents.map(({ source }) => ({ ...source, name: token }))
           : path === "/api/v1/provider-articles"

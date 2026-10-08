@@ -53,15 +53,17 @@ export function PageHeading({
   title,
   description,
   action,
+  eyebrow = "Intelligence Operations",
 }: {
   title: string;
   description: string;
   action?: React.ReactNode;
+  eyebrow?: string;
 }) {
   return (
     <div className="page-heading">
       <div>
-        <p className="eyebrow">Intelligence Operations</p>
+        <p className="eyebrow">{eyebrow}</p>
         <h1>{title}</h1>
         <p>{description}</p>
       </div>

@@ -285,12 +285,12 @@
   .navigation.open {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0 20px;
-    padding: 8px 0;
+    gap: 0 16px;
+    padding: 2px 0;
     border-bottom: 1px solid var(--dividers);
   }
   .navigation a {
-    padding: 12px 0;
+    padding: 9px 0;
     min-height: 44px;
   }
   .experienceLink {

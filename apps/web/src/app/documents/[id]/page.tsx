@@ -1,5 +1,5 @@
 import { DocumentDetail } from "@/components/pages/document-detail";
-export const metadata = { title: "Document detail" };
+export const metadata = { title: "Story Detail" };
 export default async function Page({
   params,
 }: {

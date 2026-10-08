@@ -2,6 +2,36 @@ import { describe, expect, it, vi } from "vitest";
 import { createMockAdapter, createRealAdapter, ApiClientError } from "./api";
 
 describe("analyst data boundary", () => {
+  it("cancels optional acquisition through the same authenticated request boundary", async () => {
+    const controller = new AbortController();
+    const transport = vi.fn(
+      (input: RequestInfo | URL) =>
+        new Promise<Response>((_resolve, reject) => {
+          const request = input as Request;
+          expect(request.headers.get("Authorization")).toBe(
+            "Bearer synthetic-cancel",
+          );
+          if (request.signal.aborted) reject(request.signal.reason);
+          else
+            request.signal.addEventListener(
+              "abort",
+              () => reject(request.signal.reason),
+              { once: true },
+            );
+        }),
+    );
+    const pending = createRealAdapter(
+      "https://api.example.test",
+      transport,
+      "synthetic-cancel",
+    ).acquisition!("synthetic-document", controller.signal);
+    const rejected = expect(pending).rejects.toMatchObject({
+      name: "AbortError",
+    });
+    controller.abort();
+    await rejected;
+    expect(transport).toHaveBeenCalledOnce();
+  });
   it("keeps primary story reads independent of optional acquisition failures", async () => {
     const view = await createMockAdapter(0).document(
       "doc_00000000-0000-4000-8000-000000000001",

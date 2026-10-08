@@ -40,7 +40,7 @@ test("mobile advanced filters are keyboard accessible and retain filtering and r
 }) => {
   await page.setViewportSize({ width: 320, height: 1000 });
   await page.goto("/documents");
-  await expect(page.locator("tbody tr")).toHaveCount(6);
+  await expect(page.locator(".editorial-result")).toHaveCount(6);
   await expect(
     page.getByLabel("Filter Documents", { exact: true }),
   ).toBeVisible();
@@ -53,7 +53,7 @@ test("mobile advanced filters are keyboard accessible and retain filtering and r
   await page.keyboard.press("Enter");
   await expect(advanced).toHaveAttribute("aria-expanded", "true");
   await page.getByLabel("Integrity", { exact: true }).selectOption("failed");
-  await expect(page.locator("tbody tr")).toHaveCount(1);
+  await expect(page.locator(".editorial-result")).toHaveCount(1);
   await page
     .getByRole("button", { name: "Advanced Filters (1)", exact: true })
     .click();
@@ -61,17 +61,19 @@ test("mobile advanced filters are keyboard accessible and retain filtering and r
   await page
     .getByRole("button", { name: "Reset Filters", exact: true })
     .click();
-  await expect(page.locator("tbody tr")).toHaveCount(6);
+  await expect(page.locator(".editorial-result")).toHaveCount(6);
   await advanced.click();
   await page.getByLabel("Knowledge Cutoff (UTC)").fill("2026-10-03T08:04");
-  await expect(page.locator("tbody tr")).toHaveCount(1);
-  await expect(page.getByText("Pending", { exact: true })).toBeVisible();
+  await expect(page.locator(".editorial-result")).toHaveCount(1);
+  await expect(
+    page.getByText("No Assessments Available", { exact: true }),
+  ).toBeVisible();
   await page
     .getByRole("button", { name: "Reset Filters", exact: true })
     .click();
   await page.goto("/search");
   await page.getByLabel("Search Terms", { exact: true }).fill("credentials");
-  await expect(page.locator("tbody tr")).toHaveCount(1);
+  await expect(page.locator(".editorial-result")).toHaveCount(1);
 });
 
 test("timestamp groups and operational numbers use readable interface typography", async ({
@@ -108,7 +110,9 @@ test("polished reading and filter surfaces reflow across the requested widths", 
     await page.setViewportSize({ width, height: 1000 });
     for (const route of ["/", "/documents", "/search", "/operations"]) {
       await page.goto(route);
-      await expect(page.locator(".story-lead, tbody tr").first()).toBeVisible();
+      await expect(
+        page.locator(".story-lead, tbody tr, .editorial-result").first(),
+      ).toBeVisible();
       if (width <= 600 && ["/documents", "/search"].includes(route)) {
         await page
           .getByRole("button", { name: "Advanced Filters", exact: true })

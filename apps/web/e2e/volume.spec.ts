@@ -26,6 +26,9 @@ test("real corpus: unfiltered dashboard and paginated register use bounded reque
     .getByRole("link", { name: "News & Intelligence", exact: true })
     .click();
   await page.getByRole("link", { name: "Documents", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Evidence Table", exact: true })
+    .click();
   await expect(page.locator("tbody tr")).toHaveCount(20);
   const title = await page.locator("tbody tr").first().innerText();
   await page.getByRole("button", { name: "Next Page", exact: true }).click();

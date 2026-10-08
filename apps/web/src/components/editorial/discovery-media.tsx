@@ -35,8 +35,11 @@ export function DiscoveryMedia() {
       </p>
       {mode === "mock" ? (
         <p className={styles.availability}>
-          Provider media is available in Real API mode. This mock workspace does
-          not simulate acquired publisher images or video.
+          <strong>Provider Media / Awaiting Actual Records</strong>
+          Publisher acquisitions can include attributed remote image references;
+          video records can link to external viewing. This mock workspace does
+          not simulate acquired imagery or fetched video. Open Multimedia to
+          explore those records when they are available in Real API mode.
         </p>
       ) : (
         <div className={styles.columns}>

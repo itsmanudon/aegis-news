@@ -14,6 +14,10 @@ test("operations to document, model metadata, verification and entity evidence",
       exact: true,
     })
     .click();
+  await page
+    .locator("summary")
+    .filter({ hasText: "Record Timestamps" })
+    .click();
   for (const label of [
     "Published",
     "First Seen",
@@ -21,19 +25,27 @@ test("operations to document, model metadata, verification and entity evidence",
     "Intelligence Available",
   ])
     await expect(
-      page.locator("dt").filter({ hasText: new RegExp("^" + label + "$") }),
+      page
+        .locator(".time-rail dt")
+        .filter({ hasText: new RegExp("^" + label + "$") }),
     ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Source Facts" }),
+    page.getByRole("heading", { name: "Source Reporting" }),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Model-Generated Intelligence" }),
   ).toBeVisible();
-  await expect(page.getByText("aegis-topic-demo / 0.3.1")).toBeVisible();
+  await expect(
+    page.getByText("aegis-topic-demo / 0.3.1").first(),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Run Mock Verification" }).click();
   await expect(
     page.getByText("Simulated result · Fixture content and signature match."),
   ).toBeVisible();
+  await page
+    .locator("summary")
+    .filter({ hasText: "Resolved Entities" })
+    .click();
   await page.getByRole("link", { name: "Port Meridian location" }).click();
   await expect(
     page.getByRole("heading", { name: "Port Meridian", exact: true }),
@@ -49,7 +61,7 @@ test("feed filters, empty state and historical availability", async ({
 }) => {
   await page.goto("/documents");
   await expect(
-    page.getByRole("status").filter({ hasText: "6 documents" }),
+    page.getByRole("status").filter({ hasText: "6 records on this page" }),
   ).toBeVisible();
   await page.getByLabel("Integrity", { exact: true }).selectOption("failed");
   await expect(
@@ -57,26 +69,28 @@ test("feed filters, empty state and historical availability", async ({
       name: "Northstar Logistics issues advisory on credential exposure",
     }),
   ).toBeVisible();
-  await expect(page.locator("tbody tr")).toHaveCount(1);
+  await expect(page.locator("tbody tr, .editorial-result")).toHaveCount(1);
   await page.getByRole("button", { name: "Reset Filters" }).click();
   await page.getByLabel("Filter Documents").fill("no-match-value");
   await expect(page.getByText("No records match these filters.")).toBeVisible();
   await page.getByRole("button", { name: "Reset Filters" }).click();
   await page.getByLabel("Knowledge Cutoff (UTC)").fill("2026-10-03T08:04");
-  await expect(page.locator("tbody tr")).toHaveCount(1);
-  await expect(page.getByText("Pending", { exact: true })).toBeVisible();
+  await expect(page.locator("tbody tr, .editorial-result")).toHaveCount(1);
+  await expect(
+    page.getByText("No Assessments Available", { exact: true }),
+  ).toBeVisible();
 });
 test("search source text and reset results", async ({ page }) => {
   await page.goto("/search");
   await page.getByLabel("Search Terms").fill("credentials");
-  await expect(page.locator("tbody tr")).toHaveCount(1);
+  await expect(page.locator("tbody tr, .editorial-result")).toHaveCount(1);
   await expect(
     page.getByRole("link", {
       name: "Northstar Logistics issues advisory on credential exposure",
     }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Reset Filters" }).click();
-  await expect(page.locator("tbody tr")).toHaveCount(6);
+  await expect(page.locator("tbody tr, .editorial-result")).toHaveCount(6);
 });
 test("timeline evidence filtering and security source shells", async ({
   page,
@@ -95,7 +109,7 @@ test("timeline evidence filtering and security source shells", async ({
     page.getByRole("heading", { name: "Session Context" }),
   ).toBeVisible();
   await page.getByLabel("Outcome", { exact: true }).selectOption("denied");
-  await expect(page.locator("tbody tr")).toHaveCount(1);
+  await expect(page.locator("tbody tr, .editorial-result")).toHaveCount(1);
   await page
     .getByRole("link", { name: "Sources / Admin", exact: true })
     .click();
@@ -115,6 +129,10 @@ test("failed and unsigned verification remain distinct", async ({ page }) => {
     ),
   ).toBeVisible();
   await page.goto("/documents/doc_00000000-0000-4000-8000-000000000003");
+  await page
+    .locator("summary")
+    .filter({ hasText: "Media / Attachments" })
+    .click();
   await expect(
     page.getByText("corridor-report.txt", { exact: true }),
   ).toBeVisible();
@@ -157,12 +175,12 @@ test("real mode clears fixture records and identity, makes only contracted reque
     });
   });
   await page.goto("/documents");
-  await expect(page.locator("tbody tr")).toHaveCount(6);
+  await expect(page.locator("tbody tr, .editorial-result")).toHaveCount(6);
   await page.getByLabel("Data Mode").selectOption("real");
   await expect(
     page.getByText("Token Required", { exact: true }).first(),
   ).toBeVisible();
-  await expect(page.locator("tbody tr")).toHaveCount(0);
+  await expect(page.locator("tbody tr, .editorial-result")).toHaveCount(0);
   await expect(
     page.locator(".identity").getByText("Token Required"),
   ).toBeVisible();
@@ -183,7 +201,7 @@ test("real mode clears fixture records and identity, makes only contracted reque
   );
   await page.getByLabel("Data Mode").selectOption("mock");
   await expect(page.getByText("Simulated Identity")).toBeVisible();
-  await expect(page.locator("tbody tr")).toHaveCount(6);
+  await expect(page.locator("tbody tr, .editorial-result")).toHaveCount(6);
 });
 test("network failure and missing document have recoverable states", async ({
   page,
@@ -205,12 +223,21 @@ test("network failure and missing document have recoverable states", async ({
 });
 test("provenance view shows operation evidence", async ({ page }) => {
   await page.goto("/provenance");
+  await page
+    .locator("summary")
+    .filter({ hasText: "Provenance Operations" })
+    .first()
+    .click();
   await expect(
     page.getByRole("heading", { name: "Provenance / Integrity", exact: true }),
   ).toHaveCount(7);
-  await page.locator("summary").first().click();
+  await page
+    .locator("summary")
+    .filter({ hasText: "Operation Evidence" })
+    .first()
+    .click();
   await expect(
-    page.locator("details[open]").getByText(doc, { exact: true }),
+    page.locator("details[open] details[open]").getByText(doc, { exact: true }),
   ).toBeVisible();
 });
 test("mobile navigation and keyboard skip link", async ({ page }) => {
@@ -226,7 +253,7 @@ test("mobile navigation and keyboard skip link", async ({ page }) => {
   await menu.click();
   await page.getByRole("link", { name: "Documents", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "News / Documents" }),
+    page.getByRole("heading", { name: "Document Archive" }),
   ).toBeVisible();
   await expect(menu).toHaveAttribute("aria-expanded", "false");
   expect(
@@ -237,7 +264,7 @@ test("mobile navigation and keyboard skip link", async ({ page }) => {
 });
 test("capture desktop operations", async ({ page }) => {
   await page.goto("/operations");
-  await expect(page.locator("tbody tr")).toHaveCount(6);
+  await expect(page.locator("tbody tr, .editorial-result")).toHaveCount(6);
   await page.screenshot({
     path: "test-results/operations-desktop.png",
     fullPage: true,

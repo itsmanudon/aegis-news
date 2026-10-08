@@ -1,6 +1,7 @@
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { expect, test } from "@playwright/test";
+import { openStoredMedia } from "./reader-actions";
 
 test.use({ trace: "off", viewport: { width: 1440, height: 1000 } });
 
@@ -22,7 +23,9 @@ test("capture public-safe live demo evidence", async ({ page, request }) => {
   await page.goto("/documents");
   await page.getByLabel("Access Token").fill(process.env.AEGIS_E2E_TOKEN!);
   await page.getByRole("button", { name: "Use Token" }).click();
-  await expect(page.locator("tbody tr").first()).toBeVisible();
+  await expect(
+    page.locator("tbody tr, .editorial-result").first(),
+  ).toBeVisible();
   await capture("dashboard");
   await page
     .getByRole("link", {
@@ -39,9 +42,7 @@ test("capture public-safe live demo evidence", async ({ page, request }) => {
   await expect(page.locator(".verification-result")).toContainText("Verified");
   await page.locator(".verification-result").scrollIntoViewIfNeeded();
   await capture("provenance-verification");
-  await page
-    .getByText("Media / Attachments", { exact: true })
-    .scrollIntoViewIfNeeded();
+  await openStoredMedia(page);
   await expect(page.locator(".media-record").first()).toContainText(
     "image/png",
   );
@@ -55,7 +56,9 @@ test("capture public-safe live demo evidence", async ({ page, request }) => {
     page.getByRole("heading", { name: "Atlas Labs", exact: true }),
   ).toBeVisible();
   await page.getByRole("link", { name: "Inspect Entity" }).first().click();
-  await expect(page.locator("tbody tr").first()).toBeVisible();
+  await expect(
+    page.locator("tbody tr, .editorial-result").first(),
+  ).toBeVisible();
   await capture("entity-evidence");
   await page
     .getByRole("link", { name: "Events / Timeline", exact: true })
@@ -68,7 +71,9 @@ test("capture public-safe live demo evidence", async ({ page, request }) => {
   await page
     .getByRole("link", { name: "Audit / Security", exact: true })
     .click();
-  await expect(page.locator("tbody tr").first()).toBeVisible();
+  await expect(
+    page.locator("tbody tr, .editorial-result").first(),
+  ).toBeVisible();
   await capture("audit-log");
   await page
     .getByLabel("Access Token")

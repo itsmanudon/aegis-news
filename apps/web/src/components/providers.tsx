@@ -114,7 +114,21 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <IsolatedQueries
       key={`${mode}:${token}`}
       mode={mode}
-      setMode={setMode}
+      setMode={(nextMode) => {
+        if (nextMode !== mode) {
+          // Pagination belongs to the adapter that issued it, not the shared URL.
+          const url = new URL(window.location.href);
+          if (url.searchParams.has("cursor")) {
+            url.searchParams.delete("cursor");
+            window.history.replaceState(
+              null,
+              "",
+              `${url.pathname}${url.search}${url.hash}`,
+            );
+          }
+        }
+        setMode(nextMode);
+      }}
       token={token}
       setAccessToken={setAccessToken}
     >
