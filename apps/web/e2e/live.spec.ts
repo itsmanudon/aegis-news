@@ -43,6 +43,9 @@ test("live MVP: authenticated feed, intelligence, verification, entities, events
   await page.getByLabel("Search terms").fill("Atlas");
   await expect(page.locator("tbody tr").first()).toBeVisible();
   await page
+    .getByRole("link", { name: "Operations & Security", exact: true })
+    .click();
+  await page
     .getByRole("link", { name: "Audit / security", exact: true })
     .click();
   await expect(page.locator("tbody tr").first()).toBeVisible();

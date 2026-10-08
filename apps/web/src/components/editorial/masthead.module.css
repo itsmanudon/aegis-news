@@ -1,0 +1,309 @@
+.masthead {
+  width: 100%;
+  max-width: 1344px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+.utilityBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--dividers);
+}
+.experience {
+  color: var(--teal);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  font-weight: 650;
+  text-transform: uppercase;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+}
+.controls label {
+  color: var(--supporting);
+}
+.controls select {
+  font: inherit;
+  padding: 7px 9px;
+  color: var(--ink);
+  border: 1px solid var(--supporting);
+  background: var(--surface);
+  border-radius: 3px;
+  min-height: 36px;
+  max-width: 100%;
+}
+.identity {
+  padding-left: 14px;
+  border-left: 1px solid var(--dividers);
+  overflow-wrap: anywhere;
+}
+.identity small {
+  display: block;
+  color: var(--supporting);
+  font-size: 11px;
+  margin-top: 2px;
+}
+.brandRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 27px 0 24px;
+  gap: 24px;
+}
+.wordmark {
+  color: var(--ink);
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: clamp(36px, 4.6vw, 64px);
+  font-weight: 650;
+  letter-spacing: -0.055em;
+  line-height: 1;
+  text-decoration: none;
+}
+.wordmark:hover {
+  text-decoration: none;
+}
+.wordmark span {
+  color: var(--teal);
+}
+.brandNote {
+  margin: 0;
+  color: var(--supporting);
+  font-family: var(--font-editorial), Georgia, serif;
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.45;
+}
+.navigationRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--dividers);
+}
+.navigation {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: 24px;
+}
+.navigation a {
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.4;
+  padding: 16px 0;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+.navigation a:hover {
+  color: var(--teal);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.navigation a[aria-current="page"] {
+  color: var(--teal);
+  border-bottom-color: var(--teal);
+  font-weight: 650;
+}
+.experienceLink {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 550;
+  padding: 16px 0;
+  white-space: nowrap;
+}
+.experienceLink span {
+  color: var(--teal);
+  padding-left: 3px;
+}
+.menuToggle {
+  display: none;
+}
+.modeNotice {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  padding: 12px 0;
+  font-size: 11px;
+  color: var(--supporting);
+  line-height: 1.6;
+}
+.modeNotice strong {
+  color: var(--teal);
+  white-space: nowrap;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+.accessForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  background: var(--surface);
+  padding: 16px;
+  border: 1px solid var(--dividers);
+  margin-top: 4px;
+}
+.accessForm label {
+  flex: 1;
+  min-width: min(100%, 240px);
+  font-size: 12px;
+}
+.accessForm input {
+  font: inherit;
+  display: block;
+  margin-top: 6px;
+  padding: 10px;
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--supporting);
+  border-radius: 3px;
+}
+.accessForm button {
+  font: inherit;
+  color: var(--ink);
+  border: 1px solid var(--supporting);
+  border-radius: 3px;
+  padding: 10px 14px;
+  min-height: 44px;
+  background: var(--surface);
+  cursor: pointer;
+}
+.accessForm button[type="submit"] {
+  color: var(--surface);
+  background: var(--teal);
+  border-color: var(--teal);
+}
+.accessForm p {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: var(--supporting);
+}
+@media (max-width: 1100px) {
+  .navigation {
+    column-gap: 18px;
+  }
+  .navigationRow {
+    flex-wrap: wrap;
+    gap: 0 20px;
+  }
+  .experienceLink {
+    margin-left: auto;
+  }
+}
+@media (max-width: 800px) {
+  .masthead {
+    padding: 0 24px;
+  }
+  .utilityBar {
+    align-items: flex-start;
+  }
+  .experience {
+    max-width: 120px;
+    line-height: 1.5;
+  }
+  .controls {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .brandNote {
+    font-size: 16px;
+  }
+}
+@media (max-width: 600px) {
+  .masthead {
+    padding: 0 16px;
+  }
+  .utilityBar {
+    display: block;
+    padding: 12px 0;
+  }
+  .experience {
+    display: block;
+    max-width: none;
+    margin-bottom: 10px;
+  }
+  .controls {
+    justify-content: flex-start;
+  }
+  .controls select {
+    min-height: 38px;
+  }
+  .identity {
+    flex-basis: 100%;
+    padding-left: 0;
+    border: 0;
+  }
+  .identity small {
+    display: inline;
+    margin-left: 8px;
+  }
+  .brandRow {
+    padding: 22px 0;
+    gap: 10px;
+  }
+  .wordmark {
+    font-size: 38px;
+  }
+  .brandNote {
+    display: none;
+  }
+  .menuToggle {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    padding: 8px 0 8px 8px;
+    min-height: 44px;
+    font-size: 12px;
+    background: none;
+    border: 0;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .menuToggle span {
+    color: var(--teal);
+    font-size: 20px;
+  }
+  .navigationRow {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .navigation {
+    display: none;
+  }
+  .navigation.open {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 20px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--dividers);
+  }
+  .navigation a {
+    padding: 12px 0;
+    min-height: 44px;
+  }
+  .experienceLink {
+    margin: 0;
+    align-self: flex-end;
+    padding: 12px 0;
+  }
+  .modeNotice {
+    display: block;
+  }
+  .modeNotice strong {
+    margin-right: 8px;
+  }
+}
+@media (max-width: 350px) {
+  .wordmark {
+    font-size: 32px;
+  }
+}

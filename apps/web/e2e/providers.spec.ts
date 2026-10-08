@@ -58,6 +58,9 @@ test("real provider articles, image references, video metadata and provenance", 
     page.getByText("verified", { exact: true }).first(),
   ).toBeVisible();
   await page
+    .getByRole("link", { name: "Operations & Security", exact: true })
+    .click();
+  await page
     .getByRole("link", { name: "Sources / admin", exact: true })
     .click();
   await expect(

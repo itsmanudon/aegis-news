@@ -38,7 +38,7 @@ export function Dashboard() {
           </strong>
         </div>
         <div>
-          <span>Integrity exceptions</span>
+          <span>Records awaiting review</span>
           <strong className="caution">
             {records.data ? flagged.length : "—"}
           </strong>
@@ -85,7 +85,7 @@ export function Dashboard() {
             ))}
             {records.data && !flagged.length && (
               <p className="empty">
-                No integrity exceptions in the loaded records.
+                No records awaiting integrity review on the loaded page.
               </p>
             )}
           </QueryState>
@@ -120,7 +120,7 @@ export function Dashboard() {
         </Panel>
       </div>
       <Panel
-        title="Latest evidence"
+        title="Evidence on loaded page"
         action={<Link href="/documents">Browse documents</Link>}
       >
         <QueryState

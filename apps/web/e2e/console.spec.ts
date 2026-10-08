@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
 const doc = "doc_00000000-0000-4000-8000-000000000001";
-test("dashboard to document, model metadata, verification and entity evidence", async ({
+test("operations to document, model metadata, verification and entity evidence", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/operations");
   await expect(
     page.getByRole("heading", { name: "Operational overview" }),
   ).toBeVisible();
@@ -86,6 +86,9 @@ test("timeline evidence filtering and security source shells", async ({
   await expect(page.locator(".timeline > li")).toHaveCount(1);
   await expect(page.getByText("Model output", { exact: true })).toBeVisible();
   await page
+    .getByRole("link", { name: "Operations & Security", exact: true })
+    .click();
+  await page
     .getByRole("link", { name: "Audit / security", exact: true })
     .click();
   await expect(
@@ -163,7 +166,9 @@ test("real mode clears fixture records and identity, makes only contracted reque
   await expect(
     page.locator(".identity").getByText("Token required"),
   ).toBeVisible();
-  await page.getByRole("link", { name: "Dashboard", exact: true }).click();
+  await page
+    .getByRole("link", { name: "Operations & Security", exact: true })
+    .click();
   await expect(page.getByText("Connected", { exact: true })).toBeVisible();
   expect(requested.length).toBeGreaterThan(0);
   expect(new Set(requested)).toEqual(
@@ -230,11 +235,11 @@ test("mobile navigation and keyboard skip link", async ({ page }) => {
     ),
   ).toBeTruthy();
 });
-test("capture desktop workspace", async ({ page }) => {
-  await page.goto("/");
+test("capture desktop operations", async ({ page }) => {
+  await page.goto("/operations");
   await expect(page.locator("tbody tr")).toHaveCount(6);
   await page.screenshot({
-    path: "test-results/dashboard-desktop.png",
+    path: "test-results/operations-desktop.png",
     fullPage: true,
   });
 });

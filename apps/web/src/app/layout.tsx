@@ -1,20 +1,48 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import { Providers } from "@/components/providers";
 import { Shell } from "@/components/shell";
 import "./globals.css";
+const editorial = localFont({
+  src: [
+    {
+      path: "./fonts/SourceSerif4Variable-Roman.woff2",
+      weight: "200 900",
+      style: "normal",
+    },
+    {
+      path: "./fonts/SourceSerif4Variable-Italic.woff2",
+      weight: "200 900",
+      style: "italic",
+    },
+  ],
+  variable: "--font-editorial",
+  display: "swap",
+  fallback: ["Georgia"],
+});
+const interfaceFont = localFont({
+  src: "./fonts/InterVariable.woff2",
+  weight: "100 900",
+  variable: "--font-interface",
+  display: "swap",
+  fallback: ["Arial"],
+});
 export const metadata: Metadata = {
   title: {
-    default: "AegisNews · Intelligence console",
+    default: "Discover · Aegis News",
     template: "%s · AegisNews",
   },
   description:
-    "Source evidence, model intelligence and integrity review for analysts.",
+    "Discover source reporting, explore intelligence, and inspect the evidence.",
 };
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${editorial.variable} ${interfaceFont.variable}`}
+    >
       <body>
         <Providers>
           <Shell>{children}</Shell>

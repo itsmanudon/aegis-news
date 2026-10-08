@@ -1,4 +1,4 @@
-import { Dashboard } from "@/components/pages/dashboard";
+import { Discover } from "@/components/pages/discover";
 export default function Page() {
-  return <Dashboard />;
+  return <Discover />;
 }

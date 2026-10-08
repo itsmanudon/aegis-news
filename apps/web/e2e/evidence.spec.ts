@@ -63,6 +63,9 @@ test("capture public-safe live demo evidence", async ({ page, request }) => {
   await expect(page.locator(".timeline > li").first()).toBeVisible();
   await capture("events");
   await page
+    .getByRole("link", { name: "Operations & Security", exact: true })
+    .click();
+  await page
     .getByRole("link", { name: "Audit / security", exact: true })
     .click();
   await expect(page.locator("tbody tr").first()).toBeVisible();

@@ -1,4 +1,11 @@
-# AegisNews analyst console
+# Aegis News frontend
+
+The homepage is an editorial archive-discovery experience. The operational
+overview is at `/operations`. News & Intelligence and Operations & Security share
+one provider/identity boundary; all existing product URLs remain supported.
+Reader and operational styles are scoped separately. Pinned Source Serif 4 and
+Inter fonts are served locally; provenance and licenses are recorded in
+[`src/app/fonts/README.md`](src/app/fonts/README.md).
 
 Run from the repository root:
 
@@ -24,7 +31,13 @@ Real mode supports documents/intelligence, entities, events, title/text search, 
 
 ## Screens
 
-- Dashboard: evidence counts, integrity review queue, timeline and latest documents.
+- Discover (`/`): an archive story lead, supporting headlines, attributed source
+  excerpts, publication/first-seen metadata, and independent provider-media reads.
+  Layout emphasis is not recency or importance ranking. No generated summary,
+  topic association, or integrity claim is added to a story preview.
+- Operations (`/operations`): loaded-page evidence counts, integrity review queue,
+  timeline and document register. Unchecked and failed records both await review;
+  they are not counted as confirmed integrity failures.
 - Documents: title/text/source/entity search, source and integrity filters, UTC knowledge cutoff.
 - Document detail: attributed body, four-stage timestamps, models/confidence/version, entities, events, media metadata, provenance operations and simulated verification.
 - Entities: canonical register, entity detail and associated documents.
@@ -38,13 +51,32 @@ In mock mode, all source names, articles, hashes, signatures, models and audit r
 
 ## Architecture and contracts
 
-`src/app` contains thin App Router pages, metadata and route boundaries. `src/components/pages` owns screen compositions. Shared document table, time rail, analysis panel and provenance card live in `src/components/documents`. Small semantic primitives live in `src/components/ui`, alongside the existing shadcn-compatible aliases, utils and `components.json`. CSS tokens and Tailwind remain available; no remote fonts or visual assets are required.
+`src/app` contains thin App Router pages, metadata and route boundaries.
+`src/components/pages` owns screen compositions. Shared document table, time rail,
+analysis panel and provenance card live in `src/components/documents`.
+`src/components/editorial` contains only the masthead, story lead/rows/metadata,
+and homepage media composition. Their CSS modules are separate from the existing
+evidence/operations styles in `legacy.css`, scoped under `.legacy-content`.
+Small semantic primitives remain in `src/components/ui`; no new component framework
+is introduced. CSS tokens and Tailwind remain available. Builds need no remote
+font service or decorative assets.
 
 `src/lib/queries.ts` owns TanStack Query keys and cancellation. `AnalystAdapter` in `models.ts` is a frontend composition interface, not a proposed server payload. Components only consume this port. `api.ts` centralizes transport, typed errors, request IDs, cancellation and a 10-second real request deadline. `IdentityPort` is the session integration seam: mock mode has a simulated analyst; real mode is anonymous with no invented login, tokens or production permissions.
 
-`scripts/generate-api.mjs` reads `schemas/openapi/v1.json` unchanged and generates `src/lib/generated/api.ts` using openapi-typescript. The same tool derives `domain.ts` from checked-in JSON domain schemas by composing an in-memory OpenAPI 3.1 document and resolving local definitions. Backend types are never handwritten. Fixture compositions use these generated records directly. Verification, audit and session presentation metadata are separately declared frontend-only types because these contracts do not yet exist.
+`scripts/generate-api.mjs` reads `schemas/openapi/v1.json` unchanged and generates
+`src/lib/generated/api.ts` using openapi-typescript. The same tool derives
+`domain.ts` from checked-in JSON domain schemas by composing an in-memory OpenAPI
+3.1 document and resolving local definitions. Backend types are never handwritten.
+Fixture compositions use these generated records directly. Verification, audit
+and session presentation types compose the current backend responses.
 
-`openapi-fetch` uses the generated path types. The only real request currently used is `GET /api/v1/system/info`. Other real adapter methods fail with `CAPABILITY_UNAVAILABLE` without sending requests: the base schema has no registered product endpoints. The UI reports integration pending. No guessed document/search/auth/provenance route is sent.
+`openapi-fetch` uses generated path types for the registered product, identity,
+audit, verification and provider endpoints. Document feeds use one bounded
+20-record page without eager per-row intelligence. Full intelligence and
+acquisition evidence load on document detail. Real search uses literal
+title/text matching; fixture search additionally matches fictional source/entity
+names. Feed-wide verified/failed filtering remains explicitly unavailable in real
+mode. Real mode never falls back to fixture success.
 
 The fixture cutoff is a development demonstration: documents use `first_seen_at`, assessments/events use `available_at`, and entity associations are withheld until document intelligence is available. Publication time may be unknown. Detail pages intentionally open the complete current record and the feed tells analysts this. Production historical guarantees require backend cutoff-bound pagination and association availability; this branch does not claim backtesting support.
 
@@ -64,13 +96,20 @@ Unit/component tests exercise combined filtering, empty records, knowledge cutof
 
 For systems with a preinstalled compatible Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to its executable path. If Windows process cleanup prevents the Playwright-managed Next server from exiting, start a mock Next server on port 3104 yourself and set `AEGIS_E2E_EXTERNAL_SERVER=1` for the test process. The standard Linux/CI command manages its own server. Screenshots/traces go to ignored `test-results`.
 
-The existing Python stack smoke test now checks server-rendered console labels while retaining independent API liveness/readiness checks. That live-stack test still requires its original Compose services; it is separate from the mocked browser suite.
+The existing Python stack smoke test checks server-rendered Discover and Operations labels while retaining independent API liveness/readiness checks. That live-stack test still requires its original Compose services; it is separate from the mocked browser suite.
 
 ## Integration requirements and deferred controls
 
-1. Agents 1/2: register product routes in OpenAPI, retain envelope/request ID/cursor semantics, then regenerate types and implement real adapter composition. Agree document/source/analysis/entity/media/event associations and cutoff behavior from actual contracts.
+1. Product routes are registered and generated. New topic, summary, aggregate,
+   discovery-ordering and media-delivery capabilities require separately approved
+   contracts. Preserve envelope/request ID/cursor semantics when extending them.
 2. Agent 3: supply OIDC session state and server authorization through `IdentityPort`; choose credentials/CSRF behavior from that contract. Current real transport explicitly omits credentials.
-3. Agent 3: supply provenance operations and signature/verification result contracts, then replace the frontend verification fixtures. The integrity label and signature/session check are displayed separately.
+3. Real verification and provenance operations use current contracts. Mock
+   outcomes remain visibly simulated. More complete verification presentation and
+   server-attested check timestamps belong to later frontend/contract work.
 4. API origin must allow the actual web origin via existing CORS configuration. Only `NEXT_PUBLIC_*` configuration reaches the browser.
-5. Source mutation, users/roles/policies, login/logout screens, signed media previews/downloads, durable audit export and cursor-based product pagination await backend capabilities. Source administration is deliberately read-only.
+5. Source creation, ingestion and manual provider acquisition already exist with
+   scoped server authorization. Source editing, users/roles/policies, production
+   login flows, authorized media previews/downloads and durable audit export remain
+   deferred. Cursor APIs exist; audit/entity/event UI pagination needs further work.
 6. No backend ingestion, inference, cryptography, OAuth server, trading, backtesting, Kafka or deployment is implemented.

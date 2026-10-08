@@ -17,6 +17,11 @@ def test_running_api_and_web_status():
         assert client.get(f"{api}/openapi.json").json()["info"]["title"] == "AegisNews"
         page = client.get(web)
         assert page.status_code == 200
-        assert "AegisNews" in page.text
-        assert "Operational overview" in page.text
-        assert "Intelligence console" in page.text
+        assert "Aegis News" in page.text
+        assert "A wider view." in page.text
+        assert "A closer read." in page.text
+        assert 'href="/operations"' in page.text
+        operations = client.get(f"{web}/operations")
+        assert operations.status_code == 200
+        assert "Operational overview" in operations.text
+        assert "Review queue" in operations.text
