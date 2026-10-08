@@ -24,9 +24,9 @@ export function DiscoveryMedia() {
   return (
     <section className={styles.media} aria-labelledby="media-heading">
       <div className={styles.heading}>
-        <h2 id="media-heading">Beyond the text</h2>
+        <h2 id="media-heading">Beyond the Text</h2>
         <Link href="/multimedia">
-          Explore multimedia <span aria-hidden="true">→</span>
+          Explore Multimedia <span aria-hidden="true">→</span>
         </Link>
       </div>
       <p className={styles.intro}>
@@ -41,7 +41,7 @@ export function DiscoveryMedia() {
       ) : (
         <div className={styles.columns}>
           <div>
-            <h3 className={styles.label}>Provider acquisitions</h3>
+            <h3 className={styles.label}>Provider Acquisitions</h3>
             <p className={styles.note}>
               Ordered by acquisition time. Publication may be earlier or
               unknown.
@@ -95,12 +95,20 @@ export function DiscoveryMedia() {
                             article.title
                           )}
                         </h4>
-                        <p className={styles.time}>
-                          Acquired <Timestamp value={article.acquired_at} />
-                        </p>
-                        <p className={styles.time}>
-                          Published <Timestamp value={article.published_at} />
-                        </p>
+                        <dl className={styles.timeFields}>
+                          <div>
+                            <dt>Acquired</dt>
+                            <dd>
+                              <Timestamp value={article.acquired_at} />
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Published</dt>
+                            <dd>
+                              <Timestamp value={article.published_at} />
+                            </dd>
+                          </div>
+                        </dl>
                         <p className={styles.note}>
                           {article.document_id
                             ? "Captured text available; open the record for analysis."
@@ -113,7 +121,7 @@ export function DiscoveryMedia() {
                             target="_blank"
                             rel="noreferrer"
                           >
-                            Open publisher article ↗
+                            Open Publisher Article ↗
                           </a>
                         )}
                       </div>
@@ -133,7 +141,7 @@ export function DiscoveryMedia() {
             )}
           </div>
           <div>
-            <h3 className={styles.label}>External video references</h3>
+            <h3 className={styles.label}>External Video References</h3>
             <p className={styles.note}>
               Refreshable metadata. No stored video or model assessment.
             </p>

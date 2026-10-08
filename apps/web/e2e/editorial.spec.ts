@@ -36,7 +36,7 @@ test("desktop masthead aligns with the editorial reading grid", async ({
     .getByRole("link", { name: "Aegis News Discover", exact: true })
     .boundingBox();
   const heading = await page
-    .getByRole("heading", { name: "A wider view. A closer read." })
+    .getByRole("heading", { name: "A Wider View. A Closer Read." })
     .boundingBox();
   expect(brand).not.toBeNull();
   expect(heading).not.toBeNull();
@@ -48,10 +48,10 @@ test("Discover presents attributed archive evidence without ranking or integrity
 }) => {
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "A wider view. A closer read." }),
+    page.getByRole("heading", { name: "A Wider View. A Closer Read." }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "From the archive", exact: true }),
+    page.getByRole("heading", { name: "From the Archive", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("link", { name: headline, exact: true }),
@@ -62,7 +62,7 @@ test("Discover presents attributed archive evidence without ranking or integrity
   await expect(page.locator(".story-lead")).toContainText(
     "manual procedures remain available",
   );
-  await expect(page.locator(".story-lead")).toContainText("Source excerpt");
+  await expect(page.locator(".story-lead")).toContainText("Source Excerpt");
   await expect(page.locator(".story-lead time").first()).toHaveAttribute(
     "datetime",
     "2026-10-03T08:00:00.000Z",
@@ -71,14 +71,14 @@ test("Discover presents attributed archive evidence without ranking or integrity
   await expect(page.locator("#main-content")).not.toContainText("Latest News");
   await expect(page.locator("#main-content")).not.toContainText("verified");
   await expect(
-    page.getByRole("heading", { name: "Operational overview" }),
+    page.getByRole("heading", { name: "Operational Overview" }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole("status").filter({ hasText: "MOCK WORKSPACE" }),
+    page.getByRole("status").filter({ hasText: "Mock Workspace" }),
   ).toBeVisible();
   await page.getByRole("link", { name: headline, exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Source facts", exact: true }),
+    page.getByRole("heading", { name: "Source Facts", exact: true }),
   ).toBeVisible();
 });
 
@@ -91,23 +91,23 @@ test("Operations retains the overview and existing administration routes", async
     .click();
   await expect(page).toHaveURL(/\/operations$/);
   await expect(
-    page.getByRole("heading", { name: "Operational overview", exact: true }),
+    page.getByRole("heading", { name: "Operational Overview", exact: true }),
   ).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(6);
   await expect(
-    page.getByRole("heading", { name: "Review queue", exact: true }),
+    page.getByRole("heading", { name: "Review Queue", exact: true }),
   ).toBeVisible();
   await page
-    .getByRole("link", { name: "Sources / admin", exact: true })
+    .getByRole("link", { name: "Sources / Admin", exact: true })
     .click();
   await expect(
     page.getByRole("heading", { name: "Administration", exact: true }),
   ).toBeVisible();
   await page
-    .getByRole("link", { name: "Audit / security", exact: true })
+    .getByRole("link", { name: "Audit / Security", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Session context", exact: true }),
+    page.getByRole("heading", { name: "Session Context", exact: true }),
   ).toBeVisible();
   await page
     .getByRole("link", { name: "News & Intelligence", exact: true })
@@ -131,7 +131,7 @@ test("mobile navigation supports Escape, focus restoration and route changes", a
   await expect(menu).toBeFocused();
   await menu.click();
   await page
-    .getByRole("link", { name: "Events / timeline", exact: true })
+    .getByRole("link", { name: "Events / Timeline", exact: true })
     .click();
   await expect(page).toHaveURL(/\/events$/);
   await expect(menu).toHaveAttribute("aria-expanded", "false");
@@ -228,7 +228,7 @@ test("long source strings and media titles wrap at narrow mobile width", async (
     });
   });
   await page.goto("/");
-  await page.getByLabel("Data mode").selectOption("real");
+  await page.getByLabel("Data Mode").selectOption("real");
   await expect(page.locator(".story-lead")).toContainText(token);
   await expect(page.locator(".story-row")).toHaveCount(3);
   await expect(page.getByText("Awaiting pipeline completion.")).toBeVisible();
@@ -256,20 +256,20 @@ test("real permission failures clear the mock homepage while preserving navigati
   );
   await page.goto("/");
   await expect(page.locator(".story-lead")).toBeVisible();
-  await page.getByLabel("Data mode").selectOption("real");
+  await page.getByLabel("Data Mode").selectOption("real");
   await expect(page.locator(".story-lead")).toHaveCount(0);
   await expect(page.getByRole("alert").first()).toContainText("FORBIDDEN");
   await expect(page.getByRole("alert").first()).toContainText(
     "editorial-denial",
   );
   await expect(
-    page.getByRole("status").filter({ hasText: "REAL API" }),
+    page.getByRole("status").filter({ hasText: "Real API" }),
   ).toBeVisible();
-  await expect(page.locator(".identity")).toContainText("Token required");
+  await expect(page.locator(".identity")).toContainText("Token Required");
   await expect(
     page.getByRole("link", { name: "Search", exact: true }),
   ).toBeVisible();
-  await page.getByLabel("Data mode").selectOption("mock");
+  await page.getByLabel("Data Mode").selectOption("mock");
   await expect(page.locator(".story-lead")).toBeVisible();
   await expect(
     page.getByRole("alert").filter({ hasText: "FORBIDDEN" }),
@@ -289,9 +289,9 @@ test("empty real archive and media retain useful entry points without fictional 
     }),
   );
   await page.goto("/");
-  await page.getByLabel("Data mode").selectOption("real");
+  await page.getByLabel("Data Mode").selectOption("real");
   await expect(
-    page.getByRole("heading", { name: "No source records to explore yet." }),
+    page.getByRole("heading", { name: "No Source Records to Explore Yet." }),
   ).toBeVisible();
   await expect(page.locator(".story-lead")).toHaveCount(0);
   await expect(
@@ -299,10 +299,10 @@ test("empty real archive and media retain useful entry points without fictional 
   ).toBeVisible();
   await expect(page.getByText("No current video references.")).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Open the document register →" }),
+    page.getByRole("link", { name: "Open the Document Register →" }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Explore multimedia", exact: false }),
+    page.getByRole("link", { name: "Explore Multimedia", exact: false }),
   ).toBeVisible();
 });
 
@@ -359,7 +359,7 @@ test("slow archive and failed remote image leave independent media and source li
     });
   });
   await page.goto("/");
-  await page.getByLabel("Data mode").selectOption("real");
+  await page.getByLabel("Data Mode").selectOption("real");
   await expect(
     page.getByText("Loading intelligence records…").first(),
   ).toBeVisible();
@@ -370,10 +370,10 @@ test("slow archive and failed remote image leave independent media and source li
     }),
   ).toBeVisible();
   await expect(
-    page.getByText("Image unavailable", { exact: true }),
+    page.getByText("Image Unavailable", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Open publisher article ↗", exact: true }),
+    page.getByRole("link", { name: "Open Publisher Article ↗", exact: true }),
   ).toHaveAttribute("href", "https://publisher.example.org/report");
   await expect(
     page.getByText("Remote publisher image · bytes not verified"),
@@ -403,7 +403,7 @@ test("identity changes and sign-out isolate cached evidence across both experien
         json: {
           error: {
             code: "UNAUTHORIZED",
-            message: "Token required",
+            message: "Token Required",
             request_id: "synthetic-auth",
           },
         },
@@ -452,9 +452,9 @@ test("identity changes and sign-out isolate cached evidence across both experien
     }
   });
   await page.goto("/");
-  await page.getByLabel("Data mode").selectOption("real");
-  await page.getByLabel("Access token").fill("synthetic-first");
-  await page.getByRole("button", { name: "Use token", exact: true }).click();
+  await page.getByLabel("Data Mode").selectOption("real");
+  await page.getByLabel("Access Token").fill("synthetic-first");
+  await page.getByRole("button", { name: "Use Token", exact: true }).click();
   await expect(page.locator(".identity")).toContainText("First test identity");
   await expect(page.locator(".story-lead")).toContainText(
     "First test identity source record",
@@ -463,8 +463,8 @@ test("identity changes and sign-out isolate cached evidence across both experien
     .getByRole("link", { name: "Operations & Security", exact: true })
     .click();
   await expect(page.locator(".identity")).toContainText("First test identity");
-  await page.getByLabel("Access token").fill("synthetic-second");
-  await page.getByRole("button", { name: "Use token", exact: true }).click();
+  await page.getByLabel("Access Token").fill("synthetic-second");
+  await page.getByRole("button", { name: "Use Token", exact: true }).click();
   await expect(page.locator(".identity")).toContainText("Second test identity");
   await expect(page.locator("#main-content")).not.toContainText(
     "First test identity source record",
@@ -475,7 +475,7 @@ test("identity changes and sign-out isolate cached evidence across both experien
   await expect(page.locator(".story-lead")).toContainText(
     "Second test identity source record",
   );
-  await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  await page.getByRole("button", { name: "Sign Out", exact: true }).click();
   await expect(page.locator(".identity")).toContainText("Anonymous");
   await expect(page.locator(".story-lead")).toHaveCount(0);
   await expect(page.getByRole("alert").first()).toContainText("UNAUTHORIZED");

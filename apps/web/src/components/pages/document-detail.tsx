@@ -12,10 +12,10 @@ export function DocumentDetail({ id }: { id: string }) {
   return (
     <>
       <Link className="back-link" href="/documents">
-        ← Evidence register
+        ← Evidence Register
       </Link>
       <PageHeading
-        title={view?.document.title ?? "Document detail"}
+        title={view?.document.title ?? "Document Detail"}
         description="Source material, analytical assessments and evidence lineage."
       />
       <QueryState
@@ -29,8 +29,8 @@ export function DocumentDetail({ id }: { id: string }) {
             <div className="detail-grid">
               <div className="detail-primary">
                 <Panel
-                  title="Source facts"
-                  action={<Badge tone="fact">Source statement</Badge>}
+                  title="Source Facts"
+                  action={<Badge tone="fact">Source Statement</Badge>}
                 >
                   <p className="panel-intro">
                     Reported by {view.source.name}. Attribution does not
@@ -46,7 +46,7 @@ export function DocumentDetail({ id }: { id: string }) {
                     <dd>
                       {view.source.name} · {view.source.kind}
                     </dd>
-                    <dt>Source address</dt>
+                    <dt>Source Address</dt>
                     <dd>
                       {view.source.url ? (
                         <a
@@ -54,7 +54,7 @@ export function DocumentDetail({ id }: { id: string }) {
                           target="_blank"
                           rel="noreferrer"
                         >
-                          Open source address ↗
+                          Open Source Address ↗
                         </a>
                       ) : (
                         "Uploaded evidence; no source URL"
@@ -62,7 +62,7 @@ export function DocumentDetail({ id }: { id: string }) {
                     </dd>
                     <dt>Document ID</dt>
                     <dd className="hash">{view.document.document_id}</dd>
-                    <dt>Revision / language</dt>
+                    <dt>Revision / Language</dt>
                     <dd>
                       {view.document.revision} /{" "}
                       {view.document.language ?? "Unknown"}
@@ -70,7 +70,7 @@ export function DocumentDetail({ id }: { id: string }) {
                   </dl>
                 </Panel>
                 <AnalysisPanel analyses={view.analyses} />
-                <Panel title="Linked events">
+                <Panel title="Linked Events">
                   {view.events.length ? (
                     view.events.map((e) => (
                       <div className="event-record" key={e.event_id}>
@@ -78,8 +78,8 @@ export function DocumentDetail({ id }: { id: string }) {
                           tone={e.evidence_kind === "fact" ? "fact" : "model"}
                         >
                           {e.evidence_kind === "fact"
-                            ? "Source fact"
-                            : "Model output"}
+                            ? "Source Fact"
+                            : "Model Output"}
                         </Badge>
                         <h3>{e.summary}</h3>
                         <p>
@@ -96,7 +96,7 @@ export function DocumentDetail({ id }: { id: string }) {
               <div className="detail-secondary">
                 <AcquisitionEvidence values={view.acquisition ?? []} />
                 <ProvenanceCard key={id} view={view} />
-                <Panel title="Resolved entities">
+                <Panel title="Resolved Entities">
                   <p className="panel-intro">
                     Entity links reflect resolution output; review them against
                     source evidence.
@@ -112,7 +112,7 @@ export function DocumentDetail({ id }: { id: string }) {
                     </Link>
                   ))}
                 </Panel>
-                <Panel title="Media / attachments">
+                <Panel title="Media / Attachments">
                   {view.media.length ? (
                     view.media.map((m) => (
                       <div className="media-record" key={m.media_id}>

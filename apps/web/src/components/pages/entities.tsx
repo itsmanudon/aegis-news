@@ -9,7 +9,7 @@ export function Entities() {
   return (
     <>
       <PageHeading
-        title="Entity register"
+        title="Entity Register"
         description="Inspect canonical entities and the source evidence associated with them."
       />
       <QueryState
@@ -28,7 +28,7 @@ export function Entities() {
               <p>
                 Created <Timestamp value={e.created_at} />
               </p>
-              <Link href={`/entities/${e.entity_id}`}>Inspect entity →</Link>
+              <Link href={`/entities/${e.entity_id}`}>Inspect Entity →</Link>
             </Panel>
           ))}
         </div>
@@ -43,10 +43,10 @@ export function EntityDetail({ id }: { id: string }) {
   return (
     <>
       <Link className="back-link" href="/entities">
-        ← Entity register
+        ← Entity Register
       </Link>
       <PageHeading
-        title={entity.data?.canonical_name ?? "Entity detail"}
+        title={entity.data?.canonical_name ?? "Entity Detail"}
         description="Canonical identity and linked evidence. Associations require analyst review."
       />
       <QueryState
@@ -56,7 +56,7 @@ export function EntityDetail({ id }: { id: string }) {
       >
         {entity.data && (
           <Panel
-            title="Canonical record"
+            title="Canonical Record"
             action={<Badge>{entity.data.kind}</Badge>}
           >
             <dl className="metadata">
@@ -72,7 +72,7 @@ export function EntityDetail({ id }: { id: string }) {
           </Panel>
         )}
       </QueryState>
-      <Panel title="Associated documents">
+      <Panel title="Associated Documents">
         <QueryState
           pending={records.isPending}
           error={records.error}

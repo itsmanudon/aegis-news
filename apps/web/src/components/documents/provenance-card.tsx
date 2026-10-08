@@ -11,7 +11,7 @@ export function ProvenanceCard({ view }: { view: DocumentView }) {
   });
   return (
     <Panel
-      title="Provenance / integrity"
+      title="Provenance / Integrity"
       action={
         <Badge tone={verification.data?.result ?? view.integrity}>
           {verification.data?.result ?? view.integrity}
@@ -27,13 +27,13 @@ export function ProvenanceCard({ view }: { view: DocumentView }) {
         <p>Open document detail for the complete provenance chain.</p>
       )}
       <dl className="metadata">
-        <dt>Content hash (SHA-256)</dt>
+        <dt>Content Hash (SHA-256)</dt>
         <dd className="hash">
           {view.provenance.find(
             (p) => p.subject_id === view.document.document_id,
           )?.content_hash ?? "Unavailable"}
         </dd>
-        <dt>Signature state</dt>
+        <dt>Signature State</dt>
         <dd>{verification.data?.signature ?? "Not checked in this session"}</dd>
       </dl>
       <ol className="operation-list">
@@ -46,7 +46,7 @@ export function ProvenanceCard({ view }: { view: DocumentView }) {
                 <Timestamp value={p.recorded_at} />
               </span>
               <details>
-                <summary>Operation evidence</summary>
+                <summary>Operation Evidence</summary>
                 <dl className="metadata">
                   <dt>Record</dt>
                   <dd className="hash">{p.provenance_id}</dd>
@@ -69,8 +69,8 @@ export function ProvenanceCard({ view }: { view: DocumentView }) {
         {verification.isPending
           ? "Checking…"
           : mode === "mock"
-            ? "Run mock verification"
-            : "Verify integrity"}
+            ? "Run Mock Verification"
+            : "Verify Integrity"}
       </Button>
       {verification.isPending && <p role="status">Verification in progress…</p>}
       {verification.error && (

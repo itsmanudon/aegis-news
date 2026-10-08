@@ -15,9 +15,8 @@
 .experience {
   color: var(--teal);
   font-size: 11px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.015em;
   font-weight: 650;
-  text-transform: uppercase;
 }
 .controls {
   display: flex;
@@ -30,12 +29,16 @@
 }
 .controls select {
   font: inherit;
-  padding: 7px 9px;
+  padding: 10px 34px 10px 12px;
   color: var(--ink);
-  border: 1px solid var(--supporting);
+  border: 1px solid var(--dividers);
   background: var(--surface);
-  border-radius: 3px;
-  min-height: 36px;
+  border-radius: var(--radius-control);
+  min-height: 44px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%2357616D' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
   max-width: 100%;
 }
 .identity {
@@ -103,8 +106,7 @@
 }
 .navigation a:hover {
   color: var(--teal);
-  text-decoration: underline;
-  text-underline-offset: 5px;
+  text-decoration: none;
 }
 .navigation a[aria-current="page"] {
   color: var(--teal);
@@ -137,8 +139,8 @@
 .modeNotice strong {
   color: var(--teal);
   white-space: nowrap;
-  font-size: 10px;
-  letter-spacing: 0.05em;
+  font-size: 11px;
+  letter-spacing: 0.015em;
 }
 .accessForm {
   display: flex;
@@ -148,6 +150,7 @@
   background: var(--surface);
   padding: 16px;
   border: 1px solid var(--dividers);
+  border-radius: var(--radius-panel);
   margin-top: 4px;
 }
 .accessForm label {
@@ -163,13 +166,13 @@
   width: 100%;
   min-height: 44px;
   border: 1px solid var(--supporting);
-  border-radius: 3px;
+  border-radius: var(--radius-control);
 }
 .accessForm button {
   font: inherit;
   color: var(--ink);
   border: 1px solid var(--supporting);
-  border-radius: 3px;
+  border-radius: var(--radius-control);
   padding: 10px 14px;
   min-height: 44px;
   background: var(--surface);
@@ -234,7 +237,7 @@
     justify-content: flex-start;
   }
   .controls select {
-    min-height: 38px;
+    min-height: 44px;
   }
   .identity {
     flex-basis: 100%;
@@ -305,5 +308,11 @@
 @media (max-width: 350px) {
   .wordmark {
     font-size: 32px;
+  }
+}
+@media (forced-colors: active) {
+  .controls select {
+    appearance: auto;
+    background-image: none;
   }
 }

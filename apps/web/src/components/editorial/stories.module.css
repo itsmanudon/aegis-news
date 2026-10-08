@@ -7,12 +7,25 @@
   min-width: 0;
 }
 .metadata {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px 16px;
+  display: grid;
+  gap: 10px;
   font-size: 11px;
   color: var(--supporting);
   line-height: 1.7;
+}
+.times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin: 0;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.times dt {
+  margin-bottom: 3px;
+  font-weight: 550;
+}
+.times dd {
+  margin: 0;
 }
 .source {
   flex-basis: 100%;

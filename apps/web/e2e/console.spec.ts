@@ -5,9 +5,9 @@ test("operations to document, model metadata, verification and entity evidence",
 }) => {
   await page.goto("/operations");
   await expect(
-    page.getByRole("heading", { name: "Operational overview" }),
+    page.getByRole("heading", { name: "Operational Overview" }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "Open evidence register" }).click();
+  await page.getByRole("link", { name: "Open Evidence Register" }).click();
   await page
     .getByRole("link", {
       name: "Port Meridian reports disruption to cargo scheduling",
@@ -16,21 +16,21 @@ test("operations to document, model metadata, verification and entity evidence",
     .click();
   for (const label of [
     "Published",
-    "First seen",
+    "First Seen",
     "Ingested",
-    "Intelligence available",
+    "Intelligence Available",
   ])
     await expect(
       page.locator("dt").filter({ hasText: new RegExp("^" + label + "$") }),
     ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Source facts" }),
+    page.getByRole("heading", { name: "Source Facts" }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Model-generated intelligence" }),
+    page.getByRole("heading", { name: "Model-Generated Intelligence" }),
   ).toBeVisible();
   await expect(page.getByText("aegis-topic-demo / 0.3.1")).toBeVisible();
-  await page.getByRole("button", { name: "Run mock verification" }).click();
+  await page.getByRole("button", { name: "Run Mock Verification" }).click();
   await expect(
     page.getByText("Simulated result · Fixture content and signature match."),
   ).toBeVisible();
@@ -58,46 +58,46 @@ test("feed filters, empty state and historical availability", async ({
     }),
   ).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(1);
-  await page.getByRole("button", { name: "Reset filters" }).click();
-  await page.getByLabel("Filter documents").fill("no-match-value");
+  await page.getByRole("button", { name: "Reset Filters" }).click();
+  await page.getByLabel("Filter Documents").fill("no-match-value");
   await expect(page.getByText("No records match these filters.")).toBeVisible();
-  await page.getByRole("button", { name: "Reset filters" }).click();
-  await page.getByLabel("Knowledge cutoff (UTC)").fill("2026-10-03T08:04");
+  await page.getByRole("button", { name: "Reset Filters" }).click();
+  await page.getByLabel("Knowledge Cutoff (UTC)").fill("2026-10-03T08:04");
   await expect(page.locator("tbody tr")).toHaveCount(1);
   await expect(page.getByText("Pending", { exact: true })).toBeVisible();
 });
 test("search source text and reset results", async ({ page }) => {
   await page.goto("/search");
-  await page.getByLabel("Search terms").fill("credentials");
+  await page.getByLabel("Search Terms").fill("credentials");
   await expect(page.locator("tbody tr")).toHaveCount(1);
   await expect(
     page.getByRole("link", {
       name: "Northstar Logistics issues advisory on credential exposure",
     }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Reset filters" }).click();
+  await page.getByRole("button", { name: "Reset Filters" }).click();
   await expect(page.locator("tbody tr")).toHaveCount(6);
 });
 test("timeline evidence filtering and security source shells", async ({
   page,
 }) => {
   await page.goto("/events");
-  await page.getByLabel("Evidence kind").selectOption("model_output");
+  await page.getByLabel("Evidence Kind").selectOption("model_output");
   await expect(page.locator(".timeline > li")).toHaveCount(1);
-  await expect(page.getByText("Model output", { exact: true })).toBeVisible();
+  await expect(page.getByText("Model Output", { exact: true })).toBeVisible();
   await page
     .getByRole("link", { name: "Operations & Security", exact: true })
     .click();
   await page
-    .getByRole("link", { name: "Audit / security", exact: true })
+    .getByRole("link", { name: "Audit / Security", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Session context" }),
+    page.getByRole("heading", { name: "Session Context" }),
   ).toBeVisible();
   await page.getByLabel("Outcome", { exact: true }).selectOption("denied");
   await expect(page.locator("tbody tr")).toHaveCount(1);
   await page
-    .getByRole("link", { name: "Sources / admin", exact: true })
+    .getByRole("link", { name: "Sources / Admin", exact: true })
     .click();
   await expect(
     page.getByRole("heading", { name: "Maritime Operations Bulletin" }),
@@ -108,7 +108,7 @@ test("timeline evidence filtering and security source shells", async ({
 });
 test("failed and unsigned verification remain distinct", async ({ page }) => {
   await page.goto("/documents/doc_00000000-0000-4000-8000-000000000002");
-  await page.getByRole("button", { name: "Run mock verification" }).click();
+  await page.getByRole("button", { name: "Run Mock Verification" }).click();
   await expect(
     page.getByText(
       "Simulated result · Fixture signature does not match. Hold for review.",
@@ -118,7 +118,7 @@ test("failed and unsigned verification remain distinct", async ({ page }) => {
   await expect(
     page.getByText("corridor-report.txt", { exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Run mock verification" }).click();
+  await page.getByRole("button", { name: "Run Mock Verification" }).click();
   await expect(
     page.getByText(
       "Simulated result · Fixture has no signature. Integrity is unverified.",
@@ -137,7 +137,7 @@ test("real mode clears fixture records and identity, makes only contracted reque
         json: {
           error: {
             code: "UNAUTHORIZED",
-            message: "Token required",
+            message: "Token Required",
             request_id: "real-1",
           },
         },
@@ -158,13 +158,13 @@ test("real mode clears fixture records and identity, makes only contracted reque
   });
   await page.goto("/documents");
   await expect(page.locator("tbody tr")).toHaveCount(6);
-  await page.getByLabel("Data mode").selectOption("real");
+  await page.getByLabel("Data Mode").selectOption("real");
   await expect(
-    page.getByText("Token required", { exact: true }).first(),
+    page.getByText("Token Required", { exact: true }).first(),
   ).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(0);
   await expect(
-    page.locator(".identity").getByText("Token required"),
+    page.locator(".identity").getByText("Token Required"),
   ).toBeVisible();
   await page
     .getByRole("link", { name: "Operations & Security", exact: true })
@@ -181,8 +181,8 @@ test("real mode clears fixture records and identity, makes only contracted reque
       "/api/v1/youtube-references",
     ]),
   );
-  await page.getByLabel("Data mode").selectOption("mock");
-  await expect(page.getByText("Simulated identity")).toBeVisible();
+  await page.getByLabel("Data Mode").selectOption("mock");
+  await expect(page.getByText("Simulated Identity")).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(6);
 });
 test("network failure and missing document have recoverable states", async ({
@@ -190,7 +190,7 @@ test("network failure and missing document have recoverable states", async ({
 }) => {
   await page.route("http://localhost:8000/**", (route) => route.abort());
   await page.goto("/");
-  await page.getByLabel("Data mode").selectOption("real");
+  await page.getByLabel("Data Mode").selectOption("real");
   await expect(
     page
       .getByText(
@@ -198,7 +198,7 @@ test("network failure and missing document have recoverable states", async ({
       )
       .first(),
   ).toBeVisible();
-  await page.getByLabel("Data mode").selectOption("mock");
+  await page.getByLabel("Data Mode").selectOption("mock");
   await page.goto("/documents/unknown");
   await expect(page.getByText("Document was not found.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Retry" })).toBeVisible();
@@ -206,7 +206,7 @@ test("network failure and missing document have recoverable states", async ({
 test("provenance view shows operation evidence", async ({ page }) => {
   await page.goto("/provenance");
   await expect(
-    page.getByRole("heading", { name: "Provenance / integrity", exact: true }),
+    page.getByRole("heading", { name: "Provenance / Integrity", exact: true }),
   ).toHaveCount(7);
   await page.locator("summary").first().click();
   await expect(
@@ -226,7 +226,7 @@ test("mobile navigation and keyboard skip link", async ({ page }) => {
   await menu.click();
   await page.getByRole("link", { name: "Documents", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "News / documents" }),
+    page.getByRole("heading", { name: "News / Documents" }),
   ).toBeVisible();
   await expect(menu).toHaveAttribute("aria-expanded", "false");
   expect(

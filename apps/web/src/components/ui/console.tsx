@@ -13,7 +13,22 @@ export function Badge({
   children: React.ReactNode;
   tone?: string;
 }) {
-  return <span className={`badge ${tone}`}>{children}</span>;
+  const statuses: Record<string, string> = {
+    verified: "Verified",
+    failed: "Failed",
+    unverified: "Unverified",
+    unavailable: "Unavailable",
+    allowed: "Allowed",
+    denied: "Denied",
+    warning: "Warning",
+  };
+  return (
+    <span className={`badge ${tone}`}>
+      {typeof children === "string"
+        ? (statuses[children] ?? children)
+        : children}
+    </span>
+  );
 }
 export function Panel({
   title,
@@ -46,7 +61,7 @@ export function PageHeading({
   return (
     <div className="page-heading">
       <div>
-        <p className="eyebrow">Intelligence operations</p>
+        <p className="eyebrow">Intelligence Operations</p>
         <h1>{title}</h1>
         <p>{description}</p>
       </div>
@@ -89,8 +104,8 @@ export function QueryState({
         <h2>
           {error instanceof ApiClientError &&
           error.code === "CAPABILITY_UNAVAILABLE"
-            ? "Integration pending"
-            : "Unable to load records"}
+            ? "Integration Pending"
+            : "Unable to Load Records"}
         </h2>
         <p>{error.message}</p>
         {error instanceof ApiClientError && (

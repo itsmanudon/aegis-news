@@ -24,7 +24,7 @@ export function Sources() {
   return (
     <>
       <PageHeading
-        title="Sources / administration"
+        title="Sources / Administration"
         description="Manage news sources and submit articles for processing."
       />
       <p className="notice">
@@ -87,7 +87,7 @@ export function Sources() {
               }}
             >
               <label>
-                Source name
+                Source Name
                 <input name="name" required maxLength={512} />
               </label>
               <button
@@ -95,7 +95,7 @@ export function Sources() {
                   pending || !session?.scopes?.includes("sources:write")
                 }
               >
-                Create source
+                Create Source
               </button>
             </form>
             <form
@@ -138,15 +138,15 @@ export function Sources() {
                 </select>
               </label>
               <label>
-                Article title
+                Article Title
                 <input name="title" required maxLength={512} />
               </label>
               <label>
-                Article text
+                Article Text
                 <textarea name="text" required maxLength={100000} />
               </label>
               <label>
-                Submission key
+                Submission Key
                 <input
                   name="key"
                   required
@@ -159,7 +159,7 @@ export function Sources() {
                   pending || !session?.scopes?.includes("ingestions:write")
                 }
               >
-                Submit article
+                Submit Article
               </button>
             </form>
             {workflowId && (
@@ -174,7 +174,7 @@ export function Sources() {
                     })
                   }
                 >
-                  Check processing status
+                  Check Processing Status
                 </button>
               </p>
             )}

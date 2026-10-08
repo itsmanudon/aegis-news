@@ -8,14 +8,14 @@ describe("editorial source presentation", () => {
     const html = renderToStaticMarkup(<StoryLead view={documents[0]} />);
     expect(html).toContain("Maritime Operations Bulletin");
     expect(html).toContain("manual procedures remain available");
-    expect(html).toContain("Source excerpt");
+    expect(html).toContain("Source Excerpt");
     expect(html).not.toContain("verified");
     expect(html).not.toContain("Confidence");
   });
   it("preserves unknown publication time and UTC first-seen semantics", () => {
     const html = renderToStaticMarkup(<StoryRow view={documents[2]} />);
-    expect(html).toContain("Published time unknown");
-    expect(html).toContain("First seen");
+    expect(html).toContain("<dt>Published</dt><dd><span>Unknown</span>");
+    expect(html).toContain("First Seen");
     expect(html).toContain("2026-10-03T08:16:00.000Z");
   });
   it("does not duplicate a headline-only record as an invented excerpt", () => {
@@ -25,7 +25,7 @@ describe("editorial source presentation", () => {
     };
     const html = renderToStaticMarkup(<StoryLead view={view} />);
     expect(html).toContain("Only headline text is available");
-    expect(html).not.toContain("Source excerpt");
+    expect(html).not.toContain("Source Excerpt");
   });
   it("distinguishes unavailable body text from a headline-only acquisition", () => {
     const view = {

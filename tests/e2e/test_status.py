@@ -18,10 +18,10 @@ def test_running_api_and_web_status():
         page = client.get(web)
         assert page.status_code == 200
         assert "Aegis News" in page.text
-        assert "A wider view." in page.text
-        assert "A closer read." in page.text
+        assert "A Wider View." in page.text
+        assert "A Closer Read." in page.text
         assert 'href="/operations"' in page.text
         operations = client.get(f"{web}/operations")
         assert operations.status_code == 200
-        assert "Operational overview" in operations.text
-        assert "Review queue" in operations.text
+        assert "Operational Overview" in operations.text
+        assert "Review Queue" in operations.text

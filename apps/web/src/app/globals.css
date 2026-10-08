@@ -9,6 +9,12 @@
   --caution: #b45353;
   --supporting: #57616d;
   --surface: #ffffff;
+  --filter-region: #f1f0eb;
+  --radius-small: 6px;
+  --radius-control: 10px;
+  --radius-panel: 12px;
+  --radius-overlay: 16px;
+  --radius-pill: 999px;
   --font-technical: Consolas, "Liberation Mono", "Courier New", monospace;
   /* Retained aliases consumed by existing evidence and operations components. */
   --background: var(--paper);
@@ -20,7 +26,7 @@
   --green: #236446;
   --amber: #865500;
   --danger: var(--caution);
-  --radius: 0.25rem;
+  --radius: var(--radius-control);
 }
 @theme inline {
   --color-background: var(--background);
@@ -28,7 +34,7 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-primary: var(--primary);
-  --radius-lg: var(--radius);
+  --radius-lg: var(--radius-panel);
 }
 * {
   box-sizing: border-box;
@@ -46,6 +52,26 @@ input,
 select,
 textarea {
   font: inherit;
+}
+.timestamp {
+  display: inline-grid;
+  font-family: var(--font-interface), Arial, sans-serif;
+  font-variant-numeric: tabular-nums lining-nums;
+  line-height: 1.6;
+  vertical-align: top;
+}
+.timestamp-date,
+.timestamp-clock {
+  white-space: nowrap;
+}
+.timestamp-clock {
+  color: var(--supporting);
+}
+.timestamp-date {
+  color: var(--ink);
+}
+code {
+  font-family: var(--font-technical);
 }
 :focus-visible {
   outline: 3px solid var(--teal);

@@ -22,7 +22,7 @@ describe("external multimedia", () => {
     const html = renderToStaticMarkup(
       <RemoteImage url="https://127.0.0.1/private" alt="News" />,
     );
-    expect(html).toContain("Image unavailable");
+    expect(html).toContain("Image Unavailable");
     expect(html).not.toContain("<img");
   });
   it("labels YouTube references and links to the official watch page without autoplay", () => {
@@ -40,7 +40,7 @@ describe("external multimedia", () => {
       />,
     );
     expect(html).toContain("Open on YouTube");
-    expect(html).toContain("Video reference");
+    expect(html).toContain("Video Reference");
     expect(html).toContain("Example channel");
     expect(html).not.toContain("autoplay");
     expect(html).not.toContain("iframe");

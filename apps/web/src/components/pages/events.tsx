@@ -16,19 +16,19 @@ export function Events() {
   return (
     <>
       <PageHeading
-        title="Events / timeline"
+        title="Events / Timeline"
         description="Compare occurrence time with the point at which intelligence became available."
       />
       <div className="filter-bar">
         <label>
-          Evidence kind
+          Evidence Kind
           <select
             value={evidence}
             onChange={(e) => setEvidence(e.target.value)}
           >
-            <option value="">All evidence</option>
-            <option value="fact">Source facts</option>
-            <option value="model_output">Model outputs</option>
+            <option value="">All Evidence</option>
+            <option value="fact">Source Facts</option>
+            <option value="model_output">Model Outputs</option>
           </select>
         </label>
         <label>
@@ -43,7 +43,7 @@ export function Events() {
               )
             }
           >
-            <option value="available_at">Intelligence available</option>
+            <option value="available_at">Intelligence Available</option>
             <option value="occurred_at">Occurred</option>
           </select>
         </label>
@@ -58,7 +58,7 @@ export function Events() {
           {events.map((e) => (
             <li key={e.event_id}>
               <Badge tone={e.evidence_kind === "fact" ? "fact" : "model"}>
-                {e.evidence_kind === "fact" ? "Source fact" : "Model output"}
+                {e.evidence_kind === "fact" ? "Source Fact" : "Model Output"}
               </Badge>
               <h2>{e.summary}</h2>
               <dl className="metadata">
@@ -74,14 +74,14 @@ export function Events() {
                 <dd>{e.revision}</dd>
                 {e.analysis_id && (
                   <>
-                    <dt>Analysis reference</dt>
+                    <dt>Analysis Reference</dt>
                     <dd className="hash">{e.analysis_id}</dd>
                   </>
                 )}
               </dl>
               {e.document_ids.map((id) => (
                 <Link key={id} href={`/documents/${id}`}>
-                  Open supporting document →
+                  Open Supporting Document →
                 </Link>
               ))}
             </li>

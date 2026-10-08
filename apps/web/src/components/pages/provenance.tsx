@@ -8,7 +8,7 @@ export function Provenance() {
   return (
     <>
       <PageHeading
-        title="Provenance / integrity"
+        title="Provenance / Integrity"
         description="Inspect content lineage, signature state and verification outcomes."
       />
       <QueryState

@@ -13,11 +13,11 @@ export function Security() {
   return (
     <>
       <PageHeading
-        title="Audit / security"
+        title="Audit / Security"
         description="Review access decisions and integrity signals with explicit identity context."
       />
       <div className="two-column">
-        <Panel title="Session context">
+        <Panel title="Session Context">
           <dl className="metadata">
             <dt>Identity</dt>
             <dd>{session?.displayName ?? "Anonymous"}</dd>
@@ -33,14 +33,14 @@ export function Security() {
             </dd>
           </dl>
         </Panel>
-        <Panel title="Security integration">
+        <Panel title="Security Integration">
           <p className="panel-intro">
             The API enforces scopes for protected actions. Verification checks
             live content and signed lineage; audit history records access
             decisions.
           </p>
           <Badge tone="unverified">
-            {session?.simulated ? "Simulated audit" : "Server authorization"}
+            {session?.simulated ? "Simulated Audit" : "Server Authorization"}
           </Badge>
         </Panel>
       </div>
@@ -51,7 +51,7 @@ export function Security() {
           value={outcome}
           onChange={(e) => setOutcome(e.target.value)}
         >
-          <option value="">All outcomes</option>
+          <option value="">All Outcomes</option>
           <option value="allowed">Allowed</option>
           <option value="denied">Denied</option>
           <option value="warning">Warning</option>
@@ -67,7 +67,7 @@ export function Security() {
         ) : (
           <div className="table-scroll">
             <table>
-              <caption className="sr-only">Audit entries</caption>
+              <caption className="sr-only">Audit Entries</caption>
               <thead>
                 <tr>
                   <th scope="col">Time</th>

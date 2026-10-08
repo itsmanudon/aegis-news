@@ -23,10 +23,12 @@ export function Feed({ search = false }: { search?: boolean }) {
     cursor,
   });
   const sources = useSources();
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const advancedCount = [sourceId, integrity, cutoff].filter(Boolean).length;
   return (
     <>
       <PageHeading
-        title={search ? "Search intelligence" : "News / documents"}
+        title={search ? "Search Intelligence" : "News / Documents"}
         description={
           search
             ? "Search article titles and source text."
@@ -34,71 +36,88 @@ export function Feed({ search = false }: { search?: boolean }) {
         }
       />
       <form
-        className="filter-bar"
+        className="filter-bar document-filters"
         onSubmit={(e) => e.preventDefault()}
-        aria-label="Document filters"
+        aria-label="Document Filters"
       >
-        <div className="filter-field search-filter">
-          <label htmlFor="document-query">
-            {search ? "Search terms" : "Filter documents"}
-          </label>
-          <input
-            id="document-query"
-            type="search"
-            placeholder="Title or article text…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
-        <div className="filter-field">
-          <label htmlFor="document-source">Source</label>
-          <select
-            id="document-source"
-            value={sourceId}
-            onChange={(e) => setSourceId(e.target.value)}
+        <div className="filter-primary">
+          <div className="filter-field search-filter">
+            <label htmlFor="document-query">
+              {search ? "Search Terms" : "Filter Documents"}
+            </label>
+            <input
+              id="document-query"
+              type="search"
+              placeholder="Title or article text…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+          <Button
+            type="button"
+            className="secondary filter-toggle"
+            aria-expanded={advancedOpen}
+            aria-controls="document-advanced-filters"
+            onClick={() => setAdvancedOpen(!advancedOpen)}
           >
-            <option value="">All sources</option>
-            {sources.data?.map((s) => (
-              <option key={s.source_id} value={s.source_id}>
-                {s.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="filter-field">
-          <label htmlFor="document-integrity">Integrity</label>
-          <select
-            id="document-integrity"
-            value={integrity}
-            onChange={(e) => setIntegrity(e.target.value)}
+            Advanced Filters{advancedCount ? ` (${advancedCount})` : ""}
+          </Button>
+          <Button
+            type="button"
+            className="secondary filter-reset"
+            onClick={() => {
+              setQuery("");
+              setSourceId("");
+              setIntegrity("");
+              setCutoff("");
+            }}
           >
-            <option value="">All states</option>
-            <option value="verified">Verified</option>
-            <option value="failed">Failed</option>
-            <option value="unverified">Unverified</option>
-          </select>
+            Reset Filters
+          </Button>
         </div>
-        <div className="filter-field">
-          <label htmlFor="document-cutoff">Knowledge cutoff (UTC)</label>
-          <input
-            id="document-cutoff"
-            type="datetime-local"
-            value={cutoff}
-            onChange={(e) => setCutoff(e.target.value)}
-          />
-        </div>
-        <Button
-          type="button"
-          className="secondary"
-          onClick={() => {
-            setQuery("");
-            setSourceId("");
-            setIntegrity("");
-            setCutoff("");
-          }}
+        <div
+          id="document-advanced-filters"
+          className="advanced-filters"
+          data-open={advancedOpen}
         >
-          Reset filters
-        </Button>
+          <div className="filter-field">
+            <label htmlFor="document-source">Source</label>
+            <select
+              id="document-source"
+              value={sourceId}
+              onChange={(e) => setSourceId(e.target.value)}
+            >
+              <option value="">All Sources</option>
+              {sources.data?.map((s) => (
+                <option key={s.source_id} value={s.source_id}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="filter-field">
+            <label htmlFor="document-integrity">Integrity</label>
+            <select
+              id="document-integrity"
+              value={integrity}
+              onChange={(e) => setIntegrity(e.target.value)}
+            >
+              <option value="">All States</option>
+              <option value="verified">Verified</option>
+              <option value="failed">Failed</option>
+              <option value="unverified">Unverified</option>
+            </select>
+          </div>
+          <div className="filter-field">
+            <label htmlFor="document-cutoff">Knowledge Cutoff (UTC)</label>
+            <input
+              id="document-cutoff"
+              type="datetime-local"
+              value={cutoff}
+              onChange={(e) => setCutoff(e.target.value)}
+            />
+          </div>
+        </div>
       </form>
       {cutoff && (
         <p className="notice">
@@ -109,7 +128,7 @@ export function Feed({ search = false }: { search?: boolean }) {
         </p>
       )}
       <div className="results-heading">
-        <h2>{search ? "Search results" : "Evidence register"}</h2>
+        <h2>{search ? "Search Results" : "Evidence Register"}</h2>
         <span role="status" aria-live="polite">
           {records.data?.length ?? 0} documents
           {records.isFetching && !records.isPending ? " · Updating…" : ""}
@@ -121,12 +140,12 @@ export function Feed({ search = false }: { search?: boolean }) {
         retry={records.refetch}
       >
         <DocumentTable documents={records.data ?? []} />
-        <div className="filter-bar">
+        <div className="pagination" aria-label="Document Pagination">
           <Button
             disabled={!cursor}
             onClick={() => setPosition({ key: filterKey, cursor: undefined })}
           >
-            First page
+            First Page
           </Button>
           <Button
             disabled={!records.data?.nextCursor || records.isFetching}
@@ -134,7 +153,7 @@ export function Feed({ search = false }: { search?: boolean }) {
               setPosition({ key: filterKey, cursor: records.data?.nextCursor })
             }
           >
-            Next page
+            Next Page
           </Button>
         </div>
       </QueryState>

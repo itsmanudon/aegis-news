@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test.use({ trace: "off" }); // Access tokens must not enter trace artifacts.
+test.use({ trace: "off" }); // Access Tokens must not enter trace artifacts.
 test("live MVP: authenticated feed, intelligence, verification, entities, events, search and ingestion", async ({
   page,
   request,
@@ -13,8 +13,8 @@ test("live MVP: authenticated feed, intelligence, verification, entities, events
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/documents");
-  await page.getByLabel("Access token").fill(process.env.AEGIS_E2E_TOKEN!);
-  await page.getByRole("button", { name: "Use token" }).click();
+  await page.getByLabel("Access Token").fill(process.env.AEGIS_E2E_TOKEN!);
+  await page.getByRole("button", { name: "Use Token" }).click();
   await expect(page.locator("tbody tr").first()).toBeVisible();
   await page
     .getByRole("link", {
@@ -24,55 +24,55 @@ test("live MVP: authenticated feed, intelligence, verification, entities, events
     .first()
     .click();
   await expect(
-    page.getByRole("heading", { name: "Model-generated intelligence" }),
+    page.getByRole("heading", { name: "Model-Generated Intelligence" }),
   ).toBeVisible();
   await expect(page.getByText("keyword-topics / 1")).toBeVisible();
-  await page.getByRole("button", { name: "Verify integrity" }).click();
-  await expect(page.locator(".verification-result")).toContainText("verified");
+  await page.getByRole("button", { name: "Verify Integrity" }).click();
+  await expect(page.locator(".verification-result")).toContainText("Verified");
   await page.getByRole("link", { name: "Entities", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Atlas Labs", exact: true }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "Inspect entity" }).first().click();
+  await page.getByRole("link", { name: "Inspect Entity" }).first().click();
   await expect(page.locator("tbody tr").first()).toBeVisible();
   await page
-    .getByRole("link", { name: "Events / timeline", exact: true })
+    .getByRole("link", { name: "Events / Timeline", exact: true })
     .click();
   await expect(page.locator(".timeline > li").first()).toBeVisible();
   await page.getByRole("link", { name: "Search", exact: true }).click();
-  await page.getByLabel("Search terms").fill("Atlas");
+  await page.getByLabel("Search Terms").fill("Atlas");
   await expect(page.locator("tbody tr").first()).toBeVisible();
   await page
     .getByRole("link", { name: "Operations & Security", exact: true })
     .click();
   await page
-    .getByRole("link", { name: "Audit / security", exact: true })
+    .getByRole("link", { name: "Audit / Security", exact: true })
     .click();
   await expect(page.locator("tbody tr").first()).toBeVisible();
   await page
-    .getByRole("link", { name: "Sources / admin", exact: true })
+    .getByRole("link", { name: "Sources / Admin", exact: true })
     .click();
   const sourceName = `Browser synthetic ${Date.now()}`;
-  await page.getByLabel("Source name", { exact: true }).fill(sourceName);
-  await page.getByRole("button", { name: "Create source" }).click();
+  await page.getByLabel("Source Name", { exact: true }).fill(sourceName);
+  await page.getByRole("button", { name: "Create Source" }).click();
   await expect(page.getByRole("heading", { name: sourceName })).toBeVisible();
   await page
     .getByRole("combobox", { name: "Source", exact: true })
     .selectOption({ label: sourceName });
-  await page.getByLabel("Article title").fill("Browser synthetic article");
+  await page.getByLabel("Article Title").fill("Browser synthetic article");
   await page
-    .getByLabel("Article text")
+    .getByLabel("Article Text")
     .fill("Atlas Labs launched new software with strong profit growth.");
-  await page.getByLabel("Submission key").fill(`browser-${Date.now()}`);
-  await page.getByRole("button", { name: "Submit article" }).click();
+  await page.getByLabel("Submission Key").fill(`browser-${Date.now()}`);
+  await page.getByRole("button", { name: "Submit Article" }).click();
   await expect(
-    page.getByRole("button", { name: "Check processing status" }),
+    page.getByRole("button", { name: "Check Processing Status" }),
   ).toBeVisible();
   await expect
     .poll(
       async () => {
         await page
-          .getByRole("button", { name: "Check processing status" })
+          .getByRole("button", { name: "Check Processing Status" })
           .click();
         return page.locator("main").textContent();
       },
@@ -80,11 +80,11 @@ test("live MVP: authenticated feed, intelligence, verification, entities, events
     )
     .toContain('"status":"COMPLETED"');
   await page
-    .getByLabel("Access token")
+    .getByLabel("Access Token")
     .fill(process.env.AEGIS_E2E_VIEWER_TOKEN!);
-  await page.getByRole("button", { name: "Use token" }).click();
+  await page.getByRole("button", { name: "Use Token" }).click();
   await expect(
-    page.getByRole("button", { name: "Create source" }),
+    page.getByRole("button", { name: "Create Source" }),
   ).toBeDisabled();
   const denial = await request.post(
     `${process.env.AEGIS_E2E_API_URL}/api/v1/ingestions`,
@@ -96,7 +96,7 @@ test("live MVP: authenticated feed, intelligence, verification, entities, events
     },
   );
   expect(denial.status()).toBe(403);
-  await page.getByRole("button", { name: "Sign out" }).click();
+  await page.getByRole("button", { name: "Sign Out" }).click();
   await expect(page.locator(".identity")).toContainText("Anonymous");
   expect(errors).toEqual([]);
 });

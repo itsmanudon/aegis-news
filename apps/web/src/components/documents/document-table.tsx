@@ -12,9 +12,9 @@ export function DocumentTable({ documents }: { documents: DocumentView[] }) {
         </caption>
         <thead>
           <tr>
-            <th scope="col">Document / source</th>
+            <th scope="col">Document / Source</th>
             <th scope="col">Published</th>
-            <th scope="col">First seen</th>
+            <th scope="col">First Seen</th>
             <th scope="col">Intelligence</th>
             <th scope="col">Integrity</th>
           </tr>
@@ -31,7 +31,7 @@ export function DocumentTable({ documents }: { documents: DocumentView[] }) {
                 </Link>
                 <span className="row-meta">
                   {v.source.name} · {v.source.kind} ·{" "}
-                  {v.document.language ?? "Unknown language"}
+                  {v.document.language ?? "Unknown Language"}
                 </span>
               </td>
               <td className="date-cell">
@@ -45,7 +45,7 @@ export function DocumentTable({ documents }: { documents: DocumentView[] }) {
                   <span>Open detail for analysis</span>
                 ) : v.analyses.length ? (
                   <>
-                    <Badge tone="model">Model assessment</Badge>
+                    <Badge tone="model">Model Assessment</Badge>
                     <span className="row-meta">
                       {v.analyses.length} analyses ·{" "}
                       <Timestamp

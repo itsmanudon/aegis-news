@@ -17,9 +17,9 @@ test("real corpus: unfiltered dashboard and paginated register use bounded reque
     if (r.url().includes("/intelligence")) intelligence.push(r.url());
   });
   await page.goto("/operations");
-  await expect(page.getByLabel("Data mode")).toHaveValue("real");
-  await page.getByLabel("Access token").fill(process.env.AEGIS_E2E_TOKEN!);
-  await page.getByRole("button", { name: "Use token" }).click();
+  await expect(page.getByLabel("Data Mode")).toHaveValue("real");
+  await page.getByLabel("Access Token").fill(process.env.AEGIS_E2E_TOKEN!);
+  await page.getByRole("button", { name: "Use Token" }).click();
   await expect(page.locator(".queue-record")).toHaveCount(20);
   await expect(page.locator("tbody tr")).toHaveCount(20);
   await page
@@ -28,14 +28,14 @@ test("real corpus: unfiltered dashboard and paginated register use bounded reque
   await page.getByRole("link", { name: "Documents", exact: true }).click();
   await expect(page.locator("tbody tr")).toHaveCount(20);
   const title = await page.locator("tbody tr").first().innerText();
-  await page.getByRole("button", { name: "Next page", exact: true }).click();
+  await page.getByRole("button", { name: "Next Page", exact: true }).click();
   await expect(page.locator("tbody tr").first()).not.toHaveText(title);
   await page.getByRole("link", { name: "Entities", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Entity register", exact: true }),
+    page.getByRole("heading", { name: "Entity Register", exact: true }),
   ).toBeVisible();
   await page
-    .getByRole("link", { name: "Events / timeline", exact: true })
+    .getByRole("link", { name: "Events / Timeline", exact: true })
     .click();
   await expect(page.locator(".timeline > li").first()).toBeVisible();
   expect(intelligence).toHaveLength(0);

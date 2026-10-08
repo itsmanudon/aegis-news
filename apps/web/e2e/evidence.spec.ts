@@ -20,8 +20,8 @@ test("capture public-safe live demo evidence", async ({ page, request }) => {
     });
   };
   await page.goto("/documents");
-  await page.getByLabel("Access token").fill(process.env.AEGIS_E2E_TOKEN!);
-  await page.getByRole("button", { name: "Use token" }).click();
+  await page.getByLabel("Access Token").fill(process.env.AEGIS_E2E_TOKEN!);
+  await page.getByRole("button", { name: "Use Token" }).click();
   await expect(page.locator("tbody tr").first()).toBeVisible();
   await capture("dashboard");
   await page
@@ -32,15 +32,15 @@ test("capture public-safe live demo evidence", async ({ page, request }) => {
     .first()
     .click();
   await expect(
-    page.getByRole("heading", { name: "Model-generated intelligence" }),
+    page.getByRole("heading", { name: "Model-Generated Intelligence" }),
   ).toBeVisible();
   await capture("document-intelligence");
-  await page.getByRole("button", { name: "Verify integrity" }).click();
-  await expect(page.locator(".verification-result")).toContainText("verified");
+  await page.getByRole("button", { name: "Verify Integrity" }).click();
+  await expect(page.locator(".verification-result")).toContainText("Verified");
   await page.locator(".verification-result").scrollIntoViewIfNeeded();
   await capture("provenance-verification");
   await page
-    .getByText("Media / attachments", { exact: true })
+    .getByText("Media / Attachments", { exact: true })
     .scrollIntoViewIfNeeded();
   await expect(page.locator(".media-record").first()).toContainText(
     "image/png",
@@ -54,11 +54,11 @@ test("capture public-safe live demo evidence", async ({ page, request }) => {
   await expect(
     page.getByRole("heading", { name: "Atlas Labs", exact: true }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "Inspect entity" }).first().click();
+  await page.getByRole("link", { name: "Inspect Entity" }).first().click();
   await expect(page.locator("tbody tr").first()).toBeVisible();
   await capture("entity-evidence");
   await page
-    .getByRole("link", { name: "Events / timeline", exact: true })
+    .getByRole("link", { name: "Events / Timeline", exact: true })
     .click();
   await expect(page.locator(".timeline > li").first()).toBeVisible();
   await capture("events");
@@ -66,14 +66,14 @@ test("capture public-safe live demo evidence", async ({ page, request }) => {
     .getByRole("link", { name: "Operations & Security", exact: true })
     .click();
   await page
-    .getByRole("link", { name: "Audit / security", exact: true })
+    .getByRole("link", { name: "Audit / Security", exact: true })
     .click();
   await expect(page.locator("tbody tr").first()).toBeVisible();
   await capture("audit-log");
   await page
-    .getByLabel("Access token")
+    .getByLabel("Access Token")
     .fill(process.env.AEGIS_E2E_VIEWER_TOKEN!);
-  await page.getByRole("button", { name: "Use token" }).click();
+  await page.getByRole("button", { name: "Use Token" }).click();
   const denied = await request.post(
     `${process.env.AEGIS_E2E_API_URL}/api/v1/ingestions`,
     {
@@ -85,10 +85,10 @@ test("capture public-safe live demo evidence", async ({ page, request }) => {
   );
   expect(denied.status()).toBe(403);
   await page
-    .getByRole("link", { name: "Sources / admin", exact: true })
+    .getByRole("link", { name: "Sources / Admin", exact: true })
     .click();
   await expect(
-    page.getByRole("button", { name: "Create source" }),
+    page.getByRole("button", { name: "Create Source" }),
   ).toBeDisabled();
   await capture("scope-denial");
   await page.goto("http://127.0.0.1:38233/namespaces/default/workflows");

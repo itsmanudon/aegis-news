@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { DocumentView } from "@/lib/models";
+import { Timestamp } from "../documents/time-rail";
 import styles from "./stories.module.css";
 
 function StoryTime({
@@ -9,32 +10,23 @@ function StoryTime({
   label: string;
   value: string | null | undefined;
 }) {
-  if (!value || Number.isNaN(Date.parse(value)))
-    return <span>{label} time unknown</span>;
-  const date = new Date(value);
   return (
-    <span>
-      {label}{" "}
-      <time dateTime={date.toISOString()} title={date.toISOString()}>
-        {new Intl.DateTimeFormat("en-GB", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          timeZone: "UTC",
-        }).format(date)}{" "}
-        UTC
-      </time>
-    </span>
+    <div>
+      <dt>{label}</dt>
+      <dd>
+        <Timestamp value={value} />
+      </dd>
+    </div>
   );
 }
 export function StoryMetadata({ view }: { view: DocumentView }) {
   return (
     <div className={styles.metadata}>
       <span className={styles.source}>{view.source.name}</span>
-      <StoryTime label="Published" value={view.document.published_at} />
-      <StoryTime label="First seen" value={view.document.first_seen_at} />
+      <dl className={styles.times}>
+        <StoryTime label="Published" value={view.document.published_at} />
+        <StoryTime label="First Seen" value={view.document.first_seen_at} />
+      </dl>
     </div>
   );
 }
@@ -67,7 +59,7 @@ function SourceExcerpt({
       : text;
   return (
     <div className={styles.excerpt}>
-      <span className={styles.extent}>Source excerpt</span>
+      <span className={styles.extent}>Source Excerpt</span>
       <p>{excerpt}</p>
     </div>
   );
@@ -86,7 +78,7 @@ export function StoryLead({ view }: { view: DocumentView }) {
         className={styles.readLink}
         href={`/documents/${view.document.document_id}`}
       >
-        Read source & inspect evidence <span aria-hidden="true">→</span>
+        Read Source & Inspect Evidence <span aria-hidden="true">→</span>
       </Link>
     </article>
   );

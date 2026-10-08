@@ -12,10 +12,10 @@ test("real provider articles, image references, video metadata and provenance", 
     if (r.url().includes("/api/v1/")) statuses.push(r.status());
   });
   await page.goto("/");
-  await page.getByLabel("Access token").fill(process.env.AEGIS_E2E_TOKEN!);
-  await page.getByRole("button", { name: "Use token" }).click();
+  await page.getByLabel("Access Token").fill(process.env.AEGIS_E2E_TOKEN!);
+  await page.getByRole("button", { name: "Use Token" }).click();
   await expect(
-    page.getByRole("heading", { name: "Provider articles", exact: true }),
+    page.getByRole("heading", { name: "Provider Articles", exact: true }),
   ).toBeVisible();
   await expect(page.locator(".external-card").first()).toBeVisible();
   await page.getByRole("link", { name: "Multimedia", exact: true }).click();
@@ -43,34 +43,34 @@ test("real provider articles, image references, video metadata and provenance", 
   await page.locator(".external-card h3 a").first().click();
   await expect(
     page.getByRole("heading", {
-      name: "Provider acquisition / remote media",
+      name: "Provider Acquisition / Remote Media",
       exact: true,
     }),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", {
-      name: "Model-generated intelligence",
+      name: "Model-Generated Intelligence",
       exact: true,
     }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Verify integrity" }).click();
+  await page.getByRole("button", { name: "Verify Integrity" }).click();
   await expect(
-    page.getByText("verified", { exact: true }).first(),
+    page.getByText("Verified", { exact: true }).first(),
   ).toBeVisible();
   await page
     .getByRole("link", { name: "Operations & Security", exact: true })
     .click();
   await page
-    .getByRole("link", { name: "Sources / admin", exact: true })
+    .getByRole("link", { name: "Sources / Admin", exact: true })
     .click();
   await expect(
     page.getByRole("heading", {
-      name: "Manual provider acquisition",
+      name: "Manual Provider Acquisition",
       exact: true,
     }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Fetch bounded batch" }),
+    page.getByRole("button", { name: "Fetch Bounded Batch" }),
   ).toBeEnabled();
   expect(statuses).not.toContain(429);
   expect(statuses.filter((s) => s >= 500)).toEqual([]);

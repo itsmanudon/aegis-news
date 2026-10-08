@@ -9,14 +9,14 @@ const newsLinks = [
   ["/documents", "Documents"],
   ["/search", "Search"],
   ["/entities", "Entities"],
-  ["/events", "Events / timeline"],
+  ["/events", "Events / Timeline"],
   ["/multimedia", "Multimedia"],
   ["/provenance", "Verification"],
 ] as const;
 const operationsLinks = [
-  ["/operations", "Operational overview"],
-  ["/sources", "Sources / admin"],
-  ["/security", "Audit / security"],
+  ["/operations", "Operational Overview"],
+  ["/sources", "Sources / Admin"],
+  ["/security", "Audit / Security"],
 ] as const;
 
 export function Masthead({
@@ -46,7 +46,7 @@ export function Masthead({
           {operations ? "Operations & Security" : "News & Intelligence"}
         </span>
         <div className={styles.controls}>
-          <label htmlFor="data-mode">Data mode</label>
+          <label htmlFor="data-mode">Data Mode</label>
           <select
             id="data-mode"
             value={mode}
@@ -54,7 +54,7 @@ export function Masthead({
               setMode(event.target.value === "real" ? "real" : "mock")
             }
           >
-            <option value="mock">Mock development data</option>
+            <option value="mock">Mock Development Data</option>
             <option value="real">Real API</option>
           </select>
           <span className={`identity ${styles.identity}`}>
@@ -63,10 +63,10 @@ export function Masthead({
               : "Anonymous"}
             <small>
               {session?.simulated
-                ? "Simulated identity"
+                ? "Simulated Identity"
                 : session?.state === "authenticated"
                   ? "Authenticated"
-                  : "Token required"}
+                  : "Token Required"}
             </small>
           </span>
         </div>
@@ -131,7 +131,7 @@ export function Masthead({
       <div className={styles.modeNotice} role="status">
         {mode === "mock" ? (
           <>
-            <strong>MOCK WORKSPACE</strong>
+            <strong>Mock Workspace</strong>
             <span>
               Fictional sources, model results, audit entries and verification.
               All timestamps are UTC.
@@ -139,7 +139,7 @@ export function Masthead({
           </>
         ) : (
           <>
-            <strong>REAL API</strong>
+            <strong>Real API</strong>
             <span>
               Protected actions require authorization. Integrity checks do not
               establish factual truth. All timestamps are UTC.
@@ -158,7 +158,7 @@ export function Masthead({
           }}
         >
           <label>
-            Access token
+            Access Token
             <input
               type="password"
               name="token"
@@ -166,9 +166,9 @@ export function Masthead({
               placeholder="Paste development or OIDC token"
             />
           </label>
-          <button type="submit">Use token</button>
+          <button type="submit">Use Token</button>
           <button type="button" onClick={() => setAccessToken("")}>
-            Sign out
+            Sign Out
           </button>
           <p>Held in memory for this session.</p>
         </form>

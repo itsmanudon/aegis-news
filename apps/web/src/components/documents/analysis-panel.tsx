@@ -7,7 +7,7 @@ export function AnalysisPanel({
   analyses: Domain["AnalysisResult"][];
 }) {
   return (
-    <Panel title="Model-generated intelligence">
+    <Panel title="Model-Generated Intelligence">
       <p className="panel-intro">
         Assessments may be incorrect. Confidence is model-reported and is not a
         guarantee of accuracy.
@@ -19,7 +19,7 @@ export function AnalysisPanel({
         <article className="analysis-record" key={a.analysis_id}>
           <h3>
             {a.analysis_type.replaceAll("_", " ")}{" "}
-            <Badge tone="model">Model output</Badge>
+            <Badge tone="model">Model Output</Badge>
           </h3>
           {a.outputs.map((o, i) => (
             <div className="analysis-output" key={i}>
@@ -39,7 +39,7 @@ export function AnalysisPanel({
             </div>
           ))}
           <dl className="metadata">
-            <dt>Model / version</dt>
+            <dt>Model / Version</dt>
             <dd>
               {a.model_name} / {a.model_version}
             </dd>
@@ -53,7 +53,7 @@ export function AnalysisPanel({
             <dd>
               <Timestamp value={a.available_at} />
             </dd>
-            <dt>Configuration hash</dt>
+            <dt>Configuration Hash</dt>
             <dd className="hash">{a.configuration_hash}</dd>
             <dt>Analysis ID</dt>
             <dd className="hash">{a.analysis_id}</dd>

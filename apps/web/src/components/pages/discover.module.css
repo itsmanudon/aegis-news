@@ -12,8 +12,7 @@
   margin: 0 0 16px;
   color: var(--teal);
   font-size: 11px;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
+  letter-spacing: 0.015em;
   font-weight: 600;
   line-height: 1.6;
 }
@@ -167,7 +166,7 @@
   display: inline-flex;
   padding: 10px 16px;
   border: 1px solid var(--teal);
-  border-radius: 3px;
+  border-radius: var(--radius-control);
   background: var(--teal);
   color: white;
   font-size: 13px;

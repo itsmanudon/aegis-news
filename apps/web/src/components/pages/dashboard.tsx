@@ -14,37 +14,37 @@ export function Dashboard() {
   return (
     <>
       <PageHeading
-        title="Operational overview"
+        title="Operational Overview"
         description="A source-first view of evidence, machine assessments and integrity exceptions."
         action={
           <Link className="button" href="/documents">
-            Open evidence register
+            Open Evidence Register
           </Link>
         }
       />
-      <div className="overview-strip" aria-label="Workspace counts">
+      <div className="overview-strip" aria-label="Workspace Counts">
         <div>
-          <span>Documents on loaded page</span>
+          <span>Documents on Loaded Page</span>
           <strong>{records.data ? documents.length : "—"}</strong>
         </div>
         <div>
-          <span>Model assessments</span>
+          <span>Model Assessments</span>
           <strong>
             {records.data
               ? documents.some((v) => v.intelligenceLoaded === false)
-                ? "On detail"
+                ? "On Detail"
                 : documents.reduce((n, v) => n + v.analyses.length, 0)
               : "—"}
           </strong>
         </div>
         <div>
-          <span>Records awaiting review</span>
+          <span>Records Awaiting Review</span>
           <strong className="caution">
             {records.data ? flagged.length : "—"}
           </strong>
         </div>
         <div>
-          <span>API connection</span>
+          <span>API Connection</span>
           <strong className="connection">
             {system.isPending
               ? "Connecting…"
@@ -62,8 +62,8 @@ export function Dashboard() {
       )}
       <div className="two-column">
         <Panel
-          title="Review queue"
-          action={<Link href="/provenance">Inspect provenance</Link>}
+          title="Review Queue"
+          action={<Link href="/provenance">Inspect Provenance</Link>}
         >
           <QueryState
             pending={records.isPending}
@@ -91,8 +91,8 @@ export function Dashboard() {
           </QueryState>
         </Panel>
         <Panel
-          title="Intelligence timeline"
-          action={<Link href="/events">All events</Link>}
+          title="Intelligence Timeline"
+          action={<Link href="/events">All Events</Link>}
         >
           <QueryState
             pending={events.isPending}
@@ -110,8 +110,8 @@ export function Dashboard() {
                   </Link>
                   <Badge tone={e.evidence_kind === "fact" ? "fact" : "model"}>
                     {e.evidence_kind === "fact"
-                      ? "Source fact"
-                      : "Model output"}
+                      ? "Source Fact"
+                      : "Model Output"}
                   </Badge>
                 </li>
               ))}
@@ -120,8 +120,8 @@ export function Dashboard() {
         </Panel>
       </div>
       <Panel
-        title="Evidence on loaded page"
-        action={<Link href="/documents">Browse documents</Link>}
+        title="Evidence on Loaded Page"
+        action={<Link href="/documents">Browse Documents</Link>}
       >
         <QueryState
           pending={records.isPending}

@@ -15,8 +15,8 @@ export function Discover() {
         <div>
           <p className={styles.eyebrow}>Discover / News & Intelligence</p>
           <h1>
-            A wider view.
-            <br />A closer read.
+            A Wider View.
+            <br />A Closer Read.
           </h1>
         </div>
         <div className={styles.introNote}>
@@ -26,15 +26,15 @@ export function Discover() {
             Follow its evidence.
           </p>
           <Link href="/search">
-            Search the archive <span aria-hidden="true">↗</span>
+            Search the Archive <span aria-hidden="true">↗</span>
           </Link>
         </div>
       </div>
       <section aria-labelledby="archive-heading" className={styles.archive}>
         <div className={styles.sectionHeading}>
-          <h2 id="archive-heading">From the archive</h2>
+          <h2 id="archive-heading">From the Archive</h2>
           <Link href="/documents">
-            Open evidence register <span aria-hidden="true">→</span>
+            Open Evidence Register <span aria-hidden="true">→</span>
           </Link>
         </div>
         <p className={styles.orderNote}>
@@ -51,7 +51,7 @@ export function Discover() {
               <div className={styles.leadGrid}>
                 <StoryLead view={lead} />
                 <div className={styles.supporting}>
-                  <p className={styles.eyebrow}>Further reading</p>
+                  <p className={styles.eyebrow}>Further Reading</p>
                   {supporting.slice(0, 2).map((view) => (
                     <StoryRow
                       key={view.document.document_id}
@@ -73,7 +73,7 @@ export function Discover() {
                     <StoryRow key={view.document.document_id} view={view} />
                   ))}
                   <Link className={styles.archiveLink} href="/documents">
-                    Explore the document archive{" "}
+                    Explore the Document Archive{" "}
                     <span aria-hidden="true">→</span>
                   </Link>
                 </div>
@@ -81,23 +81,23 @@ export function Discover() {
                   className={styles.evidenceGuide}
                   aria-labelledby="evidence-guide-heading"
                 >
-                  <p className={styles.eyebrow}>Reading the evidence</p>
+                  <p className={styles.eyebrow}>Reading the Evidence</p>
                   <h2 id="evidence-guide-heading">
-                    A report is <br />a starting point.
+                    A Report Is <br />a Starting Point.
                   </h2>
                   <p>
                     Source statements, model assessments and cryptographic
                     checks answer different questions.
                   </p>
                   <Link href="/entities">
-                    Explore canonical entities <span aria-hidden="true">→</span>
+                    Explore Canonical Entities <span aria-hidden="true">→</span>
                   </Link>
                   <Link href="/events">
-                    Follow source and model events{" "}
+                    Follow Source and Model Events{" "}
                     <span aria-hidden="true">→</span>
                   </Link>
                   <Link href="/provenance">
-                    Inspect provenance <span aria-hidden="true">→</span>
+                    Inspect Provenance <span aria-hidden="true">→</span>
                   </Link>
                   <p className={styles.verificationNote}>
                     A valid hash or signature does not establish that a report
@@ -108,12 +108,12 @@ export function Discover() {
             </>
           ) : (
             <div className={styles.empty} role="status">
-              <h3>No source records to explore yet.</h3>
+              <h3>No Source Records to Explore Yet.</h3>
               <p>
                 Try the document register or explore available media references
                 below.
               </p>
-              <Link href="/documents">Open the document register →</Link>
+              <Link href="/documents">Open the Document Register →</Link>
             </div>
           )}
         </QueryState>

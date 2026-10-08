@@ -12,11 +12,11 @@ test("historical corpus: real search, document intelligence, provenance and prod
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/search");
-  await expect(page.getByLabel("Data mode")).toHaveValue("real");
-  await page.getByLabel("Access token").fill(process.env.AEGIS_E2E_TOKEN!);
-  await page.getByRole("button", { name: "Use token" }).click();
+  await expect(page.getByLabel("Data Mode")).toHaveValue("real");
+  await page.getByLabel("Access Token").fill(process.env.AEGIS_E2E_TOKEN!);
+  await page.getByRole("button", { name: "Use Token" }).click();
   await page
-    .getByLabel("Search terms")
+    .getByLabel("Search Terms")
     .fill(process.env.AEGIS_HISTORICAL_TITLE!);
   await page
     .getByLabel("Source", { exact: true })
@@ -37,22 +37,22 @@ test("historical corpus: real search, document intelligence, provenance and prod
     .first()
     .click();
   await expect(
-    page.getByRole("heading", { name: "Model-generated intelligence" }),
+    page.getByRole("heading", { name: "Model-Generated Intelligence" }),
   ).toBeVisible();
   await expect(page.getByText("keyword-topics / 1")).toBeVisible();
-  await page.getByRole("button", { name: "Verify integrity" }).click();
-  await expect(page.locator(".verification-result")).toContainText("verified");
+  await page.getByRole("button", { name: "Verify Integrity" }).click();
+  await expect(page.locator(".verification-result")).toContainText("Verified");
   await page.getByRole("link", { name: "Entities", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Entity register", exact: true }),
+    page.getByRole("heading", { name: "Entity Register", exact: true }),
   ).toBeVisible();
   await page
-    .getByRole("link", { name: "Events / timeline", exact: true })
+    .getByRole("link", { name: "Events / Timeline", exact: true })
     .click();
   await expect(page.locator(".timeline > li").first()).toBeVisible();
   await page.getByRole("link", { name: "Documents", exact: true }).click();
   await page
-    .getByLabel("Filter documents")
+    .getByLabel("Filter Documents")
     .fill(process.env.AEGIS_HISTORICAL_TITLE!);
   await page
     .getByLabel("Source", { exact: true })

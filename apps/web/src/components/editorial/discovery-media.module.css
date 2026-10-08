@@ -44,8 +44,7 @@
 .label {
   font-size: 12px;
   font-weight: 650;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.015em;
   color: var(--teal);
 }
 .article {
@@ -106,6 +105,21 @@
   font-size: 11px;
   line-height: 1.6;
   margin: 4px 0;
+}
+.timeFields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin: 12px 0;
+  font-size: 11px;
+  color: var(--supporting);
+}
+.timeFields dt {
+  font-weight: 550;
+  margin-bottom: 3px;
+}
+.timeFields dd {
+  margin: 0;
 }
 .publisherLink {
   color: var(--teal);

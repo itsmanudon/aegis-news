@@ -52,7 +52,7 @@ export function RemoteImage({
       onError={() => setFailed(true)}
     />
   ) : (
-    <div className="external-image image-fallback">Image unavailable</div>
+    <div className="external-image image-fallback">Image Unavailable</div>
   );
 }
 
@@ -69,7 +69,7 @@ export function ArticleCard({
     <article className="external-card">
       {image && <RemoteImage url={image} alt="Publisher image reference" />}
       <div className="external-card-body">
-        <Badge>{image ? "Image-backed article" : "Article"}</Badge>
+        <Badge>{image ? "Image-Backed Article" : "Article"}</Badge>
         <h3>
           {article.document_id ? (
             <Link href={`/documents/${article.document_id}`}>
@@ -93,7 +93,7 @@ export function ArticleCard({
         </p>
         {source && (
           <a href={source} target="_blank" rel="noreferrer">
-            Open publisher article ↗
+            Open Publisher Article ↗
           </a>
         )}
       </div>
@@ -108,7 +108,7 @@ export function VideoCard({ video }: { video: Api["YouTubeReference"] }) {
     <article className="external-card">
       <RemoteImage url={video.thumbnail_url} alt={`${video.title} thumbnail`} />
       <div className="external-card-body">
-        <Badge>Video reference</Badge>
+        <Badge>Video Reference</Badge>
         <h3>{video.title}</h3>
         <p>YouTube · {video.channel_title}</p>
         <p>
@@ -146,7 +146,7 @@ export function MultimediaFeed({ compact = false }: { compact?: boolean }) {
   });
   if (mode !== "real")
     return (
-      <Panel title="Provider multimedia">
+      <Panel title="Provider Multimedia">
         <p>
           Provider acquisition is available in Real API mode. Mock mode does not
           simulate successful live fetches.
@@ -156,8 +156,8 @@ export function MultimediaFeed({ compact = false }: { compact?: boolean }) {
   return (
     <>
       <Panel
-        title="Provider articles"
-        action={<Link href="/multimedia">Articles / images / video</Link>}
+        title="Provider Articles"
+        action={<Link href="/multimedia">Articles / Images / Video</Link>}
       >
         <p className="panel-intro">
           Current or delayed provider excerpts. Publisher images remain remote
@@ -179,7 +179,7 @@ export function MultimediaFeed({ compact = false }: { compact?: boolean }) {
           {!compact && (
             <div className="pagination">
               <button disabled={!cursor} onClick={() => setCursor(undefined)}>
-                First page
+                First Page
               </button>
               <button
                 disabled={!articles.data?.pagination.next_cursor}
@@ -187,13 +187,13 @@ export function MultimediaFeed({ compact = false }: { compact?: boolean }) {
                   setCursor(articles.data?.pagination.next_cursor ?? undefined)
                 }
               >
-                Next page
+                Next Page
               </button>
             </div>
           )}
         </QueryState>
       </Panel>
-      <Panel title="YouTube video references">
+      <Panel title="YouTube Video References">
         <QueryState
           pending={videos.isPending}
           error={videos.error}
@@ -226,7 +226,7 @@ export function AcquisitionEvidence({
 }) {
   if (!values.length) return null;
   return (
-    <Panel title="Provider acquisition / remote media">
+    <Panel title="Provider Acquisition / Remote Media">
       {values.map((e, i) => (
         <div key={`${e.provider}:${i}`} className="media-record">
           <p>
@@ -246,7 +246,7 @@ export function AcquisitionEvidence({
                 target="_blank"
                 rel="noreferrer"
               >
-                Open publisher article ↗
+                Open Publisher Article ↗
               </a>
             </p>
           )}

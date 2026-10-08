@@ -41,7 +41,7 @@ export function ProviderAdmin() {
     }
   }
   return (
-    <Panel title="Manual provider acquisition">
+    <Panel title="Manual Provider Acquisition">
       {mode !== "real" ? (
         <p>Live provider controls require Real API mode.</p>
       ) : !permitted ? (
@@ -87,7 +87,7 @@ export function ProviderAdmin() {
               <label>
                 Provider
                 <select name="provider">
-                  <option value="all">All providers</option>
+                  <option value="all">All Providers</option>
                   {providers.data?.map((p) => (
                     <option
                       key={p.provider}
@@ -100,7 +100,7 @@ export function ProviderAdmin() {
                 </select>
               </label>
               <label>
-                News query
+                News Query
                 <input
                   name="query"
                   defaultValue="technology"
@@ -110,7 +110,7 @@ export function ProviderAdmin() {
                 />
               </label>
               <label>
-                Items per provider
+                Items per Provider
                 <input
                   name="limit"
                   type="number"
@@ -129,7 +129,7 @@ export function ProviderAdmin() {
                 </select>
               </label>
               <button disabled={busy || run?.status === "running"}>
-                Fetch bounded batch
+                Fetch Bounded Batch
               </button>
             </form>
             <p className="muted">
@@ -149,7 +149,7 @@ export function ProviderAdmin() {
                   void perform(() => adapter.providerRun!(run.run_id))
                 }
               >
-                Check provider run
+                Check Provider Run
               </button>
               <div className="table-scroll">
                 <table>

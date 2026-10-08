@@ -6,6 +6,8 @@ one provider/identity boundary; all existing product URLs remain supported.
 Reader and operational styles are scoped separately. Pinned Source Serif 4 and
 Inter fonts are served locally; provenance and licenses are recorded in
 [`src/app/fonts/README.md`](src/app/fonts/README.md).
+Shared capitalization, corner, numeric typography and control rules are recorded
+in [Frontend Design Guidance](../../docs/frontend-design-guidance.md).
 
 Run from the repository root:
 
