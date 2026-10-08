@@ -5,6 +5,8 @@ import { useDocuments, useEvents, useSystem } from "@/lib/queries";
 import { DocumentTable } from "../documents/document-table";
 import { Timestamp } from "../documents/time-rail";
 import { Badge, PageHeading, Panel, QueryState } from "../ui/console";
+import { OperationsNav } from "../operations/operations-nav";
+import styles from "../operations/operations.module.css";
 export function Dashboard() {
   const records = useDocuments(),
     events = useEvents(),
@@ -12,7 +14,7 @@ export function Dashboard() {
   const documents = records.data ?? [];
   const flagged = documents.filter((v) => v.integrity !== "verified");
   return (
-    <>
+    <div className={styles.page}>
       <PageHeading
         title="Operational Overview"
         description="A source-first view of evidence, machine assessments and integrity exceptions."
@@ -22,6 +24,7 @@ export function Dashboard() {
           </Link>
         }
       />
+      <OperationsNav active="overview" />
       <div className="overview-strip" aria-label="Workspace Counts">
         <div>
           <span>Documents on Loaded Page</span>
@@ -143,6 +146,6 @@ export function Dashboard() {
         </QueryState>
       </Panel>
       <MultimediaFeed compact />
-    </>
+    </div>
   );
 }

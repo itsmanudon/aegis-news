@@ -88,7 +88,10 @@ export interface AnalystAdapter {
     body: ApiComponents["schemas"]["FetchOptions"],
     signal?: AbortSignal,
   ): Promise<ApiComponents["schemas"]["ProviderRun"]>;
-  providerRun?(id: string, signal?: AbortSignal): Promise<ApiComponents["schemas"]["ProviderRun"]>;
+  providerRun?(
+    id: string,
+    signal?: AbortSignal,
+  ): Promise<ApiComponents["schemas"]["ProviderRun"]>;
   createSource?(
     body: ApiComponents["schemas"]["SourceCreate"],
     signal?: AbortSignal,
@@ -97,8 +100,14 @@ export interface AnalystAdapter {
     body: ApiComponents["schemas"]["IngestionRequest"],
     signal?: AbortSignal,
   ): Promise<Record<string, string>>;
-  ingestBatch?(body: ApiComponents["schemas"]["BatchRequest"], signal?: AbortSignal): Promise<Record<string, unknown>>;
-  ingestionRun?(id: string, signal?: AbortSignal): Promise<Record<string, unknown>>;
+  ingestBatch?(
+    body: ApiComponents["schemas"]["BatchRequest"],
+    signal?: AbortSignal,
+  ): Promise<Record<string, unknown>>;
+  ingestionRun?(
+    id: string,
+    signal?: AbortSignal,
+  ): Promise<Record<string, unknown>>;
   system(signal?: AbortSignal): Promise<SystemResponse>;
   documents(
     filters: DocumentFilters,

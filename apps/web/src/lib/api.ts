@@ -288,8 +288,9 @@ export function createRealAdapter(
     async fetchProvider(provider, body, signal) {
       signal?.throwIfAborted();
       return provider === "all"
-        ? unwrap(await client.POST("/api/v1/providers/fetch-all", { body, signal }))
-            .data
+        ? unwrap(
+            await client.POST("/api/v1/providers/fetch-all", { body, signal }),
+          ).data
         : unwrap(
             await client.POST("/api/v1/providers/{provider}/fetch", {
               params: { path: { provider } },
@@ -410,14 +411,22 @@ export function createRealAdapter(
       return values;
     },
     async sourcePage(signal, cursor) {
-      const result = unwrap(await client.GET("/api/v1/sources", {
-        params: {query: {limit: 20, cursor}}, signal,
-      }));
-      return Object.assign(result.data, {nextCursor: result.pagination.next_cursor ?? undefined});
+      const result = unwrap(
+        await client.GET("/api/v1/sources", {
+          params: { query: { limit: 20, cursor } },
+          signal,
+        }),
+      );
+      return Object.assign(result.data, {
+        nextCursor: result.pagination.next_cursor ?? undefined,
+      });
     },
     async audit(signal, cursor) {
       const result = unwrap(
-        await client.GET("/api/v1/security/audit", { params: {query: {limit: 20, cursor}}, signal }),
+        await client.GET("/api/v1/security/audit", {
+          params: { query: { limit: 20, cursor } },
+          signal,
+        }),
       );
       const values: AuditList = result.data.map((v) => ({
         id: v.event_id,
@@ -452,15 +461,19 @@ export function createRealAdapter(
     },
     async createSource(body, signal) {
       signal?.throwIfAborted();
-      return unwrap(await client.POST("/api/v1/sources", { body, signal })).data;
+      return unwrap(await client.POST("/api/v1/sources", { body, signal }))
+        .data;
     },
     async ingest(body, signal) {
       signal?.throwIfAborted();
-      return unwrap(await client.POST("/api/v1/ingestions", { body, signal })).data;
+      return unwrap(await client.POST("/api/v1/ingestions", { body, signal }))
+        .data;
     },
     async ingestBatch(body, signal) {
       signal?.throwIfAborted();
-      return unwrap(await client.POST("/api/v1/ingestions/batch", {body, signal})).data;
+      return unwrap(
+        await client.POST("/api/v1/ingestions/batch", { body, signal }),
+      ).data;
     },
     async ingestionRun(id, signal) {
       signal?.throwIfAborted();

@@ -8,34 +8,71 @@ describe("bounded intelligence browsing", () => {
       const request = input as Request;
       expect(request.headers.get("Authorization")).toBe("Bearer audit-reader");
       expect(new URL(request.url).searchParams.get("limit")).toBe("20");
-      return new Response(JSON.stringify({
-        data: ["success", "failure", "attempt", "custom"].map((outcome) => ({
-          event_id: outcome, occurred_at: "2026-10-08T10:00:00Z", action: "signature_verification",
-          outcome, actor_hash: null, subject_hash: "hashed-subject", request_id: "request-reference",
-        })), pagination: { has_more: true, next_cursor: "audit|+/==" }, meta: { request_id: "page", api_version: "v1" },
-      }), { headers: { "Content-Type": "application/json" } });
+      return new Response(
+        JSON.stringify({
+          data: ["success", "failure", "attempt", "custom"].map((outcome) => ({
+            event_id: outcome,
+            occurred_at: "2026-10-08T10:00:00Z",
+            action: "signature_verification",
+            outcome,
+            actor_hash: null,
+            subject_hash: "hashed-subject",
+            request_id: "request-reference",
+          })),
+          pagination: { has_more: true, next_cursor: "audit|+/==" },
+          meta: { request_id: "page", api_version: "v1" },
+        }),
+        { headers: { "Content-Type": "application/json" } },
+      );
     });
-    const adapter = createRealAdapter("https://api.example.test", transport, "audit-reader");
+    const adapter = createRealAdapter(
+      "https://api.example.test",
+      transport,
+      "audit-reader",
+    );
     const page = await adapter.audit();
-    expect(page.map((entry) => entry.outcome)).toEqual(["success", "failure", "attempt", "custom"]);
+    expect(page.map((entry) => entry.outcome)).toEqual([
+      "success",
+      "failure",
+      "attempt",
+      "custom",
+    ]);
     expect(page[0].requestId).toBe("request-reference");
     expect(page[0].raw?.actor_hash).toBeNull();
     expect(page.nextCursor).toBe("audit|+/==");
     expect(transport).toHaveBeenCalledOnce();
     await adapter.audit(undefined, page.nextCursor);
-    expect(new URL((transport.mock.calls[1][0] as Request).url).searchParams.get("cursor")).toBe("audit|+/==");
+    expect(
+      new URL((transport.mock.calls[1][0] as Request).url).searchParams.get(
+        "cursor",
+      ),
+    ).toBe("audit|+/==");
   });
   it("reads a bounded registry without changing document source composition", async () => {
     const transport = vi.fn(async (input: RequestInfo | URL) => {
       const cursor = new URL((input as Request).url).searchParams.get("cursor");
-      return new Response(JSON.stringify({data: [documents[0].source], pagination: {has_more: !cursor, next_cursor: cursor ? null : "source+/=="}, meta: {request_id: "registry", api_version: "v1"}}), {headers: {"Content-Type": "application/json"}});
+      return new Response(
+        JSON.stringify({
+          data: [documents[0].source],
+          pagination: {
+            has_more: !cursor,
+            next_cursor: cursor ? null : "source+/==",
+          },
+          meta: { request_id: "registry", api_version: "v1" },
+        }),
+        { headers: { "Content-Type": "application/json" } },
+      );
     });
     const adapter = createRealAdapter("https://api.example.test", transport);
     const page = await adapter.sourcePage();
     expect(transport).toHaveBeenCalledOnce();
     expect(page.nextCursor).toBe("source+/==");
     await adapter.sourcePage(undefined, page.nextCursor);
-    expect(new URL((transport.mock.calls[1][0] as Request).url).searchParams.get("cursor")).toBe("source+/==");
+    expect(
+      new URL((transport.mock.calls[1][0] as Request).url).searchParams.get(
+        "cursor",
+      ),
+    ).toBe("source+/==");
     expect((await adapter.sources()).length).toBe(2);
     expect(transport).toHaveBeenCalledTimes(4);
   });
@@ -45,14 +82,28 @@ describe("bounded intelligence browsing", () => {
       expect(request.method).toBe("POST");
       expect(new URL(request.url).pathname).toBe("/api/v1/ingestions/batch");
       expect(request.headers.get("Authorization")).toBe("Bearer batch-writer");
-      expect(await request.json()).toEqual({items: []});
-      return new Response(JSON.stringify({data: {submissions: [{workflow_id: "known-workflow"}]}, meta: {request_id: "batch", api_version: "v1"}}), {headers: {"Content-Type": "application/json"}});
+      expect(await request.json()).toEqual({ items: [] });
+      return new Response(
+        JSON.stringify({
+          data: { submissions: [{ workflow_id: "known-workflow" }] },
+          meta: { request_id: "batch", api_version: "v1" },
+        }),
+        { headers: { "Content-Type": "application/json" } },
+      );
     });
-    const adapter = createRealAdapter("https://api.example.test", transport, "batch-writer");
-    expect(await adapter.ingestBatch!({items: []})).toEqual({submissions: [{workflow_id: "known-workflow"}]});
+    const adapter = createRealAdapter(
+      "https://api.example.test",
+      transport,
+      "batch-writer",
+    );
+    expect(await adapter.ingestBatch!({ items: [] })).toEqual({
+      submissions: [{ workflow_id: "known-workflow" }],
+    });
     const controller = new AbortController();
     controller.abort();
-    await expect(adapter.ingestBatch!({items: []}, controller.signal)).rejects.toMatchObject({name: "AbortError"});
+    await expect(
+      adapter.ingestBatch!({ items: [] }, controller.signal),
+    ).rejects.toMatchObject({ name: "AbortError" });
     expect(transport).toHaveBeenCalledOnce();
   });
   it("cancels a bounded event read without losing the authorization boundary", async () => {

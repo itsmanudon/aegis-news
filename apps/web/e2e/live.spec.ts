@@ -64,7 +64,7 @@ test("live MVP: authenticated feed, intelligence, verification, entities, events
   const sourceName = `Browser synthetic ${Date.now()}`;
   await page.getByLabel("Source Name", { exact: true }).fill(sourceName);
   await page.getByRole("button", { name: "Create Source" }).click();
-  await expect(page.getByRole("heading", { name: sourceName })).toBeVisible();
+  await expect(page.getByRole("status").filter({hasText:"Source Created"})).toContainText(sourceName);
   await page
     .getByRole("combobox", { name: "Source", exact: true })
     .selectOption({ label: sourceName });
@@ -87,7 +87,7 @@ test("live MVP: authenticated feed, intelligence, verification, entities, events
       },
       { timeout: 60000 },
     )
-    .toContain('"status":"COMPLETED"');
+    .toContain("Workflow Completed");
   await page
     .getByLabel("Access Token")
     .fill(process.env.AEGIS_E2E_VIEWER_TOKEN!);
