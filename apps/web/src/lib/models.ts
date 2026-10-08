@@ -40,7 +40,10 @@ export type DocumentFilters = {
   integrity?: string;
   cutoff?: string;
 };
-export type DocumentList = DocumentView[] & { nextCursor?: string };
+export type BoundedList<T> = T[] & { nextCursor?: string };
+export type DocumentList = BoundedList<DocumentView>;
+export type EntityList = BoundedList<Domain["Entity"]>;
+export type EventList = BoundedList<Domain["NewsEvent"]>;
 export type AuditEntry = {
   id: string;
   at: string;
@@ -94,9 +97,9 @@ export interface AnalystAdapter {
     signal?: AbortSignal,
   ): Promise<DocumentList>;
   document(id: string, signal?: AbortSignal): Promise<DocumentView>;
-  entities(signal?: AbortSignal): Promise<Domain["Entity"][]>;
+  entities(signal?: AbortSignal, cursor?: string): Promise<EntityList>;
   entity(id: string, signal?: AbortSignal): Promise<Domain["Entity"]>;
-  events(signal?: AbortSignal): Promise<Domain["NewsEvent"][]>;
+  events(signal?: AbortSignal, cursor?: string): Promise<EventList>;
   sources(signal?: AbortSignal): Promise<Domain["Source"][]>;
   audit(signal?: AbortSignal): Promise<AuditEntry[]>;
   verify(id: string, signal?: AbortSignal): Promise<Verification>;

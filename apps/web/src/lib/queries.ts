@@ -45,18 +45,18 @@ export function useSources() {
     queryFn: ({ signal }) => adapter.sources(signal),
   });
 }
-export function useEntities() {
+export function useEntities(cursor?: string) {
   const { adapter, mode } = useConsole();
   return useQuery({
-    queryKey: [mode, "entities"],
-    queryFn: ({ signal }) => adapter.entities(signal),
+    queryKey: [mode, "entities", cursor],
+    queryFn: ({ signal }) => adapter.entities(signal, cursor),
   });
 }
-export function useEvents() {
+export function useEvents(cursor?: string) {
   const { adapter, mode } = useConsole();
   return useQuery({
-    queryKey: [mode, "events"],
-    queryFn: ({ signal }) => adapter.events(signal),
+    queryKey: [mode, "events", cursor],
+    queryFn: ({ signal }) => adapter.events(signal, cursor),
   });
 }
 export function useAudit() {

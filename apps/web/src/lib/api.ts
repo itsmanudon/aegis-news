@@ -7,6 +7,9 @@ import type {
   DocumentList,
   IdentityPort,
   IntegrityState,
+  BoundedList,
+  EntityList,
+  EventList,
 } from "./models";
 import { documents, entities, sources, audit } from "./fixtures";
 
@@ -74,6 +77,16 @@ function filterDocuments(filters: DocumentFilters): DocumentView[] {
         (!filters.integrity || v.integrity === filters.integrity),
     );
 }
+function fixturePage<T>(records: T[], cursor?: string): BoundedList<T> {
+  const start = cursor ? Number(cursor) : 0;
+  if (!Number.isInteger(start) || start < 0)
+    throw new ApiClientError("INVALID_ARGUMENT", "Invalid mock cursor.");
+  const page: BoundedList<T> = structuredClone(
+    records.slice(start, start + 20),
+  );
+  if (start + 20 < records.length) page.nextCursor = String(start + 20);
+  return page;
+}
 export function createMockAdapter(latency = 180): AnalystAdapter {
   const wait = (signal?: AbortSignal) => pause(latency, signal);
   return {
@@ -110,9 +123,9 @@ export function createMockAdapter(latency = 180): AnalystAdapter {
           missing("Document"),
       );
     },
-    async entities(signal) {
+    async entities(signal, cursor) {
       await wait(signal);
-      return structuredClone(entities);
+      return fixturePage(entities, cursor);
     },
     async entity(id, signal) {
       await wait(signal);
@@ -120,12 +133,13 @@ export function createMockAdapter(latency = 180): AnalystAdapter {
         entities.find((e) => e.entity_id === id) ?? missing("Entity"),
       );
     },
-    async events(signal) {
+    async events(signal, cursor) {
       await wait(signal);
-      return structuredClone(
+      return fixturePage(
         documents
           .flatMap((v) => v.events)
           .sort((a, b) => b.available_at.localeCompare(a.available_at)),
+        cursor,
       );
     },
     async sources(signal) {
@@ -341,19 +355,15 @@ export function createRealAdapter(
       return values;
     },
     document: detail,
-    async entities(signal) {
-      const values: components["schemas"]["Entity"][] = [];
-      let cursor: string | undefined;
-      do {
-        const r = unwrap(
-          await client.GET("/api/v1/entities", {
-            params: { query: { limit: 100, cursor } },
-            signal,
-          }),
-        );
-        values.push(...r.data);
-        cursor = r.pagination.next_cursor ?? undefined;
-      } while (cursor);
+    async entities(signal, cursor) {
+      const r = unwrap(
+        await client.GET("/api/v1/entities", {
+          params: { query: { limit: 20, cursor } },
+          signal,
+        }),
+      );
+      const values: EntityList = r.data;
+      values.nextCursor = r.pagination.next_cursor ?? undefined;
       return values;
     },
     async entity(id, signal) {
@@ -364,19 +374,15 @@ export function createRealAdapter(
         }),
       ).data;
     },
-    async events(signal) {
-      const values: components["schemas"]["NewsEvent"][] = [];
-      let cursor: string | undefined;
-      do {
-        const r = unwrap(
-          await client.GET("/api/v1/events", {
-            params: { query: { limit: 100, cursor } },
-            signal,
-          }),
-        );
-        values.push(...r.data);
-        cursor = r.pagination.next_cursor ?? undefined;
-      } while (cursor);
+    async events(signal, cursor) {
+      const r = unwrap(
+        await client.GET("/api/v1/events", {
+          params: { query: { limit: 20, cursor } },
+          signal,
+        }),
+      );
+      const values: EventList = r.data;
+      values.nextCursor = r.pagination.next_cursor ?? undefined;
       return values;
     },
     async sources(signal) {
