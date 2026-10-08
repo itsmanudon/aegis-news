@@ -115,3 +115,27 @@ Use 12px compact model-output strips consistently with other inner evidence
 surfaces. Preserve actual entity-extraction predicted type and event-extraction
 occurrence values, including Unknown when absent. These remain model reports,
 not established classifications or facts.
+
+## Operations and Security
+
+Use Inter for dense operational records, forms, counts and statuses; reserve
+serif typography for the page heading. Browse records before action forms.
+Keep tables aligned on desktop and reflow into labelled records on mobile.
+Technical IDs, hashes and raw responses belong in 12px native disclosures;
+long references wrap without horizontal clipping. Preserve actual API strings.
+Source and audit counts describe a single bounded page. Audit filters apply to
+that page; success/failure must not be relabelled allowed/denied.
+
+Separate source creation, captured text submission, known workflow lookup and
+provider acquisition. Scope requirements are visible; the server remains the
+authorization authority. Controls disable during writes, synchronous duplicate
+guards prevent accidental resubmission, and identity/mode changes cancel work.
+No acquisition, mutation retry or status polling runs automatically.
+
+Acceptance is separate from workflow state. Provider configuration is separate
+from health, and acquisition completion is separate from ingestion completion.
+Unknown states stay unknown. Lost write responses can leave accepted work:
+show Request Outcome Unknown rather than confirmed failure, and explain the
+appropriate inspection or unchanged-key retry behavior. Keep earlier accepted
+workflow references after subsequent failures, explicitly labelled Previous
+Accepted Response. Do not invent pipeline history, timestamps or quotas.

@@ -57,8 +57,16 @@ Real mode supports documents/intelligence, entities, events, title/text search, 
   inspector. Select a document, inspect operations, run an explicit authorized
   check and review separate content, chain and signature outcomes. Mock results
   remain simulated; indeterminate outcomes are Unavailable rather than Failed.
-- Audit/security: simulated identity and role context, audit outcome filtering.
-- Sources/admin: read-only registry and explicit administration integration boundary.
+- Security & Audit: current identity/scopes, explicit verification navigation and
+  bounded audit pages with exact outcomes, page-local filtering and technical
+  references. Mock audit is labelled simulated.
+- Sources & Ingestion: bounded source registry, scoped source creation and manual
+  single/batch text submission. Returned workflow references remain visible;
+  acceptance is separate from reported processing state. Known workflow lookup
+  is explicit, without polling or invented pipeline history.
+- Provider Operations: credential/keyless capability distinctions, explicit
+  bounded acquisition and known-run lookup. Acquisition completion is separate
+  from ingestion completion. No automatic acquisition or mutation retries.
 
 In mock mode, all source names, articles, hashes, signatures, models and audit records are fictional. Mock verification returns a typed presentation fixture; it does not perform cryptography. Source facts mean statements attributed to a source, not independently established truth. Model outputs are assessments and confidence is model-reported.
 
@@ -73,6 +81,17 @@ evidence/operations styles in `legacy.css`, scoped under `.legacy-content`.
 Small semantic primitives remain in `src/components/ui`; no new component framework
 is introduced. CSS tokens and Tailwind remain available. Builds need no remote
 font service or decorative assets.
+
+`src/components/operations` contains scoped ledger/table/form styles, workspace
+navigation, a cancellable duplicate-guarded operation hook, contextual error
+feedback, source/submission forms and structured workflow presentation. Source
+registry and audit reads request one 20-record page and retain opaque cursors.
+Legacy all-source composition remains available for document attribution.
+Write transport failures and server failures are conservatively labelled
+Request Outcome Unknown. Source creation and provider acquisition are not
+idempotent; inspect existing records before repeating. Ingestion retries preserve
+source/content/submission keys, and previous accepted batch references survive
+later failures. See the [Phase 1D handoff](../../docs/frontend-phase1d.md).
 
 `src/lib/queries.ts` owns TanStack Query keys and cancellation. `AnalystAdapter` in `models.ts` is a frontend composition interface, not a proposed server payload. Components only consume this port. `api.ts` centralizes transport, typed errors, request IDs, cancellation and a 10-second real request deadline. `IdentityPort` is the session integration seam: mock mode has a simulated analyst; real mode is anonymous with no invented login, tokens or production permissions.
 
@@ -137,7 +156,7 @@ pnpm web:test:e2e
 
 Unit/component tests exercise combined filtering, empty records, knowledge cutoffs, missing IDs, verification outcomes, real-mode isolation, error request IDs, cancellation/deadlines, timestamp normalization and model labels. Playwright exercises major mocked flows, source/security shells, mobile keyboard navigation, unavailable capabilities and connection failures. It intercepts the system endpoint in real-mode tests; no backend branches are needed. CI runs the unit/drift checks through `make check-web`, then installs Chromium and runs Playwright.
 
-For systems with a preinstalled compatible Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to its executable path. If Windows process cleanup prevents the Playwright-managed Next server from exiting, start a mock Next server on port 3104 yourself and set `AEGIS_E2E_EXTERNAL_SERVER=1` for the test process. The standard Linux/CI command manages its own server. Screenshots/traces go to ignored `test-results`. Optionally set `AEGIS_SCREENSHOT_DIR` to an existing local directory for the reproducible Phase 1B and Phase 1C visual-review captures; no golden baselines are updated.
+For systems with a preinstalled compatible Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to its executable path. If Windows process cleanup prevents the Playwright-managed Next server from exiting, start a mock Next server on port 3104 yourself and set `AEGIS_E2E_EXTERNAL_SERVER=1` for the test process. The standard Linux/CI command manages its own server. Screenshots/traces go to ignored `test-results`. Optionally set `AEGIS_SCREENSHOT_DIR` to an existing local directory for the reproducible Phase 1B, Phase 1C and Phase 1D visual-review captures; no golden baselines are updated.
 
 The existing Python stack smoke test checks server-rendered Discover and Operations labels while retaining independent API liveness/readiness checks. That live-stack test still requires its original Compose services; it is separate from the mocked browser suite.
 
@@ -155,6 +174,7 @@ The existing Python stack smoke test checks server-rendered Discover and Operati
 5. Source creation, ingestion and manual provider acquisition already exist with
    scoped server authorization. Source editing, users/roles/policies, production
    login flows, authorized media previews/downloads and durable audit export remain
-   deferred. Entity/event UI cursor browsing is implemented; audit UI pagination
-   remains deferred.
+   deferred. Entity, event, source registry and audit UI cursor browsing is
+   implemented. Global workflow/run discovery and provider health/quota reporting
+   remain unavailable in the current contracts.
 6. No backend ingestion, inference, cryptography, OAuth server, trading, backtesting, Kafka or deployment is implemented.
