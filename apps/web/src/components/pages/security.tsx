@@ -97,7 +97,7 @@ export function Security() {
           <h2 id="audit-heading">Audit History</h2>
           <p role="status">
             {records.data
-              ? `${records.data.length} events on this page`
+              ? `${records.data.length} ${records.data.length === 1 ? "event" : "events"} on this page`
               : "Bounded Audit Browsing"}
           </p>
         </div>

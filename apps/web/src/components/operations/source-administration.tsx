@@ -148,7 +148,7 @@ function SourceCreation({
           {operation.busy ? "Creating Source…" : "Create Source"}
         </Button>
       </form>
-      <OperationError error={operation.error} />
+      <OperationError error={operation.error} write="source" />
       {created && (
         <div role="status" className={styles.result}>
           <strong>Source Created</strong>
@@ -179,7 +179,8 @@ function ArticleSubmission({
   ]);
   const [source, setSource] = useState<Source>(),
     [issue, setIssue] = useState<FormIssue>(),
-    [accepted, setAccepted] = useState<Record<string, unknown>>();
+    [accepted, setAccepted] = useState<Record<string, unknown>>(),
+    [currentResponse, setCurrentResponse] = useState(false);
   const permitted =
     mode === "real" &&
     !!adapter.ingest &&
@@ -227,7 +228,7 @@ function ArticleSubmission({
             return;
           }
           setIssue(undefined);
-          setAccepted(undefined);
+          setCurrentResponse(false);
           const value = await operation.run((signal) =>
             items.length === 1
               ? adapter.ingest!(items[0], signal)
@@ -235,6 +236,7 @@ function ArticleSubmission({
           );
           if (value) {
             setAccepted(value);
+            setCurrentResponse(true);
             const first = record(
               Array.isArray(value.submissions) ? value.submissions[0] : value,
             );
@@ -409,13 +411,17 @@ function ArticleSubmission({
           automatically.
         </p>
       </form>
-      <OperationError error={operation.error} />
+      <OperationError error={operation.error} write="ingestion" />
       {accepted && (
         <div className={styles.result} role="status">
-          <strong>Request Accepted</strong>
+          <strong>
+            {currentResponse
+              ? "Request Accepted"
+              : "Previous Accepted Response"}
+          </strong>
           <p className={styles.hint}>
-            Only acceptance is confirmed. Look up a returned workflow to inspect
-            its reported state.
+            Only acceptance of this response is confirmed. Look up a returned
+            workflow to inspect its reported state.
           </p>
           {references.map((reference, i) => (
             <div key={i}>

@@ -189,6 +189,114 @@ test("provider controls show configuration without health claims and require exp
   ).toBeVisible();
   expect(calls.filter((c) => c.method === "POST")).toHaveLength(1);
 });
+test("lost non-idempotent source and provider responses stay unknown without automatic retries", async ({
+  page,
+}) => {
+  await operationalApi(page);
+  await operator(page);
+  let writes = 0;
+  await page.route("**/api/v1/sources", (route) => {
+    writes++;
+    return route.abort("failed");
+  });
+  await page
+    .getByLabel("Source Name", { exact: true })
+    .fill("Uncertain Source");
+  await page
+    .getByRole("button", { name: "Create Source", exact: true })
+    .click();
+  await expect(
+    page
+      .locator("main [role=alert]")
+      .filter({ hasText: "Request Outcome Unknown" }),
+  ).toContainText("Inspect the registry before retrying");
+  await expect(
+    page.getByText("Source Created", { exact: true }),
+  ).not.toBeVisible();
+  expect(writes).toBe(1);
+  await page.route("**/api/v1/providers/fetch-all", (route) => {
+    writes++;
+    return route.abort("failed");
+  });
+  await page
+    .getByRole("button", { name: "Fetch Bounded Batch", exact: true })
+    .click();
+  await expect(page.locator("#provider-operations [role=alert]")).toContainText(
+    "Request Outcome Unknown",
+  );
+  await expect(page.locator("#provider-operations [role=alert]")).toContainText(
+    "Acquisition may already have started",
+  );
+  await expect(
+    page.getByText("Acquisition Running", { exact: true }),
+  ).not.toBeVisible();
+  expect(writes).toBe(2);
+});
+test("failed repeat batch preserves every earlier accepted reference with previous-response labeling", async ({
+  page,
+}) => {
+  const calls = await operationalApi(page);
+  await operator(page);
+  await page
+    .getByLabel("Source", { exact: true })
+    .selectOption(sources[0].source_id);
+  await page.getByLabel("Article Title", { exact: true }).fill("First Report");
+  await page
+    .getByLabel("Article Text", { exact: true })
+    .fill("First captured text");
+  await page
+    .getByLabel("Submission Key", { exact: true })
+    .fill("first-retained-key");
+  await page
+    .getByRole("button", { name: "Add Another Article", exact: true })
+    .click();
+  await page.getByLabel("Article Title").nth(1).fill("Second Report");
+  await page.getByLabel("Article Text").nth(1).fill("Second captured text");
+  await page.getByLabel("Submission Key").nth(1).fill("second-retained-key");
+  await page.getByRole("button", { name: "Submit Batch", exact: true }).click();
+  await expect(
+    page.getByText("accepted-workflow-2", { exact: true }),
+  ).toBeVisible();
+  let retries = 0;
+  await page.route("**/api/v1/ingestions/batch", (route) => {
+    retries++;
+    return route.abort("failed");
+  });
+  await page.getByRole("button", { name: "Submit Batch", exact: true }).click();
+  await expect(page.locator("main [role=alert]")).toContainText(
+    "Request Outcome Unknown",
+  );
+  await expect(
+    page.getByText("Previous Accepted Response", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("accepted-workflow", { exact: true }),
+  ).not.toBeVisible();
+  for (const id of ["accepted-workflow-1", "accepted-workflow-2"])
+    await expect(page.getByText(id, { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Submission Key").nth(1)).toHaveValue(
+    "second-retained-key",
+  );
+  expect(retries).toBe(1);
+  expect(
+    calls.filter((c) => c.path.endsWith("/ingestions/batch")),
+  ).toHaveLength(1);
+});
+test("provider run lookup aligns its action alongside the desktop field", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await operationalApi(page);
+  await operator(page);
+  const field = await page
+    .getByLabel("Provider Run ID", { exact: true })
+    .boundingBox();
+  const action = await page
+    .getByRole("button", { name: "Check Provider Run", exact: true })
+    .boundingBox();
+  expect(Math.abs(field!.y - action!.y)).toBeLessThan(2);
+  expect(action!.x).toBeGreaterThan(field!.x + field!.width);
+});
 test("provider forbidden responses and mode changes preserve authorization and result isolation", async ({
   page,
 }) => {

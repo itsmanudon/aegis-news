@@ -240,7 +240,10 @@ export function ProviderAdmin() {
                 : "Check Provider Run"}
             </Button>
           </form>
-          <OperationError error={operation.error} />
+          <OperationError
+            error={operation.error}
+            write={action === "acquire" ? "provider" : undefined}
+          />
           {run && <ProviderRunDetails run={run} />}
         </>
       )}

@@ -30,7 +30,7 @@ export function Sources() {
           <h2 id="source-registry-heading">Source Registry</h2>
           <p role="status">
             {records.data
-              ? `${records.data.length} sources on this page`
+              ? `${records.data.length} ${records.data.length === 1 ? "source" : "sources"} on this page`
               : "Bounded Source Browsing"}
           </p>
         </div>

@@ -18,12 +18,21 @@ test("capture operations source ingestion provider audit and state visual review
     if (selector) {
       // Capture a viewport fitted to the section. Tall element crops can
       // incorrectly composite offscreen fixed navigation into the image.
-      const viewport=page.viewportSize()!;
-      const target=page.locator(selector),box=await target.boundingBox();
-      if(!box) throw new Error(`Missing screenshot section: ${selector}`);
-      await page.setViewportSize({width:viewport.width,height:Math.ceil(box.height)+48});
-      await target.evaluate(element=>window.scrollTo(0,window.scrollY+element.getBoundingClientRect().top-24));
-      await page.screenshot({path:output(name),fullPage:false});
+      const viewport = page.viewportSize()!;
+      const target = page.locator(selector),
+        box = await target.boundingBox();
+      if (!box) throw new Error(`Missing screenshot section: ${selector}`);
+      await page.setViewportSize({
+        width: viewport.width,
+        height: Math.ceil(box.height),
+      });
+      await target.evaluate((element) =>
+        window.scrollTo(
+          0,
+          window.scrollY + element.getBoundingClientRect().top,
+        ),
+      );
+      await page.screenshot({ path: output(name), fullPage: false });
       await page.setViewportSize(viewport);
     } else {
       await page.evaluate(() => scrollTo(0, 0));
@@ -41,7 +50,9 @@ test("capture operations source ingestion provider audit and state visual review
     await capture(`phase1d-registry-${name}.png`, "#registry");
     await capture(
       `phase1d-create-source-${name}.png`,
-      "section:has(> h2:text-is('Create Source'))",
+      width > 800
+        ? "div:has(> section > h2:text-is('Create Source'))"
+        : "section:has(> h2:text-is('Create Source'))",
     );
     await page.locator(".source-record summary").first().click();
     await capture(`phase1d-source-details-${name}.png`, "#registry");
@@ -113,6 +124,12 @@ test("capture operations source ingestion provider audit and state visual review
     await expect(
       page.getByRole("heading", { name: "Operational Overview", exact: true }),
     ).toBeVisible();
+    await expect(page.getByText("Connected", { exact: true })).toBeVisible();
+    await expect(
+      page
+        .locator("main [role=status]")
+        .filter({ hasText: "Loading intelligence records" }),
+    ).toHaveCount(0);
     if (width === 390)
       await page
         .getByRole("button", { name: "Navigation", exact: true })

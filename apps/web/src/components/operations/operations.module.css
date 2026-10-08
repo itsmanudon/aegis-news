@@ -264,7 +264,8 @@
   font-size: 20px;
   margin: 0 0 8px;
 }
-.lookup .form {
+.lookup .form,
+.lookup.form {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
   max-width: 780px;
@@ -292,10 +293,9 @@
 }
 .providerForm {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(
-      0,
-      0.7fr
-    ) minmax(0, 0.9fr);
+  grid-template-columns:
+    minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 0.7fr)
+    minmax(0, 0.9fr);
   gap: 18px;
 }
 .providerForm .actions {
@@ -352,6 +352,10 @@
   font-size: 12px;
 }
 @media (max-width: 1024px) {
+  .table details .metadata {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
   .providerForm {
     grid-template-columns: 1fr 1fr;
   }
@@ -424,7 +428,8 @@
   }
   .providerGrid,
   .providerForm,
-  .lookup .form {
+  .lookup .form,
+  .lookup.form {
     grid-template-columns: 1fr;
   }
   .formPanel {
