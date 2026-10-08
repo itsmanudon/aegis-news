@@ -59,10 +59,14 @@ export function useEvents(cursor?: string) {
     queryFn: ({ signal }) => adapter.events(signal, cursor),
   });
 }
-export function useAudit() {
+export function useSourcePage(cursor?: string) {
+  const { adapter, mode } = useConsole();
+  return useQuery({queryKey: [mode, "source-page", cursor], queryFn: ({signal}) => adapter.sourcePage(signal, cursor)});
+}
+export function useAudit(cursor?: string) {
   const { adapter, mode } = useConsole();
   return useQuery({
-    queryKey: [mode, "audit"],
-    queryFn: ({ signal }) => adapter.audit(signal),
+    queryKey: [mode, "audit", cursor],
+    queryFn: ({ signal }) => adapter.audit(signal, cursor),
   });
 }

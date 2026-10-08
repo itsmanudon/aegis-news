@@ -10,6 +10,7 @@ import type {
   BoundedList,
   EntityList,
   EventList,
+  AuditList,
 } from "./models";
 import { documents, entities, sources, audit } from "./fixtures";
 
@@ -146,9 +147,13 @@ export function createMockAdapter(latency = 180): AnalystAdapter {
       await wait(signal);
       return structuredClone(sources);
     },
-    async audit(signal) {
+    async sourcePage(signal, cursor) {
       await wait(signal);
-      return structuredClone(audit);
+      return fixturePage(sources, cursor);
+    },
+    async audit(signal, cursor) {
+      await wait(signal);
+      return fixturePage(audit, cursor);
     },
     async verify(id, signal) {
       await wait(signal);
@@ -280,21 +285,25 @@ export function createRealAdapter(
     async providers(signal) {
       return unwrap(await client.GET("/api/v1/providers", { signal })).data;
     },
-    async fetchProvider(provider, body) {
+    async fetchProvider(provider, body, signal) {
+      signal?.throwIfAborted();
       return provider === "all"
-        ? unwrap(await client.POST("/api/v1/providers/fetch-all", { body }))
+        ? unwrap(await client.POST("/api/v1/providers/fetch-all", { body, signal }))
             .data
         : unwrap(
             await client.POST("/api/v1/providers/{provider}/fetch", {
               params: { path: { provider } },
               body,
+              signal,
             }),
           ).data;
     },
-    async providerRun(id) {
+    async providerRun(id, signal) {
+      signal?.throwIfAborted();
       return unwrap(
         await client.GET("/api/v1/provider-runs/{run_id}", {
           params: { path: { run_id: id } },
+          signal,
         }),
       ).data;
     },
@@ -400,23 +409,28 @@ export function createRealAdapter(
       } while (cursor);
       return values;
     },
-    async audit(signal) {
+    async sourcePage(signal, cursor) {
+      const result = unwrap(await client.GET("/api/v1/sources", {
+        params: {query: {limit: 20, cursor}}, signal,
+      }));
+      return Object.assign(result.data, {nextCursor: result.pagination.next_cursor ?? undefined});
+    },
+    async audit(signal, cursor) {
       const result = unwrap(
-        await client.GET("/api/v1/security/audit", { signal }),
+        await client.GET("/api/v1/security/audit", { params: {query: {limit: 20, cursor}}, signal }),
       );
-      return result.data.map((v) => ({
+      const values: AuditList = result.data.map((v) => ({
         id: v.event_id,
         at: v.occurred_at,
         action: v.action,
-        actor: v.actor_hash ?? "anonymous",
-        subject: v.subject_hash ?? "?",
-        outcome:
-          v.outcome === "success"
-            ? "allowed"
-            : v.outcome === "failure"
-              ? "denied"
-              : "warning",
+        actor: v.actor_hash ?? "Not Supplied",
+        subject: v.subject_hash ?? "Not Supplied",
+        outcome: v.outcome,
+        requestId: v.request_id,
+        raw: v,
       }));
+      values.nextCursor = result.pagination.next_cursor ?? undefined;
+      return values;
     },
     async verify(id, signal) {
       const value = unwrap(
@@ -436,16 +450,24 @@ export function createRealAdapter(
         reason: value.reason,
       };
     },
-    async createSource(body) {
-      return unwrap(await client.POST("/api/v1/sources", { body })).data;
+    async createSource(body, signal) {
+      signal?.throwIfAborted();
+      return unwrap(await client.POST("/api/v1/sources", { body, signal })).data;
     },
-    async ingest(body) {
-      return unwrap(await client.POST("/api/v1/ingestions", { body })).data;
+    async ingest(body, signal) {
+      signal?.throwIfAborted();
+      return unwrap(await client.POST("/api/v1/ingestions", { body, signal })).data;
     },
-    async ingestionRun(id) {
+    async ingestBatch(body, signal) {
+      signal?.throwIfAborted();
+      return unwrap(await client.POST("/api/v1/ingestions/batch", {body, signal})).data;
+    },
+    async ingestionRun(id, signal) {
+      signal?.throwIfAborted();
       return unwrap(
         await client.GET("/api/v1/ingestion-runs/{workflow_id}", {
           params: { path: { workflow_id: id } },
+          signal,
         }),
       ).data;
     },

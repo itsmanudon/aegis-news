@@ -44,13 +44,17 @@ export type BoundedList<T> = T[] & { nextCursor?: string };
 export type DocumentList = BoundedList<DocumentView>;
 export type EntityList = BoundedList<Domain["Entity"]>;
 export type EventList = BoundedList<Domain["NewsEvent"]>;
+export type SourceList = BoundedList<Domain["Source"]>;
+export type AuditList = BoundedList<AuditEntry>;
 export type AuditEntry = {
   id: string;
   at: string;
   action: string;
   actor: string;
-  outcome: "allowed" | "denied" | "warning";
+  outcome: string;
   subject: string;
+  requestId?: string;
+  raw?: ApiComponents["schemas"]["AuditEvent"];
 };
 export type Session = {
   state: "anonymous" | "authenticated";
@@ -82,15 +86,19 @@ export interface AnalystAdapter {
   fetchProvider?(
     provider: ApiComponents["schemas"]["ProviderStatus"]["provider"] | "all",
     body: ApiComponents["schemas"]["FetchOptions"],
+    signal?: AbortSignal,
   ): Promise<ApiComponents["schemas"]["ProviderRun"]>;
-  providerRun?(id: string): Promise<ApiComponents["schemas"]["ProviderRun"]>;
+  providerRun?(id: string, signal?: AbortSignal): Promise<ApiComponents["schemas"]["ProviderRun"]>;
   createSource?(
     body: ApiComponents["schemas"]["SourceCreate"],
+    signal?: AbortSignal,
   ): Promise<Domain["Source"]>;
   ingest?(
     body: ApiComponents["schemas"]["IngestionRequest"],
+    signal?: AbortSignal,
   ): Promise<Record<string, string>>;
-  ingestionRun?(id: string): Promise<Record<string, unknown>>;
+  ingestBatch?(body: ApiComponents["schemas"]["BatchRequest"], signal?: AbortSignal): Promise<Record<string, unknown>>;
+  ingestionRun?(id: string, signal?: AbortSignal): Promise<Record<string, unknown>>;
   system(signal?: AbortSignal): Promise<SystemResponse>;
   documents(
     filters: DocumentFilters,
@@ -101,6 +109,7 @@ export interface AnalystAdapter {
   entity(id: string, signal?: AbortSignal): Promise<Domain["Entity"]>;
   events(signal?: AbortSignal, cursor?: string): Promise<EventList>;
   sources(signal?: AbortSignal): Promise<Domain["Source"][]>;
-  audit(signal?: AbortSignal): Promise<AuditEntry[]>;
+  sourcePage(signal?: AbortSignal, cursor?: string): Promise<SourceList>;
+  audit(signal?: AbortSignal, cursor?: string): Promise<AuditList>;
   verify(id: string, signal?: AbortSignal): Promise<Verification>;
 }
