@@ -124,6 +124,8 @@ Checkpoint commit:5783a010e97730066ca1277c71a0e38d68223470.
 
 ## Checkpoint 2: Topics, Analytics and Chronology
 
+Commit:8bebe125b0629b8bbb43a1eff4a26775ebc8ad99.
+
 Milestones2/3 implemented: /topics directory and exact-cohort dossier,
 publication-ordered supporting evidence, /analytics explicit UTC population,
 observed-day coverage/exact tables, sentiment/source/model counts, supporting
@@ -162,8 +164,37 @@ those helpers are being corrected before the integration checkpoint. Core exact
 topic selection, SQL aggregates, keyset ordering and scope dependencies reviewed
 without an additional established product defect.
 
-Current milestone:4integration hardening, then5measured polish and final gates.
-Open defects: local homepage loading CLS/font preload; runtime/helper hardening
-and date-independent acceptance pending. No destructive operations authorized.
+## Final Gate In Progress
+
+Measured polish complete: Source Serif fallback metrics; separate local italic
+face with preload disabled (used only in hidden-on-mobile desktop masthead);
+editorial headings on new intelligence pages; homepage loading reservation.
+Original official font bytes/licenses retained. Mobile transfer1128028→781340bytes
+in3fresh contexts (346688bytes/30.7% saved). Homepage initial measured CLS
+0.184725–0.185366→0.000125–0.001338; production LCP432–644ms. Lab conditions,
+unthrottled warmserver/OS, fresh contexts, no field CWV/INP claims. Charts bounded,
+no eager intelligence, exact values/table retained. Production metrics JSON outsideGit.
+
+Final frontend API/types/lint exit0,68unit/14files, both mock/real production builds
+exit0. Full production Chromium104passed8skipped/112total in1.3m, including
+7whole-product a11y cases and2performance cases. Skips:2owned live cases rerun
+separately; unsupported native headless zoom;5other opt-in live/corpus/provider
+environments untouched. Axe32route/view checks zero violations;80reflow views,
+all16routes doubled text; blocked-font fallback and keyboard/focus/Escape passed.
+Native zoom and NVDA/VoiceOver plus cross-browser/field metrics remain manual.
+
+Fresh independent re-review confirms five initial findings resolved, no new
+established product/security defect. Runtime stop/write guards validate exact
+process creation/commands/listener/container identity and HTTP/SQL sentinel;
+guard tests22passed. Acquisition windows/expiry derive from stored times; real
+authenticated test calls use sanitized native Node fetch rather than logging
+Playwright request headers. Final guarded actual runtime repeat is underway.
+Root corrected Ruff formatting in own router registration/API route inventory.
+The first final backend repeat had only localhost3000 test CORS preflight failure;
+test subprocess CORS normalized separately from secure API before rerunning.
+
+Current milestone:4final guarded live/security results and5report/screenshots.
+Open defects:none established in product; final execution evidence pending.
+No user volume/data modifications; no destructive operations authorized.
 Resume: read this ledger and git log/status; continue the first incomplete checkpoint.
 Do not repeat completed tasks or reset user work. Update results/SHAs at checkpoints.

@@ -21,6 +21,7 @@ hf_cache/
 node_modules/
 .pnpm-store/
 .next/
+.next-completion/
 *.tsbuildinfo
 apps/web/test-results/
 apps/web/playwright-report/
