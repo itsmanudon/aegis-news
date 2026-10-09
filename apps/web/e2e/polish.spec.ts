@@ -82,13 +82,13 @@ test("timestamp groups and operational numbers use readable interface typography
   await page.goto("/");
   await expect(page.locator(".story-lead time").first()).toHaveAttribute(
     "datetime",
-    "2026-10-03T08:00:00.000Z",
+    "2026-10-03T08:35:00.000Z",
   );
   await expect(page.locator(".story-lead .timestamp-date").first()).toHaveText(
     "3 Oct 2026",
   );
   await expect(page.locator(".story-lead .timestamp-clock").first()).toHaveText(
-    "08:00 UTC",
+    "08:35 UTC",
   );
   await page.goto("/operations");
   await expect(page.locator(".overview-strip strong").first()).toHaveText("6");

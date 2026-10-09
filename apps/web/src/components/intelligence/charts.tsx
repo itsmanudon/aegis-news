@@ -27,6 +27,10 @@ export function CoverageChart({
   }));
   return (
     <div className={styles.chart}>
+      <div className={styles.chartLabels}>
+        <span>Recorded Documents</span>
+        <span>Scale: 0–{maximum}</span>
+      </div>
       <svg
         viewBox="0 0 600 220"
         role="img"
@@ -38,12 +42,6 @@ export function CoverageChart({
           Coverage Data.
         </desc>
         <line x1="40" y1="170" x2="560" y2="170" className={styles.axis} />
-        <text x="10" y="34">
-          {maximum}
-        </text>
-        <text x="15" y="174">
-          0
-        </text>
         {points.length > 1 && (
           <polyline
             points={points.map((point) => `${point.x},${point.y}`).join(" ")}
@@ -63,13 +61,11 @@ export function CoverageChart({
             </title>
           </circle>
         ))}
-        <text x="40" y="204">
-          {sorted[0].day}
-        </text>
-        <text x="560" y="204" textAnchor="end">
-          {sorted.at(-1)!.day}
-        </text>
       </svg>
+      <div className={styles.chartLabels}>
+        <span>{sorted[0].day}</span>
+        {sorted.length > 1 && <span>{sorted.at(-1)!.day}</span>}
+      </div>
       <p className={styles.caption}>
         Recorded Documents. Only observed days are plotted; the line connects
         observations. Missing days are not inferred values or forecasts.

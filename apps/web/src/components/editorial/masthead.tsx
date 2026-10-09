@@ -10,6 +10,8 @@ const newsLinks = [
   ["/search", "Search"],
   ["/entities", "Entities"],
   ["/events", "Events / Timeline"],
+  ["/topics", "Topics"],
+  ["/analytics", "Analytics"],
   ["/multimedia", "Media Lab"],
   ["/provenance", "Verification"],
 ] as const;
@@ -108,7 +110,7 @@ export function Masthead({
               aria-current={
                 (
                   href === "/"
-                    ? pathname === href
+                    ? pathname === href || pathname === "/discovery"
                     : pathname === href || pathname.startsWith(`${href}/`)
                 )
                   ? "page"

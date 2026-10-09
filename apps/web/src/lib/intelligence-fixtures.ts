@@ -29,6 +29,22 @@ const eligible = (cutoff: string, views = documents) =>
   views.filter(
     (view) => Date.parse(view.document.created_at) <= Date.parse(cutoff),
   );
+const aware = (value: string) =>
+  /(?:Z|[+-]\d{2}:\d{2})$/i.test(value) && Number.isFinite(Date.parse(value));
+function validateWindow(start?: string, end?: string) {
+  if (!!start !== !!end) throw new Error("Supply both window start and end.");
+  if (
+    start &&
+    end &&
+    (!aware(start) ||
+      !aware(end) ||
+      Date.parse(end) <= Date.parse(start) ||
+      Date.parse(end) - Date.parse(start) > 366 * 86400000)
+  )
+    throw new Error(
+      "Choose timezone-aware start and end within an interval of at most 366 days.",
+    );
+}
 const instant = (cutoff?: string, cursor?: string) => {
   let value = cutoff ?? new Date().toISOString();
   if (cursor) {
@@ -43,8 +59,7 @@ const instant = (cutoff?: string, cursor?: string) => {
       throw new Error("Invalid mock cursor.");
     }
   }
-  if (!Number.isFinite(Date.parse(value)))
-    throw new Error("Enter a valid cutoff.");
+  if (!aware(value)) throw new Error("Enter a valid cutoff.");
   return value;
 };
 const meta = {
@@ -111,8 +126,9 @@ export function fixtureMemberships(
         before = latest.get(identity);
       if (
         !before ||
-        analysis.available_at > before.available_at ||
-        (analysis.available_at === before.available_at &&
+        Date.parse(analysis.available_at) > Date.parse(before.available_at) ||
+        (Date.parse(analysis.available_at) ===
+          Date.parse(before.available_at) &&
           analysis.analysis_id > before.analysis_id)
       )
         latest.set(identity, analysis);
@@ -157,7 +173,9 @@ export function fixtureTopics(
           ),
         ),
       )[0] as string;
-      const times = members.map((member) => member.available_at).sort();
+      const times = members
+        .map((member) => member.available_at)
+        .sort((a, b) => Date.parse(a) - Date.parse(b));
       return {
         topic_id,
         label,
@@ -216,6 +234,7 @@ export function fixtureTopicDocuments(
 export function fixtureDiscovery(
   filters: DiscoveryFilters,
 ): Api["SnapshotCollectionResponse_DocumentDiscoveryItem_"] {
+  validateWindow(filters.start, filters.end);
   const cutoff = instant(filters.cutoff, filters.cursor),
     membership = filters.topicId
       ? new Set(
@@ -252,6 +271,7 @@ export function fixtureDiscovery(
 export function fixtureAnalytics(
   filters: AnalyticsFilters,
 ): Api["AnalyticsReport"] {
+  validateWindow(filters.start, filters.end);
   const cutoff = instant(filters.cutoff),
     basis = filters.timeBasis ?? "first_seen_at",
     start = Date.parse(filters.start),
@@ -311,7 +331,7 @@ export function fixtureAnalytics(
       )
       .sort(
         (a, b) =>
-          b.available_at.localeCompare(a.available_at) ||
+          Date.parse(b.available_at) - Date.parse(a.available_at) ||
           b.analysis_id.localeCompare(a.analysis_id),
       )[0];
     const output = analysis?.outputs.find(

@@ -1,7 +1,37 @@
 import { expect, it, vi } from "vitest";
 import { createRealAdapter, createMockAdapter } from "./api";
 import { documents } from "./fixtures";
-import { fixtureDiscovery } from "./intelligence-fixtures";
+import { fixtureDiscovery, fixtureMemberships } from "./intelligence-fixtures";
+
+it("mock revision selection compares timestamp instants across timezone offsets", () => {
+  const view = structuredClone(documents[0]);
+  const original = view.analyses.find((a) => a.analysis_type === "topic")!;
+  view.analyses = [
+    {
+      ...original,
+      analysis_id: "older",
+      available_at: "2026-10-03T14:00:00+05:30",
+    },
+    { ...original, analysis_id: "newer", available_at: "2026-10-03T09:00:00Z" },
+  ];
+  const memberships = fixtureMemberships("2026-10-03T10:00:00Z", [view]);
+  expect([...memberships.values()].flat().map((m) => m.analysis_id)).toEqual([
+    "newer",
+  ]);
+});
+
+it("mock discovery rejects partial, reversed, oversized and timezone-free windows like the real contract", () => {
+  for (const interval of [
+    { start: "2026-10-03T00:00:00Z" },
+    { end: "2026-10-03T00:00:00Z" },
+    { start: "2026-10-04T00:00:00Z", end: "2026-10-03T00:00:00Z" },
+    { start: "2024-01-01T00:00:00Z", end: "2026-01-01T00:00:00Z" },
+    { start: "2026-10-03T00:00:00", end: "2026-10-04T00:00:00" },
+  ])
+    expect(() =>
+      fixtureDiscovery({ order: "published_at", ...interval }),
+    ).toThrow();
+});
 
 it("mock chronological cursors apply their frozen cutoff before selecting records", () => {
   const asOf = "2026-10-03T08:20:00Z";

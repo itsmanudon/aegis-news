@@ -29,6 +29,8 @@
 .filters input,
 .filters select {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 44px;
   background: var(--surface);
   border: 1px solid var(--dividers);
@@ -164,9 +166,15 @@
   background: var(--surface);
   border-radius: var(--radius-panel);
 }
-.chart svg text {
-  fill: var(--supporting);
-  font: 12px var(--font-interface);
+.chartLabels {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 8px 0;
+  color: var(--supporting);
+  font: 12px/1.6 var(--font-interface);
+  font-variant-numeric: tabular-nums;
 }
 .axis {
   stroke: var(--dividers);
@@ -193,6 +201,7 @@
   padding: 12px 6px;
   border-bottom: 1px solid var(--dividers);
   overflow-wrap: anywhere;
+  white-space: normal;
 }
 .distribution {
   margin: 18px 0;
@@ -288,5 +297,111 @@
   }
   .section h2 {
     font-size: 25px;
+  }
+}
+
+/* Analytics-specific presentation. */
+.analyticsPage :global(.page-heading h1) {
+  font:
+    500 clamp(34px, 4vw, 54px)/1.12 var(--font-editorial),
+    Georgia,
+    serif;
+}
+.analyticsPage :global(.page-heading .eyebrow) {
+  color: var(--teal);
+}
+.analyticsFilters {
+  align-items: start;
+}
+.analyticsControl {
+  display: grid;
+  gap: 8px;
+  flex: 1;
+  min-width: min(100%, 180px);
+}
+.analyticsTopicControl {
+  flex: 1 1 360px;
+  min-width: 0;
+}
+.analyticsTopicControl label {
+  width: 100%;
+  min-width: 0;
+}
+.analyticsTopicControl select {
+  margin-top: 8px;
+}
+.analyticsApply {
+  flex: 1 1 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  align-items: center;
+}
+.analyticsValidation {
+  color: var(--caution);
+  font-size: 13px;
+  flex: 1 1 100%;
+  margin: 0;
+}
+.analyticsPopulation {
+  border-top: 1px solid var(--ink);
+  padding-top: 26px;
+  margin-top: 36px;
+}
+.analyticsPopulation h2 {
+  font:
+    500 30px/1.2 var(--font-editorial),
+    Georgia,
+    serif;
+  margin: 0 0 16px;
+}
+.analyticsTimes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 40px;
+  font-size: 12px;
+  margin: 24px 0;
+}
+.analyticsTimes dt {
+  color: var(--supporting);
+}
+.analyticsTimes dd {
+  margin: 8px 0 0;
+}
+.analyticsResults {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.analyticsSourceRecords {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 28px;
+  font-size: 12px;
+  margin: 18px 0;
+}
+.analyticsSourceRecords dt {
+  color: var(--supporting);
+}
+.analyticsSourceRecords dd {
+  margin: 8px 0 0;
+  overflow-wrap: anywhere;
+}
+.analyticsLimitations {
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.analyticsLimitations li + li {
+  margin-top: 10px;
+}
+@media (max-width: 600px) {
+  .analyticsSourceRecords {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .analyticsApply > button {
+    width: 100%;
+  }
+  .analyticsTopicControl {
+    flex-basis: 100%;
   }
 }

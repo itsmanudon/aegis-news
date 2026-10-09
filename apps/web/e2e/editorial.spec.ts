@@ -43,7 +43,7 @@ test("desktop masthead aligns with the editorial reading grid", async ({
   expect(Math.abs(brand!.x - heading!.x)).toBeLessThanOrEqual(1);
 });
 
-test("Discover presents attributed archive evidence without ranking or integrity claims", async ({
+test("Discover presents attributed publication-ordered evidence without importance or integrity claims", async ({
   page,
 }) => {
   await page.goto("/");
@@ -57,15 +57,15 @@ test("Discover presents attributed archive evidence without ranking or integrity
     page.getByRole("link", { name: headline, exact: true }),
   ).toBeVisible();
   await expect(page.locator(".story-lead")).toContainText(
-    "Maritime Operations Bulletin",
+    documents[5].source.name,
   );
-  await expect(page.locator(".story-lead")).toContainText(
-    "manual procedures remain available",
+  await expect(page.locator(".story-lead h3")).toContainText(
+    documents[5].document.title,
   );
   await expect(page.locator(".story-lead")).toContainText("Source Excerpt");
   await expect(page.locator(".story-lead time").first()).toHaveAttribute(
     "datetime",
-    "2026-10-03T08:00:00.000Z",
+    "2026-10-03T08:35:00.000Z",
   );
   await expect(page.locator(".story-row")).toHaveCount(5);
   await expect(page.locator("#main-content")).not.toContainText("Latest News");
@@ -183,43 +183,57 @@ test("long source strings and media titles wrap at narrow mobile width", async (
   await page.route("http://localhost:8000/**", async (route) => {
     const path = new URL(route.request().url()).pathname;
     const data =
-      path === "/api/v1/documents"
-        ? documents.slice(0, 4).map(({ document }) => ({
-            ...document,
-            title: token,
-            text: `https://source.example.org/${token}`,
-          }))
-        : path === "/api/v1/sources"
-          ? documents.map(({ source }) => ({ ...source, name: token }))
-          : path === "/api/v1/provider-articles"
-            ? [
-                {
-                  article_id: "synthetic-long-title",
-                  acquired_at: "2026-10-04T10:00:00Z",
-                  document_id: null,
-                  title: token,
-                  source_id: documents[0].source.source_id,
-                  published_at: null,
-                  workflow_id: "synthetic-workflow",
-                  evidence: [
-                    {
-                      provider: "gnews",
-                      provider_item_id: "synthetic-item",
-                      publisher_name: token,
-                      article_url: "https://publisher.example.org/report",
-                      author: null,
-                      image_url: null,
-                      video_url: null,
-                      acquired_at: "2026-10-04T10:00:00Z",
-                      content_kind: "provider excerpt",
-                    },
-                  ],
-                },
-              ]
-            : [];
+      path === "/api/v1/discovery"
+        ? documents
+            .slice(0, 4)
+            .map(({ document, source }) => ({
+              document: {
+                ...document,
+                title: token,
+                text: `https://source.example.org/${token}`,
+              },
+              source: { ...source, name: token },
+            }))
+        : path === "/api/v1/documents"
+          ? documents.slice(0, 4).map(({ document }) => ({
+              ...document,
+              title: token,
+              text: `https://source.example.org/${token}`,
+            }))
+          : path === "/api/v1/sources"
+            ? documents.map(({ source }) => ({ ...source, name: token }))
+            : path === "/api/v1/provider-articles"
+              ? [
+                  {
+                    article_id: "synthetic-long-title",
+                    acquired_at: "2026-10-04T10:00:00Z",
+                    document_id: null,
+                    title: token,
+                    source_id: documents[0].source.source_id,
+                    published_at: null,
+                    workflow_id: "synthetic-workflow",
+                    evidence: [
+                      {
+                        provider: "gnews",
+                        provider_item_id: "synthetic-item",
+                        publisher_name: token,
+                        article_url: "https://publisher.example.org/report",
+                        author: null,
+                        image_url: null,
+                        video_url: null,
+                        acquired_at: "2026-10-04T10:00:00Z",
+                        content_kind: "provider excerpt",
+                      },
+                    ],
+                  },
+                ]
+              : [];
     await route.fulfill({
       json: {
         data,
+        ...(path === "/api/v1/discovery"
+          ? { as_of: "2026-10-08T00:00:00Z" }
+          : {}),
         pagination: { has_more: false, next_cursor: null },
         meta: { request_id: "controlled-long-text", api_version: "v1" },
       },
@@ -317,7 +331,10 @@ test("slow archive and failed remote image leave independent media and source li
   await page.route("http://localhost:8000/**", async (route) => {
     const path = new URL(route.request().url()).pathname;
     let data: unknown[] = [];
-    if (path === "/api/v1/documents") {
+    if (path === "/api/v1/discovery") {
+      await documentGate;
+      data = [{ document: documents[0].document, source: documents[0].source }];
+    } else if (path === "/api/v1/documents") {
       await documentGate;
       data = [documents[0].document];
     } else if (path === "/api/v1/sources") {
@@ -351,6 +368,9 @@ test("slow archive and failed remote image leave independent media and source li
     await route.fulfill({
       json: {
         data,
+        ...(path === "/api/v1/discovery"
+          ? { as_of: "2026-10-08T00:00:00Z" }
+          : {}),
         pagination: { has_more: false, next_cursor: null },
         meta: { request_id: "controlled-loading", api_version: "v1" },
       },
@@ -435,14 +455,27 @@ test("identity changes and sign-out isolate cached evidence across both experien
       });
     } else {
       const data =
-        path === "/api/v1/documents"
-          ? [{ ...documents[0].document, title: `${name} source record` }]
-          : path === "/api/v1/sources"
-            ? [documents[0].source]
-            : [];
+        path === "/api/v1/discovery"
+          ? [
+              {
+                document: {
+                  ...documents[0].document,
+                  title: `${name} source record`,
+                },
+                source: documents[0].source,
+              },
+            ]
+          : path === "/api/v1/documents"
+            ? [{ ...documents[0].document, title: `${name} source record` }]
+            : path === "/api/v1/sources"
+              ? [documents[0].source]
+              : [];
       await route.fulfill({
         json: {
           data,
+          ...(path === "/api/v1/discovery"
+            ? { as_of: "2026-10-08T00:00:00Z" }
+            : {}),
           pagination: { has_more: false, next_cursor: null },
           meta,
         },

@@ -1,13 +1,13 @@
 "use client";
 import Link from "next/link";
-import { useDocuments } from "@/lib/queries";
+import { useDiscovery } from "@/lib/queries";
 import { StoryLead, StoryRow } from "../editorial/stories";
 import { DiscoveryMedia } from "../editorial/discovery-media";
 import { QueryState } from "../ui/console";
 import styles from "./discover.module.css";
 
 export function Discover() {
-  const records = useDocuments();
+  const records = useDiscovery({ order: "published_at" });
   const [lead, ...supporting] = records.data ?? [];
   return (
     <div className={styles.discover}>
@@ -33,13 +33,14 @@ export function Discover() {
       <section aria-labelledby="archive-heading" className={styles.archive}>
         <div className={styles.sectionHeading}>
           <h2 id="archive-heading">From the Archive</h2>
-          <Link href="/documents">
-            Open Evidence Register <span aria-hidden="true">→</span>
+          <Link href="/discovery">
+            Explore Chronological Discovery <span aria-hidden="true">→</span>
           </Link>
         </div>
         <p className={styles.orderNote}>
-          Stories from one archive page. Layout emphasis does not indicate
-          recency or importance.
+          Publication order across the eligible archive, with unknown
+          publication times last. Layout emphasis does not indicate importance.
+          Publication, First Seen and intelligence availability remain distinct.
         </p>
         <QueryState
           pending={records.isPending}

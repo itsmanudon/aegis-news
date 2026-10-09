@@ -80,7 +80,7 @@ related records only with explicit scope/time semantics. No new chart framework.
 - Real/mock/identity transitions clear observers/local state and cancel stale reads.
 - Source metadata and timeless associations have historical reconstruction limits.
 
-## Current Status
+## Checkpoint 1: Media and Contract Foundation
 Milestone 1 complete: Media Lab, independent article/video cursors, actual
 attribution/refresh/expiry, explicit selected stored metadata and on-demand
 provenance. Failed image state resets per validated URL. Production screenshots
@@ -120,7 +120,50 @@ Ruling: contract/adapter/chart groundwork is included in first checkpoint with
 Media Lab to preserve a buildable shared boundary, while Topic and Analytics
 pages remain explicitly unfinished. Parallel work never marks a milestone done
 before its UI/integration/visual gates. No backend algorithm/cryptographic changes.
-Current milestone:2 — Topic Directory/Dossier UI; then3analytics/chronologicalUI.
-Open defects:none established. Integration/complete-product review still pending.
+Checkpoint commit:5783a010e97730066ca1277c71a0e38d68223470.
+
+## Checkpoint 2: Topics, Analytics and Chronology
+
+Milestones2/3 implemented: /topics directory and exact-cohort dossier,
+publication-ordered supporting evidence, /analytics explicit UTC population,
+observed-day coverage/exact tables, sentiment/source/model counts, supporting
+record drilldowns, /discovery global cursor browsing and homepage chronology.
+Existing routes preserved. No topic biographies, taxonomy merging, invented
+relationships or forecasts. Selected cohort options expose provider and short
+configuration hashes; a disclosure gives exact identity without another request.
+Source previews and assessments reuse accessible native disclosures; no eager
+per-row intelligence. Full Story opens the current complete record; cutoff applies
+to the query and selected assessments, not historical reconstruction of prose.
+
+Files: new app topics/detail, analytics and discovery routes; pages topics,
+analytics and chronological; TopicEvidence and shared intelligence CSS/charts;
+Discover/masthead; focused component and browser tests; mock temporal tests/fix.
+Backend contracts were included in5783a01 to preserve a buildable shared boundary.
+No migration. Current unit68passed/14files, API/types/lint/build exit0.
+Combined Topics/Analytics/Discovery/Editorial browser29passed; whole-product
+axe32route/view checks have zero violations, five-width reflow80views passed,
+keyboard/fallback-font and doubled-text tests passed (7browser cases). Lab
+performance probe passed9fresh-context samples; measured homepage CLS0.185 and
+mobile font payload1128028bytes require the next polish checkpoint.
+
+Actual isolated SQL/HTTP product probe8groups passed. Live browser2passed41.5s,
+32desktop/mobile captures: visualization root/completion-live/{1440,390}; original
+CC0 synthetic records, actual API/auth/verification. Only demo-image responses
+intercepted (8); no API interception or token masks. Contact sheets and original
+captures inspected. Font/style refinements will be recaptured before final review.
+
+Review rulings: fixed mock offset timestamp comparison and partial/invalid-window
+validation with two reproduced RED regressions; fixed inherited nowrap coverage
+headers, narrow date-control intrinsic sizing, SVG label legibility and missing
+discovery h2 with reproduced browser/axe failures. Separate alternate real build
+must also be excluded from lint as generated output; no rule suppression.
+Independent review established integration ownership/date/JWT test-log defects;
+those helpers are being corrected before the integration checkpoint. Core exact
+topic selection, SQL aggregates, keyset ordering and scope dependencies reviewed
+without an additional established product defect.
+
+Current milestone:4integration hardening, then5measured polish and final gates.
+Open defects: local homepage loading CLS/font preload; runtime/helper hardening
+and date-independent acceptance pending. No destructive operations authorized.
 Resume: read this ledger and git log/status; continue the first incomplete checkpoint.
 Do not repeat completed tasks or reset user work. Update results/SHAs at checkpoints.
