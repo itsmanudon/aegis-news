@@ -217,9 +217,27 @@ overflow reproducedRED and corrected with scopedwrap/minwidth. API/types/lint,
 LCP424–536ms/CLS0.000125–0.001001; Analytics176–192ms/0.011053–0.015960;
 Media176–192ms/0.000100–0.000125. Mobilefont savings346688bytes unchanged.
 
-Current milestone:5 final polish checkpoint/report and exact owned cleanup.
+## Checkpoint 4: Final Product and Handoff
+
+Milestone5 source checkpoint5cb690c37e43436fc0ea1c8d8fb8449262bc55b4. All achievable
+product milestones implemented and verified. Exact M4 commit:
+eff60ea2d386da309ca72be7e6f84abd9e895886. Comprehensive report includes58-filemanifest,
+allroutes/contracts/architecture/metricdefinitions/rollback/perf/validation/skips/
+deferredfeatures/ownerdeploymentrecommendations. Sevencontact sheets and38unmodified
+actualcaptures linked via completion-live/review-index.md, outsideGit.
+
+Cleanup completed2026-10-09T05:44:14Z: owned API/worker parent/child processes absent,
+fourownedcontainers exited0 and sevenserviceports closed. Frontend3104/33000also
+closed. No containers/volumes removed; task-created Redisvolume retained, disposable
+PG/MinIOtmpfs discarded. Twofailclosed wrapper-autoexit races followedbyfresh
+guardedretryexit0; Windowshelper retrylimitation documented, no sourcechange.
+Sanitizedstopped-status.json outsideGit. Userdata/services unaffected.
+
+Current milestone: COMPLETE. Final documentation commit follows5cb690c; exact
+branch-tip SHA is in the owner handoff. Worktree will be verified clean aftercommit.
 Open defects:none established. Nativezoom/AT/otherbrowsers/fieldperf remainmanual;
 unsupportedmedia delivery/topic entity-event aggregates/paidproviders deferred.
 No user volume/data modifications; no destructive operations authorized.
-Resume: read this ledger and git log/status; continue the first incomplete checkpoint.
-Do not repeat completed tasks or reset user work. Update results/SHAs at checkpoints.
+Resume: completed source is at5cb690c. Read the report/ledger and final git status;
+only finish recorded cleanup/documentation if interrupted. Do not restart completed
+features/tests or begin another phase, merge or deploy without owner instruction.
