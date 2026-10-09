@@ -1,6 +1,9 @@
 .discover {
   min-width: 0;
 }
+.archiveLoading {
+  min-height: 660px;
+}
 .introduction {
   display: flex;
   justify-content: space-between;

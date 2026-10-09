@@ -193,8 +193,33 @@ Root corrected Ruff formatting in own router registration/API route inventory.
 The first final backend repeat had only localhost3000 test CORS preflight failure;
 test subprocess CORS normalized separately from secure API before rerunning.
 
-Current milestone:4final guarded live/security results and5report/screenshots.
-Open defects:none established in product; final execution evidence pending.
+## Checkpoint 3: Real Integration and Security
+
+Milestone4 complete, commit eff60ea. Backend374passed,0skipped,1existingStarlette
+warning32.00s; Ruffformat246/Ruff/Mypy119/export/secretguard exit0. Latest production
+web smoke1passed0.54s. Runtime guards23tests, including fail-closed rejection of
+the unused restart CLI; shared ownership guards protect writes and cleanup.
+Final guarded SQL/HTTP product probe8groups pass. Initial owned runtime actual
+MVP22/security14checks passed; no paidcalls/userdata. Prior test-only CORS/format
+failures retained beside final green logs; secured API never weakened.
+
+Final real frontend2cases pass53.0s+12.3s(1.1m), actual auth/scopes/SQL/objectstore/
+Temporal/provenance, sanitized nativefetch, no APIinterception.38mask-free original
+demo captures across fivewidths:17desktop,18mobile(including navigation),3reflow.
+Imageinterceptions10, originalCC0demo only, disclosedmanifest; tokeninputempty.
+Root reviewed updated desktop/mobile and320Analytics/768expandedDiscovery/1024Media.
+Sevenlabelled opening-view contact sheets and fulloriginal links in external
+completion-live/review-index.md; originals unmodified, no UIhidden.
+
+Final frontend105passed8skipped/113total1.1m after512-character Topic heading
+overflow reproducedRED and corrected with scopedwrap/minwidth. API/types/lint,
+68unit/14files,bothproductionbuilds exit0. Latest local metrics: Discover
+LCP424–536ms/CLS0.000125–0.001001; Analytics176–192ms/0.011053–0.015960;
+Media176–192ms/0.000100–0.000125. Mobilefont savings346688bytes unchanged.
+
+Current milestone:5 final polish checkpoint/report and exact owned cleanup.
+Open defects:none established. Nativezoom/AT/otherbrowsers/fieldperf remainmanual;
+unsupportedmedia delivery/topic entity-event aggregates/paidproviders deferred.
 No user volume/data modifications; no destructive operations authorized.
 Resume: read this ledger and git log/status; continue the first incomplete checkpoint.
 Do not repeat completed tasks or reset user work. Update results/SHAs at checkpoints.

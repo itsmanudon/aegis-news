@@ -2,12 +2,52 @@ import { expect, test } from "@playwright/test";
 import {
   fixtureTopics,
   fixtureTopicDocuments,
+  fixtureTopicId,
 } from "../src/lib/intelligence-fixtures";
 import { operationalApi, operator } from "./operations-support";
 const cutoff = "2026-10-03T09:00:00Z";
 const directory = fixtureTopics({ cutoff });
 const topic = directory.data[0];
 const members = fixtureTopicDocuments(topic.topic_id, { cutoff });
+
+test("supported long topic labels and exact model identifiers reflow", async ({
+  page,
+}) => {
+  await operationalApi(page);
+  const long = {
+    ...topic,
+    label: "W".repeat(512),
+    model: {
+      ...topic.model,
+      provider: "P".repeat(512),
+      model_name: "M".repeat(512),
+    },
+  };
+  long.topic_id = fixtureTopicId(long.label, long.model);
+  await page.route("**/api/v1/topics**", (route) =>
+    route.fulfill({
+      json: route.request().url().includes("/documents")
+        ? { ...members, data: [] }
+        : { data: long, meta: directory.meta },
+    }),
+  );
+  await operator(page, `/topics/${long.topic_id}`);
+  await expect(
+    page.getByRole("heading", { name: long.label, exact: true }),
+  ).toBeVisible();
+  for (const width of [1440, 390, 320]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page
+      .getByRole("heading", { name: long.label, exact: true })
+      .scrollIntoViewIfNeeded();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+      `Topic label at ${width}`,
+    ).toBe(true);
+  }
+});
 test("Topic Directory opens model-attributed dossiers and available evidence", async ({
   page,
 }) => {

@@ -10,15 +10,21 @@ const editorial = localFont({
       weight: "200 900",
       style: "normal",
     },
-    {
-      path: "./fonts/SourceSerif4Variable-Italic.woff2",
-      weight: "200 900",
-      style: "italic",
-    },
   ],
   variable: "--font-editorial",
   display: "swap",
   fallback: ["Georgia"],
+  adjustFontFallback: "Times New Roman",
+});
+const editorialItalic = localFont({
+  src: "./fonts/SourceSerif4Variable-Italic.woff2",
+  weight: "200 900",
+  style: "italic",
+  variable: "--font-editorial-italic",
+  display: "swap",
+  preload: false,
+  fallback: ["Georgia"],
+  adjustFontFallback: "Times New Roman",
 });
 const interfaceFont = localFont({
   src: "./fonts/InterVariable.woff2",
@@ -41,7 +47,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${editorial.variable} ${interfaceFont.variable}`}
+      className={`${editorial.variable} ${editorialItalic.variable} ${interfaceFont.variable}`}
     >
       <body>
         <Providers>

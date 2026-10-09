@@ -77,7 +77,7 @@
 .brandNote {
   margin: 0;
   color: var(--supporting);
-  font-family: var(--font-editorial), Georgia, serif;
+  font-family: var(--font-editorial-italic), Georgia, serif;
   font-style: italic;
   font-size: 18px;
   line-height: 1.45;

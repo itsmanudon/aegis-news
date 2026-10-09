@@ -30,7 +30,10 @@ export function Discover() {
           </Link>
         </div>
       </div>
-      <section aria-labelledby="archive-heading" className={styles.archive}>
+      <section
+        aria-labelledby="archive-heading"
+        className={`${styles.archive} ${records.isPending ? styles.archiveLoading : ""}`}
+      >
         <div className={styles.sectionHeading}>
           <h2 id="archive-heading">From the Archive</h2>
           <Link href="/discovery">
