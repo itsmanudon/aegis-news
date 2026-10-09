@@ -62,7 +62,14 @@ def test_cursor_freezes_cutoff_and_rejects_filter_or_order_replay():
 
 
 def test_intelligence_routes_require_document_read_authorization():
-    app = create_app(Settings(_env_file=None, security_enabled=True))
+    app = create_app(
+        Settings(
+            _env_file=None,
+            security_enabled=True,
+            oidc_issuer="https://issuer.test",
+            oidc_audience="aegis",
+        )
+    )
     client = TestClient(app)
     for path in (
         "/topics",

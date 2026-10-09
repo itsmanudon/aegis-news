@@ -210,6 +210,9 @@ def setup() -> None:
         ],
         "worker": [sys.executable, "-m", "apps.worker.main"],
     }
+    creation_flags = 0
+    if sys.platform == "win32":
+        creation_flags = subprocess.CREATE_NO_WINDOW | subprocess.CREATE_NEW_PROCESS_GROUP
     for name, command in commands.items():
         with (RUNTIME / f"{name}.log").open("wb") as log:
             process = subprocess.Popen(
@@ -219,9 +222,7 @@ def setup() -> None:
                 stdin=subprocess.DEVNULL,
                 stdout=log,
                 stderr=subprocess.STDOUT,
-                creationflags=(subprocess.CREATE_NO_WINDOW | subprocess.CREATE_NEW_PROCESS_GROUP)
-                if sys.platform == "win32"
-                else 0,
+                creationflags=creation_flags,
             )
         record["processes"][name] = {"pid": process.pid, "command": command}
         ownership.write_text(json.dumps(record, indent=2), encoding="utf-8")
