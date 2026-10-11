@@ -71,18 +71,18 @@ Four individually optional backend `SecretStr` keys are listed, empty, in
 `.env.example`. Missing one disables only that provider. GDELT needs none.
 Never put keys in `NEXT_PUBLIC_*`, browser requests, command arguments or Git.
 
-The existing demo launcher reads local `.env` first, then portable demo port/profile
-settings. Provider keys go only into the API container, not web or workers.
+The demo launcher reads portable port and profile settings from
+`infrastructure/demo.env.example`. It can optionally inject only
+`AEGIS_NEWSDATA_API_KEY`, `AEGIS_GNEWS_API_KEY`, `AEGIS_NEWSAPI_API_KEY` and
+`AEGIS_YOUTUBE_API_KEY` when Doppler shows exactly one Aegis News development
+or demo configuration, or when both `AEGIS_DOPPLER_PROJECT` and
+`AEGIS_DOPPLER_CONFIG` name that configuration. Production and staging
+configurations are refused. Startup never calls a provider. Acquisition is a
+separate bounded command:
 
 ```sh
 python scripts/demo.py start
-# Equivalent, preserving existing volumes:
-docker compose --env-file .env --env-file infrastructure/demo.env.example -p aegis-demo --profile full up -d --build
-
-# Optional; project aegis-news. Doppler is not a dependency or a CI prerequisite.
-doppler setup --project aegis-news
-doppler run -- python scripts/demo.py start
-doppler run -- python -m aegis.providers fetch-all --limit-per-provider 3
+python scripts/demo.py acquire --provider gdelt --limit 2 --confirm
 ```
 
 Restart/recreate API after changing its injected secrets. Running the CLI under

@@ -67,10 +67,11 @@ click **Use token**. Tokens expire after five minutes; generate a fresh one as n
 Use `--role admin` for writes and `--role viewer` for insufficient-scope demonstrations.
 Tokens stay in browser memory. This is explicit local identity, not a production issuer.
 
-The helper starts an isolated `aegis-demo` stack and seeds five original synthetic
-articles, including an original PNG. It uses supplied alternate loopback ports in
-`infrastructure/demo.env.example`. Copy `.env.example` to `.env` only for separate host
-development; the helper uses its own environment file.
+The helper starts an isolated `aegis-demo` stack in Real API mode and seeds the
+original five synthetic articles plus a larger original showcase corpus. It uses
+the alternate loopback ports in `infrastructure/demo.env.example`. Copy
+`.env.example` to `.env` only for separate host development; the helper uses its
+own environment file. The complete local runbook is [docs/local-demo.md](docs/local-demo.md).
 
 Docker-only alternative, without host Python:
 

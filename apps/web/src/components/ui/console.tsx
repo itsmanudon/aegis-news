@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes } from "react";
 import { ApiClientError } from "@/lib/api";
+import { realApiFailure } from "@/lib/real-api-errors";
 export function Button({
   className = "",
   ...props
@@ -100,16 +101,12 @@ export function QueryState({
         Loading intelligence records…
       </div>
     );
-  if (error)
+  if (error) {
+    const failure = realApiFailure(error);
     return (
       <div className="error-state" role="alert">
-        <h2>
-          {error instanceof ApiClientError &&
-          error.code === "CAPABILITY_UNAVAILABLE"
-            ? "Integration Pending"
-            : "Unable to Load Records"}
-        </h2>
-        <p>{error.message}</p>
+        <h2>{failure.title}</h2>
+        <p>{failure.detail}</p>
         {error instanceof ApiClientError && (
           <p className="utility">
             {error.code}
@@ -119,5 +116,6 @@ export function QueryState({
         <Button onClick={retry}>Retry</Button>
       </div>
     );
+  }
   return children;
 }
