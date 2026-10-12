@@ -107,6 +107,7 @@ export function QueryState({
       <div className="error-state" role="alert">
         <h2>{failure.title}</h2>
         <p>{failure.detail}</p>
+        {failure.guidance ? <p>{failure.guidance}</p> : null}
         {error instanceof ApiClientError && (
           <p className="utility">
             {error.code}

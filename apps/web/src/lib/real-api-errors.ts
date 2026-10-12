@@ -1,27 +1,33 @@
 import { ApiClientError } from "./api";
 
-export function realApiFailure(error: Error): { title: string; detail: string } {
+export function realApiFailure(error: Error): {
+  title: string;
+  detail: string;
+  guidance?: string;
+} {
   if (error instanceof ApiClientError) {
     if (error.code === "UNAUTHORIZED" || error.status === 401) {
       return {
         title: "Authorization Required",
-        detail:
+        detail: error.message,
+        guidance:
           "This Real API request needs a fresh local development token. Generate one with python scripts/demo.py token --role analyst, paste it, and choose Use Token. Tokens expire after five minutes and stay in memory.",
       };
     }
     if (error.code === "FORBIDDEN" || error.status === 403) {
       return {
         title: "Insufficient Scope",
-        detail:
+        detail: error.message,
+        guidance:
           "This identity cannot perform the action. Generate a token for a role that includes the required scope. Admin can change sources; analyst and viewer cannot.",
       };
     }
     if (error.code === "NETWORK_ERROR") {
       return {
         title: "API Unreachable",
-        detail:
-          error.message +
-          " Confirm the local API is running. Real API mode does not fall back to mock records.",
+        detail: error.message,
+        guidance:
+          "Confirm the local API is running. Real API mode does not fall back to mock records.",
       };
     }
   }
