@@ -3,8 +3,12 @@
 Build/seed before presenting. A cold image/model-free build can take minutes and is
 not included in the presentation duration. Run from the repository root.
 
+Day-to-day startup, status, tokens and shutdown are documented in
+[the local demo runbook](../local-demo.md). The timed presentation below still
+uses this project's isolated Compose stack.
+
 ```sh
-python scripts/demo.py reset
+python scripts/demo.py reset --yes
 python scripts/demo.py token --role admin
 ```
 

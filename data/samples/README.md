@@ -4,6 +4,13 @@ Reserved foundation boundary. Use synthetic or licensed data only. No model down
 
 `mvp.json` contains five original synthetic articles and a synthetic text attachment. These samples are dedicated to CC0. Names and events are fictional. Run `scripts/mvp_acceptance.py` in the local Compose API container to seed curated synthetic entities, submit the articles through the authorized API, and verify the workflow.
 
+## Showcase corpus
+
+`showcase.json` adds original synthetic articles for the local demo. Names,
+events and dates are fictional. Each text says that it is a synthetic
+demonstration record. `python scripts/demo.py start` submits this file through
+the normal ingestion API after the five-item presentation set. `--basic` skips it.
+
 ## Phase 6 media
 
 `demo-image.png` is an original CC0-1.0 schematic bar illustration generated with

@@ -1,0 +1,195 @@
+[
+  {
+    "title": "Lumen Forge describes an artificial intelligence workshop",
+    "text": "Lumen Forge described an artificial intelligence workshop for researchers. Strong growth followed the demonstration. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-01-06T09:00:00Z",
+    "entity": "Lumen Forge",
+    "kind": "organization",
+    "expected_topic": "technology.ai"
+  },
+  {
+    "title": "Northwind Analytics publishes quarterly results",
+    "text": "Northwind Analytics published quarterly results with profit growth. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-01-20T09:00:00Z",
+    "entity": "Northwind Analytics",
+    "kind": "organization",
+    "expected_topic": "business.earnings"
+  },
+  {
+    "title": "Pine Harbor confirms a merger",
+    "text": "Pine Harbor confirmed a merger after a long review. The outcome brought success. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-02-03T09:00:00Z",
+    "entity": "Pine Harbor",
+    "kind": "organization",
+    "expected_topic": "business.mergers"
+  },
+  {
+    "title": "Cedar Exchange reviews the stock market",
+    "text": "Cedar Exchange reviewed the stock market during a quiet session. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-02-18T09:00:00Z",
+    "entity": "Cedar Exchange",
+    "kind": "organization",
+    "expected_topic": "markets.equities"
+  },
+  {
+    "title": "Westbridge Assembly debates legislation",
+    "text": "Westbridge Assembly debated legislation for public records. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-03-02T09:00:00Z",
+    "entity": "Westbridge Assembly",
+    "kind": "organization",
+    "expected_topic": "politics.policy"
+  },
+  {
+    "title": "Maple County holds a municipal hearing",
+    "text": "Maple County held a municipal hearing about parks. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-03-16T09:00:00Z",
+    "entity": "Maple County",
+    "kind": "location",
+    "expected_topic": "regional"
+  },
+  {
+    "title": "Brightline Studio announces a product launch",
+    "text": "Brightline Studio announced a product launch for design tools. Improved access followed. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-04-01T09:00:00Z",
+    "entity": "Brightline Studio",
+    "kind": "organization",
+    "expected_topic": "company",
+    "media": true
+  },
+  {
+    "title": "Amber Fields reports a wheat shortfall",
+    "text": "Amber Fields reported a wheat shortfall and a decline in stores. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-04-14T09:00:00Z",
+    "entity": "Amber Fields",
+    "kind": "organization",
+    "expected_topic": "commodities"
+  },
+  {
+    "title": "Harbor Index tracks unemployment",
+    "text": "Harbor Index tracked unemployment after weak demand. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-05-04T09:00:00Z",
+    "entity": "Harbor Index",
+    "kind": "organization",
+    "expected_topic": "economy"
+  },
+  {
+    "title": "Silver Route lists revenue",
+    "text": "Silver Route listed revenue from ferry service. Gains were recorded. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-05-19T09:00:00Z",
+    "entity": "Silver Route",
+    "kind": "organization",
+    "expected_topic": "business"
+  },
+  {
+    "title": "Kite Currency Desk watches currency",
+    "text": "Kite Currency Desk watched currency movement overnight. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-06-08T09:00:00Z",
+    "entity": "Kite Currency Desk",
+    "kind": "organization",
+    "expected_topic": "markets"
+  },
+  {
+    "title": "Nimbus Workshop ships software",
+    "text": "Nimbus Workshop shipped software for library catalogs. The release improved access. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-06-22T09:00:00Z",
+    "entity": "Nimbus Workshop",
+    "kind": "organization",
+    "expected_topic": "technology"
+  },
+  {
+    "title": "Civic Forum prepares an election",
+    "text": "Civic Forum prepared an election briefing for residents. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-07-07T09:00:00Z",
+    "entity": "Civic Forum",
+    "kind": "organization",
+    "expected_topic": "politics/public-policy"
+  },
+  {
+    "title": "Quiet Archive opens a reading room",
+    "text": "Quiet Archive opened a reading room for visitors. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-07-21T09:00:00Z",
+    "entity": "Quiet Archive",
+    "kind": "organization",
+    "expected_topic": "general"
+  },
+  {
+    "title": "Redwood Board appoints an executive",
+    "text": "Redwood Board appointed a new executive after the meeting. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-08-04T09:00:00Z",
+    "entity": "Redwood Board",
+    "kind": "organization",
+    "expected_topic": "company"
+  },
+  {
+    "title": "Vale Commission records a regulatory fine",
+    "text": "Vale Commission said a regulator fined a ferry operator. The loss was limited to trade fees. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-08-18T09:00:00Z",
+    "entity": "Vale Commission",
+    "kind": "organization",
+    "expected_topic": "business"
+  },
+  {
+    "title": "Summit Council discusses an interest rate",
+    "text": "Summit Council discussed an interest rate decision. Demand was weak. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-09-02T09:00:00Z",
+    "entity": "Summit Council",
+    "kind": "organization",
+    "expected_topic": "economy"
+  },
+  {
+    "title": "Copperline reports a supply disruption",
+    "text": "Copperline Yard reported a supply disruption at a storage yard. The copper flow declined. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-09-16T09:00:00Z",
+    "entity": "Copperline Yard",
+    "kind": "organization",
+    "expected_topic": "commodities"
+  },
+  {
+    "title": "Glassline describes a cyber incident",
+    "text": "Glassline Mail described a cyberattack on its mail system. A cyber team noted the failure. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-10-05T09:00:00Z",
+    "entity": "Glassline Mail",
+    "kind": "organization",
+    "expected_topic": "technology"
+  },
+  {
+    "title": "Orchard Daily notes oil storage",
+    "text": "Orchard Daily noted oil storage levels. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-10-19T09:00:00Z",
+    "entity": "Orchard Daily",
+    "kind": "organization",
+    "expected_topic": "commodities"
+  },
+  {
+    "title": "Field Bureau records mixed output",
+    "text": "Field Bureau recorded gdp growth and a decline in hours. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-11-02T09:00:00Z",
+    "entity": "Field Bureau",
+    "kind": "organization",
+    "expected_topic": "economy"
+  },
+  {
+    "title": "Paper Mill Council issues an undated policy note",
+    "text": "Paper Mill Council issued a policy note without a publication date. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": null,
+    "entity": "Paper Mill Council",
+    "kind": "organization",
+    "expected_topic": "politics.policy"
+  },
+  {
+    "title": "Inland Review covers parliament procedure",
+    "text": "Inland Review covered parliament procedure. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-11-16T09:00:00Z",
+    "entity": "Inland Review",
+    "kind": "organization",
+    "expected_topic": "politics.policy"
+  },
+  {
+    "title": "Sable Workshop introduces machine learning",
+    "text": "Sable Workshop introduced machine learning exercises. The class found success. This is an original synthetic demonstration record, not a current news report.",
+    "published_at": "2020-12-01T09:00:00Z",
+    "entity": "Sable Workshop",
+    "kind": "organization",
+    "expected_topic": "technology.ai"
+  }
+]
