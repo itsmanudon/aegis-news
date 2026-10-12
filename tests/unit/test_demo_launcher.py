@@ -145,8 +145,7 @@ def test_provider_secrets_are_allowlisted_and_redacted():
     assert selected == {"AEGIS_NEWSDATA_API_KEY": "news-secret"}
     assert configured_provider_names(selected) == ["newsdata"]
     leaked = (
-        "Authorization: Bearer eyJhbGciOi.eyJzdWIi.signature "
-        "AEGIS_NEWSDATA_API_KEY=news-secret"
+        "Authorization: Bearer eyJhbGciOi.eyJzdWIi.signature AEGIS_NEWSDATA_API_KEY=news-secret"
     )
     hidden = redact(leaked)
     assert "news-secret" not in hidden

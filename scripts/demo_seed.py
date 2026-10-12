@@ -271,9 +271,7 @@ async def verify_intelligence(api: DemoClient, service: Any) -> dict[str, Any]:
         ).all()
     probe = ReadinessProbe(api.settings)
     try:
-        dependencies = [
-            {"name": item.name, "ready": item.ready} for item in await probe.check()
-        ]
+        dependencies = [{"name": item.name, "ready": item.ready} for item in await probe.check()]
     finally:
         await probe.close()
     topics_status, topics = api.status("/api/v1/topics?limit=50", role="analyst")
@@ -317,9 +315,7 @@ async def verify_intelligence(api: DemoClient, service: Any) -> dict[str, Any]:
     ]
     documents_status, documents = api.status("/api/v1/documents?limit=5", role="analyst")
     document_id = (documents.get("data") or [{}])[0].get("document_id")
-    verify_status, verified = api.status(
-        f"/api/v1/documents/{document_id}/verify", {}, "analyst"
-    )
+    verify_status, verified = api.status(f"/api/v1/documents/{document_id}/verify", {}, "analyst")
     historical_status, historical = api.status(
         "/api/v1/topics?limit=5&as_of=2019-01-01T00:00:00Z", role="analyst"
     )

@@ -132,9 +132,7 @@ def report(script: str, output: str, *args: str, echo: bool = True) -> dict[str,
 
 
 def demo_env() -> dict[str, str]:
-    return parse_env_file(
-        (ROOT / "infrastructure/demo.env.example").read_text(encoding="utf-8")
-    )
+    return parse_env_file((ROOT / "infrastructure/demo.env.example").read_text(encoding="utf-8"))
 
 
 def command_output(args: list[str]) -> subprocess.CompletedProcess[str]:
@@ -410,9 +408,7 @@ def resolve_providers(explicit_project: str | None, explicit_config: str | None)
     selected = provider_environment(normalize_secret_map(payload))
     del payload
     names = configured_provider_names(selected)
-    print(
-        "Providers configured: " + (", ".join(names) if names else "none of the optional keys")
-    )
+    print("Providers configured: " + (", ".join(names) if names else "none of the optional keys"))
     print("Startup does not call providers.")
     return selected
 
@@ -720,9 +716,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--yes", action="store_true", help="Confirm destructive demo reset")
     parser.add_argument("--service", choices=sorted(LOG_SERVICES))
     parser.add_argument("--tail", type=int, default=80)
-    parser.add_argument(
-        "--provider", choices=("gdelt", "gnews", "newsapi", "newsdata", "youtube")
-    )
+    parser.add_argument("--provider", choices=("gdelt", "gnews", "newsapi", "newsdata", "youtube"))
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--confirm", action="store_true")
     return parser
