@@ -12,6 +12,25 @@ from aegis.showcase.contracts import SOURCES, parse_export
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
+    key = commands.add_parser(
+        "daily-key", help="explicitly provision a separate unattended signing key locally"
+    )
+    key.add_argument("--key-file", type=Path, default=Path(".keys/daily-publication/daily-v1.key"))
+    daily = commands.add_parser(
+        "daily", help="one bounded multi-source acquisition and signed release"
+    )
+    daily.add_argument("--previous", type=Path, default=Path("apps/showcase/dataset.json"))
+    daily.add_argument("--output", type=Path, default=Path(".data/daily/candidate.json"))
+    daily.add_argument("--key-file", type=Path)
+    daily.add_argument("--report", type=Path, default=Path(".data/daily/report.json"))
+    for name in ("state-bootstrap", "state-read", "state-stage", "state-promote", "state-release"):
+        state = commands.add_parser(name)
+        state.add_argument("--dataset", type=Path, default=Path("apps/showcase/dataset.json"))
+        state.add_argument("--output", type=Path, default=Path(".data/daily/previous.json"))
+        state.add_argument("--candidate", type=Path, default=Path(".data/daily/candidate.json"))
+        state.add_argument("--expected-head")
+        state.add_argument("--release")
+        state.add_argument("--preview", action="store_true")
     collect = commands.add_parser("collect", help="one explicit free-source request; no schedule")
     collect.add_argument("--source", choices=tuple(SOURCES), default="nasa")
     collect.add_argument("--limit", type=int, default=20)
@@ -32,7 +51,41 @@ def main() -> None:
             "--expected-sha256", help="require this exact approved export identity"
         )
     args = parser.parse_args()
-    if args.command == "collect":
+    if args.command == "daily-key":
+        from aegis.showcase.daily import initialize_key
+
+        initialize_key(args.key_file)
+    elif args.command == "daily":
+        from aegis.showcase.daily import run
+
+        published = asyncio.run(run(args.previous, args.output, args.key_file, args.report))
+        print("Validated daily candidate prepared" if published else "No publication changes")
+    elif args.command.startswith("state-"):
+        import json
+
+        from aegis.showcase.contracts import DailyExport
+        from aegis.showcase.state import GitHubState
+
+        state_store = GitHubState()
+        if args.command == "state-bootstrap":
+            print(state_store.bootstrap(parse_export(args.dataset.read_bytes())))
+        elif args.command == "state-read":
+            state_result = state_store.download(args.output, args.candidate)
+            print(json.dumps(state_result))
+        elif args.command == "state-release":
+            release = state_store.release(args.release or "")
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_bytes(canonical(release.model_dump(mode="json")))
+        elif args.command == "state-stage":
+            staged_export = parse_export(args.dataset.read_bytes())
+            if not isinstance(staged_export, DailyExport) or not args.expected_head:
+                raise ValueError("staging requires a signed daily release and exact state head")
+            print(state_store.prepare(staged_export, args.expected_head, preview=args.preview))
+        else:
+            if not args.expected_head or not args.release:
+                raise ValueError("promotion requires exact head and release")
+            print(state_store.promote(args.release, args.expected_head))
+    elif args.command == "collect":
         from aegis.showcase.collection import collect as acquire
         from aegis.showcase.collection import save_collection
 

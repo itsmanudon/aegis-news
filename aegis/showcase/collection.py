@@ -25,8 +25,10 @@ from aegis.normalization.article import Article, parse_article
 from aegis.provenance.service import ProvenanceService, canonical
 from aegis.providers.models import canonical_url
 from aegis.security.crypto import StandardCryptoProvider
-from aegis.security.keys import FileKeyProvider, generate_development_keys
+from aegis.security.keys import FileKeyProvider, KeyProvider, generate_development_keys
 from aegis.showcase.contracts import SOURCES, Metadata, PublicExport, PublicRecord
+from aegis.showcase.daily_contracts import MetadataV2
+from aegis.showcase.sources import REGISTRY
 
 
 def metadata(source: str, title: str, url: str, published: datetime | None) -> Metadata:
@@ -132,10 +134,12 @@ def save_collection(path: Path, records: list[Metadata]) -> int:
     return len(unique)
 
 
-async def process(record: Metadata, keys: FileKeyProvider) -> PublicRecord:
+async def process(
+    record: Metadata | MetadataV2, keys: KeyProvider, key_id: str = "showcase"
+) -> PublicRecord:
     article = Article(title=record.title, text=record.title, published_at=record.published_at)
     request = IngestionRequest(
-        source_id="src_" + str(uuid5(NAMESPACE_URL, SOURCES[record.source])),
+        source_id="src_" + str(uuid5(NAMESPACE_URL, REGISTRY[record.source].endpoint)),
         idempotency_key=record.id,
         content_type="application/json",
         content_base64=base64.b64encode(canonical(article.model_dump(mode="json"))).decode(),
@@ -185,7 +189,7 @@ async def process(record: Metadata, keys: FileKeyProvider) -> PublicRecord:
     return PublicRecord(
         metadata=record,
         analyses=tuple(analyses),
-        provenance=ProvenanceService(crypto).sign(lineage, key_id="showcase"),
+        provenance=ProvenanceService(crypto).sign(lineage, key_id=key_id),
     )
 
 

@@ -1,0 +1,9 @@
+{
+  "account_id": "3de5bfe983584a2eab1cbb710aa4fbe8",
+  "project": "aegis-news-showcase",
+  "token_id": "78dba65b7a8ba5ee07f4f90d2eb1088e",
+  "permissions": [
+    "Cloudflare Pages Write"
+  ],
+  "expires_at": "2027-01-14T00:00:00+00:00"
+}
