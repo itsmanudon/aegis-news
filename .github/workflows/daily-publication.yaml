@@ -76,6 +76,14 @@ jobs:
             uv run python -m scripts.public_showcase audit --dataset .data/daily/candidate.json
             npx --yes wrangler@4.151.0 pages deploy apps/showcase/dist --project-name "$CLOUDFLARE_PAGES_PROJECT" --branch main
           fi
+      - name: Verify Actual Production Bytes And Browser Behavior
+        env:
+          AEGIS_PUBLIC_BASE_URL: https://aegis-news-showcase.pages.dev
+        run: |
+          if test -f .data/daily/candidate.json; then
+            node apps/showcase/check-browser.mjs
+            uv run python -m scripts.verify_public_deployment --base-url "$AEGIS_PUBLIC_BASE_URL"
+          fi
       - name: Verify Live Release And Promote Durable State
         env:
           GH_TOKEN: ${{ github.token }}

@@ -30,7 +30,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name == 'workflow_dispatch' && inputs.public_showcase == true && 'publication' || 'checks' }}
   cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' || inputs.public_showcase != true }}
 jobs:
   public-showcase:

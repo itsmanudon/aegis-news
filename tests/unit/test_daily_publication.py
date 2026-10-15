@@ -291,6 +291,7 @@ def test_signing_rejects_untrusted_actions(signing, monkeypatch, ref, repo):
 
 
 def test_missing_mismatched_and_revoked_signing_credentials(signing, monkeypatch):
+    monkeypatch.setenv("GITHUB_ACTIONS", "false")
     monkeypatch.delenv("AEGIS_PUBLIC_SIGNING_KEY", raising=False)
     with pytest.raises(ValueError, match="unavailable"):
         daily.signer(None, signing[1])

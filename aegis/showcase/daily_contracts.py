@@ -56,6 +56,10 @@ class MediaReference(StrictPublic):
             raise ValueError("invalid media text")
         if self.acquired_at > self.refreshed_at or self.refreshed_at > datetime.now(UTC):
             raise ValueError("invalid media timestamps")
+        if any(
+            value and value > self.refreshed_at for value in (self.created_at, self.published_at)
+        ):
+            raise ValueError("future media date")
         if self.relationship_term.casefold() not in self.title.casefold():
             raise ValueError("media title does not support context relationship")
         if self.kind == "image":
@@ -70,6 +74,16 @@ class MediaReference(StrictPublic):
                 not in {"creativecommons.org", "commons.wikimedia.org"}
             ):
                 raise ValueError("image lacks approved item rights or origin")
+            if not urlsplit(self.source_url).path.startswith("/wiki/File:"):
+                raise ValueError("image rights must reference an individual Commons file")
+            expected = {
+                "Public Domain": self.source_url + "#Licensing",
+                "CC BY 4.0": "https://creativecommons.org/licenses/by/4.0/",
+                "CC BY-SA 4.0": "https://creativecommons.org/licenses/by-sa/4.0/",
+                "CC0": "https://creativecommons.org/publicdomain/zero/1.0/",
+            }[self.license]
+            if self.license_url.rstrip("/") != expected.rstrip("/"):
+                raise ValueError("license URL does not match the declared reuse permission")
         elif (
             self.publisher != "NASA Image and Video Library"
             or urlsplit(self.source_url).hostname != "images.nasa.gov"

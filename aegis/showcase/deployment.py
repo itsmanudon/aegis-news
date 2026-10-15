@@ -43,6 +43,16 @@ def preflight() -> None:
             raise ValueError(
                 "deployment credential identity/status differs from reviewed attestation"
             )
+        live_expiry = result.get("expires_on")
+        if not live_expiry:
+            raise ValueError("deployment credential has ambiguous expiration")
+        expiry = datetime.fromisoformat(live_expiry.replace("Z", "+00:00"))
+        if (
+            not expiry.tzinfo
+            or expiry <= datetime.now(UTC)
+            or expiry.date() != datetime.fromisoformat(config["expires_at"]).date()
+        ):
+            raise ValueError("deployment credential expiration differs from reviewed attestation")
         # The token cannot inspect its own permission policies without adding token-read access.
         # Rotation/scope changes therefore require a fresh owner-reviewed attestation in Git.
         project = client.get(base + "/pages/projects/" + config["project"])

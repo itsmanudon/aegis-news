@@ -21,7 +21,8 @@
   envelopes, append-only release history and compare-and-swap updates.
 - A separate unattended signing key has a versioned ID. It does not reuse or
   migrate the local showcase key or archive-encryption keys.
-- GitHub environments restrict signing/deployment to trusted default-branch code.
+- A main-only GitHub environment restricts signing. Daily deployment also requires
+  main; controlled manual previews use the existing repository deployment secret.
 - All publication paths share a non-cancelling concurrency group.
 - Build and verify before deploying; persist a prepared state before deployment,
   promote its validated release receipt after a successful atomic Pages upload.
@@ -62,3 +63,13 @@
    value. The token remains in the existing encrypted repository secret.
 9. Schedule activation variable remains unset/disabled. Final default-branch
    integration and explicit owner-approved activation are still required.
+10. Opened follow-up draft PR #3. First GitHub regression run found a test isolation
+    issue (`GITHUB_ACTIONS` inherited by a local-credential test) and a Gitleaks
+    false positive on the public Cloudflare token ID. Corrected the test without
+    weakening the runtime branch guard. Added an exact-value, exact-file scanner
+    exception after verifying the identifier in the dashboard URL; all other
+    secret rules remain active. Full history scan now passes. The first preview
+    run stopped at the test gate and did not deploy.
+11. All three real Commons images loaded in Chromium; forced image failures showed
+    source-link fallback. Added post-deployment verification of every audited
+    public asset hash and all configured security headers, before promotion.

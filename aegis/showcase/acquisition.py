@@ -301,6 +301,8 @@ async def media(fetcher: Fetcher, headlines: dict[str, str], now: datetime) -> l
                 continue
             source_url = info.get("descriptionurl", "")
             license_url = field("LicenseUrl")
+            if license_url.startswith("http://creativecommons.org/"):
+                license_url = "https://" + license_url.removeprefix("http://")
             if license_name == "Public Domain":
                 if field("Copyrighted").casefold() != "false":
                     continue
