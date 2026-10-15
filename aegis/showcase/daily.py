@@ -204,18 +204,7 @@ async def candidate(
             m.model_dump(mode="json") for m in sorted(references, key=lambda m: m.reference.id)
         ],
     }
-    # Round-trip first so Pydantic's canonical datetime representation is signed.
-    # Parsing the unsigned body through field types avoids signing a different timestamp format.
-    from pydantic import TypeAdapter
-
-    fields: dict[str, Any] = {
-        k: TypeAdapter(DailyExport.model_fields[k].annotation).validate_python(v)
-        for k, v in body.items()
-    }
-    provisional = DailyExport.model_construct(**fields, release_signature="")
-    unsigned = canonical(provisional.model_dump(mode="json", exclude={"release_signature"}))
-    body["release_signature"] = base64.b64encode(signing.private.sign(unsigned)).decode()
-    export = DailyExport.model_validate(body)
+    export = sign_release(body, signing)
     report.update(
         {
             "status": "candidate validated",
@@ -227,6 +216,22 @@ async def candidate(
         }
     )
     return export, report
+
+
+def sign_release(body: dict[str, Any], signing: DailySigner) -> DailyExport:
+    body = {k: v for k, v in body.items() if k != "release_signature"}
+    # Round-trip first so Pydantic's canonical datetime representation is signed.
+    # Parsing the unsigned body through field types avoids signing a different timestamp format.
+    from pydantic import TypeAdapter
+
+    fields: dict[str, Any] = {
+        k: TypeAdapter(DailyExport.model_fields[k].annotation).validate_python(v)
+        for k, v in body.items()
+    }
+    provisional = DailyExport.model_construct(**fields, release_signature="")
+    unsigned = canonical(provisional.model_dump(mode="json", exclude={"release_signature"}))
+    body["release_signature"] = base64.b64encode(signing.private.sign(unsigned)).decode()
+    return DailyExport.model_validate(body)
 
 
 async def run(previous_path: Path, output: Path, key_path: Path | None, report_path: Path) -> bool:

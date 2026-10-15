@@ -136,7 +136,9 @@ try {
   assert.equal(
     await page.locator("[data-story]:visible").count(),
     dataset.records.filter((r) =>
-      r.metadata.title.toLowerCase().includes("nasa"),
+      (r.metadata.title + " " + r.metadata.publisher)
+        .toLowerCase()
+        .includes("nasa"),
     ).length,
   );
   await page.locator("#search").fill("");
@@ -320,7 +322,7 @@ try {
         );
       }
     }
-    await page.route("https://upload.wikimedia.org/**", (route) =>
+    await page.route(/^https:\/\/(upload|thumb)\.wikimedia\.org\//, (route) =>
       route.abort(),
     );
     await page.reload();
@@ -336,13 +338,13 @@ try {
         await image.getAttribute("alt"),
       );
     }
-    await page.unroute("https://upload.wikimedia.org/**");
+    await page.unroute(/^https:\/\/(upload|thumb)\.wikimedia\.org\//);
   }
   assert(
     requests.every(
       (r) =>
         (r.url.startsWith(base) ||
-          r.url.startsWith("https://upload.wikimedia.org/")) &&
+          /^https:\/\/(upload|thumb)\.wikimedia\.org\//.test(r.url)) &&
         r.method === "GET",
     ),
   );

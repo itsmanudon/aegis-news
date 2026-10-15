@@ -63,7 +63,8 @@ class MediaReference(StrictPublic):
                 self.publisher != "Wikimedia Commons"
                 or urlsplit(self.source_url).hostname != "commons.wikimedia.org"
                 or not self.asset_url
-                or urlsplit(self.asset_url).hostname != "upload.wikimedia.org"
+                or urlsplit(self.asset_url).hostname
+                not in {"upload.wikimedia.org", "thumb.wikimedia.org"}
                 or self.license == "NASA Reference Only"
                 or urlsplit(self.license_url).hostname
                 not in {"creativecommons.org", "commons.wikimedia.org"}

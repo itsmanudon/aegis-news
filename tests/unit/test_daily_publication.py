@@ -325,6 +325,12 @@ def image():
 
 def test_item_level_media_rights_and_context(image):
     assert MediaReference.model_validate(image).kind == "image"
+    assert (
+        MediaReference.model_validate(
+            image | {"asset_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/fixture.jpg"}
+        ).kind
+        == "image"
+    )
     for updates in (
         {"asset_url": "https://publisher.test/image.jpg"},
         {"license_url": "https://publisher.test/"},
