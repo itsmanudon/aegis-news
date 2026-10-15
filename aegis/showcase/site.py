@@ -17,7 +17,8 @@ from typing import Any
 from urllib.parse import urlsplit
 
 from aegis.provenance.service import canonical
-from aegis.showcase.contracts import POLICY_URL, PublicExport, PublicRecord
+from aegis.showcase.contracts import POLICY_URL, DailyExport, Export, PublicRecord
+from aegis.showcase.daily_contracts import TrustRegistry
 from scripts.scan_secrets import violations
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -28,7 +29,7 @@ NAV = {
     "/topics/": "Topic Intelligence",
     "/evidence/": "Entity & Event Evidence",
     "/analytics/": "Analytics",
-    "/media/": "Media References",
+    "/media/": "Media Lab",
     "/verification/": "Cryptography",
 }
 
@@ -65,13 +66,13 @@ def cards(records: list[PublicRecord]) -> str:
         '<div class="story-list">'
         + "".join(
             f'<article class="story" data-story data-topic="{e(topic(r))}" '
-            f'data-search="{e(r.metadata.title.casefold())}">'
-            f'<div class="story-meta">NASA <span>·</span> '
+            f'data-search="{e((r.metadata.title + " " + r.metadata.publisher).casefold())}">'
+            f'<div class="story-meta">{e(r.metadata.publisher)} <span>·</span> '
             f'<a href="/topics/{e(topic(r))}/">{e(topic(r).title())}</a></div>'
             f'<h2><a href="{story_link(r)}">{e(r.metadata.title)}</a></h2>'
             f'<div class="caption">Published {date(r.metadata.published_at)}</div>'
             f'<a class="source-link" href="{e(r.metadata.url)}" rel="noreferrer">'
-            "Original NASA Reporting ↗</a></article>"
+            f"Original At {e(r.metadata.publisher)} ↗</a></article>"
             for r in records
         )
         + "</div>"
@@ -85,7 +86,7 @@ def intro(eyebrow: str, title: str, description: str) -> str:
     )
 
 
-def shell(dataset: PublicExport, route: str, title: str, body: str) -> str:
+def shell(dataset: Export, route: str, title: str, body: str) -> str:
     navigation = "".join(
         f'<a href="{path}" {"aria-current=page" if route == path else ""}>{e(label)}</a>'
         for path, label in NAV.items()
@@ -95,38 +96,45 @@ def shell(dataset: PublicExport, route: str, title: str, body: str) -> str:
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Aegis News: a frozen, public news-intelligence collection with verifiable provenance.">
 <meta name="aegis-public-key" content="{e(dataset.public_key)}">
+<meta name="aegis-trust" content="{e(json.dumps(trust_data(dataset)))}">
+<meta name="aegis-release" content="{digest}">
 <title>{e(title)} — Aegis News</title><link rel="stylesheet" href="/assets/style.css">
 <script type="module" src="/assets/app.js"></script></head><body>
 <a class="skip" href="#main">Skip To Content</a>
 <header><a class="brand" href="/">Aegis<span>News</span><small>News Intelligence & Provenance</small></a>
-<div class="edition"><span class="seal">Public Read-Only Edition</span><br>Frozen Collection · {len(dataset.records)} Records</div></header>
+<div class="edition"><span class="seal">Public Read-Only Edition</span><br>Published Collection · {len(dataset.records)} Records</div></header>
 <nav aria-label="Primary">{navigation}</nav>
 <div class="dateline">Dataset Updated {date(dataset.exported_at)}<a href="/data/manifest.json">Release {digest[:12]} ↗</a></div>
 <main id="main">{body}</main>
 <footer><div class="brand">Aegis<span>News</span></div><p>An Information Security & Cryptography Academic Project.</p>
 <p>Publisher reporting and Aegis heuristic outputs are identified separately. A valid signature does not establish factual accuracy.</p>
 <a href="/about/">Sources & Limitations</a> · <a href="/verification/">Verify Public Evidence</a> · <a href="/data/dataset.json">Download Public Dataset</a>
-<p class="caption">No accounts. No public write operations. Data remains frozen until manually refreshed.</p></footer></body></html>"""
+<p class="caption">No accounts. No public write operations. Updates arrive only through validated static publications.</p></footer></body></html>"""
 
 
-def pages(dataset: PublicExport) -> dict[str, tuple[str, str]]:
+def pages(dataset: Export) -> dict[str, tuple[str, str]]:
     records = sorted(
         dataset.records,
-        key=lambda r: (r.metadata.published_at or r.metadata.acquired_at, r.metadata.id),
+        key=lambda r: (
+            r.metadata.published_at
+            or getattr(r.metadata, "discovered_at", None)
+            or r.metadata.acquired_at,
+            r.metadata.id,
+        ),
         reverse=True,
     )
     counts = Counter(topic(r) for r in records)
     lead = records[0]
     hero = (
         intro(
-            "The Public Collection",
+            "Recent Developments",
             "Reporting, With A Record.",
             "Explore original source reporting, headline intelligence and the evidence behind each published record.",
         )
-        + '<div class="lead-grid"><section class="lead-story"><p class="eyebrow">From The Collection · NASA</p>'
+        + '<div class="lead-grid"><section class="lead-story"><p class="eyebrow">Leading Coverage</p>'
         + f'<h2><a href="{story_link(lead)}">{e(lead.metadata.title)}</a></h2>'
         + f'<p class="caption">Published {date(lead.metadata.published_at)}</p>'
-        + "<p>Read the original at NASA. Inspect Aegis’s headline-level analysis and verify its signed publication evidence.</p>"
+        + "<p>Read the original source. Inspect Aegis’s headline-level analysis and verify its signed publication evidence.</p>"
         + f'<a class="button" href="{story_link(lead)}">Explore This Record →</a></section>'
         + '<aside class="evidence-rail"><p class="eyebrow">The Evidence Trail</p><ol>'
         + "<li><strong>Source Metadata</strong><span>Attributed headline, link and actual timestamps.</span></li>"
@@ -138,7 +146,7 @@ def pages(dataset: PublicExport) -> dict[str, tuple[str, str]]:
     )
     search = (
         '<div class="search-controls"><label for="search">Search Headlines</label>'
-        '<input id="search" type="search" placeholder="Search The Frozen Collection" autocomplete="off">'
+        '<input id="search" type="search" placeholder="Search Headlines Or Publishers" autocomplete="off">'
         '<label for="topic">Topic</label><select id="topic"><option value="">All Topics</option>'
         + "".join(f'<option value="{e(t)}">{e(t.title())}</option>' for t in sorted(counts))
         + '</select></div><p id="search-status" role="status">'
@@ -150,9 +158,9 @@ def pages(dataset: PublicExport) -> dict[str, tuple[str, str]]:
         "/archive/": (
             "News Archive",
             intro(
-                "The Frozen Record",
+                "The Published Record",
                 "News Archive & Search",
-                "Search runs entirely in your browser. Records are ordered by publication time; unknown dates fall back to acquisition time.",
+                "Search runs entirely in your browser. Records are ordered by publication time; unknown dates fall back to provider discovery or acquisition time.",
             )
             + search
             + cards(records),
@@ -209,9 +217,9 @@ def pages(dataset: PublicExport) -> dict[str, tuple[str, str]]:
     analytics = intro(
         "This Collection Only",
         "Intelligence Analytics",
-        "Counts describe this curated NASA collection, not the wider news landscape. Sentiment is a headline lexicon baseline, not a claim about the event.",
+        "Counts describe this curated collection, not the wider news landscape. Sentiment is a headline lexicon baseline, not a claim about the event.",
     )
-    analytics += f'<div class="metrics"><div><strong>{len(records)}</strong>Genuine Records</div><div><strong>1</strong>Publisher</div><div><strong>{len(counts)}</strong>Headline Topics</div><div><strong>{sum(r.metadata.published_at is None for r in records)}</strong>Unknown Publication Times</div></div>'
+    analytics += f'<div class="metrics"><div><strong>{len(records)}</strong>Genuine Records</div><div><strong>{len(set(r.metadata.publisher for r in records))}</strong>Publishers</div><div><strong>{len(counts)}</strong>Headline Topics</div><div><strong>{sum(r.metadata.published_at is None for r in records)}</strong>Unknown Publication Times</div></div>'
     for label, values in (("Topic Distribution", counts), ("Headline Sentiment", sentiment)):
         analytics += f'<section class="distribution"><h2>{label}</h2><table><caption>{label} · {len(records)} Records</caption><thead><tr><th scope="col">Label</th><th scope="col">Records</th><th scope="col">Share</th></tr></thead><tbody>'
         for name, count in sorted(values.items()):
@@ -269,17 +277,17 @@ def pages(dataset: PublicExport) -> dict[str, tuple[str, str]]:
         analysis += (
             "<details><summary>Model Receipts & Confidence</summary>"
             + "".join(
-                f"<p>{e(a.analysis_type)} · {e(a.model_name)} v{e(a.model_version)} · {e(a.provider)}</p><code>{e(a.configuration_hash)}</code><pre>{e(json.dumps([o.model_dump(mode='json') for o in a.outputs], ensure_ascii=False, indent=2))}</pre>"
+                f"<p>{e(a.analysis_type)} · {e(a.model_name)} v{e(a.model_version)} · {e(a.provider)} · Available {date(a.available_at)}</p><code>{e(a.configuration_hash)}</code><pre>{e(json.dumps([o.model_dump(mode='json') for o in a.outputs], ensure_ascii=False, indent=2))}</pre>"
                 for a in record.analyses
             )
             + "</details></section>"
         )
         body = intro(
-            "Source Record · NASA",
+            "Source Record · " + m.publisher,
             m.title,
             "Original reporting is available at the publisher. This page publishes metadata and Aegis’s separate analysis.",
         )
-        body += f'<a class="button" href="{e(m.url)}" rel="noreferrer">Read Original At NASA ↗</a><dl class="record-meta"><dt>Published</dt><dd>{date(m.published_at)}</dd><dt>Acquired</dt><dd>{date(m.acquired_at)}</dd><dt>Public Record ID</dt><dd><code>{m.id}</code></dd></dl>'
+        body += f'<a class="button" href="{e(m.url)}" rel="noreferrer">Read Original At {e(m.publisher)} ↗</a><dl class="record-meta"><dt>Published</dt><dd>{date(m.published_at)}</dd><dt>Acquired</dt><dd>{date(m.acquired_at)}</dd><dt>Public Record ID</dt><dd><code>{m.id}</code></dd></dl>'
         body += (
             analysis
             + f'<section class="verification-panel"><h2>Verify This Public Record</h2><p>Checks the signed metadata, analysis bytes and hash chain. This is publication evidence, not a factual-accuracy rating.</p><button data-verify="{m.id}">Verify Signed Evidence</button><p role="status" class="verify-status">Ready To Verify In Your Browser.</p><a href="/data/evidence/{m.id}/manifest.json">Download Signed Manifest</a> · <a href="/verification/">Verification Explained</a></section>'
@@ -290,10 +298,23 @@ def pages(dataset: PublicExport) -> dict[str, tuple[str, str]]:
         intro("404", "Page Not Found", "This route is not part of the public collection.")
         + '<a href="/archive/">Return To The Archive →</a>',
     )
+    if isinstance(dataset, DailyExport):
+        from aegis.showcase.daily_site import enrich
+
+        enrich(dataset, result)
     return result
 
 
-def cryptography(dataset: PublicExport) -> str:
+def trust_data(dataset: Export) -> dict[str, Any]:
+    if isinstance(dataset, DailyExport):
+        return dataset.trust.model_dump(mode="json")
+    return {
+        "version": "aegis-public-trust-2",
+        "keys": {dataset.key_id: {"public_key": dataset.public_key, "status": "verify-only"}},
+    }
+
+
+def cryptography(dataset: Export) -> str:
     fingerprint = hashlib.sha256(base64.b64decode(dataset.public_key)).hexdigest()
     return (
         intro(
@@ -317,7 +338,7 @@ def cryptography(dataset: PublicExport) -> str:
     )
 
 
-def artifact_bytes(dataset: PublicExport) -> dict[str, bytes]:
+def artifact_bytes(dataset: Export) -> dict[str, bytes]:
     artifacts = {}
     for route, (title, body) in pages(dataset).items():
         path = "404.html" if route == "/404/" else route.strip("/") + "/index.html"
@@ -342,6 +363,11 @@ def artifact_bytes(dataset: PublicExport) -> dict[str, bytes]:
     artifacts["data/public-key.json"] = canonical(
         {"algorithm": "Ed25519", "key_id": dataset.key_id, "public_key": dataset.public_key}
     )
+    artifacts["data/public-keys.json"] = canonical(trust_data(dataset))
+    if isinstance(dataset, DailyExport):
+        artifacts["data/release-signed-body.json"] = canonical(
+            dataset.model_dump(mode="json", exclude={"release_signature"})
+        )
     for record in dataset.records:
         prefix = "data/evidence/" + record.metadata.id + "/"
         values = list(record.contents().values())
@@ -369,13 +395,24 @@ def artifact_bytes(dataset: PublicExport) -> dict[str, bytes]:
     return artifacts
 
 
-def check_trust(dataset: PublicExport) -> None:
+def check_trust(dataset: Export) -> None:
+    if isinstance(dataset, DailyExport):
+        trusted = TrustRegistry.model_validate_json((APP / "trust-registry.json").read_bytes())
+        for key, entry in dataset.trust.keys.items():
+            current = trusted.keys.get(key)
+            if not current or current.public_key != entry.public_key or current.status == "revoked":
+                raise ValueError("release registry differs from reviewed trust registry")
+            if entry.status != current.status and not (
+                entry.status == "active" and current.status == "verify-only"
+            ):
+                raise ValueError("release registry status differs from reviewed trust registry")
+        return
     trust = json.loads((APP / "trust.json").read_bytes())
     if trust != {"key_id": dataset.key_id, "public_key": dataset.public_key}:
         raise ValueError("export key does not match reviewed publication trust anchor")
 
 
-def build(dataset: PublicExport, output: Path) -> None:
+def build(dataset: Export, output: Path) -> None:
     check_trust(dataset)
     # Only replace the named generated output, never an arbitrary user directory.
     if output.resolve() != (APP / "dist").resolve():
@@ -405,7 +442,7 @@ class Links(HTMLParser):
             raise ValueError("active form, frame or inline handler in output")
 
 
-def audit(dataset: PublicExport, output: Path) -> None:
+def audit(dataset: Export, output: Path) -> None:
     check_trust(dataset)
     expected = artifact_bytes(dataset)
     paths = list(output.rglob("*"))
@@ -414,8 +451,12 @@ def audit(dataset: PublicExport, output: Path) -> None:
     actual = {p.relative_to(output).as_posix(): p.read_bytes() for p in paths if p.is_file()}
     if actual != expected:
         raise ValueError("static output differs from validated allowlisted build")
-    if len(actual) > 20000 or any(len(v) > 25 * 1024 * 1024 for v in actual.values()):
-        raise ValueError("Cloudflare Pages Free asset limits exceeded")
+    if (
+        len(actual) > 2500
+        or sum(len(v) for v in actual.values()) > 64 * 1024 * 1024
+        or any(len(v) > 20 * 1024 * 1024 for v in actual.values())
+    ):
+        raise ValueError("reviewed static publication size/asset ceiling exceeded")
     forbidden = re.compile(
         rb"localhost|127\.0\.0\.1|/api/|localStorage|sessionStorage|WebSocket|EventSource"
     )

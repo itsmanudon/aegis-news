@@ -75,6 +75,7 @@ const browser = await chromium.launch({
 });
 const errors = [];
 const requests = [];
+const imageChecks = [];
 const context = await browser.newContext();
 const page = await context.newPage();
 page.on("pageerror", (error) => errors.push(error.message));
@@ -136,7 +137,9 @@ try {
   assert.equal(
     await page.locator("[data-story]:visible").count(),
     dataset.records.filter((r) =>
-      r.metadata.title.toLowerCase().includes("nasa"),
+      (r.metadata.title + " " + r.metadata.publisher)
+        .toLowerCase()
+        .includes("nasa"),
     ).length,
   );
   await page.locator("#search").fill("");
@@ -193,9 +196,8 @@ try {
       const response = await route.fetch();
       const text = await response.text();
       let body;
-      if (file === "metadata.json") body = text.replace("NASA", "NAsA");
-      else if (file === "analysis.json")
-        body = text.replace("local-baseline", "local-bAseline");
+      if (file === "metadata.json") body = text + " ";
+      else if (file === "analysis.json") body = text + " ";
       else if (file === "manifest.json") {
         const value = JSON.parse(text);
         value.signature = "A".repeat(88);
@@ -242,17 +244,127 @@ try {
       404,
     );
   }
-  assert(requests.every((r) => r.url.startsWith(base) && r.method === "GET"));
+  if (dataset.version === "aegis-public-2") {
+    await page.goto(base + "/verification/");
+    await page.locator("[data-verify-release]").click();
+    await page.waitForFunction(
+      () => !document.querySelector("[data-verify-release]").disabled,
+    );
+    assert(
+      (await page.locator(".release-status").innerText()).startsWith(
+        "Verified:",
+      ),
+    );
+    for (const name of [
+      "dataset.json",
+      "release-signed-body.json",
+      "public-keys.json",
+    ]) {
+      const pattern = "**/data/" + name;
+      await page.route(pattern, async (route) => {
+        const response = await route.fetch();
+        const value = await response.text();
+        await route.fulfill({
+          response,
+          body:
+            name === "public-keys.json"
+              ? value.replace("active", "revoked")
+              : value + " ",
+        });
+      });
+      await page.reload();
+      await page.locator("[data-verify-release]").click();
+      await page.waitForFunction(
+        () => !document.querySelector("[data-verify-release]").disabled,
+      );
+      assert(
+        (await page.locator(".release-status").innerText()).startsWith(
+          "Not Verified:",
+        ),
+        name,
+      );
+      await page.unroute(pattern);
+    }
+    await page.goto(base + "/media/");
+    for (const media of dataset.media) {
+      assert(
+        (await page
+          .locator(`a[href="${media.reference.source_url}"]`)
+          .count()) > 0,
+      );
+      if (media.reference.kind === "image") {
+        const image = page.getByAltText(media.reference.alt, { exact: true });
+        await image.locator("..").scrollIntoViewIfNeeded();
+        await image.evaluate(
+          (el) =>
+            el.complete ||
+            new Promise((resolve) => {
+              el.onload = resolve;
+              el.onerror = resolve;
+            }),
+        );
+        assert(
+          await image.evaluate(
+            (el) =>
+              el.naturalWidth > 0 ||
+              el.parentElement.querySelector(".image-fallback").hidden ===
+                false,
+          ),
+        );
+        imageChecks.push({
+          id: media.reference.id,
+          loaded: await image.evaluate((el) => el.naturalWidth > 0),
+        });
+      }
+    }
+    for (const viewport of [
+      { width: 1440, height: 1000 },
+      { width: 390, height: 844 },
+    ]) {
+      await page.setViewportSize(viewport);
+      await page.evaluate(() => scrollTo(0, 0));
+      await page.screenshot({
+        path: path.join(reportDir, `${viewport.width}-media.png`),
+        fullPage: true,
+      });
+    }
+    await page.route(/^https:\/\/(upload|thumb)\.wikimedia\.org\//, (route) =>
+      route.abort(),
+    );
+    await page.reload();
+    for (const image of await page.locator(".media-image img").all()) {
+      await image.locator("..").scrollIntoViewIfNeeded();
+      await page.waitForFunction(
+        (alt) => {
+          const el = [...document.images].find((v) => v.alt === alt);
+          return (
+            el.parentElement.querySelector(".image-fallback").hidden === false
+          );
+        },
+        await image.getAttribute("alt"),
+      );
+    }
+    await page.unroute(/^https:\/\/(upload|thumb)\.wikimedia\.org\//);
+  }
+  assert(
+    requests.every(
+      (r) =>
+        (r.url.startsWith(base) ||
+          /^https:\/\/(upload|thumb)\.wikimedia\.org\//.test(r.url)) &&
+        r.method === "GET",
+    ),
+  );
   assert.deepEqual(errors, []);
   const report = {
     routes: routes.length,
     viewports: [1440, 390],
     signedRecordsVerified: dataset.records.length,
-    tamperingCasesRejected: 6,
+    tamperingCasesRejected: dataset.version === "aegis-public-2" ? 9 : 6,
     search: true,
     topics: true,
     analytics: true,
-    externalRequests: 0,
+    externalRequests: requests.filter((r) => !r.url.startsWith(base)).length,
+    images: imageChecks,
     browserErrors: errors,
     export_sha256: manifest.export_sha256,
   };

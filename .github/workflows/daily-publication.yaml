@@ -1,0 +1,93 @@
+name: Daily Public Publication
+
+on:
+  schedule:
+    - cron: "23 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Shared with the manual publisher. Never cancel a prepared/deploying release.
+concurrency:
+  group: public-showcase
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'itsmanudon/aegis-news' && github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || vars.DAILY_PUBLICATION_ENABLED == 'true')
+    environment: public-daily-publication
+    permissions:
+      contents: write # Only public-state Git blobs/commits; no issues/PR/admin permissions.
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      AEGIS_AI_PROFILE: offline
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.11.21"
+      - run: uv sync --frozen --python 3.12
+      - name: Verify Credential Identity, Expiry And Static Destination
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+        run: uv run python -c 'from aegis.showcase.deployment import preflight; preflight()'
+      - name: Retrieve And Reconcile Validated State
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .data/daily
+          uv run python -m scripts.public_showcase state-read > .data/daily/state.json
+          uv run python -c 'import json; from pathlib import Path; from aegis.showcase.state import GitHubState; GitHubState().verify_live_parent(json.loads(Path(".data/daily/state.json").read_bytes()))'
+      - name: Bounded Acquisition And Dedicated Signing
+        env:
+          AEGIS_PUBLIC_SIGNING_KEY: ${{ secrets.AEGIS_PUBLIC_SIGNING_KEY }}
+        run: uv run python -m scripts.daily_publication acquire
+      - name: Verify Candidate And Public Boundaries
+        run: |
+          uv run pytest -q tests/unit/test_public_showcase.py tests/unit/test_daily_publication.py
+          uv run python scripts/scan_secrets.py
+          uv run python -m scripts.daily_publication build
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Browser Checks Before Deployment
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --filter @aegisnews/web exec playwright install --with-deps chromium
+          if test -f .data/daily/candidate.json; then node apps/showcase/check-browser.mjs; fi
+      - name: Prepare Public State With Compare-And-Swap
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: uv run python -m scripts.daily_publication prepare
+      - name: Atomic Static Deployment
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+        run: |
+          if test -f .data/daily/candidate.json; then
+            uv run python -m scripts.public_showcase audit --dataset .data/daily/candidate.json
+            npx --yes wrangler@4.151.0 pages deploy apps/showcase/dist --project-name "$CLOUDFLARE_PAGES_PROJECT" --branch main
+          fi
+      - name: Verify Actual Production Bytes And Browser Behavior
+        env:
+          AEGIS_PUBLIC_BASE_URL: https://aegis-news-showcase.pages.dev
+        run: |
+          if test -f .data/daily/candidate.json; then
+            node apps/showcase/check-browser.mjs
+            uv run python -m scripts.verify_public_deployment --base-url "$AEGIS_PUBLIC_BASE_URL"
+          fi
+      - name: Verify Live Release And Promote Durable State
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: uv run python -m scripts.daily_publication promote
+      - name: Publication Summary
+        if: always()
+        run: uv run python -m scripts.daily_publication summary
