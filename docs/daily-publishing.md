@@ -169,7 +169,9 @@ also rejects Actions outside the expected repository/default-branch ref.
 The registry supports active, verify-only and revoked keys. The original
 `showcase` key is verify-only, so legacy record bytes remain verifiable. For a
 planned rotation, explicitly provision a new key/version, retain existing public
-keys, mark the old daily key verify-only, review the registry change, configure
+keys, mark the old daily key verify-only (the explicit `daily-key --key-id daily-v2`
+command preserves older public entries and refuses key-ID replacement), review
+the registry change, configure
 the corresponding environment secret and code key ID, then merge and test.
 Historical releases may use an earlier reviewed subset of current public keys.
 Revoked keys fail closed; quarantine affected records/state in a separately
@@ -179,7 +181,8 @@ Cloudflare uses the existing account-owned token “Aegis News Pages Publication
 Pages Write for account `3de5bfe983584a2eab1cbb710aa4fbe8`, stored as repository
 secret `CLOUDFLARE_API_TOKEN`. It covers all Pages projects in that account, not
 one project. `apps/showcase/deployment.json` pins token ID, account/project,
-reviewed permissions and **14 January 2027** expiry cutoff. Every deployment
+reviewed permissions and the verified expiry **13 January 2027 23:59:59 UTC /
+14 January 2027 05:29:59 IST**. Every deployment
 verifies live token identity/status/expiration and checks the Direct Upload project has no
 runtime bindings or environment variables. The minimally scoped token cannot
 read token policies; the exact permission scope is owner-reviewed attestation,

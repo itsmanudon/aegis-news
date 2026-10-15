@@ -16,6 +16,7 @@ def main() -> None:
         "daily-key", help="explicitly provision a separate unattended signing key locally"
     )
     key.add_argument("--key-file", type=Path, default=Path(".keys/daily-publication/daily-v1.key"))
+    key.add_argument("--key-id", default="daily-v1")
     daily = commands.add_parser(
         "daily", help="one bounded multi-source acquisition and signed release"
     )
@@ -54,7 +55,7 @@ def main() -> None:
     if args.command == "daily-key":
         from aegis.showcase.daily import initialize_key
 
-        initialize_key(args.key_file)
+        initialize_key(args.key_file, args.key_id)
     elif args.command == "daily":
         from aegis.showcase.daily import run
 

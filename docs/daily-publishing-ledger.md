@@ -86,3 +86,18 @@
     14 January date in IST, retains active/actual-expiry checks, and logs only the
     parsed non-secret UTC expiry for verification. No credential scope or expiry
     was changed and no failed run deployed.
+
+14. Actual preview deployed at `https://af81c963.aegis-news-showcase.pages.dev`
+    (alias `https://daily-preview.aegis-news-showcase.pages.dev`). Live Chromium
+    passed all 54 routes, 44 signatures, nine negative cases, three loaded images,
+    search/topics/analytics and protected-route checks. The separate byte checker
+    initially rejected Cloudflare's clean-URL HTML redirects; corrected it to use
+    canonical routes (including the custom 404 response), then all 241 public
+    inventory hashes and security headers matched. No protection was disabled.
+15. Token verification confirmed actual expiry `2027-01-13T23:59:59Z`, which is
+    14 January 2027 05:29:59 IST. The reviewed config now pins that exact instant,
+    and runtime verification compares the exact API timestamp. This corrects the
+    prior date-only documentation without changing the credential.
+16. Local explicit key provisioning now refuses registered key-ID replacement,
+    preserves older verification keys on versioned rotation and refuses to run
+    in Actions. Focused publication tests: 61 passed. Final CI/preview rerun pending.

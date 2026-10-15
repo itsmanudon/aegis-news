@@ -556,3 +556,35 @@ def test_deployment_destination_expiry_and_scope_attestation(monkeypatch):
     monkeypatch.setattr(httpx, "Client", Client)
     with pytest.raises(ValueError, match="identity"):
         deployment.preflight()
+
+
+def test_explicit_rotation_preserves_prior_public_keys(previous, tmp_path, monkeypatch):
+    root = tmp_path
+    directory = root / "apps/showcase"
+    directory.mkdir(parents=True)
+    (directory / "trust.json").write_bytes(
+        canonical({"key_id": "showcase", "public_key": previous.public_key})
+    )
+    trust = directory / "trust-registry.json"
+    monkeypatch.setattr(daily, "ROOT", root)
+    monkeypatch.setattr(daily, "TRUST", trust)
+    monkeypatch.setenv("GITHUB_ACTIONS", "false")
+    daily.initialize_key(root / ".keys/daily-v1.key", "daily-v1")
+    original = TrustRegistry.model_validate_json(trust.read_bytes())
+    with pytest.raises(FileExistsError, match="registered"):
+        daily.initialize_key(root / ".keys/accidental-replacement.key", "daily-v1")
+    assert not (root / ".keys/accidental-replacement.key").exists()
+    assert TrustRegistry.model_validate_json(trust.read_bytes()) == original
+    daily.initialize_key(root / ".keys/daily-v2.key", "daily-v2")
+    rotated = TrustRegistry.model_validate_json(trust.read_bytes())
+    assert rotated.keys["daily-v1"].public_key == original.keys["daily-v1"].public_key
+    assert rotated.keys["daily-v1"].status == "verify-only"
+    assert rotated.keys["showcase"].public_key == previous.public_key
+    assert rotated.keys["daily-v2"].status == "active"
+
+
+def test_unattended_provisioning_is_rejected(tmp_path, monkeypatch):
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    with pytest.raises(ValueError, match="local-only"):
+        daily.initialize_key(tmp_path / "never-created.key")
+    assert not (tmp_path / "never-created.key").exists()

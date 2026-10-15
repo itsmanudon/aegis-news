@@ -4,7 +4,6 @@ import json
 import os
 from datetime import UTC, datetime
 from pathlib import Path
-from zoneinfo import ZoneInfo
 
 import httpx
 
@@ -51,13 +50,12 @@ def preflight() -> None:
         if (
             not expiry.tzinfo
             or expiry <= datetime.now(UTC)
-            or expiry.astimezone(ZoneInfo("Asia/Kolkata")).date()
-            != datetime.fromisoformat(config["expires_at"]).date()
+            or expiry != datetime.fromisoformat(config["expires_at"])
         ):
             raise ValueError(
                 "deployment credential expiration "
                 + expiry.isoformat()
-                + " differs from the reviewed 14 January 2027 IST date"
+                + " differs from the reviewed configuration"
             )
         print("Verified deployment credential expiry (UTC): " + expiry.astimezone(UTC).isoformat())
         # The token cannot inspect its own permission policies without adding token-read access.

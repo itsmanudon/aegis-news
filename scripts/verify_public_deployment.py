@@ -14,6 +14,14 @@ HOSTS = (
 )
 
 
+def public_path(name: str) -> str:
+    if name == "404.html":
+        return "/aegis-public-verification-missing-route"
+    if name.endswith("index.html"):
+        return "/" + name.removesuffix("index.html")
+    return "/" + name
+
+
 async def verify(base: str) -> None:
     local = json.loads(Path("apps/showcase/dist/data/manifest.json").read_bytes())
     limiter = asyncio.Semaphore(4)
@@ -31,7 +39,7 @@ async def verify(base: str) -> None:
             if name.startswith("/") or ".." in name or ":" in name:
                 raise ValueError("invalid audited asset path")
             async with limiter:
-                result = await client.get(base + "/" + name)
+                result = await client.get(base + public_path(name))
                 if name == "404.html":
                     if result.status_code not in {200, 404}:
                         raise ValueError("unexpected not-found status")

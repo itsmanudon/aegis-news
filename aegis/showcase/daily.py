@@ -5,6 +5,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import subprocess
 from collections import defaultdict
 from datetime import UTC, datetime, timedelta
@@ -49,9 +50,24 @@ class DailySigner:
 
 def initialize_key(path: Path, key_id: str = "daily-v1") -> None:
     """Explicit provisioning command; writes only to ignored local .keys."""
+    if os.getenv("GITHUB_ACTIONS") == "true":
+        raise ValueError("key provisioning is local-only, never an unattended workflow action")
+    if not re.fullmatch(r"daily-v[1-9][0-9]*", key_id):
+        raise ValueError("explicit versioned daily key ID required")
+    entries = {}
+    if TRUST.exists():
+        entries = dict(TrustRegistry.model_validate_json(TRUST.read_bytes()).keys)
+        if key_id in entries:
+            raise FileExistsError("key ID already registered; explicit new version required")
+        if len(entries) >= 8:
+            raise ValueError("trust registry key ceiling reached; review rotation history")
     base = (ROOT / ".keys").resolve()
     target = path.resolve()
-    if not target.is_relative_to(base) or target.is_symlink():
+    if (
+        not base.is_relative_to(ROOT.resolve())
+        or not target.is_relative_to(base)
+        or target.is_symlink()
+    ):
         raise ValueError("dedicated private signing key must stay under ignored .keys")
     target.parent.mkdir(parents=True, exist_ok=True)
     if target.exists():
@@ -61,15 +77,20 @@ def initialize_key(path: Path, key_id: str = "daily-v1") -> None:
     with os.fdopen(descriptor, "wb") as stream:
         stream.write(base64.b64encode(private.private_bytes_raw()))
     legacy = json.loads((ROOT / "apps/showcase/trust.json").read_bytes())
-    registry = TrustRegistry(
-        keys={
-            legacy["key_id"]: KeyEntry(public_key=legacy["public_key"], status="verify-only"),
-            key_id: KeyEntry(
-                public_key=base64.b64encode(private.public_key().public_bytes_raw()).decode(),
-                status="active",
-            ),
-        }
+    entries = {
+        key: entry.model_copy(update={"status": "verify-only"})
+        if entry.status == "active"
+        else entry
+        for key, entry in entries.items()
+    }
+    entries.setdefault(
+        legacy["key_id"], KeyEntry(public_key=legacy["public_key"], status="verify-only")
     )
+    entries[key_id] = KeyEntry(
+        public_key=base64.b64encode(private.public_key().public_bytes_raw()).decode(),
+        status="active",
+    )
+    registry = TrustRegistry(keys=entries)
     TRUST.write_bytes(canonical(registry.model_dump(mode="json")) + b"\n")
     print(
         "Dedicated private key created locally. "
