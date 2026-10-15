@@ -263,6 +263,37 @@ async def test_restart_deduplication_and_no_fabricated_refresh(release, signing,
     media.assert_not_called()
 
 
+@pytest.mark.asyncio
+async def test_pruned_identity_cannot_reenter_as_new(previous, release, signing, monkeypatch):
+    pruned = set(release.seen) - {r.metadata.id for r in release.records}
+    assert pruned
+    old = next(r.metadata for r in previous.records if r.metadata.id in pruned)
+    now = datetime.now(UTC)
+    rediscovered = article(
+        old.source, old.title, old.url, now - timedelta(seconds=10), now - timedelta(seconds=5)
+    )
+    monkeypatch.setattr(daily, "acquire", AsyncMock(return_value=([rediscovered], {})))
+    async with httpx.AsyncClient() as client:
+        result, report = await daily.candidate(release, *signing, Fetcher(client), now)
+    assert result is None and report["new_selected"] == 0
+    assert release.seen[old.id] == old.acquired_at
+
+
+@pytest.mark.asyncio
+async def test_signed_history_is_append_only(previous, release, signing, monkeypatch):
+    raw = release.model_dump(mode="json")
+    pruned = set(release.seen) - {r.metadata.id for r in release.records}
+    raw["seen"].pop(next(iter(pruned)))
+    modified = parse_export(canonical(resign(raw, signing)))
+    store = GitHubState()
+    monkeypatch.setattr(store, "current", lambda: ("head", previous))
+    from aegis.showcase import site
+
+    monkeypatch.setattr(site, "check_trust", lambda _: None)
+    with pytest.raises(StateError, match="identity history"):
+        store.prepare(modified, "head")
+
+
 def test_diversity_and_per_publisher_ceiling():
     rows = [
         metadata(s, f"Fixture {i}", f"fixture-{i}")

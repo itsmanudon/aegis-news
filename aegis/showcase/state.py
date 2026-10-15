@@ -9,7 +9,7 @@ from typing import Any
 
 from aegis.provenance.service import canonical
 from aegis.showcase.contracts import DailyExport, Export, PublicExport, parse_export
-from aegis.showcase.daily import digest
+from aegis.showcase.daily import digest, known_identities
 
 REPOSITORY = "itsmanudon/aegis-news"
 BRANCH = "publication-data"
@@ -143,6 +143,8 @@ class GitHubState:
         check_trust(export)
         if export.sequence != getattr(previous, "sequence", 0) + 1:
             raise StateError("release sequence mismatch")
+        if any(export.seen.get(key) != value for key, value in known_identities(previous).items()):
+            raise StateError("release cannot erase or change first-capture identity history")
         pending = json.loads(self.read("prepared.json", head))
         identity = digest(export)
         if pending and pending.get("release") != identity:

@@ -190,6 +190,7 @@ class DailyExport(PublicModel):
     trust: TrustRegistry
     parent_sha256: Sha256
     sequence: int = Field(ge=1)
+    seen: dict[Sha256, AwareDatetime] = Field(min_length=1, max_length=20000)
     records: tuple[PublicRecord, ...] = Field(min_length=1, max_length=300)
     media: tuple[MediaLink, ...] = Field(default=(), max_length=12)
     release_signature: str = Field(min_length=88, max_length=88)
@@ -211,6 +212,8 @@ class DailyExport(PublicModel):
         if ids != sorted(set(ids)) or self.exported_at > datetime.now(UTC):
             raise ValueError("duplicate/unsorted records or future release")
         for record in self.records:
+            if self.seen.get(record.metadata.id) != record.metadata.acquired_at:
+                raise ValueError("first-capture history differs from record acquisition")
             identity = record.provenance.key_id
             entry = self.trust.keys.get(identity)
             if not entry or entry.status == "revoked":
@@ -232,6 +235,8 @@ class DailyExport(PublicModel):
             ):
                 raise ValueError("record content, lineage, time or signature verification failed")
         by_id = {r.metadata.id: r for r in self.records}
+        if any(value > self.exported_at for value in self.seen.values()):
+            raise ValueError("first-capture history follows release")
         if len({m.reference.id for m in self.media}) != len(self.media):
             raise ValueError("duplicate media identity")
         for item in self.media:

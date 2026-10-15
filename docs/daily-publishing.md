@@ -101,7 +101,8 @@ scripts/fonts/styles/connect requests remain same-origin, and frames are denied.
   policy and usable publication/discovery/source-update time. Unknown publication
   stays unknown. Acquisition records the actual successful response time.
 - Deduplicate by existing canonical URL identity and SHA-256 record ID, including
-  tracking-parameter normalization. Existing records preserve first acquisition,
+  tracking-parameter normalization. A signed first-capture index retains identities even after visible pruning.
+  Existing records preserve first acquisition,
   analyses and original signatures; title changes at an existing URL are not
   silently substituted into a previous captured record.
 - Sort candidates by publication/discovery/source-update time and ID. Select
@@ -110,6 +111,9 @@ scripts/fonts/styles/connect requests remain same-origin, and frames are denied.
 - Retain a rolling 21 days and at most 300 visible records. Immutable signed
   releases and Git ancestry retain publication history. Empty acquisition keeps
   the prior deployed dataset unchanged, even if stale; freshness stays visible.
+- The signed identity index has a hard 20,000-entry ceiling. Reaching it stops
+  publication for an owner-reviewed archival decision; identities are never silently
+  dropped to make old stories look new.
 - Up to 110 news candidates (five sources × 16 plus GDELT × 30), max 18 HTTP
   attempts overall, six-second spacing, three attempts per endpoint, 30-second
   request timeout, 30/60-second retry delay. Retry-After is respected up to 120
@@ -136,7 +140,7 @@ Branch `publication-data` contains only:
 An orphan initialization avoids including repository source or private files.
 The legacy v1 bootstrap is pinned to the entire committed dataset digest because
 its old signatures bind records, not whole-release membership. V2 signs the whole
-envelope, including membership, media, sequence and parent digest.
+envelope, including membership, media, first-capture identities, sequence and parent digest.
 
 Each write checks the exact prior branch head and uses a non-forcing Git ref
 update. Concurrent siblings cannot overwrite each other. Daily and manual jobs
@@ -176,7 +180,7 @@ Pages Write for account `3de5bfe983584a2eab1cbb710aa4fbe8`, stored as repository
 secret `CLOUDFLARE_API_TOKEN`. It covers all Pages projects in that account, not
 one project. `apps/showcase/deployment.json` pins token ID, account/project,
 reviewed permissions and **14 January 2027** expiry cutoff. Every deployment
-verifies live token identity/status and checks the Direct Upload project has no
+verifies live token identity/status/expiration and checks the Direct Upload project has no
 runtime bindings or environment variables. The minimally scoped token cannot
 read token policies; the exact permission scope is owner-reviewed attestation,
 not an automatic live policy proof. Any scope/expiry/identity change requires a

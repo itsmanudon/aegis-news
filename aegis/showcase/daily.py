@@ -115,6 +115,12 @@ def record_time(record: PublicRecord) -> datetime:
     )
 
 
+def known_identities(export: Export) -> dict[str, datetime]:
+    if isinstance(export, DailyExport):
+        return dict(export.seen)
+    return {r.metadata.id: r.metadata.acquired_at for r in export.records}
+
+
 def balanced(records: list[MetadataV2], limit: int) -> list[MetadataV2]:
     buckets: dict[str, list[MetadataV2]] = defaultdict(list)
     for record in sorted(
@@ -148,7 +154,8 @@ async def candidate(
     retained = {r.metadata.id: r for r in previous.records if record_time(r) >= cutoff}
     lookback = min(7, max(2, math.ceil((now - previous.exported_at).total_seconds() / 86400) + 1))
     acquired, outcomes = await acquire(fetcher, now, lookback)
-    unique = {r.id: r for r in acquired if r.id not in {x.metadata.id for x in previous.records}}
+    seen = known_identities(previous)
+    unique = {r.id: r for r in acquired if r.id not in seen}
     selected = balanced(list(unique.values()), MAX_NEW)
     report: dict[str, object] = {
         "source_outcomes": outcomes,
@@ -165,6 +172,7 @@ async def candidate(
         return None, report
     for value in selected:
         retained[value.id] = await process(value, signing, signing.key_id)
+        seen[value.id] = value.acquired_at
     records = sorted(
         retained.values(), key=lambda r: (record_time(r), r.metadata.id), reverse=True
     )[:MAX_RECORDS]
@@ -197,6 +205,7 @@ async def candidate(
         "trust": registry.model_dump(mode="json"),
         "parent_sha256": digest(previous),
         "sequence": getattr(previous, "sequence", 0) + 1,
+        "seen": seen,
         "records": [
             r.model_dump(mode="json") for r in sorted(records, key=lambda r: r.metadata.id)
         ],
