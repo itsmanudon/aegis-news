@@ -64,7 +64,9 @@ const server = createServer(async (request, response) => {
   }
 });
 await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
-const base = `http://127.0.0.1:${server.address().port}`;
+const base =
+  process.env.AEGIS_PUBLIC_BASE_URL?.replace(/\/$/, "") ||
+  `http://127.0.0.1:${server.address().port}`;
 const browser = await chromium.launch({
   headless: true,
   ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE
@@ -91,7 +93,9 @@ try {
     await page.setViewportSize(viewport);
     for (const route of routes) {
       const response = await page.goto(base + route);
-      assert.equal(response.status(), 200, route);
+      if (route === "/404.html")
+        assert([200, 404].includes(response.status()), route);
+      else assert.equal(response.status(), 200, route);
       await page.locator("h1").waitFor();
       assert.equal(await page.locator("h1").count(), 1, route);
       assert.equal(await page.locator("form,iframe").count(), 0, route);

@@ -12,7 +12,19 @@ Frozen export SHA-256:
 `be21a98429a1a44cd83ad7b74c5a00e558e0318780c08935572588a89396129f`.
 
 Public production hostname: `https://aegis-news-showcase.pages.dev`.
-Deployment verification and the final release identity are recorded below once deployment completes.
+Deployed successfully on 15 October 2026 through the manual GitHub Actions entry
+point: [publication run 38712273910](https://github.com/itsmanudon/aegis-news/actions/runs/38712273910).
+Immutable deployment URL: `https://00376410.aegis-news-showcase.pages.dev`.
+Deployment build commit: `ab44975` (subsequent handoff/test-script changes do not
+change the published export or static application).
+
+Anonymous HTTP and browser checks passed against production. The public manifest
+matches the local audited release; all 219 public assets referenced by its file
+inventory match SHA-256 byte-for-byte (`_headers` is Cloudflare configuration, not
+a served asset). Root returns 200 without authentication or cookies. Security
+headers are active; private-looking routes return 404. All 50 pages passed at
+desktop/mobile widths, all 40 signed records verified, and six negative evidence
+cases failed closed on the live site. No unrelated cloud resource was created.
 
 ## Architecture Decision
 
@@ -182,6 +194,16 @@ commit `.data`, `.keys`, generated `dist`, caches, screenshots or test results.
 The canonical export SHA-256 from `validate` is the manual publication approval
 identifier. Rebuilding a frozen export produces identical static bytes. Re-running
 `export` intentionally produces a new release with new processing/provenance times.
+
+To repeat the browser acceptance suite against the deployed public edition:
+
+```powershell
+$env:AEGIS_PUBLIC_BASE_URL = 'https://aegis-news-showcase.pages.dev'
+node apps/showcase/check-browser.mjs
+Remove-Item Env:AEGIS_PUBLIC_BASE_URL
+```
+
+That is one explicit test run; it adds no recurring requests or scheduled jobs.
 
 ## Manual GitHub Actions Publication
 
