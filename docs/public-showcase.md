@@ -19,6 +19,13 @@ the original validated NASA release. The new release is publicly accessible at
 [the daily preview](https://daily-preview.aegis-news-showcase.pages.dev/) and has
 passed anonymous browser and static-byte checks.
 
+Successful preview workflow:
+[38728198673](https://github.com/itsmanudon/aegis-news/actions/runs/38728198673).
+Immutable preview: `https://5b06089a.aegis-news-showcase.pages.dev`.
+Export `1906011bd28f2a6b5449104a9c794550f280bd38791efadeb08f7eea8329cedb`,
+updated 15 October 2026 11:27:16 UTC / 16:57:16 IST. Follow-up:
+[PR #3](https://github.com/itsmanudon/aegis-news/pull/3).
+
 The controlled candidate contains 44 genuine records: 39 retained NASA captures,
 one new Federal Reserve Board release and four new USGS event bulletins. It adds
 three per-file public-domain Commons context images and three official NASA video

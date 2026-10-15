@@ -100,4 +100,26 @@
     prior date-only documentation without changing the credential.
 16. Local explicit key provisioning now refuses registered key-ID replacement,
     preserves older verification keys on versioned rotation and refuses to run
-    in Actions. Focused publication tests: 61 passed. Final CI/preview rerun pending.
+    in Actions. Focused publication tests: 61 passed.
+17. Final preview publication succeeded:
+    [run 38728198673](https://github.com/itsmanudon/aegis-news/actions/runs/38728198673).
+    Immutable URL `https://5b06089a.aegis-news-showcase.pages.dev`, alias
+    `https://daily-preview.aegis-news-showcase.pages.dev`. All live browser gates,
+    241 hashed public assets and security headers passed. Build commit `fbb5142`;
+    subsequent whole-term context validation does not change the public bytes.
+18. Final local full backend run: **402 passed, 44 integration-dependent skips**.
+    Focused publication tests: **61 passed**. Ruff/format/mypy/schema checks,
+    repository secret guard and Gitleaks over 71 commits passed. Three real images
+    loaded; forced failures showed fallback. No protected endpoints or unexpected
+    network origins/write requests were observed.
+19. Current preview export:
+    `1906011bd28f2a6b5449104a9c794550f280bd38791efadeb08f7eea8329cedb`,
+    updated **15 October 2026 11:27:16 UTC / 16:57:16 IST**. Anonymous production
+    still has the original 40-record NASA digest `be21a984…96129f`, updated
+    09:06:17 UTC. Prepared state remains null; previews did not promote production.
+20. Follow-up [PR #3](https://github.com/itsmanudon/aegis-news/pull/3) contains the
+    implementation and security review. Exact source-code revision `bbfd0e2`;
+    final PR checks are visible on its Checks tab. No default-branch merge or
+    unattended activation has been performed. All required secrets are configured;
+    real main-only environment signing and production promotion await the final
+    owner-approved integration step. No paid resources were created.
