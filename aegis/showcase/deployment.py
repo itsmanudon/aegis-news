@@ -4,6 +4,7 @@ import json
 import os
 from datetime import UTC, datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import httpx
 
@@ -50,9 +51,15 @@ def preflight() -> None:
         if (
             not expiry.tzinfo
             or expiry <= datetime.now(UTC)
-            or expiry.date() != datetime.fromisoformat(config["expires_at"]).date()
+            or expiry.astimezone(ZoneInfo("Asia/Kolkata")).date()
+            != datetime.fromisoformat(config["expires_at"]).date()
         ):
-            raise ValueError("deployment credential expiration differs from reviewed attestation")
+            raise ValueError(
+                "deployment credential expiration "
+                + expiry.isoformat()
+                + " differs from the reviewed 14 January 2027 IST date"
+            )
+        print("Verified deployment credential expiry (UTC): " + expiry.astimezone(UTC).isoformat())
         # The token cannot inspect its own permission policies without adding token-read access.
         # Rotation/scope changes therefore require a fresh owner-reviewed attestation in Git.
         project = client.get(base + "/pages/projects/" + config["project"])

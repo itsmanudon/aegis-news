@@ -73,3 +73,16 @@
 11. All three real Commons images loaded in Chromium; forced image failures showed
     source-link fallback. Added post-deployment verification of every audited
     public asset hash and all configured security headers, before promotion.
+
+12. Added a signed, append-only first-capture index (20,000-entry ceiling) so
+    records pruned from the 21-day view cannot re-enter as new. Reissued the
+    development candidate without additional provider calls: 44 visible records,
+    45 captured identities, digest
+    `1906011bd28f2a6b5449104a9c794550f280bd38791efadeb08f7eea8329cedb`.
+    Earlier draft candidates remain in Git history; neither was promoted.
+13. Preview run `38726852469` passed data, unit and browser gates but stopped at
+    the exact-expiry check. The Cloudflare date picker displays IST while the
+    verification API returns UTC. The guard now compares the owner's approved
+    14 January date in IST, retains active/actual-expiry checks, and logs only the
+    parsed non-secret UTC expiry for verification. No credential scope or expiry
+    was changed and no failed run deployed.
