@@ -7,7 +7,9 @@ The implementation is on `feat/daily-publication`, from merged PR #2 at
 NASA release during development. The new workflow is gated by all of:
 
 1. Reviewed integration into default branch `main`.
-2. Repository variable `DAILY_PUBLICATION_ENABLED=true` (unset means disabled).
+2. For unattended runs, repository variable `DAILY_PUBLICATION_ENABLED=true`
+   (unset means disabled). Explicit main-branch manual dispatch can perform the
+   initial complete production trial while unattended execution stays disabled.
 3. Environment `public-daily-publication`, custom deployment branch policy `main`.
 4. Matching encrypted environment secret `AEGIS_PUBLIC_SIGNING_KEY` and reviewed
    public `apps/showcase/trust-registry.json`.
@@ -15,9 +17,10 @@ NASA release during development. The new workflow is gated by all of:
    licensing, cryptographic, static-output and browser gates.
 
 Do not set the activation variable until the final integration is approved.
-After approval and merge, set it and explicitly dispatch
-`daily-publication.yaml --ref main`. Confirm that run, its live digest and its
-durable promotion receipt before relying on the next scheduled execution.
+After approval and merge, explicitly dispatch `daily-publication.yaml --ref main`
+while the variable remains unset. Confirm that run, its real environment signing,
+live digest and durable promotion receipt. Only then set the variable to enable
+the next scheduled execution. A failed first trial never enables the schedule.
 
 The schedule is **06:23 UTC / 11:53 IST daily**, `23 6 * * *`. GitHub schedules
 can be delayed or dropped under load; this is not an availability guarantee.

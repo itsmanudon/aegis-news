@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   publish:
-    if: github.repository == 'itsmanudon/aegis-news' && github.ref == 'refs/heads/main' && vars.DAILY_PUBLICATION_ENABLED == 'true'
+    if: github.repository == 'itsmanudon/aegis-news' && github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || vars.DAILY_PUBLICATION_ENABLED == 'true')
     environment: public-daily-publication
     permissions:
       contents: write # Only public-state Git blobs/commits; no issues/PR/admin permissions.

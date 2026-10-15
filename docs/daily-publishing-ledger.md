@@ -123,3 +123,7 @@
     unattended activation has been performed. All required secrets are configured;
     real main-only environment signing and production promotion await the final
     owner-approved integration step. No paid resources were created.
+21. The main-only manual dispatch can execute the complete first production trial
+    while the unattended activation variable remains unset. The schedule still
+    requires `DAILY_PUBLICATION_ENABLED=true`; enable it only after the approved
+    first run signs, deploys, verifies and promotes successfully.
