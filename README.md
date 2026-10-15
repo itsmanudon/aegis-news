@@ -15,6 +15,14 @@ CPU/GPU evidence and is the common baseline for future work.
 
 ![Real API document feed](docs/evidence/screenshots/dashboard.jpg)
 
+## Public Read-Only Showcase
+
+The independent [public showcase](https://aegis-news-showcase.pages.dev) publishes
+curated NASA headline metadata and signed Aegis evidence on Cloudflare Pages Free.
+It has no access to the private API. Collection and publication are manual;
+the dataset stays frozen between explicit refreshes.
+[Publication, costs, sources and verification](docs/public-showcase.md).
+
 ## Implemented now
 
 - Authenticated local/historical ingestion through a real Temporal workflow.
