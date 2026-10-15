@@ -358,6 +358,10 @@ def image():
 
 def test_item_level_media_rights_and_context(image):
     assert MediaReference.model_validate(image).kind == "image"
+    with pytest.raises(ValueError, match="context relationship"):
+        MediaReference.model_validate(
+            image | {"relationship_term": "Mars", "title": "Marshall Fixture"}
+        )
     assert (
         MediaReference.model_validate(
             image | {"asset_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/fixture.jpg"}

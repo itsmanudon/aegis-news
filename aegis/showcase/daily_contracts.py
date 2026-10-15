@@ -24,6 +24,10 @@ def public_text(value: str) -> bool:
     return bool(value.strip()) and len(value) <= 512 and not any(ord(c) < 32 for c in value)
 
 
+def has_term(term: str, value: str) -> bool:
+    return bool(re.search(r"(?<!\w)" + re.escape(term) + r"(?!\w)", value, re.IGNORECASE))
+
+
 class MediaReference(StrictPublic):
     id: Sha256
     kind: Literal["image", "video"]
@@ -60,7 +64,7 @@ class MediaReference(StrictPublic):
             value and value > self.refreshed_at for value in (self.created_at, self.published_at)
         ):
             raise ValueError("future media date")
-        if self.relationship_term.casefold() not in self.title.casefold():
+        if not has_term(self.relationship_term, self.title):
             raise ValueError("media title does not support context relationship")
         if self.kind == "image":
             if (

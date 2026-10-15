@@ -7,14 +7,17 @@ PR #2 was merged by the owner on 15 October 2026 at
 `feat/daily-publication` extends this publisher with bounded free multi-source
 acquisition, licensed context images, NASA video references, a versioned daily
 signing key and durable public-only Git state. See the
-[daily runbook](daily-publishing.md) and [execution ledger](daily-publishing-ledger.md).
+[daily runbook](daily-publishing.md), [execution ledger](daily-publishing-ledger.md)
+and [security review](daily-public-security-review.md).
 
 The original manual-only policy below describes the PR #2 release. The owner's
 new daily-publishing assignment supersedes it for the extension. The new schedule
 is **06:23 UTC / 11:53 IST**, but remains gated until approved default-branch
 integration and explicit `DAILY_PUBLICATION_ENABLED=true`. No automatic merge or
 schedule activation is performed during feature development. Production remains
-the original validated NASA release while the new release is tested on a preview.
+the original validated NASA release. The new release is publicly accessible at
+[the daily preview](https://daily-preview.aegis-news-showcase.pages.dev/) and has
+passed anonymous browser and static-byte checks.
 
 The controlled candidate contains 44 genuine records: 39 retained NASA captures,
 one new Federal Reserve Board release and four new USGS event bulletins. It adds

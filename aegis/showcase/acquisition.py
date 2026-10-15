@@ -16,7 +16,7 @@ from pydantic import ValidationError
 
 from aegis.providers.adapters import GdeltProvider
 from aegis.providers.models import canonical_url
-from aegis.showcase.daily_contracts import MediaLink, MediaReference, MetadataV2
+from aegis.showcase.daily_contracts import MediaLink, MediaReference, MetadataV2, has_term
 from aegis.showcase.sources import COMMONS_API, MEDIA_ENDPOINTS, NASA_MEDIA_API, REGISTRY
 
 
@@ -255,15 +255,13 @@ async def media(fetcher: Fetcher, headlines: dict[str, str], now: datetime) -> l
         (
             word
             for word in ("Artemis", "Mars", "Moon")
-            if any(word.casefold() in title.casefold() for title in headlines.values())
+            if any(has_term(word, title) for title in headlines.values())
         ),
         None,
     )
     if term is None:
         return []
-    ids = tuple(sorted(k for k, title in headlines.items() if term.casefold() in title.casefold()))[
-        :12
-    ]
+    ids = tuple(sorted(k for k, title in headlines.items() if has_term(term, title)))[:12]
     result = []
     try:
         value = json.loads(

@@ -17,7 +17,7 @@ from aegis.intelligence.taxonomy import EVENTS, TOPICS
 from aegis.provenance.service import ProvenanceService, SignedManifest, canonical
 from aegis.providers.models import canonical_url, safe_url
 from aegis.security.crypto import StandardCryptoProvider
-from aegis.showcase.daily_contracts import MediaLink, MetadataV2, TrustRegistry
+from aegis.showcase.daily_contracts import MediaLink, MetadataV2, TrustRegistry, has_term
 
 SOURCES = {
     "nasa": "https://www.nasa.gov/feed/",
@@ -244,8 +244,7 @@ class DailyExport(PublicModel):
                 raise ValueError("media refresh follows release")
             if len(set(item.record_ids)) != len(item.record_ids) or any(
                 identity not in by_id
-                or item.reference.relationship_term.casefold()
-                not in by_id[identity].metadata.title.casefold()
+                or not has_term(item.reference.relationship_term, by_id[identity].metadata.title)
                 for identity in item.record_ids
             ):
                 raise ValueError("media association must have matching public headline evidence")
