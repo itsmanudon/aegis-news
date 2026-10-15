@@ -323,7 +323,7 @@ def artifact_bytes(dataset: PublicExport) -> dict[str, bytes]:
         path = "404.html" if route == "/404/" else route.strip("/") + "/index.html"
         artifacts[path.lstrip("/")] = shell(dataset, route, title, body).encode()
     for name in ("style.css", "app.js"):
-        artifacts["assets/" + name] = (APP / name).read_bytes()
+        artifacts["assets/" + name] = (APP / name).read_text(encoding="utf-8").encode()
     fonts = ROOT / "apps/web/src/app/fonts"
     for name in (
         "InterVariable.woff2",
@@ -331,7 +331,11 @@ def artifact_bytes(dataset: PublicExport) -> dict[str, bytes]:
         "Inter-LICENSE.txt",
         "SourceSerif-LICENSE.md",
     ):
-        artifacts["assets/" + name] = (fonts / name).read_bytes()
+        artifacts["assets/" + name] = (
+            (fonts / name).read_bytes()
+            if name.endswith(".woff2")
+            else (fonts / name).read_text(encoding="utf-8").encode()
+        )
     content = canonical(dataset.model_dump(mode="json"))
     digest = hashlib.sha256(content).hexdigest()
     artifacts["data/dataset.json"] = content
@@ -347,7 +351,7 @@ def artifact_bytes(dataset: PublicExport) -> dict[str, bytes]:
         artifacts[prefix + "signed-body.json"] = canonical(
             record.provenance.model_dump(mode="json", exclude={"signature"})
         )
-    artifacts["_headers"] = (APP / "_headers").read_bytes()
+    artifacts["_headers"] = (APP / "_headers").read_text(encoding="utf-8").encode()
     artifacts["robots.txt"] = b"User-agent: *\nAllow: /\n"
     artifacts["data/manifest.json"] = canonical(
         {

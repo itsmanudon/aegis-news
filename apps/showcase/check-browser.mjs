@@ -82,6 +82,7 @@ page.on("request", (request) =>
 const routes = Object.keys(manifest.files)
   .filter((name) => name.endsWith("index.html"))
   .map((name) => "/" + name.slice(0, -10));
+routes.push("/404.html");
 try {
   for (const viewport of [
     { width: 1440, height: 1000 },
@@ -170,9 +171,21 @@ try {
     "analysis.json",
     "manifest.json",
     "signed-body.json",
+    "public-key.json",
+    "missing.json",
   ]) {
-    const pattern = "**/data/evidence/" + first + "/" + file;
+    const pattern =
+      file === "public-key.json"
+        ? "**/data/public-key.json"
+        : "**/data/evidence/" +
+          first +
+          "/" +
+          (file === "missing.json" ? "metadata.json" : file);
     await page.route(pattern, async (route) => {
+      if (file === "missing.json") {
+        await route.fulfill({ status: 404, body: "Not Found" });
+        return;
+      }
       const response = await route.fetch();
       const text = await response.text();
       let body;
@@ -182,6 +195,10 @@ try {
       else if (file === "manifest.json") {
         const value = JSON.parse(text);
         value.signature = "A".repeat(88);
+        body = JSON.stringify(value);
+      } else if (file === "public-key.json") {
+        const value = JSON.parse(text);
+        value.public_key = "A".repeat(44);
         body = JSON.stringify(value);
       } else body = text.replace("aegis-provenance-1", "aegis-provenance-2");
       await route.fulfill({ response, body });
@@ -227,7 +244,7 @@ try {
     routes: routes.length,
     viewports: [1440, 390],
     signedRecordsVerified: dataset.records.length,
-    tamperingCasesRejected: 4,
+    tamperingCasesRejected: 6,
     search: true,
     topics: true,
     analytics: true,
