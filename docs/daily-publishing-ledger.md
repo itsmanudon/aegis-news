@@ -31,7 +31,34 @@
 
 1. Inspected merged PR history, root/nested instructions, v1 contracts, providers,
    crypto, static renderer, workflow, tests and existing credential configuration.
-2. Researching provider licensing, endpoint freshness and media-specific rights.
-   Commercial provider access alone is insufficient republication permission.
-3. Implementation, controlled acquisition, signing, state, browser and deployment
-   gates are pending. No scheduled workflow has been enabled.
+2. Reviewed GDELT, NASA, Federal Reserve, NIST, NOAA, USGS, Commons and NASA
+   library rights/contracts. Publisher bodies, publisher images and YouTube API
+   metadata are excluded. Verified Wikimedia's 2026 thumbnail-host migration.
+3. Foundation commit `2de9427`; media compatibility/runbook commit `decd231`.
+   Dedicated `daily-v1` generated explicitly, encrypted GitHub environment secret
+   provisioned, and main-only deployment branch policy verified. Original local
+   showcase/archive keys were not reused. No key bytes were printed or committed.
+4. Public-only state branch bootstrapped at
+   `194871126807ae5c8738821f5f18002701f7bb7d`. Current dataset and production are
+   still the original reviewed NASA release; no pending production release.
+5. Controlled real acquisition: NASA 10 recent candidates (already captured),
+   Federal Reserve 1 new release, USGS 4 new event bulletins; NIST 0 recent,
+   NOAA/GDELT unavailable. Five new records plus 39 retained NASA captures = 44;
+   one expired NASA capture pruned. Ten initial requests plus two explicit media
+   correction queries; no paid endpoints, scraping or repeated GDELT probe.
+6. Candidate `1bac7a08d973c52f3844d0cd32b4ef81b14696066131197524ca1a52f13bc2a3`:
+   three public-domain Commons context images and three NASA video references.
+   Legacy signatures remain byte-identical. Public export contains only metadata,
+   separate actual offline analyses, public keys and signed evidence.
+7. Backend regression: 392 passed, 44 integration-dependent skips. Ruff, formatting,
+   mypy, schema synchronization and secret guard passed. First complete real-site
+   acceptance: 54 routes at 1440/390px, all 44 record signatures, release signature,
+   nine tampering/unavailable-file cases, search, topic navigation, analytics and
+   image fallback passed. Zero browser errors. Further recovery cases and actual
+   preview deployment checks are in progress.
+8. Cloudflare's full token-list read was rejected by automatic approval review
+   because an unrelated token was present. A narrowly scoped Aegis row read
+   confirmed its Pages Write scope and public token ID, without retrieving its
+   value. The token remains in the existing encrypted repository secret.
+9. Schedule activation variable remains unset/disabled. Final default-branch
+   integration and explicit owner-approved activation are still required.

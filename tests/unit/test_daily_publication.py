@@ -1,6 +1,7 @@
 """Failure, rights and persistence tests using synthetic fixtures, never public news."""
 
 import base64
+import json
 from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock
 
@@ -394,3 +395,132 @@ async def test_prepared_release_resumes_without_changing_current(
     assert daily.digest(parse_export((tmp_path / "candidate.json").read_bytes())) == identity
     with pytest.raises(StateError, match="state changed"):
         store.promote(identity, "stale-head")
+
+
+@pytest.mark.asyncio
+async def test_missed_days_catchup_and_retention(previous, signing, monkeypatch):
+    now = datetime.now(UTC) + timedelta(days=10)
+    fetch = AsyncMock(return_value=([metadata()], {}))
+    monkeypatch.setattr(daily, "acquire", fetch)
+    monkeypatch.setattr(daily, "media", AsyncMock(return_value=[]))
+    async with httpx.AsyncClient() as client:
+        result, report = await daily.candidate(previous, *signing, Fetcher(client), now)
+    assert report["acquisition_window_days"] == 7
+    assert report["pruned"] > 0
+    assert result and all(daily.record_time(r) >= now - timedelta(days=21) for r in result.records)
+
+
+@pytest.mark.asyncio
+async def test_no_news_keeps_stale_release_instead_of_pruning(previous, signing, monkeypatch):
+    monkeypatch.setattr(daily, "acquire", AsyncMock(return_value=([], {})))
+    monkeypatch.setattr(daily, "media", AsyncMock(side_effect=AssertionError("no media calls")))
+    async with httpx.AsyncClient() as client:
+        result, report = await daily.candidate(
+            previous, *signing, Fetcher(client), datetime.now(UTC) + timedelta(days=30)
+        )
+    assert result is None and report["pruned"] == 0
+
+
+@pytest.mark.asyncio
+async def test_failed_cloud_deployment_cannot_promote(previous, release, monkeypatch):
+    store = GitHubState()
+    identity = daily.digest(release)
+    monkeypatch.setattr(store, "current", lambda: ("head", previous))
+    monkeypatch.setattr(
+        store,
+        "read",
+        lambda *args: canonical({"release": identity, "parent": daily.digest(previous)}),
+    )
+    monkeypatch.setattr(store, "release", lambda *args: release)
+    committed = []
+    monkeypatch.setattr(store, "commit", lambda *args: committed.append(args))
+    monkeypatch.setattr(
+        httpx,
+        "get",
+        lambda *args, **kwargs: httpx.Response(
+            200,
+            json={"export_sha256": daily.digest(previous)},
+            request=httpx.Request("GET", args[0]),
+        ),
+    )
+    with pytest.raises(StateError, match="has not published"):
+        store.promote(identity, "head")
+    assert not committed
+    monkeypatch.setattr(
+        httpx,
+        "get",
+        lambda *args, **kwargs: httpx.Response(
+            200, json={"export_sha256": identity}, request=httpx.Request("GET", args[0])
+        ),
+    )
+    store.promote(identity, "head")
+    assert len(committed) == 1
+    files, expected, _ = committed[0]
+    assert expected == "head" and files["prepared.json"] == b"null"
+    assert daily.digest(parse_export(files["dataset.json"])) == identity
+
+
+def test_nonforcing_git_update_and_path_traversal(monkeypatch):
+    store = GitHubState()
+    monkeypatch.setattr(store, "head", lambda: "parent")
+    calls = []
+
+    def api(method, route, value=None):
+        calls.append((method, route, value))
+        return {"sha": "new", "tree": {"sha": "tree"}}
+
+    monkeypatch.setattr(store, "api", api)
+    store.commit({"prepared.json": b"null"}, "parent", "Fixture")
+    assert calls[-1] == ("PATCH", "git/refs/heads/publication-data", {"sha": "new", "force": False})
+    with pytest.raises(StateError, match="allowlist"):
+        store.commit({"releases/../" + "a" * 64 + ".json": b"{}"}, None, "Fixture")
+
+
+@pytest.mark.asyncio
+async def test_live_state_rollback_is_rejected(previous, release, monkeypatch):
+    store = GitHubState()
+    monkeypatch.setattr(
+        httpx,
+        "get",
+        lambda *args, **kwargs: httpx.Response(
+            200,
+            content=canonical(previous.model_dump(mode="json")),
+            request=httpx.Request("GET", args[0]),
+        ),
+    )
+    with pytest.raises(StateError, match="live release differs"):
+        store.verify_live_parent({"current": daily.digest(release), "resume": "false"})
+    store.verify_live_parent(
+        {"current": daily.digest(release), "resume": "true", "release": daily.digest(previous)}
+    )
+
+
+def test_deployment_destination_expiry_and_scope_attestation(monkeypatch):
+    from aegis.showcase import deployment
+
+    monkeypatch.delenv("CLOUDFLARE_API_TOKEN", raising=False)
+    with pytest.raises(ValueError):
+        deployment.configuration()
+    config = json.loads((APP / "deployment.json").read_bytes())
+    monkeypatch.setenv("CLOUDFLARE_API_TOKEN", "fixture")
+    monkeypatch.setenv("CLOUDFLARE_ACCOUNT_ID", config["account_id"])
+    monkeypatch.setenv("CLOUDFLARE_PAGES_PROJECT", config["project"])
+    assert deployment.configuration()["token_id"] == config["token_id"]
+
+    # A token with a mismatched live identity is refused before any project write.
+    class Client:
+        def __init__(self, **kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            pass
+
+        def get(self, url):
+            return httpx.Response(200, json={"result": {"status": "active", "id": "wrong"}})
+
+    monkeypatch.setattr(httpx, "Client", Client)
+    with pytest.raises(ValueError, match="identity"):
+        deployment.preflight()

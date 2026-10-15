@@ -237,6 +237,10 @@ def sign_release(body: dict[str, Any], signing: DailySigner) -> DailyExport:
 async def run(previous_path: Path, output: Path, key_path: Path | None, report_path: Path) -> bool:
     from aegis.showcase.site import check_trust
 
+    if output.exists():
+        raise ValueError(
+            "candidate output already exists; choose a fresh path to avoid stale reuse"
+        )
     previous = parse_export(previous_path.read_bytes())
     check_trust(previous)
     registry = TrustRegistry.model_validate_json(TRUST.read_bytes())

@@ -11,9 +11,10 @@ from aegis.showcase.sources import REGISTRY
 
 
 def enrich(dataset: DailyExport, pages: dict[str, tuple[str, str]]) -> None:
+    from aegis.showcase.daily import record_time
     from aegis.showcase.site import cards, date, e, intro
 
-    records = list(dataset.records)
+    records = sorted(dataset.records, key=lambda r: (record_time(r), r.metadata.id), reverse=True)
     by_id = {r.metadata.id: r for r in records}
     counts = Counter(m.reference.kind for m in dataset.media)
     media = intro(

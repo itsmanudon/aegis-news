@@ -75,6 +75,7 @@ const browser = await chromium.launch({
 });
 const errors = [];
 const requests = [];
+const imageChecks = [];
 const context = await browser.newContext();
 const page = await context.newPage();
 page.on("pageerror", (error) => errors.push(error.message));
@@ -285,16 +286,6 @@ try {
       await page.unroute(pattern);
     }
     await page.goto(base + "/media/");
-    for (const viewport of [
-      { width: 1440, height: 1000 },
-      { width: 390, height: 844 },
-    ]) {
-      await page.setViewportSize(viewport);
-      await page.screenshot({
-        path: path.join(reportDir, `${viewport.width}-media.png`),
-        fullPage: true,
-      });
-    }
     for (const media of dataset.media) {
       assert(
         (await page
@@ -303,7 +294,7 @@ try {
       );
       if (media.reference.kind === "image") {
         const image = page.getByAltText(media.reference.alt, { exact: true });
-        await image.scrollIntoViewIfNeeded();
+        await image.locator("..").scrollIntoViewIfNeeded();
         await image.evaluate(
           (el) =>
             el.complete ||
@@ -320,14 +311,29 @@ try {
                 false,
           ),
         );
+        imageChecks.push({
+          id: media.reference.id,
+          loaded: await image.evaluate((el) => el.naturalWidth > 0),
+        });
       }
+    }
+    for (const viewport of [
+      { width: 1440, height: 1000 },
+      { width: 390, height: 844 },
+    ]) {
+      await page.setViewportSize(viewport);
+      await page.evaluate(() => scrollTo(0, 0));
+      await page.screenshot({
+        path: path.join(reportDir, `${viewport.width}-media.png`),
+        fullPage: true,
+      });
     }
     await page.route(/^https:\/\/(upload|thumb)\.wikimedia\.org\//, (route) =>
       route.abort(),
     );
     await page.reload();
     for (const image of await page.locator(".media-image img").all()) {
-      await image.scrollIntoViewIfNeeded();
+      await image.locator("..").scrollIntoViewIfNeeded();
       await page.waitForFunction(
         (alt) => {
           const el = [...document.images].find((v) => v.alt === alt);
@@ -358,6 +364,7 @@ try {
     topics: true,
     analytics: true,
     externalRequests: requests.filter((r) => !r.url.startsWith(base)).length,
+    images: imageChecks,
     browserErrors: errors,
     export_sha256: manifest.export_sha256,
   };

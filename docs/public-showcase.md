@@ -1,5 +1,30 @@
 # Public Showcase
 
+## Daily Extension Status
+
+PR #2 was merged by the owner on 15 October 2026 at
+`6334cc7e213744b0d787a27556e8a74232e32884` (main CI passed). The follow-up branch
+`feat/daily-publication` extends this publisher with bounded free multi-source
+acquisition, licensed context images, NASA video references, a versioned daily
+signing key and durable public-only Git state. See the
+[daily runbook](daily-publishing.md) and [execution ledger](daily-publishing-ledger.md).
+
+The original manual-only policy below describes the PR #2 release. The owner's
+new daily-publishing assignment supersedes it for the extension. The new schedule
+is **06:23 UTC / 11:53 IST**, but remains gated until approved default-branch
+integration and explicit `DAILY_PUBLICATION_ENABLED=true`. No automatic merge or
+schedule activation is performed during feature development. Production remains
+the original validated NASA release while the new release is tested on a preview.
+
+The controlled candidate contains 44 genuine records: 39 retained NASA captures,
+one new Federal Reserve Board release and four new USGS event bulletins. It adds
+three per-file public-domain Commons context images and three official NASA video
+references. GDELT and NOAA were unavailable; NIST had zero records in the recent
+window. These limitations are reported without invented coverage or publication
+dates. Expected incremental hosting/provider cost remains **USD $0/month**.
+
+## Original PR #2 Release
+
 ## Delivery
 
 Feature branch: `feat/public-showcase`, based on validated main
