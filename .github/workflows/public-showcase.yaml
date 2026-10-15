@@ -1,6 +1,17 @@
 name: Publish Public Showcase
 
 on:
+  workflow_call:
+    inputs:
+      export_sha256:
+        required: true
+        type: string
+      deploy:
+        type: boolean
+        default: false
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        required: false
   workflow_dispatch:
     inputs:
       export_sha256:

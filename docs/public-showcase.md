@@ -187,15 +187,19 @@ identifier. Rebuilding a frozen export produces identical static bytes. Re-runni
 
 Workflow: [Publish Public Showcase](https://github.com/itsmanudon/aegis-news/actions/workflows/public-showcase.yaml).
 Source: [public-showcase.yaml](../.github/workflows/public-showcase.yaml).
-Only `workflow_dispatch` is defined; there is no cron, push deployment or provider call.
+Publication is triggered by `workflow_dispatch`, either directly or through the
+existing registered CI workflow's explicit `public_showcase` option and a local
+reusable `workflow_call`. There is no cron, push deployment or provider call.
 `deploy` defaults to false. The exact approved export SHA-256 is mandatory, and
 invalid, unsigned, incomplete, duplicated or unexpectedly extended exports fail.
 
 Repository configuration:
 
-- Secret `CLOUDFLARE_API_TOKEN`: token restricted to this Cloudflare account and
-  **Account → Cloudflare Pages → Edit**. The owner enters it directly in GitHub;
-  it must never be printed, pasted into chat or committed.
+- Secret `CLOUDFLARE_API_TOKEN`: configured. The owner-approved account-owned token
+  “Aegis News Pages Publication” grants only **Pages Write** on this account,
+  expiring **14 January 2027**. Cloudflare scopes this permission to the account's
+  Pages projects, not one individual project. It was transferred directly into
+  GitHub's encrypted secret form; it was not printed or committed.
 - Variable `CLOUDFLARE_ACCOUNT_ID`: `3de5bfe983584a2eab1cbb710aa4fbe8`.
 - Variable `CLOUDFLARE_PAGES_PROJECT`: `aegis-news-showcase`.
 
@@ -205,9 +209,17 @@ The workflow uses pinned Wrangler `4.151.0` only to upload audited static files.
 It cannot create paid infrastructure and does not request any plan change.
 
 GitHub requires a newly added dispatch workflow to exist on the default branch
-before exposing its Run Workflow control. The owner must review/merge this branch
-first; this task does not merge main. After that, select the intended reviewed ref,
-paste the current `validate` digest and choose whether to deploy:
+before exposing its Run Workflow control. The existing registered `ci.yaml` provides
+a manual entry point on this feature branch without merging main. Its
+`public_showcase=true` mode skips every private-stack job and calls only the static
+publication workflow:
+
+```powershell
+gh workflow run ci.yaml --ref feat/public-showcase -f public_showcase=true -f export_sha256=REPLACE_WITH_VALIDATED_SHA256 -f deploy=true
+```
+
+After the owner's reviewed merge, the dedicated workflow can also be dispatched
+directly. This task does not merge main:
 
 ```powershell
 gh workflow run public-showcase.yaml --ref main -f export_sha256=REPLACE_WITH_VALIDATED_SHA256 -f deploy=true
@@ -288,6 +300,6 @@ topic). It has no full-text search, generative summaries, trained inference,
 resolved entity identities, independently checked events or media authenticity
 verification. Those require additional approved data and processing, not simulated
 public controls. Browser verification requires modern Web Crypto Ed25519 support.
-Future Actions publication becomes available after the owner's reviewed merge
-and repository credential configuration; the initial dashboard deployment does
-not require exposing a token to this task.
+The dedicated workflow appears in GitHub's default-branch workflow list after the
+owner's reviewed merge. Until then, use the existing CI workflow's explicit manual
+publication option. Rotate the deployment token in GitHub before 14 January 2027.
