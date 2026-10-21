@@ -36,8 +36,13 @@ from unknown publication dates. All 87 preview routes and 73 signatures passed
 desktop/mobile browser checks, as did nine negative cases and 390 deployed asset
 hashes plus security headers. Hosting/provider cost remains **USD $0/month**;
 total cost cannot be confirmed until the private-repository Actions allowance
-and paid-usage block are verified. Remaining private frontend CI was cancelled
-on discovering that budget uncertainty; see the runbook before running Actions.
+and paid-usage block are verified. The owner subsequently authorized bounded CI:
+backend, migrations and security passed in
+[the complete attempt](https://github.com/itsmanudon/aegis-news/actions/runs/39656611440);
+frontend passed 103 browser tests (11 existing skips) in
+[the single targeted retry](https://github.com/itsmanudon/aegis-news/actions/runs/39659031583).
+No publication guard was overridden. Both publication-control variables remain
+unset; see the runbook's first production trial procedure before integration.
 
 ## Original PR #2 Release
 

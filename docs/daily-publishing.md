@@ -383,8 +383,9 @@ during final CI validation.
 
 1. Review the final PR and its recorded tested revision/results, then approve a
    normal merge of PR #3 into `main`, preserving feature history. Confirm the
-   resulting default-branch commit and workflow registration. Do not rebase or
-   move release tags.
+   resulting default-branch commit and workflow registration. Wait for required
+   main CI under separately authorized usage before dispatching publication.
+   Do not rebase or move release tags.
 2. Independently verify the documented hard paid-usage blocking prerequisite and
    record `ACTIONS_PAID_USAGE_DISABLED=true` only after it is established. The
    owner's allowance for limited CI runs is not proof of this requirement.
@@ -429,7 +430,14 @@ The configured signing secret exists, but its actual encrypted value cannot be
 read back for inspection; the main-only trial must prove it matches reviewed
 `daily-v1`. The Pages token has been verified through the real preview workflow;
 rotate it before **14 January 2027 05:29:59 IST**. No missing secret names are
-known. Free Actions budget confirmation, interrupted frontend CI, final main
-integration and activation approvals are outstanding. The final cost-gate change
-is locally validated; no extra hosted CI was started after discovering this
-cost ambiguity.
+known. The owner's limited validation authorization completed hosted backend,
+security, migrations and frontend gates: see the exact revisions and two runs in the
+execution ledger. The frontend retry passed 103 browser tests with 11 existing
+skips; the first attempt's three timeouts were corrected through production-mode
+test serving and two workers, without changing assertions or timeouts.
+
+PR #3 is technically ready for separate owner merge approval. The hard paid-usage
+block remains unverified, so `ACTIONS_PAID_USAGE_DISABLED` stays unset. First
+main-only signing/production promotion and schedule activation still require the
+separate approvals and acceptance above. No additional hosted runs, deployments,
+secret changes, merges or activation were performed for the final handoff.

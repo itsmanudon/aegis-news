@@ -145,3 +145,28 @@ live billing guarantee. No secret scope was broadened, repository made public or
 paid plan purchased. Owner budget confirmation and final hosted revalidation
 remain required. The cost-gate commit intentionally skips hosted CI to avoid
 additional potentially billable work; existing checks have not been disabled.
+
+## Final Controlled CI — 22 October 2026
+
+The owner subsequently authorized one complete CI attempt plus one targeted retry,
+without attesting a hard $0 billing block. The complete attempt
+[39656611440](https://github.com/itsmanudon/aegis-news/actions/runs/39656611440)
+passed backend (416 tests), migrations/database/ingestion and security, including
+dependency audits, secret guard, Redis integration and full-history leak scan.
+Three frontend browser timeouts on the four-worker development server remained;
+local suites passed. The targeted frontend attempt
+[39659031583](https://github.com/itsmanudon/aegis-news/actions/runs/39659031583)
+passed 69 unit tests, API/lint/type/build and 103 browser tests with 11 existing
+skips and no flaky retries, using the built standalone production server and two
+workers. No assertions, test timeouts or security gates were relaxed.
+
+Validation-only dispatch excludes signing/deployment/private-demo jobs; the
+targeted selector excludes previously successful jobs too. No publication secrets
+are provided to executing validation jobs. Both publication workflows and the
+trust registry remain unchanged. The full two-attempt allowance is consumed.
+State signatures/trust and preview assets/browser checks passed again. No real
+rollback, main-only environment-secret use, production promotion, merge or
+schedule activation occurred. Billing guard attestation remains absent because
+account billing controls are unavailable to the existing credential; no billing
+or credential settings were changed. Main-only signing, reviewed account-wide
+Pages scope and the approval-gated integration trial remain as documented above.

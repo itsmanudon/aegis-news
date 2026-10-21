@@ -279,3 +279,32 @@
   **103 passed, 11 existing skips, zero failures/retries** (1.9 minutes), including
   all three previously failing tests. ESLint, TypeScript and production build
   passed. Protected publication workflows and trust registry are unchanged.
+- The one targeted hosted retry succeeded:
+  [39659031583](https://github.com/itsmanudon/aegis-news/actions/runs/39659031583),
+  source `d30e7252c3e94f8e7e88dcec0ad16ec979523b39`, frontend only. API generation,
+  **69 unit tests**, lint, types, production build and **103 browser tests passed**;
+  11 existing opt-in/platform skips, no failures or flaky retries (browser 3.1m).
+  All five other jobs were skipped. Hosted allowance used: **one complete attempt
+  plus one targeted attempt**; no further dispatches or reruns authorized here.
+- Full-attempt evidence: backend **416 passed / 44 service-dependent skips**;
+  migration roundtrip/metadata passed, database **21 passed / 2 skips**, ingestion
+  **13 passed / 3 skips**; security Redis integration **1 passed**, Python/Node
+  audits no known vulnerabilities, secret guard and Git history scan passed.
+  Those runtime files, tests and lockfiles are unchanged in the frontend retry.
+- Observable usage: full run duration **464s**, targeted run **283s**. Executing
+  job times were backend 45s, security 39s, migrations 79s, first frontend 459s,
+  targeted frontend 278s: **900s summed job execution (15m)**. Both timing APIs
+  report Ubuntu `total_ms=0`; this is not proof of zero charges, remaining minutes
+  or a spending block. Account billing remains unavailable; no scope broadened.
+- Final state revalidation again passed all current record/trust checks at
+  `39e75100…3c0b`, digest `be21a984…96129f`, 40 records and null prepared state.
+  Publication/schedule variables remain absent, signing environment still permits
+  exactly `main`, and secret names exist. Production, preview, keys, credentials,
+  default branch and environment settings were not changed.
+- PR #3 has no unresolved review threads, is open/non-draft and mergeable.
+  Technically ready for owner merge approval with the explicit integration gates
+  in the runbook. Main-only encrypted secret signing and real production
+  prepare/deploy/verify/promote remain unexercised by design; an actual rollback
+  is not claimed. The final handoff commit changes documentation only and skips
+  automatic CI to honor the attempt ceiling; tested code is `d30e725` (frontend)
+  and `a58514e` (unchanged backend/migrations/security runtime).
