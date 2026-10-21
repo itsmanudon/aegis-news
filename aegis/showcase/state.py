@@ -140,7 +140,7 @@ class GitHubState:
             raise StateError("release parent does not match validated current state")
         from aegis.showcase.site import check_trust
 
-        check_trust(export)
+        check_trust(export, publication=True)
         if export.sequence != getattr(previous, "sequence", 0) + 1:
             raise StateError("release sequence mismatch")
         if any(export.seen.get(key) != value for key, value in known_identities(previous).items()):

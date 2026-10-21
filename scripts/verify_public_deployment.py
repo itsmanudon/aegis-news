@@ -5,6 +5,7 @@ import asyncio
 import hashlib
 import json
 from pathlib import Path
+from typing import Any
 
 import httpx
 
@@ -22,8 +23,13 @@ def public_path(name: str) -> str:
     return "/" + name
 
 
-async def verify(base: str) -> None:
-    local = json.loads(Path("apps/showcase/dist/data/manifest.json").read_bytes())
+async def verify(
+    base: str,
+    *,
+    manifest: dict[str, Any] | None = None,
+    headers: dict[str, str] | None = None,
+) -> None:
+    local = manifest or json.loads(Path("apps/showcase/dist/data/manifest.json").read_bytes())
     limiter = asyncio.Semaphore(4)
     async with httpx.AsyncClient(timeout=30, follow_redirects=False) as client:
         response = await client.get(base + "/data/manifest.json")
@@ -51,9 +57,10 @@ async def verify(base: str) -> None:
         await asyncio.gather(*(asset(name, expected) for name, expected in local["files"].items()))
         root = await client.get(base + "/")
         root.raise_for_status()
-        expected_headers = Path("apps/showcase/dist/_headers").read_text().splitlines()[1:]
-        for line in expected_headers:
-            name, value = line.strip().split(":", 1)
+        if headers is None:
+            lines = Path("apps/showcase/dist/_headers").read_text().splitlines()[1:]
+            headers = dict(line.strip().split(":", 1) for line in lines)
+        for name, value in headers.items():
             if root.headers.get(name, "").strip() != value.strip():
                 raise ValueError("deployed security header differs: " + name)
         if root.headers.get("set-cookie"):

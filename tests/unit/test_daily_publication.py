@@ -289,7 +289,7 @@ async def test_signed_history_is_append_only(previous, release, signing, monkeyp
     monkeypatch.setattr(store, "current", lambda: ("head", previous))
     from aegis.showcase import site
 
-    monkeypatch.setattr(site, "check_trust", lambda _: None)
+    monkeypatch.setattr(site, "check_trust", lambda _, **kwargs: None)
     with pytest.raises(StateError, match="identity history"):
         store.prepare(modified, "head")
 
@@ -592,3 +592,66 @@ def test_unattended_provisioning_is_rejected(tmp_path, monkeypatch):
     with pytest.raises(ValueError, match="local-only"):
         daily.initialize_key(tmp_path / "never-created.key")
     assert not (tmp_path / "never-created.key").exists()
+
+
+def test_signing_uses_reviewed_rotated_key_without_code_change(signing, monkeypatch):
+    signer, registry = signing
+    replacement = Ed25519PrivateKey.generate()
+    rotated = TrustRegistry(
+        keys={
+            **registry.keys,
+            "daily-v1": registry.keys["daily-v1"].model_copy(update={"status": "verify-only"}),
+            "daily-v2": KeyEntry(
+                public_key=base64.b64encode(replacement.public_key().public_bytes_raw()).decode(),
+                status="active",
+            ),
+        }
+    )
+    monkeypatch.setenv("GITHUB_ACTIONS", "false")
+    monkeypatch.setenv(
+        "AEGIS_PUBLIC_SIGNING_KEY", base64.b64encode(replacement.private_bytes_raw()).decode()
+    )
+    assert daily.signer(None, rotated).key_id == "daily-v2"
+    with pytest.raises(ValueError, match="match"):
+        daily.signer(None, registry)  # Wrong secret cannot change the reviewed public identity.
+    # Explicitly selecting the previous signing ID cannot bypass rotation.
+    with pytest.raises(ValueError, match="exactly one"):
+        daily.signer(None, rotated, signer.key_id)
+
+
+def test_ambiguous_active_keys_cannot_sign(signing, monkeypatch):
+    _, registry = signing
+    ambiguous = TrustRegistry(keys={**registry.keys, "daily-v2": registry.keys["daily-v1"]})
+    with pytest.raises(ValueError, match="exactly one"):
+        daily.signer(None, ambiguous)
+
+
+def test_retired_key_verifies_history_but_cannot_publish(release, tmp_path, monkeypatch):
+    from aegis.showcase import site
+
+    reviewed = release.trust.model_dump(mode="json")
+    reviewed["keys"]["daily-v1"]["status"] = "verify-only"
+    (tmp_path / "trust-registry.json").write_bytes(canonical(reviewed))
+    monkeypatch.setattr(site, "APP", tmp_path)
+    check_trust(release)
+    with pytest.raises(ValueError, match="currently active"):
+        check_trust(release, publication=True)
+
+
+@pytest.mark.asyncio
+async def test_same_run_duplicate_preserves_earliest_capture(previous, signing, monkeypatch):
+    first = metadata()
+    later = article(
+        first.source,
+        "Artemis Changed Fixture",
+        first.url,
+        first.published_at,
+        first.acquired_at + timedelta(seconds=1),
+    )
+    monkeypatch.setattr(daily, "acquire", AsyncMock(return_value=([later, first], {})))
+    monkeypatch.setattr(daily, "media", AsyncMock(return_value=[]))
+    async with httpx.AsyncClient() as client:
+        result, _ = await daily.candidate(previous, *signing, Fetcher(client), datetime.now(UTC))
+    assert result
+    captured = next(r for r in result.records if r.metadata.id == first.id)
+    assert captured.metadata == first

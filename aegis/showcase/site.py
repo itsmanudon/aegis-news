@@ -70,7 +70,7 @@ def cards(records: list[PublicRecord]) -> str:
             f'<div class="story-meta">{e(r.metadata.publisher)} <span>·</span> '
             f'<a href="/topics/{e(topic(r))}/">{e(topic(r).title())}</a></div>'
             f'<h2><a href="{story_link(r)}">{e(r.metadata.title)}</a></h2>'
-            f'<div class="caption">Published {date(r.metadata.published_at)}</div>'
+            f'<div class="caption">Published {date(r.metadata.published_at)} · Acquired {date(r.metadata.acquired_at)}</div>'
             f'<a class="source-link" href="{e(r.metadata.url)}" rel="noreferrer">'
             f"Original At {e(r.metadata.publisher)} ↗</a></article>"
             for r in records
@@ -94,7 +94,7 @@ def shell(dataset: Export, route: str, title: str, body: str) -> str:
     digest = hashlib.sha256(canonical(dataset.model_dump(mode="json"))).hexdigest()
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Aegis News: a frozen, public news-intelligence collection with verifiable provenance.">
+<meta name="description" content="Aegis News: attributed news references, headline intelligence and verifiable publication evidence.">
 <meta name="aegis-public-key" content="{e(dataset.public_key)}">
 <meta name="aegis-trust" content="{e(json.dumps(trust_data(dataset)))}">
 <meta name="aegis-release" content="{digest}">
@@ -113,14 +113,11 @@ def shell(dataset: Export, route: str, title: str, body: str) -> str:
 
 
 def pages(dataset: Export) -> dict[str, tuple[str, str]]:
+    from aegis.showcase.daily import record_time
+
     records = sorted(
         dataset.records,
-        key=lambda r: (
-            r.metadata.published_at
-            or getattr(r.metadata, "discovered_at", None)
-            or r.metadata.acquired_at,
-            r.metadata.id,
-        ),
+        key=lambda r: (record_time(r), r.metadata.id),
         reverse=True,
     )
     counts = Counter(topic(r) for r in records)
@@ -133,7 +130,7 @@ def pages(dataset: Export) -> dict[str, tuple[str, str]]:
         )
         + '<div class="lead-grid"><section class="lead-story"><p class="eyebrow">Leading Coverage</p>'
         + f'<h2><a href="{story_link(lead)}">{e(lead.metadata.title)}</a></h2>'
-        + f'<p class="caption">Published {date(lead.metadata.published_at)}</p>'
+        + f'<p class="caption">{e(lead.metadata.publisher)} · Published {date(lead.metadata.published_at)} · Acquired {date(lead.metadata.acquired_at)}</p>'
         + "<p>Read the original source. Inspect Aegis’s headline-level analysis and verify its signed publication evidence.</p>"
         + f'<a class="button" href="{story_link(lead)}">Explore This Record →</a></section>'
         + '<aside class="evidence-rail"><p class="eyebrow">The Evidence Trail</p><ol>'
@@ -395,9 +392,13 @@ def artifact_bytes(dataset: Export) -> dict[str, bytes]:
     return artifacts
 
 
-def check_trust(dataset: Export) -> None:
+def check_trust(dataset: Export, *, publication: bool = False) -> None:
     if isinstance(dataset, DailyExport):
         trusted = TrustRegistry.model_validate_json((APP / "trust-registry.json").read_bytes())
+        if publication and (
+            dataset.key_id not in trusted.keys or trusted.keys[dataset.key_id].status != "active"
+        ):
+            raise ValueError("new publication requires a currently active release signing key")
         for key, entry in dataset.trust.keys.items():
             current = trusted.keys.get(key)
             if not current or current.public_key != entry.public_key or current.status == "revoked":

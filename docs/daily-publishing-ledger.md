@@ -127,3 +127,24 @@
     while the unattended activation variable remains unset. The schedule still
     requires `DAILY_PUBLICATION_ENABLED=true`; enable it only after the approved
     first run signs, deploys, verifies and promotes successfully.
+22. Resumed engineering review on 21 October 2026. Fetched all current refs;
+    main remains `6334cc7`, daily feature head was `4f78795`, PR #2 is merged,
+    PR #3 is open and its latest backend/frontend/migration/security checks passed.
+    Verified secret names and main-only environment policy without reading secret
+    values. `DAILY_PUBLICATION_ENABLED` remains unset. No integration authorized.
+23. Added explicit recovery for upload/live-check failure: pin and verify the
+    prior production deployment before upload, restore with the Pages rollback
+    API, verify its exact original inventory/headers and retain failed status.
+    Bounded previous-deployment lookup supports interrupted prepared releases.
+    Preview exercises checkpoint reads without changing production. Actual
+    production rollback remains reserved for the approved integration trial.
+24. Fixed rotation to select exactly one active reviewed daily key; retired keys
+    still verify history but cannot stage/resume new publications. Same-run URL
+    duplicates preserve earliest acquisition. Cards now show actual acquisition
+    time, the lead attributes its publisher, and all pages use source-update
+    timestamps consistently. Corrected NOAA's rights link to its reuse policy.
+    Pinned credential-bearing workflow actions to verified upstream commits.
+25. Focused publication/recovery suite: **75 passed**, including bounded recovery,
+    no token transmission to public origins, invalid targets, changed checkpoints,
+    retired/ambiguous signing keys and earliest-capture preservation. Full
+    regression and a fresh controlled acquisition/preview are underway.

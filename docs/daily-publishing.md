@@ -55,7 +55,7 @@ Publisher webpages are never fetched. Redirects from approved APIs are rejected.
 | NASA | `https://www.nasa.gov/feed/` | Headline, link, feed publication date, categories; metadata and source links. [Usage guidelines](https://www.nasa.gov/nasa-brand-center/images-and-media/). Third-party content remains excluded. | No key; no fixed entitlement assumed. One request plus bounded retries; max 16 candidates. RSS freshness as supplied. Retain prior valid records if unavailable. |
 | Federal Reserve Board | `https://www.federalreserve.gov/feeds/press_all.xml` | Headline/link/publication date. Public information generally public domain except marked third-party work; Board attribution. [Disclaimer](https://www.federalreserve.gov/disclaimer.htm), [RSS index](https://www.federalreserve.gov/feeds/feeds.htm). | No key; max 16 candidates, bounded retry. Press releases are intermittent, so zero recent records is legitimate. |
 | NIST | `https://www.nist.gov/news-events/news/rss.xml` | Headline/link/date/categories; credit NIST, exclude copyrighted third-party content. [Copyright](https://www.nist.gov/copyrights-disclaimers), [feed index](https://www.nist.gov/coo/nist-rss-feeds). | No key; max 16 candidates. Feed may have multi-day gaps; old items are not relabelled as today's news. |
-| NOAA Ocean Service | `https://oceanservice.noaa.gov/rss/nosnews.xml` | Metadata/link only. [Official feed index](https://oceanservice.noaa.gov/rss.html), [disclaimer](https://www.noaa.gov/disclaimer). | No key; max 16 candidates. Malformed XML is rejected; no scraping or rate-limit bypass fallback. |
+| NOAA Ocean Service | `https://oceanservice.noaa.gov/rss/nosnews.xml` | Metadata/link only with NOAA attribution, no implied endorsement. [Official feed index](https://oceanservice.noaa.gov/rss.html), [reuse policy and third-party exclusions](https://oceanservice.noaa.gov/about/faq.html). | No key; max 16 candidates. Malformed XML is rejected; no scraping or rate-limit bypass fallback. |
 | USGS Earthquake Hazards Program | `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson` | Official event bulletin title/link; `time` is **event occurrence**, `updated` is **source update**, publication remains unknown. [GeoJSON contract](https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php), [public-domain policy with third-party exclusions](https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits). Credit USGS. | No key; max 16 recent candidates. The selected feed covers the preceding day; catch-up cannot recover older USGS events. Never fetch detail URLs. |
 | GDELT DOC | `https://api.gdeltproject.org/api/v2/doc/doc` | Headline, publisher domain, canonical source link, available publisher country; `seendate` is **provider discovery**, publication unknown. [GDELT terms](https://www.gdeltproject.org/about.html#termsofuse) permit dataset use with attribution/link; do not grant publisher article/photo rights. | No key; one query max 30 results, 2–7-day window. No fixed quota is asserted. 429/5xx/network failures use three total attempts with 30/60-second backoff; long Retry-After skips provider. Other feeds continue. |
 
@@ -152,7 +152,25 @@ artifact is treated as authoritative data. Bootstrap and preview staging are
 explicit commands; daily execution never resets a branch or invents state.
 
 The release is prepared **after** all gates and before deployment. Only the
-atomic Pages upload changes public content. Promotion requires the actual HTTPS
+atomic Pages upload changes public content. Before upload, a read-only recovery
+checkpoint pins the previous successful static **production** deployment UUID,
+checks its dataset against durable state and verifies its entire immutable
+inventory and security headers. A resumed run can search at most 20 production
+deployments for the authoritative parent; an absent target blocks upload.
+Preview workflows exercise this read-only checkpoint against production too.
+
+If upload or post-upload browser/byte checks fail, the workflow uses the
+[Pages rollback API](https://developers.cloudflare.com/api/resources/pages/subresources/projects/subresources/deployments/methods/rollback/)
+to restore that pinned deployment, then verifies the previous dataset, asset
+hashes and headers. The run stays failed and the prepared release remains
+available for explicit diagnosis/retry. Recovery uses the existing Pages Write
+permission; it does not rebuild old HTML with newer code. Cloudflare API and
+public-origin HTTP clients are separate so bearer credentials never reach
+public assets. A hard runner timeout/cancellation can interrupt cleanup: inspect
+the pinned recovery target and use the dashboard rollback before retrying if
+necessary. No infrastructure can guarantee cleanup after runner termination.
+
+Promotion requires the actual HTTPS
 production manifest to match the signed release digest. If deployment fails,
 current state and previous production remain. If promotion fails after a successful
 upload, the next run resumes the exact prepared release, rebuilds/rechecks it,
@@ -175,7 +193,10 @@ planned rotation, explicitly provision a new key/version, retain existing public
 keys, mark the old daily key verify-only (the explicit `daily-key --key-id daily-v2`
 command preserves older public entries and refuses key-ID replacement), review
 the registry change, configure
-the corresponding environment secret and code key ID, then merge and test.
+the corresponding environment secret, then merge and test. Signing selects the
+single active reviewed daily key automatically; missing or multiple active
+keys fail closed. Old keys may verify historical releases but cannot stage or
+resume a new production publication after retirement. Revocation blocks both.
 Historical releases may use an earlier reviewed subset of current public keys.
 Revoked keys fail closed; quarantine affected records/state in a separately
 reviewed recovery release rather than bypass verification.
@@ -199,6 +220,10 @@ necessary steps. It has no PR/issue/admin permissions. The manual publisher is
 still available; production manual deployment is blocked while daily publication
 is active to prevent state divergence. Use the daily workflow's manual dispatch
 to refresh active production.
+
+Credential-bearing publication workflows pin checkout, setup-uv, pnpm setup and
+Node setup to verified upstream commit SHAs. Tool package versions and lockfiles
+remain fixed. Review dependency/action updates through normal source changes.
 
 ## Commands
 

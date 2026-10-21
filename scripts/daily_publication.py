@@ -10,7 +10,7 @@ from pathlib import Path
 from aegis.provenance.service import canonical
 from aegis.showcase.contracts import DailyExport, parse_export
 from aegis.showcase.daily import digest, run
-from aegis.showcase.site import audit, build
+from aegis.showcase.site import audit, build, check_trust
 from aegis.showcase.state import GitHubState, StateError
 
 DIRECTORY = Path(".data/daily")
@@ -44,6 +44,7 @@ def main() -> None:
     export = parse_export(CANDIDATE.read_bytes())
     if not isinstance(export, DailyExport):
         raise ValueError("daily candidate must be a signed v2 release")
+    check_trust(export, publication=True)
     if action == "build":
         build(export, Path("apps/showcase/dist"))
         audit(export, Path("apps/showcase/dist"))

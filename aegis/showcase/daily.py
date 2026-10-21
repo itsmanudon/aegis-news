@@ -98,12 +98,20 @@ def initialize_key(path: Path, key_id: str = "daily-v1") -> None:
     )
 
 
-def signer(path: Path | None, registry: TrustRegistry, key_id: str = "daily-v1") -> DailySigner:
+def signer(path: Path | None, registry: TrustRegistry, key_id: str | None = None) -> DailySigner:
     if os.getenv("GITHUB_ACTIONS") == "true" and (
         os.getenv("GITHUB_REF") != "refs/heads/main"
         or os.getenv("GITHUB_REPOSITORY") != "itsmanudon/aegis-news"
     ):
         raise ValueError("unattended signing is restricted to trusted default-branch workflows")
+    active = [
+        name
+        for name, entry in registry.keys.items()
+        if name.startswith("daily-v") and entry.status == "active"
+    ]
+    if len(active) != 1 or (key_id is not None and key_id != active[0]):
+        raise ValueError("exactly one active reviewed daily signing key is required")
+    key_id = active[0]
     secret = os.getenv("AEGIS_PUBLIC_SIGNING_KEY")
     if secret:
         content = secret.encode()
@@ -176,7 +184,10 @@ async def candidate(
     lookback = min(7, max(2, math.ceil((now - previous.exported_at).total_seconds() / 86400) + 1))
     acquired, outcomes = await acquire(fetcher, now, lookback)
     seen = known_identities(previous)
-    unique = {r.id: r for r in acquired if r.id not in seen}
+    unique: dict[str, MetadataV2] = {}
+    for row in sorted(acquired, key=lambda r: (r.acquired_at, r.source, r.id)):
+        if row.id not in seen:
+            unique.setdefault(row.id, row)
     selected = balanced(list(unique.values()), MAX_NEW)
     report: dict[str, object] = {
         "source_outcomes": outcomes,
@@ -287,7 +298,7 @@ async def run(previous_path: Path, output: Path, key_path: Path | None, report_p
     report_path.write_bytes(canonical(report) + b"\n")
     if result is None:
         return False
-    check_trust(result)
+    check_trust(result, publication=True)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_bytes(canonical(result.model_dump(mode="json")) + b"\n")
     return True

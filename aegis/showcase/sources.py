@@ -43,7 +43,7 @@ REGISTRY = {
         "NOAA Ocean Service",
         "https://oceanservice.noaa.gov/rss/nosnews.xml",
         ("oceanservice.noaa.gov",),
-        "https://www.noaa.gov/disclaimer",
+        "https://oceanservice.noaa.gov/about/faq.html",
         "Environment",
     ),
     "usgs": SourcePolicy(

@@ -352,6 +352,19 @@ scheduled background jobs are introduced by the publication workflow.
 
 ## Outstanding Limitations
 
+The follow-up multi-source implementation is tracked in
+[PR #3](https://github.com/itsmanudon/aegis-news/pull/3) and the
+[daily publishing runbook](daily-publishing.md). PR #2 was merged on 15 October
+2026; the original production dataset remains intact pending final integration.
+Daily publication adds versioned dedicated signing, source-specific metadata
+policies, Commons context images, NASA video links and public-only Git state.
+Before upload it verifies a pinned previous production deployment; failed live
+checks trigger restoration and byte verification. Signing-key rotation selects
+the single active reviewed daily key while preserving older verification keys.
+Unattended execution still requires an approved main merge, a successful manual
+production trial, and explicit schedule activation. See the execution ledger
+for the latest measured acquisition and preview results.
+
 The corpus is deliberately narrow (NASA, headline metadata, one current general
 topic). It has no full-text search, generative summaries, trained inference,
 resolved entity identities, independently checked events or media authenticity
