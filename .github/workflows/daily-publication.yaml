@@ -60,6 +60,7 @@ jobs:
       - name: Browser Checks Before Deployment
         run: |
           pnpm install --frozen-lockfile
+          make audit
           pnpm --filter @aegisnews/web exec playwright install --with-deps chromium
           if test -f .data/daily/candidate.json; then node apps/showcase/check-browser.mjs; fi
       - name: Prepare Public State With Compare-And-Swap

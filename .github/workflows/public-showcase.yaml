@@ -80,6 +80,7 @@ jobs:
       - name: Check Every Route And Browser Verification
         run: |
           pnpm install --frozen-lockfile
+          make audit
           pnpm --filter @aegisnews/web exec playwright install --with-deps chromium
           node apps/showcase/check-browser.mjs
       - name: Confirm Deployment Configuration

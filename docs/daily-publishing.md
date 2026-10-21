@@ -224,6 +224,9 @@ to refresh active production.
 Credential-bearing publication workflows pin checkout, setup-uv, pnpm setup and
 Node setup to verified upstream commit SHAs. Tool package versions and lockfiles
 remain fixed. Review dependency/action updates through normal source changes.
+Both publishers also run the Python and production Node dependency audits on
+each execution; a newly reported advisory blocks deployment until reviewed and
+patched, even if the last source-code CI run was green.
 
 ## Commands
 
