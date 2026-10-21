@@ -204,3 +204,20 @@
     security headers**. No rollback or production mutation was invoked. Signing
     secret name/environment restriction is present; use of that encrypted secret
     remains reserved for the approved main-only production trial.
+34. **Material cost correction:** final `gh repo view` returned **PRIVATE**. Earlier
+    statements that standard runners were unconditionally free for this repository
+    were incorrect. Account plan/remaining minutes/paid-usage blocking are unknown:
+    billing APIs returned 404 and require unavailable `user` scope; browser billing
+    access is policy-blocked. Did not broaden credentials, change visibility,
+    purchase anything or alter account billing. Cancelled remaining runs
+    `39647958202` and `39647955252` to limit further unverified metered use.
+35. On `d0bd9bc`, backend, migrations, dependency/secret/history security checks,
+    and frontend unit/lint/type/build gates passed. The private frontend browser
+    suite was still running when cancelled; it remains an explicit revalidation
+    requirement. The separate public-preview run and all its live checks passed.
+36. Added pre-run cost gates to both publishers: every publication requires
+    owner attestation `ACTIONS_PAID_USAGE_DISABLED=true` of an applicable hard $0
+    paid-usage budget. That variable and `DAILY_PUBLICATION_ENABLED` remain unset.
+    Corrected cost/runbook/PR claims. The final commit intentionally uses a CI skip
+    marker to avoid starting more metered jobs until budget confirmation; this
+    does not mark cancelled/pending checks passed or remove any required gate.

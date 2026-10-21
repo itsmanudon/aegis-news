@@ -13,25 +13,31 @@ and [security review](daily-public-security-review.md).
 The original manual-only policy below describes the PR #2 release. The owner's
 new daily-publishing assignment supersedes it for the extension. The new schedule
 is **06:23 UTC / 11:53 IST**, but remains gated until approved default-branch
-integration and explicit `DAILY_PUBLICATION_ENABLED=true`. No automatic merge or
+integration, verified free Actions budget (`ACTIONS_PAID_USAGE_DISABLED=true`)
+and explicit `DAILY_PUBLICATION_ENABLED=true`. No automatic merge or
 schedule activation is performed during feature development. Production remains
 the original validated NASA release. The new release is publicly accessible at
 [the daily preview](https://daily-preview.aegis-news-showcase.pages.dev/) and has
 passed anonymous browser and static-byte checks.
 
 Successful preview workflow:
-[38728198673](https://github.com/itsmanudon/aegis-news/actions/runs/38728198673).
-Immutable preview: `https://5b06089a.aegis-news-showcase.pages.dev`.
-Export `1906011bd28f2a6b5449104a9c794550f280bd38791efadeb08f7eea8329cedb`,
-updated 15 October 2026 11:27:16 UTC / 16:57:16 IST. Follow-up:
+[39647028765](https://github.com/itsmanudon/aegis-news/actions/runs/39647028765).
+Immutable preview: `https://5a90ff84.aegis-news-showcase.pages.dev`.
+Export `4f757eca85ba0db39545f62549303b9102fa82966d30c9491f464ec94788a18e`,
+updated 21 October 2026 17:42:50 UTC / 23:12:50 IST. Follow-up:
 [PR #3](https://github.com/itsmanudon/aegis-news/pull/3).
 
-The controlled candidate contains 44 genuine records: 39 retained NASA captures,
-one new Federal Reserve Board release and four new USGS event bulletins. It adds
+The controlled candidate contains 73 genuine records: 37 NASA references,
+26 GDELT discoveries, eight USGS bulletins, one Federal Reserve Board release
+and one NIST item, across 29 publisher names. It adds
 three per-file public-domain Commons context images and three official NASA video
-references. GDELT and NOAA were unavailable; NIST had zero records in the recent
-window. These limitations are reported without invented coverage or publication
-dates. Expected incremental hosting/provider cost remains **USD $0/month**.
+references. NOAA was unavailable. Discovery/update timestamps remain separate
+from unknown publication dates. All 87 preview routes and 73 signatures passed
+desktop/mobile browser checks, as did nine negative cases and 390 deployed asset
+hashes plus security headers. Hosting/provider cost remains **USD $0/month**;
+total cost cannot be confirmed until the private-repository Actions allowance
+and paid-usage block are verified. Remaining private frontend CI was cancelled
+on discovering that budget uncertainty; see the runbook before running Actions.
 
 ## Original PR #2 Release
 
@@ -91,7 +97,10 @@ signed bytes and builds files; it does not collect news or process models.
 
 ## Cost Configuration
 
-Expected incremental cloud cost: **USD $0/month** for this configuration.
+Expected hosting/provider cost: **USD $0/month**. The repository is private;
+Actions cost is conditional on included allowance and enforced paid-usage
+blocking, which the current credential could not inspect. Earlier assumptions
+that this repository received unlimited free public-runner usage were wrong.
 
 | Item | Configuration | Expected Monthly Charge |
 | --- | --- | --- |
@@ -99,7 +108,7 @@ Expected incremental cloud cost: **USD $0/month** for this configuration.
 | Pages Functions / Workers | None deployed | $0 |
 | R2, KV, D1, hosted compute, databases | None created | $0 |
 | News acquisition | Manually requested official NASA metadata, no API key | $0 |
-| GitHub Actions | Public repository, standard `ubuntu-latest` runner, manual publication | $0 |
+| GitHub Actions | Private repository, standard `ubuntu-latest` runner; included allowance and hard paid-usage block require owner verification | Conditional |
 | Custom domain | None purchased or configured | $0 |
 
 Cloudflare documents unlimited static requests and bandwidth on Pages Free,

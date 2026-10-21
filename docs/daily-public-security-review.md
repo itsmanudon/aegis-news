@@ -129,3 +129,19 @@ passed all 87 routes/73 signatures/nine negative cases. The real, read-only
 rollback checkpoint also verified the prior production deployment's 219 public
 asset hashes and headers. Actual credential identity/status/expiry checks passed.
 Neither a production rollback nor unattended signing activation was performed.
+
+Final repository-visibility check returned **PRIVATE**, contradicting the earlier
+public-repository cost assumption. Billing API access requires scope unavailable
+to the current credential; browser billing access is policy-blocked. Remaining
+CI was cancelled to limit unverified metered use. Backend, migrations, security,
+and frontend unit/lint/type/build checks passed on `d0bd9bc`; its private frontend
+browser suite was interrupted and is not claimed as passed. Static preview
+acceptance above completed successfully before this discovery.
+
+Both publication jobs now require owner attestation
+`ACTIONS_PAID_USAGE_DISABLED=true` before runner allocation. Missing attestation
+does not grant access. This is a fail-closed owner-attested cost boundary, not a
+live billing guarantee. No secret scope was broadened, repository made public or
+paid plan purchased. Owner budget confirmation and final hosted revalidation
+remain required. The cost-gate commit intentionally skips hosted CI to avoid
+additional potentially billable work; existing checks have not been disabled.

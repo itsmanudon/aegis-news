@@ -15,6 +15,10 @@ NASA release during development. The new workflow is gated by all of:
    public `apps/showcase/trust-registry.json`.
 5. Existing Cloudflare credential and destination checks, followed by all data,
    licensing, cryptographic, static-output and browser gates.
+6. This repository is **private**. Before either publisher allocates a runner,
+   owner variable `ACTIONS_PAID_USAGE_DISABLED=true` must attest that an applicable
+   hard $0 Actions spending budget blocks paid usage. Do not set it based only on
+   a notification-only budget or an assumption about remaining included minutes.
 
 Do not set the activation variable until the final integration is approved.
 After approval and merge, explicitly dispatch `daily-publication.yaml --ref main`
@@ -267,12 +271,30 @@ variable to `false`; this preserves the public static site.
 
 ## Cost
 
-Expected incremental cost is **USD $0/month**: existing Cloudflare Pages Free,
+Cloudflare and provider incremental cost is **USD $0/month**: existing Cloudflare Pages Free,
 static `pages.dev`, no Functions/Workers/bindings, R2, D1, KV, paid API, database,
-container or hosted private service. Standard GitHub-hosted Linux Actions are
-free for this public repository; no larger runner is selected. Daily execution
-is ~30–31 runs/month, each capped at 25 minutes; previews add explicit runs.
-No automatic upgrade or payment action exists.
+container or hosted private service. **GitHub reports this repository is private.**
+Private-repository hosted Actions consume an account's included allowance and can
+incur charges beyond it. The earlier public-repository assumption was incorrect.
+[GitHub Actions billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions).
+Daily execution is ~30–31 runs/month, capped at 25 minutes each (at most 775 runner
+minutes for daily runs alone), plus existing CI and explicit previews. Available
+allowance, account-wide use and paid-usage blocking could not be verified: the
+current API credential lacks billing scope and browser policy blocks billing UI.
+No broader credential scope, repository visibility change, payment or plan
+upgrade was requested or performed. **Total $0 cost is conditional, not confirmed.**
+
+Before additional hosted validation or activation, the owner must confirm an
+applicable Actions hard $0 spending budget has **Stop usage when budget limit is
+reached** enabled (or equivalent account-enforced paid-usage blocking), and that
+the included runner allowance covers expected use. Only then set repository
+variable `ACTIONS_PAID_USAGE_DISABLED=true`. This variable is an owner attestation,
+not live billing proof. An unknown/false value prevents both publication jobs
+from allocating a runner. If included minutes are exhausted, retain the last
+valid website until the allowance resets; do not enable paid usage. Regular
+repository CI is unchanged and must be considered in the account budget too.
+See [GitHub's budget instructions](https://docs.github.com/en/billing/how-tos/set-up-budgets)
+for the spending-block setting; notification-only budgets do not stop charges.
 
 Cloudflare Free permits 500 builds/month, 20,000 files/site and 25 MiB/asset;
 this implementation enforces lower asset limits and builds on GitHub. Static
@@ -299,14 +321,17 @@ No external reporting is independently corroborated by cryptographic validity.
 
 Required final integration, in order:
 
-1. Owner approves merging follow-up PR #3 into `main` using the repository's
+1. Verify the private-repository free-usage budget above and record
+   `ACTIONS_PAID_USAGE_DISABLED=true`. Complete the interrupted private frontend
+   CI browser suite and rerun final required CI under that confirmed budget.
+2. Owner approves merging follow-up PR #3 into `main` using the repository's
    merge workflow (no rebasing, history rewrite or tag movement). PR #2 is already
    merged and remains intact.
-2. Leave `DAILY_PUBLICATION_ENABLED` unset and dispatch `daily-publication.yaml`
+3. Leave `DAILY_PUBLICATION_ENABLED` unset and dispatch `daily-publication.yaml`
    explicitly on `main`. This is the first real environment-secret signing and
    production prepare/deploy/verify/promote trial. Confirm the matching live
    manifest and public promotion receipt.
-3. After that complete trial passes and activation is approved, set
+4. After that complete trial passes and activation is approved, set
    `DAILY_PUBLICATION_ENABLED=true`. Subsequent scheduled runs use 06:23 UTC /
    11:53 IST. The owner's computer can be off.
 
@@ -314,4 +339,7 @@ The configured signing secret exists, but its actual encrypted value cannot be
 read back for inspection; the main-only trial must prove it matches reviewed
 `daily-v1`. The Pages token has been verified through the real preview workflow;
 rotate it before **14 January 2027 05:29:59 IST**. No missing secret names are
-known. Final main integration and activation approvals are outstanding.
+known. Free Actions budget confirmation, interrupted frontend CI, final main
+integration and activation approvals are outstanding. The final cost-gate change
+is locally validated; no extra hosted CI was started after discovering this
+cost ambiguity.

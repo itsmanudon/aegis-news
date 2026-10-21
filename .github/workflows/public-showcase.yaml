@@ -46,6 +46,8 @@ concurrency:
 
 jobs:
   publish:
+    # Preserve manual publication, but do not assume private Actions are free.
+    if: vars.ACTIONS_PAID_USAGE_DISABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
