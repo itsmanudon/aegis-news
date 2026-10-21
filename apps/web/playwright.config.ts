@@ -2,7 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
-  workers: 4,
+  workers: process.env.CI ? 2 : 4,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: "list",
@@ -18,8 +18,9 @@ export default defineConfig({
     process.env.AEGIS_E2E_EXTERNAL_SERVER === "1"
       ? undefined
       : {
-          command:
-            "node node_modules/next/dist/bin/next dev --hostname 127.0.0.1 --port 3104",
+          command: process.env.CI
+            ? "node scripts/e2e-server.mjs"
+            : "node node_modules/next/dist/bin/next dev --hostname 127.0.0.1 --port 3104",
           url: "http://127.0.0.1:3104",
           reuseExistingServer: false,
           timeout: 120000,

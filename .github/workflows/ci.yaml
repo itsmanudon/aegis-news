@@ -11,6 +11,10 @@ on:
         description: Run required CI checks without the private-stack demo or publication
         type: boolean
         default: false
+      frontend_only:
+        description: Target the frontend retry only; requires validation_only
+        type: boolean
+        default: false
       public_showcase:
         description: Publish only the curated static showcase; skip private stack jobs
         type: boolean
@@ -87,7 +91,7 @@ jobs:
       - if: always()
         run: docker compose --env-file infrastructure/mvp.env.example -p aegis-integration down
   backend:
-    if: github.event_name != 'workflow_dispatch' || inputs.public_showcase != true || inputs.validation_only == true
+    if: (github.event_name != 'workflow_dispatch' || inputs.public_showcase != true || inputs.validation_only == true) && (inputs.validation_only != true || inputs.frontend_only != true)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -115,7 +119,7 @@ jobs:
       - run: pnpm --filter @aegisnews/web exec playwright install --with-deps chromium
       - run: pnpm web:test:e2e
   migrations:
-    if: github.event_name != 'workflow_dispatch' || inputs.public_showcase != true || inputs.validation_only == true
+    if: (github.event_name != 'workflow_dispatch' || inputs.public_showcase != true || inputs.validation_only == true) && (inputs.validation_only != true || inputs.frontend_only != true)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     services:
@@ -141,7 +145,7 @@ jobs:
       - run: AEGIS_RUN_INTEGRATION=1 AEGIS_INGESTION_TEST_DATABASE_URL=postgresql+psycopg://aegis:aegis_dev_only@localhost:5432/aegisnews uv run pytest -q -m database
       - run: AEGIS_INGESTION_TEST_DATABASE_URL=postgresql+psycopg://aegis:aegis_dev_only@localhost:5432/aegisnews uv run pytest -q tests/ingestion
   security:
-    if: github.event_name != 'workflow_dispatch' || inputs.public_showcase != true || inputs.validation_only == true
+    if: (github.event_name != 'workflow_dispatch' || inputs.public_showcase != true || inputs.validation_only == true) && (inputs.validation_only != true || inputs.frontend_only != true)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     services:

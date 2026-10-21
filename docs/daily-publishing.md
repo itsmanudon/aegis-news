@@ -322,6 +322,19 @@ start a second complete workflow or use the private-demo dispatch for this task.
 Read-only billing APIs can remain unavailable; repository run-timing data and
 observed job durations do not prove account quota, charges or a hard spending block.
 
+For an established frontend-only failure, `frontend_only=true` together with
+`validation_only=true` runs the complete frontend job without repeating the three
+successful jobs. It cannot select publication or the private demo. This consumes
+the one permitted targeted retry, not a new complete attempt:
+
+```powershell
+gh workflow run ci.yaml --ref feat/daily-publication -f validation_only=true -f frontend_only=true -f public_showcase=false -f deploy=false
+```
+
+CI browser tests use the already built Next standalone production server with
+its static assets and two workers. Local interactive tests retain the development
+server. All test assertions, existing skips, retries and timeouts are unchanged.
+
 Cloudflare Free permits 500 builds/month, 20,000 files/site and 25 MiB/asset;
 this implementation enforces lower asset limits and builds on GitHub. Static
 asset requests are free/unlimited; Functions are not used. Account-wide limits
@@ -347,9 +360,10 @@ No external reporting is independently corroborated by cryptographic validity.
 
 Required final integration, in order:
 
-1. Verify the private-repository free-usage budget above and record
-   `ACTIONS_PAID_USAGE_DISABLED=true`. Complete the interrupted private frontend
-   CI browser suite and rerun final required CI under that confirmed budget.
+1. Complete the bounded final validation described above and review its recorded
+   results. Independently verify the hard paid-usage block before publication;
+   only then record `ACTIONS_PAID_USAGE_DISABLED=true`. Limited CI authorization
+   does not establish this publication prerequisite.
 2. Owner approves merging follow-up PR #3 into `main` using the repository's
    merge workflow (no rebasing, history rewrite or tag movement). PR #2 is already
    merged and remains intact.
@@ -360,6 +374,56 @@ Required final integration, in order:
 4. After that complete trial passes and activation is approved, set
    `DAILY_PUBLICATION_ENABLED=true`. Subsequent scheduled runs use 06:23 UTC /
    11:53 IST. The owner's computer can be off.
+
+### First Production Trial Acceptance
+
+This assignment authorizes validation only. The following publication procedure
+requires separate owner approval; none of these mutation commands was executed
+during final CI validation.
+
+1. Review the final PR and its recorded tested revision/results, then approve a
+   normal merge of PR #3 into `main`, preserving feature history. Confirm the
+   resulting default-branch commit and workflow registration. Do not rebase or
+   move release tags.
+2. Independently verify the documented hard paid-usage blocking prerequisite and
+   record `ACTIONS_PAID_USAGE_DISABLED=true` only after it is established. The
+   owner's allowance for limited CI runs is not proof of this requirement.
+   Leave `DAILY_PUBLICATION_ENABLED` absent. Neither secret needs rotation for
+   the trial; a missing/mismatched secret must stop publication.
+3. Read and verify `publication-data` against production before dispatch. At the
+   current handoff, the branch head is `39e75100…3c0b`, current release digest is
+   `be21a984…96129f`, 40 records, and `prepared.json` is null. Re-read these values
+   at execution time; stop to reconcile any unexpected change.
+4. With explicit production-trial approval, dispatch exactly once:
+
+   ```powershell
+   gh workflow run daily-publication.yaml --ref main
+   ```
+
+5. Confirm all actual gates pass: trusted-main environment access; dedicated
+   signing secret matches reviewed active `daily-v1`; live Cloudflare credential
+   identity/status/expiry and static destination; bounded licensed acquisition;
+   canonical SHA-256/Ed25519 evidence; unit/security/dependency checks; static
+   inventory and desktop/mobile browser acceptance; CAS preparation; verified
+   previous-production recovery checkpoint; atomic upload; live byte/header and
+   browser verification; CAS durable promotion.
+6. Compare the new signed release digest across production
+   `/data/manifest.json`, the cryptographically validated
+   `/data/dataset.json`, `publication-data/dataset.json` and
+   `receipts/<digest>.json`. Confirm source commit is the approved main revision,
+   sequence advances by one, parent is the previous validated release, first
+   acquisitions/legacy signatures remain intact, and `prepared.json` returns to
+   null. Use the actual new counts, not the old 73-record preview count.
+7. An empty acquisition is a legitimate no-op, not proof of a complete first
+   deployment/promotion trial. A failed run must stay failed: inspect recovery,
+   preserve prepared state/history and verify the old live release. Do not bypass
+   guards, erase pending state, force-update Git refs or activate the schedule.
+   A hard timeout can require explicit owner-led Cloudflare recovery.
+8. Only after a complete successful trial, present its run URL, signing/crypto
+   results, production URL/digest/timestamp, recovery checkpoint and durable
+   receipt. Request separate owner approval to set
+   `DAILY_PUBLICATION_ENABLED=true`; do not infer activation approval from the
+   merge or trial approval.
 
 The configured signing secret exists, but its actual encrypted value cannot be
 read back for inspection; the main-only trial must prove it matches reviewed

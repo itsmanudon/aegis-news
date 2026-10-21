@@ -250,4 +250,32 @@
   Local frontend checks passed: **69 unit tests**, API-contract generation,
   ESLint, TypeScript and production build; complete browser suite **103 passed,
   11 existing opt-in/platform skips**. No frontend product code changed.
-  Hosted attempts consumed in this phase: **0** (single dispatch next).
+- Dispatched the one complete hosted attempt:
+  [39656611440](https://github.com/itsmanudon/aegis-news/actions/runs/39656611440),
+  exact source revision `a58514e584710c8c915b6ce9d21678b287c3da96`,
+  `validation_only=true`, `public_showcase=false`, `deploy=false`. Backend,
+  security and migrations passed. Private demo and publication jobs were skipped
+  as designed. Frontend unit/API/lint/type/build passed, but the browser suite
+  failed with three timeouts (operations visual, operations reflow, polished
+  reflow), one flaky reader reflow and 99 passes/11 skips. No retry dispatched yet.
+- Repeated existing-preview acceptance without deployment: **87 routes at
+  1440/390px, 73 record signatures, release signature, nine negative cases,
+  three loaded images/fallback, search/topics/analytics/protected-route checks**
+  passed, zero browser errors. **390 asset hashes and security headers matched**.
+- Reviewed source policies/strict exports, active-key selection/main-only signing,
+  CAS state preparation/promotion, deployment preflight, pinned production
+  recovery and failure tests. No licensing or trust-policy expansion. The
+  encrypted signing secret's actual value remains unverifiable until the
+  separately approved main-only trial. No actual production rollback exercised.
+- Diagnosed the hosted frontend timeouts around repeated navigation/operator
+  setup on the four-worker development server. Local development and production
+  suites pass, so resource pressure/development compilation is an inference,
+  not a proven application defect. Switched CI to the installed Next guidance's
+  standalone production server, copying static/public assets into ignored output,
+  and two workers. Assertions, existing timeouts/retries/skips remain unchanged.
+  Added a validation-only frontend selector so the permitted targeted attempt
+  cannot repeat backend/migrations/security or invoke publication/demo jobs.
+- Final standalone production harness passed the complete local browser suite:
+  **103 passed, 11 existing skips, zero failures/retries** (1.9 minutes), including
+  all three previously failing tests. ESLint, TypeScript and production build
+  passed. Protected publication workflows and trust registry are unchanged.
