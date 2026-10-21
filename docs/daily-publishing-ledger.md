@@ -148,3 +148,33 @@
     no token transmission to public origins, invalid targets, changed checkpoints,
     retired/ambiguous signing keys and earliest-capture preservation. Full
     regression and a fresh controlled acquisition/preview are underway.
+26. Full backend regression: **416 passed, 44 service-dependent skips** using the
+    documented test CORS origin and a fresh system temporary directory. An
+    inherited local CORS setting and Windows replacement restrictions under the
+    repository temporary directory affected the first run; neither required a
+    product change. Ruff/format/mypy/schema/secret checks passed.
+27. Controlled acquisition completed at **21 October 2026 17:42:50 UTC**:
+    NASA 10 recent candidates, Federal Reserve 1, NIST 1, USGS 15, GDELT 26;
+    NOAA unavailable. **Nine total provider/media HTTP requests**, no paid APIs,
+    no publisher-page scraping. Selected 44 new records (NASA 8, Fed 1, NIST 1,
+    USGS 8, GDELT 26); 29 prior NASA captures retained and 11 pruned. Published
+    candidate population: **73 records, five acquisition providers, 29 publishers**;
+    three per-file public-domain Commons images and three official NASA video links.
+    Export **262,464 bytes**, digest
+    `4f757eca85ba0db39545f62549303b9102fa82966d30c9491f464ec94788a18e`.
+    Acquisition source commit `fd8fcc0`. The seven-day catch-up window reflects
+    the unactivated pipeline's gap since 15 October; this is not all today's news.
+    Publication is unknown for GDELT/USGS (34 records); discovery/update times
+    remain explicit. Actual baseline topics: General 66, Business 3, Company 1,
+    Technology.AI 2, Politics/Public-Policy 1. No labels were forced for balance.
+28. Real candidate browser acceptance: **87 routes at 1440/390px, 73 record
+    signatures, complete release signature and nine negative cases passed**;
+    all three images loaded, fallback/search/topics/analytics/protected-route
+    checks passed, zero browser errors. Visual review found portrait thumbnails
+    could expand their reserved image region; constrained the 16:10 region,
+    retained full-image presentation and added a browser geometry assertion.
+29. CI exposed an Actions-environment isolation omission in the new ambiguous-key
+    test; explicitly setting that test's local mode preserves the runtime branch
+    guard. Security audit also found `PYSEC-2026-4320` in locked certifi 2026.7.22.
+    Updated only certifi to **2026.10.19**; Python production dependency audit now
+    reports no known vulnerabilities. No scanner rule or security gate disabled.

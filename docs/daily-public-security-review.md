@@ -96,3 +96,27 @@ they do not claim that an unactivated daily workflow has already run in producti
 GitHub scheduling, free news APIs and external media availability have no promised
 delivery SLA. GDELT/NOAA failure currently limits coverage. Immutable public Git
 history cannot support sources that require deletion of retained metadata.
+
+## 21 October Revalidation
+
+GDELT recovered in a single controlled nine-request provider/media run: the new
+candidate has 73 records from five acquisition providers and 29 publisher names,
+with three per-file public-domain images and three external NASA video references.
+Full local backend regression: 416 passed / 44 service-dependent skips. Focused
+public boundary/recovery suite: 75 passed. Real candidate browser verification:
+87 routes, 73 signed records and nine negative cases; three images loaded.
+
+Added a pre-upload checkpoint of the previous validated static production
+deployment and its original public inventory/headers. Failed upload/live gates
+invoke the Pages rollback API and verify the restored bytes, with three bounded
+verification attempts. Preview exercises checkpoint reads without production
+mutation. Mocked transport tests cover recovery, missing/modified targets, no
+bearer transmission to public origins, bounded lookup and unsuccessful recovery.
+An actual production rollback is not claimed; hard runner termination can prevent
+cleanup and requires the documented owner recovery action.
+
+Signing now selects exactly one active daily key from reviewed trust, and refuses
+new publication with retired keys while retaining historical verification.
+Credential-bearing actions are pinned to upstream commits. CI's newly reported
+certifi advisory was remediated through a targeted lockfile upgrade; Python audit
+passed with no known vulnerabilities. No existing security check was relaxed.

@@ -620,6 +620,7 @@ def test_signing_uses_reviewed_rotated_key_without_code_change(signing, monkeypa
 
 
 def test_ambiguous_active_keys_cannot_sign(signing, monkeypatch):
+    monkeypatch.setenv("GITHUB_ACTIONS", "false")
     _, registry = signing
     ambiguous = TrustRegistry(keys={**registry.keys, "daily-v2": registry.keys["daily-v1"]})
     with pytest.raises(ValueError, match="exactly one"):

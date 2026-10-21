@@ -294,6 +294,11 @@ try {
       );
       if (media.reference.kind === "image") {
         const image = page.getByAltText(media.reference.alt, { exact: true });
+        const reserved = await image.locator("..").boundingBox();
+        assert(
+          Math.abs(reserved.width / reserved.height - 1.6) < 0.02,
+          "Media image must reserve its 16:10 layout before loading",
+        );
         await image.locator("..").scrollIntoViewIfNeeded();
         await image.evaluate(
           (el) =>
