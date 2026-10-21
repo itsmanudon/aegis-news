@@ -94,7 +94,7 @@ after the final approved main integration. Preview deployment, actual live bytes
 local dedicated signing and success/failure state transitions have been tested;
 they do not claim that an unactivated daily workflow has already run in production.
 GitHub scheduling, free news APIs and external media availability have no promised
-delivery SLA. GDELT/NOAA failure currently limits coverage. Immutable public Git
+delivery SLA. Provider outages and English-language discovery limit coverage. Immutable public Git
 history cannot support sources that require deletion of retained metadata.
 
 ## 21 October Revalidation
@@ -120,3 +120,12 @@ new publication with retired keys while retaining historical verification.
 Credential-bearing actions are pinned to upstream commits. CI's newly reported
 certifi advisory was remediated through a targeted lockfile upgrade; Python audit
 passed with no known vulnerabilities. No existing security check was relaxed.
+
+Successful live preview run:
+[39647028765](https://github.com/itsmanudon/aegis-news/actions/runs/39647028765),
+immutable deployment `https://5a90ff84.aegis-news-showcase.pages.dev`.
+All 390 preview asset hashes/security headers matched, and live browser checks
+passed all 87 routes/73 signatures/nine negative cases. The real, read-only
+rollback checkpoint also verified the prior production deployment's 219 public
+asset hashes and headers. Actual credential identity/status/expiry checks passed.
+Neither a production rollback nor unattended signing activation was performed.

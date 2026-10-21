@@ -287,3 +287,31 @@ size and review a future archival policy before it becomes operationally large.
 See `daily-publishing-ledger.md` for measured source counts, exact preview release,
 workflow/CI run links and results. Activation is a distinct owner-approved step;
 no autonomous feature-branch merge is performed.
+
+Latest verified preview: [73-record edition](https://daily-preview.aegis-news-showcase.pages.dev/),
+[successful publication run](https://github.com/itsmanudon/aegis-news/actions/runs/39647028765),
+updated **21 October 2026 17:42:50 UTC / 23:12:50 IST**. It contains 37 NASA,
+26 GDELT, eight USGS, one Federal Reserve and one NIST reference, across 29
+publisher names, with three Commons images and three NASA video references.
+GDELT acquisition uses English-language discovery. This is a bounded recent-news
+collection with a 21-day archive, not a comprehensive ranking of world news.
+No external reporting is independently corroborated by cryptographic validity.
+
+Required final integration, in order:
+
+1. Owner approves merging follow-up PR #3 into `main` using the repository's
+   merge workflow (no rebasing, history rewrite or tag movement). PR #2 is already
+   merged and remains intact.
+2. Leave `DAILY_PUBLICATION_ENABLED` unset and dispatch `daily-publication.yaml`
+   explicitly on `main`. This is the first real environment-secret signing and
+   production prepare/deploy/verify/promote trial. Confirm the matching live
+   manifest and public promotion receipt.
+3. After that complete trial passes and activation is approved, set
+   `DAILY_PUBLICATION_ENABLED=true`. Subsequent scheduled runs use 06:23 UTC /
+   11:53 IST. The owner's computer can be off.
+
+The configured signing secret exists, but its actual encrypted value cannot be
+read back for inspection; the main-only trial must prove it matches reviewed
+`daily-v1`. The Pages token has been verified through the real preview workflow;
+rotate it before **14 January 2027 05:29:59 IST**. No missing secret names are
+known. Final main integration and activation approvals are outstanding.

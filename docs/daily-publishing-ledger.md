@@ -178,3 +178,29 @@
     guard. Security audit also found `PYSEC-2026-4320` in locked certifi 2026.7.22.
     Updated only certifi to **2026.10.19**; Python production dependency audit now
     reports no known vulnerabilities. No scanner rule or security gate disabled.
+30. Corrected image geometry passed the full real-site browser suite again.
+    Under PR-style Actions environment variables, 55 daily/recovery tests passed;
+    the complete focused publisher suite is 75 tests. Node production audit also
+    reports no known vulnerabilities. Both manual/daily publishers now run
+    dependency audits on every execution, so new advisories block deployment.
+31. New public release staged at data-branch commit
+    `39e75100ba127ecacfcbbe2e568f21459efd3c0b`. Authoritative production digest
+    remains `be21a984…96129f`, with `prepared.json` null; preview staging did not
+    promote the candidate. Production still has **40 signed NASA records**,
+    timestamp **15 October 2026 09:06:17 UTC**.
+32. **Preview publication succeeded** in
+    [run 39647028765](https://github.com/itsmanudon/aegis-news/actions/runs/39647028765),
+    build commit `9ba1e00`. Immutable deployment:
+    `https://5a90ff84.aegis-news-showcase.pages.dev`, alias
+    `https://daily-preview.aegis-news-showcase.pages.dev/`.
+    Actual live Chromium passed **87 routes at desktop/mobile widths, all 73
+    record signatures, release verification, nine negative cases, three loaded
+    images plus forced fallback**, search/topics/analytics and protected-route
+    checks, with zero browser errors. **390 deployed public asset hashes and all
+    configured security headers matched** the audited build.
+33. The actual deployment credential passed live ID/status/expiry and static
+    destination checks. Read-only production recovery checkpoint passed too,
+    verifying the original production deployment's **219 public asset hashes and
+    security headers**. No rollback or production mutation was invoked. Signing
+    secret name/environment restriction is present; use of that encrypted secret
+    remains reserved for the approved main-only production trial.
