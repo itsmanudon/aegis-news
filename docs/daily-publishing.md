@@ -284,7 +284,7 @@ current API credential lacks billing scope and browser policy blocks billing UI.
 No broader credential scope, repository visibility change, payment or plan
 upgrade was requested or performed. **Total $0 cost is conditional, not confirmed.**
 
-Before additional hosted validation or activation, the owner must confirm an
+Before publication or unattended activation, the owner must confirm an
 applicable Actions hard $0 spending budget has **Stop usage when budget limit is
 reached** enabled (or equivalent account-enforced paid-usage blocking), and that
 the included runner allowance covers expected use. Only then set repository
@@ -295,6 +295,32 @@ valid website until the allowance resets; do not enable paid usage. Regular
 repository CI is unchanged and must be considered in the account budget too.
 See [GitHub's budget instructions](https://docs.github.com/en/billing/how-tos/set-up-budgets)
 for the spending-block setting; notification-only budgets do not stop charges.
+
+### Controlled Final CI
+
+The owner separately authorized one complete hosted validation attempt and, only
+for an established issue, one targeted retry while this repository stays private.
+This limited authorization does not attest a hard $0 budget. Keep both
+`ACTIONS_PAID_USAGE_DISABLED` and `DAILY_PUBLICATION_ENABLED` unset unless their
+separate documented prerequisites are met.
+
+The existing CI workflow's `validation_only` input runs backend, frontend,
+migrations and security checks. Backend tests include publication/signing/state
+and recovery cases. It skips both the full private demo-stack job and the
+publication job, even if publication inputs are also supplied. It receives no
+signing/deployment secrets in any executing job and does not deploy or acquire
+news. The publication billing guards remain unchanged.
+
+```powershell
+gh workflow run ci.yaml --ref feat/daily-publication -f validation_only=true -f public_showcase=false -f deploy=false
+```
+
+Use a CI skip marker on the preparation/ledger commits to avoid duplicate
+push/pull-request runs, then dispatch exactly once. Count reruns against the
+owner's two-attempt ceiling; retry only the failed job(s) after diagnosis. Do not
+start a second complete workflow or use the private-demo dispatch for this task.
+Read-only billing APIs can remain unavailable; repository run-timing data and
+observed job durations do not prove account quota, charges or a hard spending block.
 
 Cloudflare Free permits 500 builds/month, 20,000 files/site and 25 MiB/asset;
 this implementation enforces lower asset limits and builds on GitHub. Static

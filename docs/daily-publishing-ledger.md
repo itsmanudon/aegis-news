@@ -221,3 +221,33 @@
     Corrected cost/runbook/PR claims. The final commit intentionally uses a CI skip
     marker to avoid starting more metered jobs until budget confirmation; this
     does not mark cancelled/pending checks passed or remove any required gate.
+
+## Final Private-Repository Validation — 22 October 2026
+
+- Owner explicitly authorizes one complete hosted CI attempt and, if needed for
+  an established issue, one targeted retry. This overrides the earlier hold on
+  controlled CI only. No merge, publication, signing-secret access or schedule
+  activation is authorized; the hard $0 publication guard remains mandatory.
+- Fetched current refs. Expected/actual starting HEAD is
+  `a8ff2787bdc076328f771a88287b0d40d9337701`; checkout was clean. PR #3 is open,
+  non-draft and mergeable. Both cost/schedule variables are absent. Cloudflare
+  secret name and dedicated signing secret name exist; signing environment's
+  custom branch policy is exactly `main`. No credential/settings mutation.
+- Account billing usage endpoints still return 404 and request unavailable `user`
+  scope. No scope refresh was attempted. The older successful preview's timing
+  endpoint reports run duration 192,000 ms and billable total 0 ms; this is only
+  endpoint-reported run data, not account-wide billing or budget verification.
+- Durable state remains at `39e75100ba127ecacfcbbe2e568f21459efd3c0b`, current
+  digest `be21a984…96129f`, 40 records, pending state null. HTTPS production and
+  signed staged/preview release match their expected digests. Preview still has
+  73 records and six media references, timestamp 21 October 17:42:50 UTC.
+- Local backend regression: **416 passed, 44 service-dependent skips**; Ruff,
+  formatting, mypy (135 files), schema synchronization and secret guard passed.
+- Added `validation_only` dispatch selection to existing CI to run all four
+  required validation jobs without the private demo stack or any publication.
+  Validation takes precedence over conflicting publication inputs. Preparation
+  commits use a CI skip marker to prevent duplicate automatic hosted runs.
+  Local frontend checks passed: **69 unit tests**, API-contract generation,
+  ESLint, TypeScript and production build; complete browser suite **103 passed,
+  11 existing opt-in/platform skips**. No frontend product code changed.
+  Hosted attempts consumed in this phase: **0** (single dispatch next).
