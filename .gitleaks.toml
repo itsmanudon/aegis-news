@@ -23,3 +23,10 @@ id = "generic-api-key"
         '''^c40ba9de0d39653e7559a32aaded857f49256f7530544d2f2535b3ae07cf8ef8$''',
         '''^ffc7913f6084b138dad68de5a0c2f0ee25ac983709260901e01f53be5796b9d9$''',
     ]
+
+    [[rules.allowlists]]
+    description = "Exact public Cloudflare token ID from its dashboard URL; not a bearer credential"
+    condition = "AND"
+    paths = ['''^apps/showcase/deployment\.json$''']
+    regexTarget = "secret"
+    regexes = ['''^78dba65b7a8ba5ee07f4f90d2eb1088e$''']

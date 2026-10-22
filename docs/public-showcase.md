@@ -1,5 +1,51 @@
 # Public Showcase
 
+## Daily Extension Status
+
+PR #2 was merged by the owner on 15 October 2026 at
+`6334cc7e213744b0d787a27556e8a74232e32884` (main CI passed). The follow-up branch
+`feat/daily-publication` extends this publisher with bounded free multi-source
+acquisition, licensed context images, NASA video references, a versioned daily
+signing key and durable public-only Git state. See the
+[daily runbook](daily-publishing.md), [execution ledger](daily-publishing-ledger.md)
+and [security review](daily-public-security-review.md).
+
+The original manual-only policy below describes the PR #2 release. The owner's
+new daily-publishing assignment supersedes it for the extension. The new schedule
+is **06:23 UTC / 11:53 IST**, but remains gated until approved default-branch
+integration, verified free Actions budget (`ACTIONS_PAID_USAGE_DISABLED=true`)
+and explicit `DAILY_PUBLICATION_ENABLED=true`. No automatic merge or
+schedule activation is performed during feature development. Production remains
+the original validated NASA release. The new release is publicly accessible at
+[the daily preview](https://daily-preview.aegis-news-showcase.pages.dev/) and has
+passed anonymous browser and static-byte checks.
+
+Successful preview workflow:
+[39647028765](https://github.com/itsmanudon/aegis-news/actions/runs/39647028765).
+Immutable preview: `https://5a90ff84.aegis-news-showcase.pages.dev`.
+Export `4f757eca85ba0db39545f62549303b9102fa82966d30c9491f464ec94788a18e`,
+updated 21 October 2026 17:42:50 UTC / 23:12:50 IST. Follow-up:
+[PR #3](https://github.com/itsmanudon/aegis-news/pull/3).
+
+The controlled candidate contains 73 genuine records: 37 NASA references,
+26 GDELT discoveries, eight USGS bulletins, one Federal Reserve Board release
+and one NIST item, across 29 publisher names. It adds
+three per-file public-domain Commons context images and three official NASA video
+references. NOAA was unavailable. Discovery/update timestamps remain separate
+from unknown publication dates. All 87 preview routes and 73 signatures passed
+desktop/mobile browser checks, as did nine negative cases and 390 deployed asset
+hashes plus security headers. Hosting/provider cost remains **USD $0/month**;
+total cost cannot be confirmed until the private-repository Actions allowance
+and paid-usage block are verified. The owner subsequently authorized bounded CI:
+backend, migrations and security passed in
+[the complete attempt](https://github.com/itsmanudon/aegis-news/actions/runs/39656611440);
+frontend passed 103 browser tests (11 existing skips) in
+[the single targeted retry](https://github.com/itsmanudon/aegis-news/actions/runs/39659031583).
+No publication guard was overridden. Both publication-control variables remain
+unset; see the runbook's first production trial procedure before integration.
+
+## Original PR #2 Release
+
 ## Delivery
 
 Feature branch: `feat/public-showcase`, based on validated main
@@ -56,7 +102,10 @@ signed bytes and builds files; it does not collect news or process models.
 
 ## Cost Configuration
 
-Expected incremental cloud cost: **USD $0/month** for this configuration.
+Expected hosting/provider cost: **USD $0/month**. The repository is private;
+Actions cost is conditional on included allowance and enforced paid-usage
+blocking, which the current credential could not inspect. Earlier assumptions
+that this repository received unlimited free public-runner usage were wrong.
 
 | Item | Configuration | Expected Monthly Charge |
 | --- | --- | --- |
@@ -64,7 +113,7 @@ Expected incremental cloud cost: **USD $0/month** for this configuration.
 | Pages Functions / Workers | None deployed | $0 |
 | R2, KV, D1, hosted compute, databases | None created | $0 |
 | News acquisition | Manually requested official NASA metadata, no API key | $0 |
-| GitHub Actions | Public repository, standard `ubuntu-latest` runner, manual publication | $0 |
+| GitHub Actions | Private repository, standard `ubuntu-latest` runner; included allowance and hard paid-usage block require owner verification | Conditional |
 | Custom domain | None purchased or configured | $0 |
 
 Cloudflare documents unlimited static requests and bandwidth on Pages Free,
@@ -316,6 +365,19 @@ repository-wide security certification. No paid services, provider calls or
 scheduled background jobs are introduced by the publication workflow.
 
 ## Outstanding Limitations
+
+The follow-up multi-source implementation is tracked in
+[PR #3](https://github.com/itsmanudon/aegis-news/pull/3) and the
+[daily publishing runbook](daily-publishing.md). PR #2 was merged on 15 October
+2026; the original production dataset remains intact pending final integration.
+Daily publication adds versioned dedicated signing, source-specific metadata
+policies, Commons context images, NASA video links and public-only Git state.
+Before upload it verifies a pinned previous production deployment; failed live
+checks trigger restoration and byte verification. Signing-key rotation selects
+the single active reviewed daily key while preserving older verification keys.
+Unattended execution still requires an approved main merge, a successful manual
+production trial, and explicit schedule activation. See the execution ledger
+for the latest measured acquisition and preview results.
 
 The corpus is deliberately narrow (NASA, headline metadata, one current general
 topic). It has no full-text search, generative summaries, trained inference,

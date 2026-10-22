@@ -70,12 +70,14 @@ async function verify(id) {
     throw new Error("Public Key Does Not Match This Release’s Trust Anchor.");
   }
   const manifest = JSON.parse(text(manifestBytes));
+  const registry = await trustedRegistry();
+  const entry = registry.keys[manifest.key_id];
+  if (!entry || entry.status === "revoked")
+    throw new Error("Untrusted Or Revoked Record Key.");
   const body = JSON.parse(text(bodyBytes));
   const { signature, ...unsigned } = manifest;
   if (
     manifest.version !== "aegis-provenance-1" ||
-    manifest.key_id !== "showcase" ||
-    publicKey.key_id !== manifest.key_id ||
     publicKey.algorithm !== "Ed25519" ||
     canonical(body) !== canonical(unsigned)
   )
@@ -84,7 +86,7 @@ async function verify(id) {
   try {
     key = await crypto.subtle.importKey(
       "raw",
-      decode64(publicKey.public_key),
+      decode64(entry.public_key),
       { name: "Ed25519" },
       false,
       ["verify"],
@@ -131,6 +133,81 @@ async function verify(id) {
     provenanceIds.add(record.provenance_id);
   }
   return "Verified: Ed25519 Signature, SHA-256 Public Content And Complete Lineage. This Does Not Establish Factual Accuracy.";
+}
+async function trustedRegistry() {
+  const registry = JSON.parse(
+    new TextDecoder().decode(await bytes("/data/public-keys.json")),
+  );
+  const pinned = JSON.parse(
+    document.querySelector('meta[name="aegis-trust"]').content,
+  );
+  if (canonical(registry) !== canonical(pinned))
+    throw new Error(
+      "Public Registry Does Not Match This Release’s Trust Anchor.",
+    );
+  return registry;
+}
+async function verifyRelease() {
+  const registry = await trustedRegistry();
+  const [datasetBytes, bodyBytes] = await Promise.all([
+    bytes("/data/dataset.json"),
+    bytes("/data/release-signed-body.json"),
+  ]);
+  if (
+    (await hash(datasetBytes)) !==
+    document.querySelector('meta[name="aegis-release"]').content
+  )
+    throw new Error("Release Digest Does Not Match.");
+  const dataset = JSON.parse(new TextDecoder().decode(datasetBytes));
+  const body = JSON.parse(new TextDecoder().decode(bodyBytes));
+  const { release_signature, ...unsigned } = dataset;
+  const entry = registry.keys[dataset.key_id];
+  if (
+    !entry ||
+    entry.status !== "active" ||
+    entry.public_key !== dataset.public_key ||
+    canonical(body) !== canonical(unsigned) ||
+    canonical(dataset.trust) !== canonical(registry)
+  )
+    throw new Error("Release Trust Or Membership Does Not Match.");
+  const key = await crypto.subtle.importKey(
+    "raw",
+    decode64(entry.public_key),
+    "Ed25519",
+    false,
+    ["verify"],
+  );
+  if (
+    !(await crypto.subtle.verify(
+      "Ed25519",
+      key,
+      decode64(release_signature),
+      bodyBytes,
+    ))
+  )
+    throw new Error("Release Signature Verification Failed.");
+  return "Verified: Complete Release Signature, Membership, Parent Digest And Media Metadata. External Media Bytes And Factual Accuracy Are Not Verified.";
+}
+for (const image of document.querySelectorAll(".media-image img")) {
+  const fallback = () => {
+    image.hidden = true;
+    image.parentElement.querySelector(".image-fallback").hidden = false;
+  };
+  image.addEventListener("error", fallback);
+  if (image.complete && !image.naturalWidth) fallback();
+}
+for (const button of document.querySelectorAll("[data-verify-release]")) {
+  button.addEventListener("click", async () => {
+    const status = button.parentElement.querySelector(".release-status");
+    button.disabled = true;
+    try {
+      status.textContent = await verifyRelease();
+    } catch (error) {
+      status.textContent = `Not Verified: ${error.message || "Verification Failed."}`;
+    } finally {
+      button.disabled = false;
+    }
+  });
 }
 for (const button of document.querySelectorAll("[data-verify]")) {
   button.addEventListener("click", async () => {

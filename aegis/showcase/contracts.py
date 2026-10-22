@@ -8,6 +8,7 @@ from typing import Any, Literal, Self
 from urllib.parse import urlsplit
 from uuid import NAMESPACE_URL, uuid5
 
+from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
 
@@ -16,6 +17,7 @@ from aegis.intelligence.taxonomy import EVENTS, TOPICS
 from aegis.provenance.service import ProvenanceService, SignedManifest, canonical
 from aegis.providers.models import canonical_url, safe_url
 from aegis.security.crypto import StandardCryptoProvider
+from aegis.showcase.daily_contracts import MediaLink, MetadataV2, TrustRegistry, has_term
 
 SOURCES = {
     "nasa": "https://www.nasa.gov/feed/",
@@ -63,7 +65,7 @@ class Metadata(PublicModel):
 
 
 class PublicRecord(PublicModel):
-    metadata: Metadata
+    metadata: Metadata | MetadataV2
     analyses: tuple[AnalysisResult, ...] = Field(min_length=2, max_length=4)
     provenance: SignedManifest
 
@@ -131,6 +133,8 @@ class PublicExport(PublicModel):
 
     @model_validator(mode="after")
     def complete(self) -> Self:
+        if any(isinstance(r.metadata, MetadataV2) for r in self.records):
+            raise ValueError("v2 metadata requires a versioned v2 export")
         if self.exported_at > datetime.now(UTC):
             raise ValueError("future export time")
         ids = [r.metadata.id for r in self.records]
@@ -157,11 +161,12 @@ class PublicExport(PublicModel):
 class PublicKeys:
     """Verification adapter which has no secret key material."""
 
-    def __init__(self, key: Ed25519PublicKey) -> None:
+    def __init__(self, key: Ed25519PublicKey, key_id: str = "showcase") -> None:
         self.key = key
+        self.key_id = key_id
 
     def verification_key(self, key_id: str) -> Ed25519PublicKey:
-        if key_id != "showcase":
+        if key_id != self.key_id:
             raise ValueError("untrusted key identifier")
         return self.key
 
@@ -175,7 +180,81 @@ class PublicKeys:
         raise ValueError("no encryption in publisher")
 
 
-def parse_export(content: bytes) -> PublicExport:
+class DailyExport(PublicModel):
+    version: Literal["aegis-public-2"] = "aegis-public-2"
+    exported_at: AwareDatetime
+    source_commit: str = Field(pattern=r"^[0-9a-f]{40}$")
+    policy: Literal["curated-metadata-links-v2"] = "curated-metadata-links-v2"
+    public_key: str
+    key_id: str = Field(pattern=r"^daily-v[1-9][0-9]*$")
+    trust: TrustRegistry
+    parent_sha256: Sha256
+    sequence: int = Field(ge=1)
+    seen: dict[Sha256, AwareDatetime] = Field(min_length=1, max_length=20000)
+    records: tuple[PublicRecord, ...] = Field(min_length=1, max_length=300)
+    media: tuple[MediaLink, ...] = Field(default=(), max_length=12)
+    release_signature: str = Field(min_length=88, max_length=88)
+
+    @model_validator(mode="after")
+    def verified_release(self) -> Self:
+        primary = self.trust.keys.get(self.key_id)
+        if not primary or primary.status != "active" or primary.public_key != self.public_key:
+            raise ValueError("release signing key is not active")
+        key = Ed25519PublicKey.from_public_bytes(base64.b64decode(self.public_key, validate=True))
+        try:
+            key.verify(
+                base64.b64decode(self.release_signature, validate=True),
+                canonical(self.model_dump(mode="json", exclude={"release_signature"})),
+            )
+        except InvalidSignature:
+            raise ValueError("invalid signed public release envelope") from None
+        ids = [r.metadata.id for r in self.records]
+        if ids != sorted(set(ids)) or self.exported_at > datetime.now(UTC):
+            raise ValueError("duplicate/unsorted records or future release")
+        for record in self.records:
+            if self.seen.get(record.metadata.id) != record.metadata.acquired_at:
+                raise ValueError("first-capture history differs from record acquisition")
+            identity = record.provenance.key_id
+            entry = self.trust.keys.get(identity)
+            if not entry or entry.status == "revoked":
+                raise ValueError("untrusted or revoked record key")
+            if isinstance(record.metadata, MetadataV2) and identity == "showcase":
+                raise ValueError("new daily records cannot reuse the legacy local signing key")
+            verification = Ed25519PublicKey.from_public_bytes(
+                base64.b64decode(entry.public_key, validate=True)
+            )
+            contents = record.contents()
+            if (
+                tuple(r.subject_id for r in record.provenance.records) != tuple(contents)
+                or not ProvenanceService(StandardCryptoProvider(PublicKeys(verification, identity)))
+                .verify(record.provenance, contents)
+                .valid
+                or record.metadata.acquired_at > self.exported_at
+                or any(a.available_at > self.exported_at for a in record.analyses)
+                or any(r.recorded_at > self.exported_at for r in record.provenance.records)
+            ):
+                raise ValueError("record content, lineage, time or signature verification failed")
+        by_id = {r.metadata.id: r for r in self.records}
+        if any(value > self.exported_at for value in self.seen.values()):
+            raise ValueError("first-capture history follows release")
+        if len({m.reference.id for m in self.media}) != len(self.media):
+            raise ValueError("duplicate media identity")
+        for item in self.media:
+            if item.reference.refreshed_at > self.exported_at:
+                raise ValueError("media refresh follows release")
+            if len(set(item.record_ids)) != len(item.record_ids) or any(
+                identity not in by_id
+                or not has_term(item.reference.relationship_term, by_id[identity].metadata.title)
+                for identity in item.record_ids
+            ):
+                raise ValueError("media association must have matching public headline evidence")
+        return self
+
+
+Export = PublicExport | DailyExport
+
+
+def parse_export(content: bytes) -> Export:
     if not content or len(content) > MAX_EXPORT_BYTES:
         raise ValueError("export size exceeds publication boundary")
 
@@ -187,4 +266,7 @@ def parse_export(content: bytes) -> PublicExport:
             value[key] = item
         return value
 
-    return PublicExport.model_validate(json.loads(content, object_pairs_hook=unique))
+    value = json.loads(content, object_pairs_hook=unique)
+    if isinstance(value, dict) and value.get("version") == "aegis-public-2":
+        return DailyExport.model_validate(value)
+    return PublicExport.model_validate(value)
