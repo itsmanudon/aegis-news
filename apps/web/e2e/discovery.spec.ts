@@ -38,6 +38,7 @@ test("chronological discovery preserves bounded server order and population filt
     .getByRole("navigation", { name: "Chronological Discovery Pages" })
     .getByRole("button", { name: "Next Page", exact: true })
     .click();
+  await expect(page.locator(".editorial-result")).toHaveCount(1);
   await expect(page.locator(".editorial-result h3")).toContainText(
     documents[2].document.title,
   );

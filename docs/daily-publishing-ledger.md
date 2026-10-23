@@ -365,3 +365,9 @@
   arbitrary path or override a pending remote release. Original failed evidence
   remains intact. On the Python security patch, full local backend regression
   passed **450 / 44 service-dependent skips**, including the recheck cases.
+- Next 16.4.1 passed API, 69 unit tests, lint, types and production build. Its first
+  browser run exposed an existing pagination assertion race: the test applied a
+  strict single-element text assertion while two previous-page rows still
+  rendered during transition. Added an explicit one-row page-count assertion
+  before the original checks. No product UI, original assertion or timeout was
+  removed. The complete local browser suite is being revalidated; no hosted run.

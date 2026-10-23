@@ -46,6 +46,11 @@ performed by the command. The static site stays online when the laptop is off.
 
 ### Initial Configuration
 
+Until separately integrated into main, this command is on `feat/local-publication`.
+Fetch that branch and switch to it in a clean checkout (create a tracking branch
+only if it does not already exist); do not reset or discard local work. The
+publisher accepts this committed branch because it descends from current main.
+
 Install Git, GitHub CLI, uv, Node.js 22+ and the repository's pinned pnpm version.
 From the repository root, using an existing approved GitHub session:
 
