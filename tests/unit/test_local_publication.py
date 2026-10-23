@@ -6,6 +6,7 @@ import json
 import subprocess
 from contextlib import contextmanager
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, Mock
 
@@ -418,6 +419,40 @@ def test_local_publisher_cannot_be_invoked_by_hosted_actions(tmp_path, monkeypat
     monkeypatch.setenv("GITHUB_ACTIONS", "true")
     with pytest.raises(local.LocalPublicationError, match="must not run inside GitHub Actions"):
         local.LocalPublisher(tmp_path).checkout()
+
+
+def test_recheck_reuses_exact_signed_capture_without_new_requests(scenario):
+    first = scenario.p.execute(key_file=scenario.key)
+    scenario.run.reset_mock()
+    scenario.p.checkout.return_value = "b" * 40
+    result = scenario.p.execute(
+        key_file=scenario.key, recheck=Path(first["receipt_path"]).parent.name
+    )
+    assert result["release_sha256"] == first["release_sha256"]
+    assert result["acquisition_reused"] and result["source_commit"] == "b" * 40
+    assert result["candidate_source_commit"] == scenario.export.source_commit
+    assert scenario.store.pending is None and scenario.store.lock is None
+    scenario.run.assert_not_called()
+
+
+@pytest.mark.parametrize("mode", ["publish", "status", "invalid-path"])
+def test_recheck_cannot_publish_or_read_arbitrary_paths(scenario, mode):
+    values = {"recheck": "20261023T100000Z-" + "a" * 32}
+    if mode == "invalid-path":
+        values["recheck"] = "../private.key"
+    else:
+        values[mode] = True
+    with pytest.raises(local.LocalPublicationError, match="dry-run mode only"):
+        scenario.p.execute(key_file=scenario.key, **values)
+    scenario.p.checkout.assert_not_called()
+
+
+def test_recheck_rejects_a_stale_release_parent(scenario):
+    first = scenario.p.execute(key_file=scenario.key)
+    scenario.store.previous = scenario.export
+    with pytest.raises(StateError, match="parent"):
+        scenario.p.execute(key_file=scenario.key, recheck=Path(first["receipt_path"]).parent.name)
+    assert "prepared" not in scenario.store.events
 
 
 def test_child_processes_receive_only_needed_credentials(tmp_path, monkeypatch):

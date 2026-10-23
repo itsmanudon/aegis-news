@@ -51,8 +51,9 @@ class LocalCommandTimeout(LocalPublicationError):
 class PublicationLease:
     """Atomic create-only Git ref; no expiry or automatic stealing after a crash."""
 
-    def __init__(self, store: GitHubState, head: str):
+    def __init__(self, store: GitHubState, head: str, run_id: str | None = None):
         self.store, self.head = store, head
+        self.run_id = run_id or uuid4().hex
         self.identity: str | None = None
         self.keep = False
 
@@ -65,7 +66,7 @@ class PublicationLease:
             {
                 "tree": tree,
                 "parents": [self.head],
-                "message": "Local publication lease " + uuid4().hex,
+                "message": "Local publication lease " + self.run_id,
             },
         )["sha"]
         try:
@@ -310,7 +311,10 @@ class LocalPublisher:
         deployment.preflight()
         self.command(["npx", "--yes", WRANGLER, "--version"])
         self.github_checks()
-        with PublicationLease(self.store, state["head"]) as lease:
+        with PublicationLease(self.store, state["head"], directory.name) as lease:
+            (directory / "lease.json").write_bytes(
+                canonical({"ref": "refs/" + LOCK, "sha": lease.identity, "run": directory.name})
+            )
             self.github_checks()
             if self.store.head() != state["head"]:
                 raise LocalPublicationError("Durable state changed; rerun validation")
@@ -403,8 +407,17 @@ class LocalPublisher:
             return promoted
 
     def execute(
-        self, *, publish: bool = False, status: bool = False, key_file: Path | None = None
+        self,
+        *,
+        publish: bool = False,
+        status: bool = False,
+        key_file: Path | None = None,
+        recheck: str | None = None,
     ) -> dict[str, Any]:
+        if recheck is not None and (
+            publish or status or not re.fullmatch(r"[0-9]{8}T[0-9]{6}Z-[a-f0-9]{32}", recheck)
+        ):
+            raise LocalPublicationError("--recheck accepts a local run ID in dry-run mode only")
         commit = self.checkout(dependencies=not status)
         identity = self.github_checks()
         home = self.root / ".data/local-publication"
@@ -477,7 +490,26 @@ class LocalPublisher:
                 deployment.configuration()
             os.environ["AEGIS_AI_PROFILE"] = "offline"
             self.stage = "bounded approved acquisition"
-            if state["resume"] != "true":
+            if recheck is not None:
+                if state["resume"] == "true":
+                    raise LocalPublicationError(
+                        "Remote pending release takes priority; omit --recheck"
+                    )
+                original = home / "runs" / recheck / "candidate.json"
+                if original.is_symlink() or not original.resolve().is_relative_to(
+                    (home / "runs").resolve()
+                ):
+                    raise LocalPublicationError(
+                        "Recheck candidate must remain in local run storage"
+                    )
+                content = original.read_bytes()
+                if len(content) > 8 * 1024 * 1024:
+                    raise LocalPublicationError("Recheck candidate exceeds export limit")
+                parse_export(content)
+                (directory / "candidate.json").write_bytes(content)
+                receipt["rechecked_run"] = recheck
+                receipt["acquisition_reused"] = True
+            elif state["resume"] != "true":
                 changed = asyncio.run(
                     daily.run(
                         directory / "previous.json",
@@ -505,7 +537,7 @@ class LocalPublisher:
             if not isinstance(export, DailyExport):
                 raise LocalPublicationError("Expected a signed daily release")
             check_trust(export, publication=True)
-            if state["resume"] != "true" and export.source_commit != commit:
+            if state["resume"] != "true" and not recheck and export.source_commit != commit:
                 raise LocalPublicationError("Candidate source differs from validated checkout")
             previous = parse_export((directory / "previous.json").read_bytes())
             self.store.validate_successor(export, previous)

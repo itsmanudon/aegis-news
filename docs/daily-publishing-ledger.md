@@ -343,3 +343,25 @@
   Actual dry-run acquisition/browser results are recorded after execution below.
   No hosted runner, publication dispatch or schedule activation is authorized
   or required by this local command.
+- The controlled dry run captured 28 recent permitted records in 10 provider/media
+  attempts and selected 18: NASA 8, USGS 8, Federal Reserve 1, NIST 1. GDELT and
+  NOAA were unavailable; no additional probe was attempted. The signed candidate
+  has 43 visible records (33 NASA, 8 USGS, 1 Federal Reserve, 1 NIST), four
+  publishers, three Commons images and three NASA video references. Retention
+  removed 15 older visible rows while preserving their first-capture index.
+- Initial dry-run gates correctly stopped at a newly reported Python advisory,
+  `CVE-2026-114603` / [GHSA-xcq7-p3pf-p88h](https://github.com/advisories/GHSA-xcq7-p3pf-p88h).
+  Patched API/SDK to 1.45.1 and matching constrained instrumentation packages to
+  0.66b1; no broad lock upgrade or advisory suppression. Python audit is clean.
+  Node audit also reported three Next.js advisories, including two critical
+  ([SVG](https://github.com/advisories/GHSA-2464-fhr4-w9xw),
+  [cache](https://github.com/advisories/GHSA-673q-mjm6-r5xr)) and one high
+  ([Server Actions](https://github.com/advisories/GHSA-p3m5-59mp-jv5r)). Raised
+  Next/eslint-config-next minimum to 16.4.1 with matching locked dependencies;
+  Node production audit is now clean. These required audit fixes change the
+  dependency locks; protected workflows and trust/credential files stay unchanged.
+- Added dry-run-only `--recheck <run-id>` to finish validation of the preserved
+  exact signed capture without more source requests. It cannot publish, use an
+  arbitrary path or override a pending remote release. Original failed evidence
+  remains intact. On the Python security patch, full local backend regression
+  passed **450 / 44 service-dependent skips**, including the recheck cases.

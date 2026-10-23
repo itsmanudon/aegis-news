@@ -117,6 +117,22 @@ It reports counts, publisher diversity, image/video counts, source failures,
 additions/removals and release digest. Publication readiness is not inferred from
 a dry run with a missing Cloudflare token.
 
+If a local audit/browser gate fails, preserve its candidate and failed receipt.
+After fixing and committing the cause, recheck that captured edition without
+repeating provider requests:
+
+```sh
+uv run python -m scripts.public_showcase local-publish --dry-run --recheck <original-run-id>
+```
+
+This accepts only an ID under local run storage, revalidates the current parent,
+sequence, trust and first-capture history, and produces a fresh receipt while
+preserving the original failure and original candidate source SHA. It does not
+claim new acquisition. It cannot be combined with `--publish` or `--status`, and
+cannot supersede remote pending state. Normal `--publish` always acquires fresh
+eligible news or resumes the exact remote-prepared release; it never deploys an
+arbitrary cached local candidate.
+
 Each invocation uses a fresh ignored `.data/local-publication/runs/<id>/` folder.
 `receipt.json` and `.data/local-publication/latest.json` contain sanitized
 status/counts/digests and failure stage; private bytes and raw subprocess output
@@ -143,7 +159,8 @@ ref `refs/tags/aegis-local-publication-lock`, pointing to a unique public-data
 commit. This is not a release tag, dataset, new ingestion system or signing key.
 The state format remains unchanged. A second computer cannot acquire that ref;
 an old process cannot remove a different owner's lock. Neither lock is silently
-stolen or automatically expired. Failed rollback, upload timeout or hard
+stolen or automatically expired. The lease commit identifies its run ID and
+`lease.json` records its exact ref/SHA for recovery. Failed rollback, upload timeout or hard
 interruption retains the remote lock for owner reconciliation.
 
 Current CI ignores `publication-data` branch pushes and defines only a branch

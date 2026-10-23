@@ -20,6 +20,9 @@ def main() -> None:
     mode.add_argument("--publish", action="store_true")
     mode.add_argument("--status", action="store_true")
     local.add_argument("--key-file", type=Path)
+    local.add_argument(
+        "--recheck", help="dry-run only: revalidate a saved local run ID without acquisition"
+    )
     key = commands.add_parser(
         "daily-key", help="explicitly provision a separate unattended signing key locally"
     )
@@ -67,7 +70,10 @@ def main() -> None:
 
         try:
             local_result = LocalPublisher().execute(
-                publish=args.publish, status=args.status, key_file=args.key_file
+                publish=args.publish,
+                status=args.status,
+                key_file=args.key_file,
+                recheck=args.recheck,
             )
         except LocalPublicationError as error:
             parser.exit(2, str(error) + "\n")
