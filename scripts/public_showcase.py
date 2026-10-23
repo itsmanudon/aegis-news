@@ -12,6 +12,14 @@ from aegis.showcase.contracts import SOURCES, parse_export
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
+    local = commands.add_parser(
+        "local-publish", help="local-only validated dry run or explicit production publication"
+    )
+    mode = local.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--dry-run", action="store_true")
+    mode.add_argument("--publish", action="store_true")
+    mode.add_argument("--status", action="store_true")
+    local.add_argument("--key-file", type=Path)
     key = commands.add_parser(
         "daily-key", help="explicitly provision a separate unattended signing key locally"
     )
@@ -52,7 +60,25 @@ def main() -> None:
             "--expected-sha256", help="require this exact approved export identity"
         )
     args = parser.parse_args()
-    if args.command == "daily-key":
+    if args.command == "local-publish":
+        import json
+
+        from aegis.showcase.local import LocalPublicationError, LocalPublisher
+
+        try:
+            local_result = LocalPublisher().execute(
+                publish=args.publish, status=args.status, key_file=args.key_file
+            )
+        except LocalPublicationError as error:
+            parser.exit(2, str(error) + "\n")
+        except Exception:
+            parser.exit(
+                2,
+                "Local publication stopped; inspect the sanitized "
+                ".data/local-publication/latest.json receipt. No credentials printed.\n",
+            )
+        print(json.dumps(local_result, indent=2))
+    elif args.command == "daily-key":
         from aegis.showcase.daily import initialize_key
 
         initialize_key(args.key_file, args.key_id)

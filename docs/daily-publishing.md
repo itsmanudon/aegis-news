@@ -2,9 +2,11 @@
 
 ## Activation Status
 
-The implementation is on `feat/daily-publication`, from merged PR #2 at
-`6334cc7e213744b0d787a27556e8a74232e32884`. Production stays on the validated
-NASA release during development. The new workflow is gated by all of:
+PR #3 was merged into `main` at `319c50322ecc5210be03722142b564a91ec9b9a4`;
+all four main CI jobs passed. Production remains the validated NASA release until
+an explicit publication succeeds. The **local** path below uses this computer,
+not GitHub Actions, and requires neither hosted-usage attestation nor activation.
+The existing **GitHub Actions** publication workflow remains gated by all of:
 
 1. Reviewed integration into default branch `main`.
 2. For unattended runs, repository variable `DAILY_PUBLICATION_ENABLED=true`
@@ -31,6 +33,177 @@ can be delayed or dropped under load; this is not an availability guarantee.
 Scheduled workflows only execute from the default branch, and GitHub may disable
 public-repository schedules after 60 days without repository activity.
 [GitHub scheduling behavior](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
+
+## Manual Publication From macOS
+
+Use a trusted, clean checkout containing the local-publisher implementation and
+the latest `origin/main`. The command fetches `main` without merging/resetting,
+requires it to be an ancestor of the current committed source, verifies the
+approved GitHub origin, and refuses tracked or unignored changes. A committed
+feature checkout is supported; its actual source SHA is recorded. No source
+commit/push, workflow dispatch, credential rotation or paid resource creation is
+performed by the command. The static site stays online when the laptop is off.
+
+### Initial Configuration
+
+Install Git, GitHub CLI, uv, Node.js 22+ and the repository's pinned pnpm version.
+From the repository root, using an existing approved GitHub session:
+
+```sh
+gh api user --jq .login
+uv sync --frozen --python 3.12
+pnpm install --frozen-lockfile
+pnpm --filter @aegisnews/web exec playwright install chromium
+npx --yes wrangler@4.151.0 --version
+```
+
+GitHub requires repository push permission for public-data commits/ref updates,
+and read access to Actions runs, repository/environment variables and metadata.
+The command verifies these using the selected `gh` identity and never requests
+broader scopes or starts a hosted runner. Configure access separately if missing.
+Run from the repository root, not `apps/showcase` or another directory.
+
+### Secure Credentials
+
+The existing matching `daily-v1` key belongs at
+`.keys/daily-publication/daily-v1.key`, which is ignored by Git. It is base64 of
+the existing 32-byte Ed25519 private key. Restore that exact key from an approved
+secure backup if needed; do not overwrite an existing file. Restrict the private
+directory to the owner and the key file to mode 600 on macOS. Never invoke
+`daily-key` to solve a missing credential: the registered ID cannot be replaced.
+An existing ignored key elsewhere can be read with `--key-file <existing-path>`;
+no copy is made. Alternatively inject `AEGIS_PUBLIC_SIGNING_KEY` at runtime.
+Its public key must match the single active reviewed registry entry; wrong or
+missing keys stop before acquisition. Keys present only as Actions encrypted
+secrets cannot be read back: obtain the original matching backup, or stop for a
+separately reviewed rotation outside this procedure.
+
+For **publication**, inject the existing reviewed `CLOUDFLARE_API_TOKEN` through
+an approved local password manager/runtime secret mechanism, and set the public
+destination values from `apps/showcase/deployment.json`:
+
+```sh
+export CLOUDFLARE_ACCOUNT_ID=3de5bfe983584a2eab1cbb710aa4fbe8
+export CLOUDFLARE_PAGES_PROJECT=aegis-news-showcase
+```
+
+Do not type token/key values into shell history, print them, store them in tracked
+files, or expose them in screenshots. If using Doppler, first explicitly verify
+the Aegis publication project/configuration; no project is guessed or private
+application/archive-encryption configuration imported. No automatic credential
+discovery or fallback to Wrangler OAuth is used. The same reviewed account-owned
+Pages token must pass live ID/status/expiry and static Direct Upload checks.
+Its reviewed scope is account-wide Pages Write, not a single-project token; live
+scope introspection is unavailable without broader permissions, so the existing
+reviewed attestation is retained. Expiry remains **14 January 2027 05:29:59 IST**.
+
+### Dry Run And Repeated Publication
+
+```sh
+uv run python -m scripts.public_showcase local-publish --status
+uv run python -m scripts.public_showcase local-publish --dry-run
+uv run python -m scripts.public_showcase local-publish --publish
+```
+
+Modes are mutually exclusive; one must be supplied. `--publish` is the explicit
+production mutation switch. Normal repeat publication uses exactly that same
+command. A dry run needs the signing credential but not Cloudflare credentials;
+it reads GitHub state and the live parent, collects approved bounded news,
+deduplicates and processes it, signs using the existing implementation, checks
+the same parent/sequence/first-capture contracts, runs publisher/recovery tests,
+dependency/secret audits, builds/audits the static output and runs desktop/mobile
+browser verification. It never prepares, promotes, locks or deploys remotely.
+It reports counts, publisher diversity, image/video counts, source failures,
+additions/removals and release digest. Publication readiness is not inferred from
+a dry run with a missing Cloudflare token.
+
+Each invocation uses a fresh ignored `.data/local-publication/runs/<id>/` folder.
+`receipt.json` and `.data/local-publication/latest.json` contain sanitized
+status/counts/digests and failure stage; private bytes and raw subprocess output
+are never saved. The candidate contains public metadata only. CLI subprocesses
+use fixed argv without shell evaluation, get only their necessary credentials,
+and have a ten-minute per-command timeout. The acquisition's existing request,
+response-size, retry and rate limits remain unchanged. Provider failures are
+reported; an empty acquisition checks the prior static edition and leaves
+production/state unchanged, including its real old timestamps.
+
+`--publish` additionally checks the reviewed destination, disabled hosted flags
+and conflicting publication runs; acquires the local and remote locks; rechecks
+the exact state/source head; CAS-prepares the release; pins and fully verifies the
+original production rollback target; re-audits static bytes; invokes the existing
+pinned Wrangler Direct Upload to `--branch main`; verifies live bytes/headers and
+browser signatures; and only then CAS-promotes the durable release and confirms
+`prepared.json` is null. No signing/deployment secret enters the Git state.
+
+### Concurrency, Status And Recovery
+
+The local `.data/local-publication/run.lock` prevents overlapping runs in one
+checkout. Explicit publishing atomically creates the **coordination-only** Git
+ref `refs/tags/aegis-local-publication-lock`, pointing to a unique public-data
+commit. This is not a release tag, dataset, new ingestion system or signing key.
+The state format remains unchanged. A second computer cannot acquire that ref;
+an old process cannot remove a different owner's lock. Neither lock is silently
+stolen or automatically expired. Failed rollback, upload timeout or hard
+interruption retains the remote lock for owner reconciliation.
+
+Current CI ignores `publication-data` branch pushes and defines only a branch
+filter, so lock tag pushes do not select CI. The other two workflows have no
+push trigger. The command pins the reviewed normalized bytes of all three
+workflows and refuses an inventory/trigger change until reviewed; none is edited
+by this implementation. See [GitHub ref filtering](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onpushbranchestagsbranches-ignoretags-ignore).
+Keep **both** `DAILY_PUBLICATION_ENABLED` and `ACTIONS_PAID_USAGE_DISABLED` unset.
+Local publication does not need or override the hosted publication billing guard.
+
+Inspect state without acquisition, signing or deployment:
+
+```sh
+uv run python -m scripts.public_showcase local-publish --status
+gh api repos/itsmanudon/aegis-news/git/ref/tags/aegis-local-publication-lock
+```
+
+`--status` reports current/pending digests and any remote lease. HTTP 404 for the
+tag means no remote lease. If a pending release exists without a retained lock,
+the next `--dry-run` validates that exact signed release without new acquisition;
+the next explicit `--publish` rechecks it, deploys idempotently and promotes it.
+No new release supersedes pending evidence. A live candidate whose promotion was
+interrupted remains pending until those checks pass. Changed parent/state,
+revoked key, expired credential or a missing verified rollback target stops.
+
+After a failed upload/live check, guarded recovery restores and byte-verifies
+the pinned previous deployment; the command still fails and preserves pending
+state. If recovery fails, do not retry publication. Inspect the receipt/checkpoint,
+the actual live release and existing Pages rollback procedure first. A hard
+interruption or timed-out upload can outlive the local command; reconcile any
+in-flight upload before removing a lease, even if rollback verification passed.
+Only after verifying the owning process is stopped and the exact lock SHA still
+matches the inspected lease may the owner explicitly remove the coordination ref:
+
+```sh
+gh api --method DELETE repos/itsmanudon/aegis-news/git/refs/tags/aegis-local-publication-lock
+```
+
+This command is an explicit recovery action, not part of normal retry. Never
+delete a release tag, alter trust, force-update `publication-data` or erase
+`prepared.json`. A leftover local `run.lock` likewise needs owner inspection
+before removal. Retain failed receipts and candidates for diagnosis.
+
+### Verify The Public Website
+
+A successful receipt requires live verification and durable promotion, not just
+acquisition or upload success. Inspect the website and compare its manifest
+digest with the receipt and durable state. To repeat checks against the last
+locally built candidate:
+
+```sh
+AEGIS_PUBLIC_BASE_URL=https://aegis-news-showcase.pages.dev node apps/showcase/check-browser.mjs
+uv run python -m scripts.verify_public_deployment --base-url https://aegis-news-showcase.pages.dev
+uv run python -m scripts.public_showcase local-publish --status
+```
+
+The checks deliberately fail if the local build and live release differ. The
+local development stack, authentication and archive encryption are not started
+or modified. macOS execution must still be verified on the actual Mac; successful
+Windows validation is not evidence of credentials installed on another device.
 
 ## Data Flow
 
@@ -358,28 +531,23 @@ GDELT acquisition uses English-language discovery. This is a bounded recent-news
 collection with a 21-day archive, not a comprehensive ranking of world news.
 No external reporting is independently corroborated by cryptographic validity.
 
-Required final integration, in order:
+Current integration status and remaining publication steps:
 
-1. Complete the bounded final validation described above and review its recorded
-   results. Independently verify the hard paid-usage block before publication;
-   only then record `ACTIONS_PAID_USAGE_DISABLED=true`. Limited CI authorization
-   does not establish this publication prerequisite.
-2. Owner approves merging follow-up PR #3 into `main` using the repository's
-   merge workflow (no rebasing, history rewrite or tag movement). PR #2 is already
-   merged and remains intact.
-3. Leave `DAILY_PUBLICATION_ENABLED` unset and dispatch `daily-publication.yaml`
-   explicitly on `main`. This is the first real environment-secret signing and
-   production prepare/deploy/verify/promote trial. Confirm the matching live
-   manifest and public promotion receipt.
-4. After that complete trial passes and activation is approved, set
-   `DAILY_PUBLICATION_ENABLED=true`. Subsequent scheduled runs use 06:23 UTC /
-   11:53 IST. The owner's computer can be off.
+1. PR #3 is merged at `319c503`; [main CI](https://github.com/itsmanudon/aegis-news/actions/runs/39790652247)
+   passed backend, migrations, security and frontend. PR #2 history is intact.
+2. For the owner-authorized local trial, follow **Manual Publication From macOS**:
+   match the existing signing key, supply the reviewed local Cloudflare token,
+   run the dry run, then explicitly invoke `--publish` only if every gate passes.
+3. Verify the live signed release and durable receipt. Keep both hosted control
+   variables unset. A local success does not authorize a hosted run or schedule.
+4. Any later hosted publication/activation requires its own authorization and
+   hard paid-usage blocking prerequisite below. No such activation occurs here.
 
-### First Production Trial Acceptance
+### Hosted First Production Trial Acceptance
 
-This assignment authorizes validation only. The following publication procedure
-requires separate owner approval; none of these mutation commands was executed
-during final CI validation.
+This separate hosted procedure requires owner approval and the hosted cost guard.
+It is not the local publication path. None of its dispatch/activation commands
+was executed during final CI validation or local-publisher implementation.
 
 1. Review the final PR and its recorded tested revision/results, then approve a
    normal merge of PR #3 into `main`, preserving feature history. Confirm the
@@ -436,8 +604,9 @@ execution ledger. The frontend retry passed 103 browser tests with 11 existing
 skips; the first attempt's three timeouts were corrected through production-mode
 test serving and two workers, without changing assertions or timeouts.
 
-PR #3 is technically ready for separate owner merge approval. The hard paid-usage
-block remains unverified, so `ACTIONS_PAID_USAGE_DISABLED` stays unset. First
-main-only signing/production promotion and schedule activation still require the
-separate approvals and acceptance above. No additional hosted runs, deployments,
-secret changes, merges or activation were performed for the final handoff.
+PR #3 has since been merged and main CI passed. The hard paid-usage block remains
+unverified, so `ACTIONS_PAID_USAGE_DISABLED` stays unset. First hosted environment
+signing/promotion and schedule activation still require separate approval and the
+acceptance above. The subsequent local path uses an already matching local key
+and this computer, with both hosted controls unset; it never retrieves encrypted
+Actions secrets or dispatches a workflow.

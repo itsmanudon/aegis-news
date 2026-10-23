@@ -2,6 +2,7 @@
 
 import base64
 import json
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -21,7 +22,8 @@ class StateError(RuntimeError):
 
 class GitHubState:
     def api(self, method: str, route: str, value: dict[str, Any] | None = None) -> dict[str, Any]:
-        command = ["gh", "api", "--method", method, "repos/" + REPOSITORY + "/" + route]
+        target = "repos/" + REPOSITORY + ("/" + route if route else "")
+        command = ["gh", "api", "--method", method, target]
         if value is not None:
             command.extend(["--input", "-"])
         result = subprocess.run(
@@ -30,13 +32,20 @@ class GitHubState:
             text=True,
             capture_output=True,
             check=False,
+            timeout=60,
+            encoding="utf-8",
+            env={
+                name: value
+                for name, value in os.environ.items()
+                if name not in {"AEGIS_PUBLIC_SIGNING_KEY", "CLOUDFLARE_API_TOKEN"}
+            },
         )
         if result.returncode:
             # gh error output can contain remote content. Keep it out of publication logs.
             if "HTTP 404" in result.stderr:
                 raise FileNotFoundError("public state resource not found")
             raise StateError("GitHub public state operation failed")
-        return json.loads(result.stdout)  # type: ignore[no-any-return]
+        return json.loads(result.stdout) if result.stdout.strip() else {}
 
     def head(self) -> str:
         return str(self.api("GET", "git/ref/heads/" + BRANCH)["object"]["sha"])
@@ -138,13 +147,7 @@ class GitHubState:
         head, previous = self.current()
         if head != expected or export.parent_sha256 != digest(previous):
             raise StateError("release parent does not match validated current state")
-        from aegis.showcase.site import check_trust
-
-        check_trust(export, publication=True)
-        if export.sequence != getattr(previous, "sequence", 0) + 1:
-            raise StateError("release sequence mismatch")
-        if any(export.seen.get(key) != value for key, value in known_identities(previous).items()):
-            raise StateError("release cannot erase or change first-capture identity history")
+        self.validate_successor(export, previous)
         pending = json.loads(self.read("prepared.json", head))
         identity = digest(export)
         if pending and pending.get("release") != identity:
@@ -153,6 +156,19 @@ class GitHubState:
         if not preview:
             files["prepared.json"] = canonical({"release": identity, "parent": digest(previous)})
         return self.commit(files, head, "Validate public release " + identity[:12])
+
+    @staticmethod
+    def validate_successor(export: DailyExport, previous: Export) -> None:
+        """Read-only preparation contracts, also used by local dry runs and resumption."""
+        from aegis.showcase.site import check_trust
+
+        if export.parent_sha256 != digest(previous):
+            raise StateError("release parent does not match validated current state")
+        check_trust(export, publication=True)
+        if export.sequence != getattr(previous, "sequence", 0) + 1:
+            raise StateError("release sequence mismatch")
+        if any(export.seen.get(key) != value for key, value in known_identities(previous).items()):
+            raise StateError("release cannot erase or change first-capture identity history")
 
     def promote(self, identity: str, expected: str) -> str:
         head, previous = self.current()

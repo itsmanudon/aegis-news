@@ -308,3 +308,38 @@
   is not claimed. The final handoff commit changes documentation only and skips
   automatic CI to honor the attempt ceiling; tested code is `d30e725` (frontend)
   and `a58514e` (unchanged backend/migrations/security runtime).
+
+## Local Manual Publisher — 23 October 2026
+
+- PR #3 merged normally at `319c50322ecc5210be03722142b564a91ec9b9a4`;
+  [main CI 39790652247](https://github.com/itsmanudon/aegis-news/actions/runs/39790652247)
+  passed all four validation jobs without publication. All 18 feature commits
+  remain reachable; production's 40-record dataset/manifest and preview's
+  73-record dataset/manifest were unchanged after integration.
+- New work starts from that current main in a fresh task checkout on
+  `feat/local-publication`, preserving the original checkout. This execution host
+  is Windows; macOS compatibility is implemented but actual Mac credential or
+  execution checks cannot be claimed.
+- Added `public_showcase local-publish --dry-run|--publish|--status`, reusing
+  existing acquisition, offline processing, signer, export, static/browser gates,
+  state prepare/promote and Pages recovery. Extracted existing successor checks
+  into a read-only shared method so dry runs/resumption enforce them too.
+- Explicit publication uses a create-only coordination tag with a unique
+  public-data commit, local process lock, current source/state checks, pinned
+  rollback and post-upload live verification. No lock stealing/expiry. Failed
+  recovery or uncertain upload timeout retains the lease for owner inspection;
+  failure never erases pending release evidence. The public dataset format and
+  all three protected workflows, trust registry and lockfiles are unchanged.
+- Local GitHub identity/permissions and disabled hosted controls were checked.
+  The existing ignored `daily-v1` file in the original checkout matches the
+  active reviewed public key; it was read in place, never copied or printed.
+  No Cloudflare token/account/project variables are supplied to this runtime.
+  No Doppler configuration was guessed or Actions secret retrieval attempted.
+  A production publication cannot proceed without the reviewed Cloudflare token.
+- Local backend regression passed **438 tests / 44 service-dependent skips**
+  before the final seven checkout/Actions guard cases were added. The focused
+  publication/recovery suite passed 103 cases before the final Actions-only guard;
+  Ruff, mypy (136 files), schema synchronization and secret guard passed.
+  Actual dry-run acquisition/browser results are recorded after execution below.
+  No hosted runner, publication dispatch or schedule activation is authorized
+  or required by this local command.
