@@ -328,8 +328,9 @@
   public-data commit, local process lock, current source/state checks, pinned
   rollback and post-upload live verification. No lock stealing/expiry. Failed
   recovery or uncertain upload timeout retains the lease for owner inspection;
-  failure never erases pending release evidence. The public dataset format and
-  all three protected workflows, trust registry and lockfiles are unchanged.
+  failure never erases pending release evidence. The public dataset format,
+  all three protected workflows and trust registry are unchanged. Subsequent
+  dependency-lock changes below remediate newly reported audit advisories.
 - Local GitHub identity/permissions and disabled hosted controls were checked.
   The existing ignored `daily-v1` file in the original checkout matches the
   active reviewed public key; it was read in place, never copied or printed.
@@ -371,3 +372,26 @@
   rendered during transition. Added an explicit one-row page-count assertion
   before the original checks. No product UI, original assertion or timeout was
   removed. The complete local browser suite is being revalidated; no hosted run.
+- The corrected complete Next browser suite passed **103 / 11 existing skips**
+  without failures or flaky retries (1.7m). No product frontend behavior changed.
+- Final actual local recheck succeeded at code revision `0aa3a720…6827`, using
+  the exact original capture from `745e93d8…f572` without new provider requests.
+  Both dependency audits, 109 focused publication/recovery/coordinator tests,
+  secret guard and static/browser gates passed. **239 allowlisted files, 54
+  routes at 1440/390px, all 43 signatures, nine negative cases, all three loaded
+  images/fallback, search/topics/analytics and protected-route checks passed**;
+  zero browser errors. Generated release digest:
+  `4a9d0feb3c5b4955c9f09a760acdfff91def4ce7e343e868481ed6522893743c`.
+  The original failed receipt remains preserved; success did not rewrite it.
+  Successful local receipt:
+  `.data/local-publication/runs/20261023T102636Z-2bdf67d9d8ec4a94aad2654967d62faa/receipt.json`.
+- **No actual production publication attempted:** the reviewed Cloudflare token
+  is not injected into this runtime (account/project variables also absent).
+  These are prerequisites, not permission to retrieve encrypted Actions secrets,
+  use a different identity/token, rotate keys or relax verification. This host
+  remains Windows; the Mac session/credential setup requires verification there.
+  The default ignored key path in the fresh clone is not populated; actual dry
+  checks read the matching existing key in place through explicit `--key-file`.
+  Live deployment/rollback and distributed-lock creation are mocked, not claimed
+  as executed against production. The owner-authorized production condition was
+  unmet, so `--publish` was never invoked.
