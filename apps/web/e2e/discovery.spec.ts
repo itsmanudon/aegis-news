@@ -38,6 +38,11 @@ test("chronological discovery preserves bounded server order and population filt
     .getByRole("navigation", { name: "Chronological Discovery Pages" })
     .getByRole("button", { name: "Next Page", exact: true })
     .click();
+  // Wait for the second page to replace the first. From Next 16.4 the URL
+  // change reaches useSearchParams a moment later, and asserting text on a
+  // locator that still matches both first-page results fails at once on
+  // strict mode instead of retrying.
+  await expect(page.locator(".editorial-result h3")).toHaveCount(1);
   await expect(page.locator(".editorial-result h3")).toContainText(
     documents[2].document.title,
   );
