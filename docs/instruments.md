@@ -88,7 +88,7 @@ are reachable. The seed command always writes keys.
 ## Reading mappings
 
 `GET /api/v1/assets/mappings` lists mappings ordered by `mapping_id`. Scope:
-`documents:read`.
+`feed:read`.
 
 | Parameter | Meaning |
 | --- | --- |

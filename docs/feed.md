@@ -27,7 +27,10 @@ fail. Routes that return `NewsDocument` are unchanged.
 
 ## Request
 
-Scopes: `documents:read` and `events:read`, both required.
+Scope: `feed:read`. It reaches this route and `GET /api/v1/assets/mappings` only, so a
+consumer that syncs the feed holds no scope for article text. `documents:read` and
+`events:read` do not open the feed. See `docs/security-crypto.md` for minting a service
+token.
 
 | Parameter | Type | Default | Meaning |
 | --- | --- | --- | --- |

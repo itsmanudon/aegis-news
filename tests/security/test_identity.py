@@ -152,6 +152,55 @@ def test_product_access_requires_every_named_scope(identity):
         ):
             headers = {"Authorization": "Bearer " + token(scope=scope)}
             assert client.get("/test/bundle", headers=headers).status_code == status, scope
-        # The feed itself is declared with both scopes.
-        headers = {"Authorization": "Bearer " + token(scope="documents:read")}
-        assert client.get("/api/v1/feed/documents", headers=headers).status_code == 403
+
+
+def test_feed_scope_is_separate_from_document_scopes(identity):
+    settings, validator, token = identity
+    app = create_app(settings)
+    app.state.token_validator = validator
+    app.add_api_route(
+        "/test/feed", lambda: {"ok": True}, dependencies=[product_access("feed:read")]
+    )
+
+    def bearer(scope):
+        service = token(scope=scope, roles=[], idtyp="app", client_id="stockviz-sync")
+        return {"Authorization": "Bearer " + service}
+
+    with TestClient(app) as client:
+        # The document scopes no longer open the feed or the listings it joins to.
+        wide = bearer("documents:read events:read")
+        assert client.get("/api/v1/feed/documents", headers=wide).status_code == 403
+        assert client.get("/api/v1/assets/mappings", headers=wide).status_code == 403
+        # A feed-only token is authorized for a feed route and for nothing that returns text.
+        narrow = bearer("feed:read")
+        assert client.get("/test/feed", headers=narrow).status_code == 200
+        assert client.get("/api/v1/documents", headers=narrow).status_code == 403
+        assert client.get("/api/v1/events", headers=narrow).status_code == 403
+        # A user needs a role that includes the scope, as for every other scope.
+        user = {"Authorization": "Bearer " + token(scope="feed:read", roles=["source_manager"])}
+        assert client.get("/test/feed", headers=user).status_code == 403
+        viewer = {"Authorization": "Bearer " + token(scope="feed:read", roles=["viewer"])}
+        assert client.get("/test/feed", headers=viewer).status_code == 200
+
+
+def test_token_lifetime_is_capped(identity):
+    settings, validator, token = identity
+    now = datetime.now(UTC)
+    limit = timedelta(seconds=settings.oidc_max_token_lifetime)
+    assert validator.validate(token(iat=now, exp=now + limit)).subject == "synthetic"
+    for changes in (
+        dict(iat=now, exp=now + limit + timedelta(seconds=1)),
+        # Backdating iat cannot stretch a token: the bound is on exp - iat.
+        dict(iat=now - timedelta(days=30), exp=now + timedelta(minutes=5)),
+        dict(iat=now + timedelta(minutes=10), exp=now + timedelta(minutes=5)),
+    ):
+        with pytest.raises(ValueError, match="Invalid access token"):
+            validator.validate(token(**changes))
+    short = TokenValidator(
+        settings.model_copy(update={"oidc_max_token_lifetime": 60}),
+        public_keys=validator.public_keys,
+    )
+    with pytest.raises(ValueError, match="Invalid access token"):
+        short.validate(token())
+    with pytest.raises(ValidationError):
+        Settings(oidc_max_token_lifetime=0)

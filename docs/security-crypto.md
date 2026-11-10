@@ -13,7 +13,9 @@ public PEM). JWKS takes precedence. Only configured keys are trusted; token
 `jku`/`x5u` URLs are ignored. Allowed algorithms are explicitly RS256/EdDSA.
 PyJWT validates signatures, issuer, audience, expiry, issued-at, subject, and
 not-before when present. Expiry/issued-at/issuer/audience/subject are required.
-Unsigned and shared-secret algorithms are rejected. Errors are generic 401
+Unsigned and shared-secret algorithms are rejected. A token whose `exp` is more
+than `AEGIS_OIDC_MAX_TOKEN_LIFETIME` seconds after its `iat` (default 86400) is
+rejected, so an issuer cannot hand out a long-lived token. Errors are generic 401
 with Bearer challenge, or 403 for denied permissions.
 
 Default token type is `at+jwt` (RFC 9068). For an issuer using JWT access tokens,
@@ -30,14 +32,14 @@ and PKCE. The API is not an authorization server and implements no password gran
 
 | Role | Scope ceiling |
 | --- | --- |
-| admin | all seven scopes below |
-| analyst | documents:read, events:read, sources:read, security:verify |
-| viewer | documents:read, events:read, sources:read |
+| admin | all scopes below |
+| analyst | documents:read, events:read, feed:read, sources:read, security:verify |
+| viewer | documents:read, events:read, feed:read, sources:read |
 | source_manager | sources:read, sources:write |
 | security_auditor | audit:read, security:verify |
 
-Known scopes: documents:read, events:read, sources:read, sources:write,
-audit:read, security:verify, admin:users. Users need both the delegated scope
+Known scopes: documents:read, events:read, feed:read, sources:read, sources:write,
+ingestions:write, audit:read, security:verify, admin:users. Users need both the delegated scope
 and a permitting role. A role does not expand underscoped tokens. Unknown scopes
 and roles grant nothing. Use `dependencies=[require_scopes("sources:write")]`;
 `authenticate` independently returns an immutable Principal.
@@ -46,8 +48,34 @@ Future machine consumers use issuer-managed client credentials, separate clients
 resource audiences, and least privilege. This adapter recognizes signed
 `idtyp="app"` plus nonempty `client_id`. Services receive only explicitly delegated
 known scopes. The issuer must restrict these claims to registered service clients.
-Other issuer conventions require explicit claim mapping. Stockwise and a local
-client-credentials server are not implemented.
+Other issuer conventions require explicit claim mapping. A local
+client-credentials server is not implemented.
+
+## Service tokens for one consumer
+
+A machine consumer with no OIDC issuer uses a token the owner signs offline. The
+API still never mints tokens: it is given a public key and validates as above.
+
+1. On the owner's machine, not the API host:
+   `uv run python -m scripts.service_token generate --key-id stockviz-2026 --directory ~/aegis-keys`.
+   This writes an Ed25519 pair with owner-only permissions and prints the
+   `AEGIS_OIDC_PUBLIC_KEYS` value. It refuses to overwrite an existing key id.
+2. On the API, set that value (merged with any keys already configured),
+   `AEGIS_OIDC_ALGORITHMS=["EdDSA"]`, `AEGIS_OIDC_ISSUER` and
+   `AEGIS_OIDC_AUDIENCE`. Leave `AEGIS_OIDC_JWKS_URL` empty: JWKS takes precedence
+   over static keys.
+3. Mint a token wherever the private key is held:
+   `uv run python -m scripts.service_token mint --key-file ~/aegis-keys/stockviz-2026.ed25519.key --key-id stockviz-2026 --issuer <AEGIS_OIDC_ISSUER> --audience <AEGIS_OIDC_AUDIENCE> --client-id stockviz-sync --scope feed:read --minutes 15`.
+   It prints the token and nothing else. Do not write it to a tracked file or a log.
+
+The token carries `idtyp: "app"`, `client_id`, `sub` equal to the client id and
+only the scopes named. Give a feed consumer `feed:read` alone: that scope reaches
+`GET /api/v1/feed/documents` and `GET /api/v1/assets/mappings`, and no route that
+returns article text, media or a write. Lifetime defaults to 15 minutes and
+cannot exceed `AEGIS_OIDC_MAX_TOKEN_LIFETIME`. A consumer that runs on a schedule
+mints a fresh token per run. There is no revocation list: to cut a consumer off,
+remove its key id from `AEGIS_OIDC_PUBLIC_KEYS` and restart the API. Rotate by
+adding a new key id, switching the consumer, then removing the old one.
 
 ## Free local demo
 
@@ -139,8 +167,8 @@ for trusted application code; there is no public signing/encryption oracle.
 | GET /api/v1/security/audit?limit=50 | audit:read; latest 1–100 events |
 
 Existing envelopes are reused. Audit retrieval is a latest-events snapshot, not a
-history export. Document/entity/search/asset routers get documents:read; events
-get events:read. Future write routes need their own write scopes. Sources/admin
+history export. Document/entity/search routers get documents:read; events
+get events:read; the feed and asset-mapping routes get feed:read. Future write routes need their own write scopes. Sources/admin
 routes are not implemented. Health/readiness/system info are public. Restrict
 metrics/docs/readiness at the deployment edge if exposed.
 

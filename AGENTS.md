@@ -6,8 +6,8 @@
 main <- dev <- feat/* | fix/* | chore/*
 ```
 
-- Start every branch from `dev`. Implement one large feature per branch, or two
-  to four small ones together.
+- Start every branch from `dev`. Work in batches: one or two features per branch
+  when the changes are big, four or five together when they are small.
 - When the work is complete, merge the branch into `dev` with a merge commit
   (`git merge --no-ff`). Do not squash, rebase or fast-forward, and do not
   rewrite published history. Do not substitute cherry-picks for branch merges

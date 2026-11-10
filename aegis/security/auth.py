@@ -15,6 +15,7 @@ ROLE_SCOPES = {
         {
             "documents:read",
             "events:read",
+            "feed:read",
             "sources:read",
             "sources:write",
             "ingestions:write",
@@ -23,8 +24,10 @@ ROLE_SCOPES = {
             "admin:users",
         }
     ),
-    "analyst": frozenset({"documents:read", "events:read", "sources:read", "security:verify"}),
-    "viewer": frozenset({"documents:read", "events:read", "sources:read"}),
+    "analyst": frozenset(
+        {"documents:read", "events:read", "feed:read", "sources:read", "security:verify"}
+    ),
+    "viewer": frozenset({"documents:read", "events:read", "feed:read", "sources:read"}),
     "source_manager": frozenset({"sources:read", "sources:write", "ingestions:write"}),
     "security_auditor": frozenset({"audit:read", "security:verify"}),
 }
@@ -88,6 +91,10 @@ class TokenValidator:
                 audience=self.settings.oidc_audience,
                 options={"require": ["iss", "aud", "sub", "exp", "iat"]},
             )
+            # A stolen token is useful until it expires, so the issuer may not pick the bound.
+            lifetime = claims["exp"] - claims["iat"]
+            if not 0 < lifetime <= self.settings.oidc_max_token_lifetime:
+                raise ValueError
             subject, roles, scope = claims["sub"], claims.get("roles", []), claims.get("scope", "")
             if not isinstance(subject, str) or not 0 < len(subject) <= 256:
                 raise ValueError
