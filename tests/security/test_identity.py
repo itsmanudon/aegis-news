@@ -6,7 +6,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
 
-from aegis.security.auth import TokenValidator, require_scopes
+from aegis.security.auth import TokenValidator, product_access, require_scopes
 from aegis.settings import Settings
 from apps.api.main import create_app
 
@@ -128,3 +128,30 @@ def test_production_rejects_dev_and_insecure_configuration():
     ]:
         with pytest.raises(ValidationError):
             Settings(**{**common, **changes})
+
+
+def test_product_access_requires_every_named_scope(identity):
+    settings, validator, token = identity
+    app = create_app(settings)
+    app.state.token_validator = validator
+    app.add_api_route(
+        "/test/bundle",
+        lambda: {"ok": True},
+        dependencies=[product_access("documents:read", "events:read")],
+    )
+    with pytest.raises(ValueError):
+        product_access()
+    with pytest.raises(ValueError):
+        product_access("documents:read", "not:a-scope")
+    with TestClient(app) as client:
+        assert client.get("/test/bundle").status_code == 401
+        for scope, status in (
+            ("documents:read", 403),
+            ("events:read", 403),
+            ("documents:read events:read", 200),
+        ):
+            headers = {"Authorization": "Bearer " + token(scope=scope)}
+            assert client.get("/test/bundle", headers=headers).status_code == status, scope
+        # The feed itself is declared with both scopes.
+        headers = {"Authorization": "Bearer " + token(scope="documents:read")}
+        assert client.get("/api/v1/feed/documents", headers=headers).status_code == 403

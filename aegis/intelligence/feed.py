@@ -1,0 +1,256 @@
+"""Incremental document feed: signed documents in the order they were last signed.
+
+The position of a document is (last_signed_at, document_id). A document enters the feed
+when its first provenance manifest is signed and moves forward when a later run is
+signed, so a consumer that keeps the resume cursor sees each change exactly once per run.
+"""
+
+from collections import defaultdict
+from datetime import UTC, datetime, timedelta
+from typing import Any, cast
+
+from pydantic import AwareDatetime, TypeAdapter
+from sqlalchemy import select, text, tuple_
+from sqlalchemy.orm import Session
+
+from aegis.contracts.feed import (
+    FeedDocument,
+    FeedEvent,
+    FeedInstrument,
+    FeedItem,
+    FeedManifest,
+)
+from aegis.domain.ids import DocumentId
+from aegis.domain.models import AnalysisResult, EntityResolutionResult, EventExtractionResult
+from aegis.ingestion.repository import source_value
+from aegis.intelligence.persistence import from_row
+from aegis.intelligence.pipeline import stable_id
+from aegis.intelligence.read_models import fingerprint, pack, unpack
+from aegis.persistence.models import (
+    AnalysisRow,
+    AssetMappingRow,
+    Base,
+    DocumentRow,
+    EntityRow,
+    IngestionRow,
+    NewsEventRow,
+    SourceRow,
+)
+
+Position = tuple[datetime, str]
+
+# The signing transaction reads the clock before it commits, so a row can become visible
+# slightly after the time it carries. Holding back the newest rows keeps a reader from
+# moving its cursor past a row that has not committed yet.
+SAFETY_LAG = timedelta(seconds=60)
+START: Position = (datetime(1970, 1, 1, tzinfo=UTC), "")
+# Analyses a consumer stores. Extraction outputs quote the article and embeddings are
+# large, so neither is returned; event extraction only supplies each event's type.
+FEED_ANALYSES = ("topic", "sentiment", "entity_resolution")
+CURSOR_MAXIMUM = 4096
+
+
+def encode_position(position: Position, filters: dict[str, Any]) -> str:
+    return pack(
+        {
+            "v": 1,
+            "kind": "feed",
+            "filters": fingerprint(filters),
+            "key": [position[0].astimezone(UTC).isoformat(), position[1]],
+        }
+    )
+
+
+def decode_position(value: str, filters: dict[str, Any]) -> Position:
+    data = unpack(value, CURSOR_MAXIMUM)
+    if not isinstance(data, dict) or set(data) != {"v", "kind", "filters", "key"}:
+        raise ValueError("invalid feed cursor")
+    if (
+        type(data["v"]) is not int
+        or data["v"] != 1
+        or data["kind"] != "feed"
+        or data["filters"] != fingerprint(filters)
+    ):
+        raise ValueError("feed cursor filter mismatch")
+    key = data["key"]
+    if not isinstance(key, list) or len(key) != 2 or any(not isinstance(v, str) for v in key):
+        raise ValueError("invalid feed cursor key")
+    moment = TypeAdapter(AwareDatetime).validate_python(key[0]).astimezone(UTC)
+    if key[1]:
+        TypeAdapter(DocumentId).validate_python(key[1])
+    return moment, key[1]
+
+
+def read(
+    session: Session, after: Position, bound: datetime, limit: int
+) -> tuple[list[FeedItem], bool]:
+    """Return up to ``limit`` bundles after ``after`` and whether more exist at ``bound``."""
+    rows = session.execute(
+        select(DocumentRow, IngestionRow.source_url)
+        .join(IngestionRow, IngestionRow.ingestion_id == DocumentRow.ingestion_id)
+        .where(
+            DocumentRow.last_signed_at.is_not(None),
+            DocumentRow.last_signed_at <= bound,
+            tuple_(DocumentRow.last_signed_at, DocumentRow.document_id) > tuple_(*after),
+        )
+        .order_by(DocumentRow.last_signed_at, DocumentRow.document_id)
+        .limit(limit + 1)
+    ).all()
+    more = len(rows) > limit
+    rows = rows[:limit]
+    if not rows:
+        return [], False
+    documents = [row[0] for row in rows]
+    ids = [document.document_id for document in documents]
+
+    sources = {
+        row.source_id: source_value(row)
+        for row in session.scalars(
+            select(SourceRow).where(
+                SourceRow.source_id.in_({document.source_id for document in documents})
+            )
+        )
+    }
+
+    analyses: dict[str, list[AnalysisResult]] = defaultdict(list)
+    # document -> entity -> (confidence, resolving analysis)
+    resolved: dict[str, dict[str, tuple[float, str]]] = defaultdict(dict)
+    event_types: dict[str, tuple[str, float]] = {}
+    for analysis_row in session.scalars(
+        select(AnalysisRow)
+        .where(
+            AnalysisRow.document_id.in_(ids),
+            AnalysisRow.analysis_type.in_((*FEED_ANALYSES, "event_extraction")),
+            AnalysisRow.available_at <= bound,
+        )
+        .order_by(AnalysisRow.available_at, AnalysisRow.analysis_id)
+    ):
+        value = from_row(analysis_row)
+        if value.analysis_type in FEED_ANALYSES:
+            analyses[value.document_id].append(value)
+        for index, output in enumerate(value.outputs):
+            if isinstance(output, EventExtractionResult):
+                # The pipeline derives an event's identity from its analysis and position.
+                event_types[stable_id("evt", f"{value.analysis_id}:{index}")] = (
+                    output.proposed_event_type,
+                    output.confidence,
+                )
+            elif isinstance(output, EntityResolutionResult) and output.entity_id:
+                best = resolved[value.document_id].get(output.entity_id)
+                if best is None or output.confidence >= best[0]:
+                    resolved[value.document_id][output.entity_id] = (
+                        output.confidence,
+                        value.analysis_id,
+                    )
+
+    mappings: dict[str, list[tuple[EntityRow, AssetMappingRow]]] = defaultdict(list)
+    entity_ids = {entity for links in resolved.values() for entity in links}
+    if entity_ids:
+        for entity, mapping in session.execute(
+            select(EntityRow, AssetMappingRow)
+            .join(AssetMappingRow, AssetMappingRow.entity_id == EntityRow.entity_id)
+            .where(EntityRow.entity_id.in_(entity_ids), AssetMappingRow.created_at <= bound)
+            .order_by(AssetMappingRow.mapping_id)
+        ):
+            mappings[entity.entity_id].append((entity, mapping))
+
+    events: dict[str, list[FeedEvent]] = defaultdict(list)
+    links = Base.metadata.tables["event_documents"]
+    for linked in session.execute(
+        select(NewsEventRow, links.c.document_id)
+        .join(
+            links,
+            (links.c.event_id == NewsEventRow.event_id)
+            & (links.c.revision == NewsEventRow.revision),
+        )
+        .where(links.c.document_id.in_(ids), NewsEventRow.available_at <= bound)
+        .order_by(NewsEventRow.available_at, NewsEventRow.event_id, NewsEventRow.revision)
+    ):
+        event = cast(NewsEventRow, linked[0])
+        extraction = event_types.get(event.event_id)
+        events[cast(str, linked[1])].append(
+            FeedEvent(
+                event_id=event.event_id,
+                revision=event.revision,
+                event_type=extraction[0] if extraction else None,
+                confidence=extraction[1] if extraction else None,
+                occurred_at=event.occurred_at,
+                created_at=event.created_at,
+                available_at=event.available_at,
+                evidence_kind=event.evidence_kind,
+                analysis_id=event.analysis_id,
+            )
+        )
+
+    manifests: dict[str, list[FeedManifest]] = defaultdict(list)
+    for signed in session.execute(
+        text(
+            """
+            SELECT r->>'subject_id' AS document_id, s.manifest_hash, s.key_id, s.created_at
+            FROM signed_manifests s
+            CROSS JOIN LATERAL jsonb_array_elements(s.manifest->'records') r
+            WHERE s.created_at >= :earliest AND s.created_at <= :bound
+              AND r->>'operation' = 'normalization'
+              AND r->>'subject_id' = ANY(:ids)
+            ORDER BY s.created_at, s.manifest_hash
+            """
+        ),
+        {
+            "ids": ids,
+            "bound": bound,
+            # A manifest cannot predate the first sight of any document it covers.
+            "earliest": min(document.first_seen_at for document in documents),
+        },
+    ).mappings():
+        manifests[signed["document_id"]].append(
+            FeedManifest(
+                manifest_hash=signed["manifest_hash"],
+                key_id=signed["key_id"],
+                signed_at=signed["created_at"],
+            )
+        )
+
+    items = []
+    for document, source_url in rows:
+        instruments = [
+            FeedInstrument(
+                entity_id=entity.entity_id,
+                canonical_name=entity.canonical_name,
+                kind=entity.kind,
+                mapping_id=mapping.mapping_id,
+                scheme=mapping.scheme,
+                identifier=mapping.identifier,
+                venue=mapping.venue,
+                resolution_analysis_id=analysis_id,
+                confidence=confidence,
+            )
+            for entity_id, (confidence, analysis_id) in sorted(
+                resolved[document.document_id].items()
+            )
+            for entity, mapping in mappings.get(entity_id, ())
+        ]
+        items.append(
+            FeedItem(
+                document=FeedDocument(
+                    document_id=document.document_id,
+                    ingestion_id=document.ingestion_id,
+                    source_id=document.source_id,
+                    title=document.title,
+                    url=source_url,
+                    language=document.language,
+                    published_at=document.published_at,
+                    first_seen_at=document.first_seen_at,
+                    ingested_at=document.ingested_at,
+                    created_at=document.created_at,
+                    available_at=document.available_at,
+                    last_signed_at=document.last_signed_at,
+                    revision=document.revision,
+                ),
+                source=sources[document.source_id],
+                analyses=tuple(analyses[document.document_id]),
+                instruments=tuple(instruments),
+                events=tuple(events[document.document_id]),
+                manifests=tuple(manifests[document.document_id]),
+            )
+        )
+    return items, more

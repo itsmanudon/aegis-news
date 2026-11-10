@@ -46,6 +46,7 @@ from apps.api.routes import (
     documents,
     entities,
     events,
+    feed,
     ingestions,
     intelligence,
     product,
@@ -277,6 +278,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(ingestions.router, prefix="/api/v1")
     app.include_router(product.router, prefix="/api/v1")
     app.include_router(intelligence.router, prefix="/api/v1")
+    app.include_router(feed.router, prefix="/api/v1")
     app.include_router(providers.router, prefix="/api/v1")
     instrument(app, settings)
     return app
