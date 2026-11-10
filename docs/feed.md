@@ -34,8 +34,12 @@ Scopes: `documents:read` and `events:read`, both required.
 | `limit` | integer, 1 to 100 | 50 | Page size |
 | `cursor` | opaque string | none | Resume position: a `resume_cursor` or `next_cursor` from an earlier response |
 | `since` | timestamp with offset | none | Start position when there is no cursor. Inclusive. |
+| `mapped` | boolean | false | Only documents linked to at least one instrument |
+| `scheme`, `venue`, `identifier` | string | none | Only documents linked to a matching listing. Each implies `mapped`. `venue` is a MIC code. |
 
 Give `cursor` or `since`, not both. With neither, the feed starts from the beginning.
+A cursor belongs to the filters it was issued with; sending it with different filters
+returns 422.
 An invalid cursor, a timestamp without an offset, or both parameters together return
 422 with `INVALID_ARGUMENT`.
 
@@ -74,7 +78,9 @@ An invalid cursor, a timestamp without an offset, or both parameters together re
   hash and its own `available_at`. Ordered by `available_at`, then `analysis_id`.
 - **`instruments`**: one entry per asset mapping of an entity the document resolved to,
   with the mapping's scheme, identifier and venue, the resolving analysis and the best
-  resolution confidence. Entities with no mapping are not listed.
+  resolution confidence. Entities with no mapping are not listed. A filtered feed still
+  returns all of a document's instruments, not only the matching one. How entities and
+  mappings are seeded and matched is in [instruments.md](instruments.md).
 - **`events`**: identifier, revision, `event_type` and `confidence` from the extraction
   that produced the event, `occurred_at`, `available_at` and the analysis identifier.
 - **`manifests`**: the hash, key identifier and signing time of each signed manifest

@@ -401,3 +401,40 @@ def test_rows_signed_inside_the_safety_lag_are_held_back(corpus):
     assert datetime.fromisoformat(payload["as_of"]) < now - timedelta(seconds=5)
     # The cursor stops before the held-back row, so the next sync still reaches it.
     assert ids(payload)[-1] == identity("doc", 5)
+
+
+def test_instrument_filters_narrow_the_feed_and_bind_the_cursor(corpus):
+    client, repository = corpus
+    # Only document 1 resolves to a mapped entity (ATLS on XNAS).
+    mapped = client.get(FEED, params={"mapped": True}).json()
+    assert ids(mapped) == docs(1) and not mapped["pagination"]["has_more"]
+    for params, expected in (
+        ({"venue": "XNAS"}, docs(1)),
+        ({"venue": "XNAS", "identifier": "ATLS", "scheme": "exchange_symbol"}, docs(1)),
+        ({"venue": "XNYS"}, []),
+        ({"identifier": "MSFT"}, []),
+        ({"scheme": "isin"}, []),
+    ):
+        assert ids(client.get(FEED, params=params).json()) == expected, params
+    assert client.get(FEED, params={"scheme": "ticker"}).status_code == 422
+    # A cursor resumes only the stream it came from.
+    unfiltered = client.get(FEED).json()["resume_cursor"]
+    assert client.get(FEED, params={"cursor": unfiltered, "mapped": True}).status_code == 422
+    assert client.get(FEED, params={"cursor": mapped["resume_cursor"]}).status_code == 422
+    resumed = client.get(FEED, params={"cursor": mapped["resume_cursor"], "mapped": True})
+    assert resumed.status_code == 200 and resumed.json()["data"] == []
+    # A mapping added later links documents from then on, and a re-signed one resurfaces.
+    with repository.sessions.begin() as session:
+        session.add(
+            AssetMappingRow(
+                mapping_id=identity("map", 2),
+                entity_id=identity("ent", 2),
+                scheme="exchange_symbol",
+                identifier="UNMP",
+                venue="XNYS",
+                created_at=at(15),
+            )
+        )
+    assert ids(client.get(FEED, params={"venue": "XNYS"}).json()) == docs(1)
+    both = client.get(FEED, params={"mapped": True}).json()["data"][0]["instruments"]
+    assert [(i["identifier"], i["venue"]) for i in both] == [("ATLS", "XNAS"), ("UNMP", "XNYS")]
