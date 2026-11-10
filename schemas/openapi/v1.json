@@ -376,6 +376,69 @@
         "title": "ArticleEvidence",
         "type": "object"
       },
+      "AssetMapping": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "entity_id": {
+            "pattern": "^ent_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Entity Id",
+            "type": "string"
+          },
+          "identifier": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Identifier",
+            "type": "string"
+          },
+          "mapping_id": {
+            "pattern": "^map_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Mapping Id",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": "1",
+            "default": "1",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "scheme": {
+            "enum": [
+              "exchange_symbol",
+              "isin",
+              "provider_id"
+            ],
+            "title": "Scheme",
+            "type": "string"
+          },
+          "venue": {
+            "anyOf": [
+              {
+                "maxLength": 512,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Venue"
+          }
+        },
+        "required": [
+          "mapping_id",
+          "entity_id",
+          "scheme",
+          "identifier",
+          "created_at"
+        ],
+        "title": "AssetMapping",
+        "type": "object"
+      },
       "AuditEvent": {
         "additionalProperties": false,
         "properties": {
@@ -450,6 +513,31 @@
           "items"
         ],
         "title": "BatchRequest",
+        "type": "object"
+      },
+      "CollectionResponse_AssetMapping_": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/AssetMapping"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/CursorPagination"
+          }
+        },
+        "required": [
+          "data",
+          "pagination",
+          "meta"
+        ],
+        "title": "CollectionResponse[AssetMapping]",
         "type": "object"
       },
       "CollectionResponse_AuditEvent_": {
@@ -3810,6 +3898,176 @@
         ]
       }
     },
+    "/api/v1/assets/mappings": {
+      "get": {
+        "description": "Mappings ordered by identifier, optionally narrowed to one entity or listing.",
+        "operationId": "mappings_api_v1_assets_mappings_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 25,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "as_of",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "As Of"
+            }
+          },
+          {
+            "in": "query",
+            "name": "entity_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Entity Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "scheme",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "exchange_symbol",
+                    "isin",
+                    "provider_id"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Scheme"
+            }
+          },
+          {
+            "in": "query",
+            "name": "venue",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Venue"
+            }
+          },
+          {
+            "in": "query",
+            "name": "identifier",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Identifier"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionResponse_AssetMapping_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Mappings",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
     "/api/v1/discovery": {
       "get": {
         "operationId": "discovery_api_v1_discovery_get",
@@ -4936,7 +5194,7 @@
     },
     "/api/v1/feed/documents": {
       "get": {
-        "description": "Signed documents after a position, oldest first, without article text.\n\nStart with ``since`` or with neither parameter, then pass back ``resume_cursor``.\nIt is always present, also when the page is empty, so the next sync resumes from it.",
+        "description": "Signed documents after a position, oldest first, without article text.\n\nStart with ``since`` or with neither parameter, then pass back ``resume_cursor``.\nIt is always present, also when the page is empty, so the next sync resumes from it.\n\n``mapped`` keeps only documents linked to at least one instrument. ``scheme``,\n``venue`` and ``identifier`` narrow that to matching listings and imply ``mapped``.\nA cursor belongs to the filters it was issued with.",
         "operationId": "documents_api_v1_feed_documents_get",
         "parameters": [
           {
@@ -4983,6 +5241,73 @@
                 }
               ],
               "title": "Since"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Mapped",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "scheme",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "exchange_symbol",
+                    "isin",
+                    "provider_id"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Scheme"
+            }
+          },
+          {
+            "in": "query",
+            "name": "venue",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Venue"
+            }
+          },
+          {
+            "in": "query",
+            "name": "identifier",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Identifier"
             }
           }
         ],

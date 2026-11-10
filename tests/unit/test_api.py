@@ -36,6 +36,7 @@ def test_liveness_info_and_openapi():
             "/api/v1/documents",
             "/api/v1/documents/{document_id}/intelligence",
             "/api/v1/documents/{document_id}/similar",
+            "/api/v1/assets/mappings",
             "/api/v1/documents/{document_id}/verify",
             "/api/v1/entities",
             "/api/v1/entities/{entity_id}",

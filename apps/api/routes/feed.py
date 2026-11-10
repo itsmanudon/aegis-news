@@ -1,7 +1,7 @@
 """Incremental feed for a scheduled downstream sync."""
 
 from datetime import UTC, datetime
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, Query, Request
 from pydantic import AwareDatetime
@@ -19,18 +19,37 @@ router = APIRouter(tags=["feed"], dependencies=[product_access("documents:read",
 Limit = Annotated[int, Query(ge=1, le=100)]
 Cursor = Annotated[str | None, Query(max_length=feed.CURSOR_MAXIMUM)]
 Since = Annotated[AwareDatetime | None, Query()]
+Text = Annotated[str | None, Query(min_length=1, max_length=512)]
 
 
 @router.get("/feed/documents", response_model=FeedResponse)
 def documents(
-    request: Request, limit: Limit = 50, cursor: Cursor = None, since: Since = None
+    request: Request,
+    limit: Limit = 50,
+    cursor: Cursor = None,
+    since: Since = None,
+    mapped: bool = False,
+    scheme: Literal["exchange_symbol", "isin", "provider_id"] | None = None,
+    venue: Text = None,
+    identifier: Text = None,
 ) -> FeedResponse:
     """Signed documents after a position, oldest first, without article text.
 
     Start with ``since`` or with neither parameter, then pass back ``resume_cursor``.
     It is always present, also when the page is empty, so the next sync resumes from it.
+
+    ``mapped`` keeps only documents linked to at least one instrument. ``scheme``,
+    ``venue`` and ``identifier`` narrow that to matching listings and imply ``mapped``.
+    A cursor belongs to the filters it was issued with.
     """
-    filters = {"kind": "feed"}
+    listing = {
+        key: value
+        for key, value in (("scheme", scheme), ("venue", venue), ("identifier", identifier))
+        if value is not None
+    }
+    filters: dict[str, object] = {"kind": "feed"}
+    if mapped or listing:
+        filters["instrument"] = listing
     if cursor is not None and since is not None:
         raise ApiException(ErrorCode.INVALID_ARGUMENT, "Give cursor or since, not both", 422)
     try:
@@ -45,7 +64,9 @@ def documents(
         raise ApiException(ErrorCode.INVALID_ARGUMENT, "Invalid feed cursor", 422) from None
     bound = datetime.now(UTC) - feed.SAFETY_LAG
     with repository(request).sessions() as session:
-        items, more = feed.read(session, after, bound, limit)
+        items, more = feed.read(
+            session, after, bound, limit, listing if (mapped or listing) else None
+        )
     last = (items[-1].document.last_signed_at, items[-1].document.document_id) if items else after
     position = feed.encode_position(last, filters)
     return FeedResponse(

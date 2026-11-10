@@ -17,6 +17,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/assets/mappings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Mappings
+         * @description Mappings ordered by identifier, optionally narrowed to one entity or listing.
+         */
+        get: operations["mappings_api_v1_assets_mappings_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/discovery": {
         parameters: {
             query?: never;
@@ -234,6 +254,10 @@ export interface paths {
          *
          *     Start with ``since`` or with neither parameter, then pass back ``resume_cursor``.
          *     It is always present, also when the page is empty, so the next sync resumes from it.
+         *
+         *     ``mapped`` keeps only documents linked to at least one instrument. ``scheme``,
+         *     ``venue`` and ``identifier`` narrow that to matching listings and imply ``mapped``.
+         *     A cursor belongs to the filters it was issued with.
          */
         get: operations["documents_api_v1_feed_documents_get"];
         put?: never;
@@ -780,6 +804,33 @@ export interface components {
             /** Video Url */
             video_url?: string | null;
         };
+        /** AssetMapping */
+        AssetMapping: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Entity Id */
+            entity_id: string;
+            /** Identifier */
+            identifier: string;
+            /** Mapping Id */
+            mapping_id: string;
+            /**
+             * Schema Version
+             * @default 1
+             * @constant
+             */
+            schema_version: "1";
+            /**
+             * Scheme
+             * @enum {string}
+             */
+            scheme: "exchange_symbol" | "isin" | "provider_id";
+            /** Venue */
+            venue?: string | null;
+        };
         /** AuditEvent */
         AuditEvent: {
             /** Action */
@@ -810,6 +861,13 @@ export interface components {
         BatchRequest: {
             /** Items */
             items: components["schemas"]["IngestionRequest"][];
+        };
+        /** CollectionResponse[AssetMapping] */
+        CollectionResponse_AssetMapping_: {
+            /** Data */
+            data: components["schemas"]["AssetMapping"][];
+            meta: components["schemas"]["ResponseMeta"];
+            pagination: components["schemas"]["CursorPagination"];
         };
         /** CollectionResponse[AuditEvent] */
         CollectionResponse_AuditEvent_: {
@@ -2108,6 +2166,52 @@ export interface operations {
             };
         };
     };
+    mappings_api_v1_assets_mappings_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string | null;
+                as_of?: string | null;
+                entity_id?: string | null;
+                scheme?: ("exchange_symbol" | "isin" | "provider_id") | null;
+                venue?: string | null;
+                identifier?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionResponse_AssetMapping_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
     discovery_api_v1_discovery_get: {
         parameters: {
             query?: {
@@ -2626,6 +2730,10 @@ export interface operations {
                 limit?: number;
                 cursor?: string | null;
                 since?: string | null;
+                mapped?: boolean;
+                scheme?: ("exchange_symbol" | "isin" | "provider_id") | null;
+                venue?: string | null;
+                identifier?: string | null;
             };
             header?: never;
             path?: never;

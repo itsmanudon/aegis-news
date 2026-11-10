@@ -81,11 +81,38 @@ def decode_position(value: str, filters: dict[str, Any]) -> Position:
     return moment, key[1]
 
 
+def linked_to_instrument(bound: datetime, listing: dict[str, str]) -> Any:
+    """Documents with an entity resolution that leads to a matching asset mapping.
+
+    ``listing`` narrows the mapping by scheme, venue or identifier; empty means any.
+    """
+    clauses = "".join(f" AND m.{column} = :listing_{column}" for column in listing)
+    return text(
+        """EXISTS (
+          SELECT 1 FROM analyses a
+          CROSS JOIN LATERAL jsonb_array_elements(a.outputs) o
+          JOIN asset_mappings m ON m.entity_id = o->>'entity_id'
+          WHERE a.document_id = documents.document_id
+            AND a.analysis_type = 'entity_resolution'
+            AND a.available_at <= :listing_bound AND m.created_at <= :listing_bound"""
+        + clauses
+        + ")"
+    ).bindparams(listing_bound=bound, **{f"listing_{k}": v for k, v in listing.items()})
+
+
 def read(
-    session: Session, after: Position, bound: datetime, limit: int
+    session: Session,
+    after: Position,
+    bound: datetime,
+    limit: int,
+    listing: dict[str, str] | None = None,
 ) -> tuple[list[FeedItem], bool]:
-    """Return up to ``limit`` bundles after ``after`` and whether more exist at ``bound``."""
-    rows = session.execute(
+    """Return up to ``limit`` bundles after ``after`` and whether more exist at ``bound``.
+
+    With ``listing`` given, even empty, only documents linked to an instrument are
+    returned; its keys (scheme, venue, identifier) narrow which instrument.
+    """
+    query = (
         select(DocumentRow, IngestionRow.source_url)
         .join(IngestionRow, IngestionRow.ingestion_id == DocumentRow.ingestion_id)
         .where(
@@ -95,7 +122,10 @@ def read(
         )
         .order_by(DocumentRow.last_signed_at, DocumentRow.document_id)
         .limit(limit + 1)
-    ).all()
+    )
+    if listing is not None:
+        query = query.where(linked_to_instrument(bound, listing))
+    rows = session.execute(query).all()
     more = len(rows) > limit
     rows = rows[:limit]
     if not rows:
