@@ -1,10 +1,12 @@
 name: MVP CI
 env:
   AEGIS_AI_PROFILE: offline
+# CI runs only for a pull request into main (the dev -> main promotion) and
+# when started by hand. Feature branches and dev do not trigger it: run
+# `make check` locally before merging into dev. See AGENTS.md.
 on:
-  push:
-    branches-ignore: [publication-data]
   pull_request:
+    branches: [main]
   workflow_dispatch:
     inputs:
       validation_only:
