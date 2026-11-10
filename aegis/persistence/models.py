@@ -122,6 +122,25 @@ class EntityRow(Versioned, Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
+class EntityNameRow(Base):
+    """Match keys under which an entity can be found: its name and its aliases.
+
+    Resolution looks candidates up here by key, so its cost follows the mentions in a
+    document and not the number of entities. Keys come from resolution.match_keys.
+    """
+
+    __tablename__ = "entity_names"
+    entity_id: Mapped[str] = mapped_column(ForeignKey("entities.entity_id"), primary_key=True)
+    key: Mapped[str] = mapped_column(String(512), primary_key=True)
+    kind: Mapped[str] = mapped_column(String(16))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    __table_args__ = (
+        CheckConstraint("kind IN ('name', 'alias')", name="entity_name_kind"),
+        CheckConstraint("key <> ''", name="entity_name_key"),
+        Index("entity_name_lookup", "key"),
+    )
+
+
 class DocumentMediaLinkRow(Versioned, Base):
     __tablename__ = "document_media"
     document_id: Mapped[str] = mapped_column(ForeignKey("documents.document_id"), primary_key=True)

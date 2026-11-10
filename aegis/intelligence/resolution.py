@@ -22,6 +22,55 @@ def normalized_name(name: str) -> str:
     return " ".join(re.findall(r"\w+", unicodedata.normalize("NFKC", name).casefold()))
 
 
+# Legal forms that news text routinely drops: "Apple" for "Apple Inc.". Only trailing
+# legal forms are removed. Words such as "group" or "holdings" stay, because they
+# distinguish real companies from each other.
+LEGAL_FORMS = frozenset(
+    [
+        "inc",
+        "incorporated",
+        "corp",
+        "corporation",
+        "co",
+        "company",
+        "ltd",
+        "limited",
+        "plc",
+        "llc",
+        "lp",
+        "llp",
+        "ag",
+        "se",
+        "sa",
+        "nv",
+        "bv",
+        "gmbh",
+        "spa",
+        "ab",
+        "asa",
+        "oyj",
+        "pvt",
+        "private",
+    ]
+)
+
+
+def match_keys(name: str) -> tuple[str, ...]:
+    """Keys a name is stored and looked up under: its normalized form and its core.
+
+    The core drops a leading article and trailing legal forms, never the last word.
+    Lookup is by equality on these keys, which an index answers whatever the number of
+    entities; similarity scoring then runs only over the few candidates found.
+    """
+    full = normalized_name(name)
+    words = full.split()
+    if len(words) > 1 and words[0] == "the":
+        words = words[1:]
+    while len(words) > 1 and words[-1] in LEGAL_FORMS:
+        words.pop()
+    return tuple(dict.fromkeys(key for key in (full, " ".join(words)) if key))
+
+
 class Resolver:
     def __init__(
         self,
@@ -35,22 +84,30 @@ class Resolver:
         self.aliases = tuple(sorted((k, tuple(v)) for k, v in (aliases or {}).items()))
         self.identifiers = tuple(sorted((k, tuple(v)) for k, v in (identifiers or {}).items()))
         self.threshold, self.ambiguity_margin = threshold, ambiguity_margin
-        self.spec = ModelSpec(backend="baseline", model_name="candidate-resolver", revision="1")
+        # Revision 2: a name also matches on its core key (legal forms dropped).
+        self.spec = ModelSpec(backend="baseline", model_name="candidate-resolver", revision="2")
 
-    def rank(self, surface: str, candidates: tuple[Entity, ...]) -> tuple[tuple[str, float], ...]:
+    def rank(
+        self,
+        surface: str,
+        candidates: tuple[Entity, ...],
+        aliases: Mapping[str, tuple[str, ...]] | None = None,
+    ) -> tuple[tuple[str, float], ...]:
         if len({c.entity_id for c in candidates}) != len(candidates):
             raise ValueError("duplicate candidate IDs")
-        aliases, identifiers = dict(self.aliases), dict(self.identifiers)
+        aliases = dict(self.aliases) if aliases is None else aliases
+        identifiers = dict(self.identifiers)
         normalized = normalized_name(surface)
         if not normalized:
             return ()
+        keys = set(match_keys(surface))
         ranks = []
         for candidate in candidates:
             Entity.model_validate(candidate.model_dump())
             names = (candidate.canonical_name, *aliases.get(candidate.entity_id, ()))
             if surface.strip().casefold() in (
                 v.strip().casefold() for v in identifiers.get(candidate.entity_id, ())
-            ) or any(normalized == normalized_name(n) for n in names):
+            ) or any(keys & set(match_keys(n)) for n in names):
                 score = 1.0
             else:
                 score = max(
@@ -77,9 +134,17 @@ class Resolver:
         document: NewsDocument,
         mentions: tuple[EntityMention, ...],
         candidates: tuple[Entity, ...],
+        aliases: Mapping[str, tuple[str, ...]] | None = None,
     ) -> AnalysisResult:
+        """Resolve mentions against ``candidates``.
+
+        ``aliases`` are stored names for these candidates, supplied per call by the
+        caller that looked the candidates up. They add to the aliases the resolver was
+        built with.
+        """
         validate_document(document)
         started = datetime.now(UTC)
+        known = {**dict(self.aliases), **{k: tuple(v) for k, v in (aliases or {}).items()}}
         outputs = []
         for mention in mentions:
             EntityMention.model_validate(mention.model_dump())
@@ -89,7 +154,7 @@ class Resolver:
                 document.text, mention.surface, mention.start_offset, mention.end_offset
             ):
                 raise ValueError("mention evidence does not match document")
-            entity_id, score = self.choose(self.rank(mention.surface, candidates))
+            entity_id, score = self.choose(self.rank(mention.surface, candidates, known))
             outputs.append(
                 EntityResolutionResult(
                     mention_id=mention.mention_id, entity_id=entity_id, confidence=score
@@ -100,9 +165,9 @@ class Resolver:
             self.spec,
             tuple(outputs),
             started,
-            {"resolver": "1"},
+            {"resolver": "2"},
             context={
-                "aliases": self.aliases,
+                "aliases": tuple(sorted(known.items())),
                 "identifiers": self.identifiers,
                 "threshold": self.threshold,
                 "ambiguity_margin": self.ambiguity_margin,

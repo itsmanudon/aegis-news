@@ -1,5 +1,6 @@
 """Typed model ports. No models, providers, inference or downloads in this phase."""
 
+from collections.abc import Mapping
 from typing import Protocol
 
 from aegis.domain.models import AnalysisResult, Entity, EntityMention, NewsDocument
@@ -23,6 +24,7 @@ class EntityResolver(Protocol):
         document: NewsDocument,
         mentions: tuple[EntityMention, ...],
         candidates: tuple[Entity, ...],
+        aliases: Mapping[str, tuple[str, ...]] | None = None,
     ) -> AnalysisResult: ...
 
 

@@ -44,14 +44,14 @@ class IntelligenceActivities:
                     case "embedding":
                         result = await self.engine.embeddings.embed(document)
                     case "resolution" | "events":
-                        mentions, candidates = await asyncio.to_thread(
+                        mentions, candidates, names = await asyncio.to_thread(
                             self.pipeline.context,
                             document_id,
                             stable_id("ana", f"{run_key}:entities"),
                         )
                         if task == "resolution":
                             result = await self.engine.resolver.resolve(
-                                document, mentions, candidates
+                                document, mentions, candidates, names
                             )
                         else:
                             result = await self.engine.events.extract(document, ())
