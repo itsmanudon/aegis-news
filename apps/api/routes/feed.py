@@ -13,9 +13,9 @@ from aegis.security.auth import product_access
 from apps.api.errors import ApiException
 from apps.api.routes.ingestions import repository
 
-# A bundle embeds events, so the caller needs both scopes; one dependency keeps the
-# token validated, and the rate limit counted, once per request.
-router = APIRouter(tags=["feed"], dependencies=[product_access("documents:read", "events:read")])
+# feed:read covers the bundle and nothing else, so a consumer that only syncs the feed
+# holds no scope that reaches article text or the write routes.
+router = APIRouter(tags=["feed"], dependencies=[product_access("feed:read")])
 Limit = Annotated[int, Query(ge=1, le=100)]
 Cursor = Annotated[str | None, Query(max_length=feed.CURSOR_MAXIMUM)]
 Since = Annotated[AwareDatetime | None, Query()]

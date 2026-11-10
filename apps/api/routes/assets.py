@@ -16,7 +16,8 @@ from aegis.persistence.models import AssetMappingRow
 from apps.api.routes.ingestions import repository
 from apps.api.routes.product import page
 
-# main.py attaches the documents:read requirement when security is enabled.
+# main.py attaches the feed:read requirement when security is enabled: a feed consumer
+# joins bundles to these listings.
 router = APIRouter(prefix="/assets", tags=["assets"])
 Limit = Annotated[int, Query(ge=1, le=100)]
 Cursor = Annotated[str | None, Query(max_length=128)]

@@ -266,7 +266,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         (entities, "documents:read"),
         (events, "events:read"),
         (search, "documents:read"),
-        (assets, "documents:read"),
+        (assets, "feed:read"),
     ):
         app.include_router(
             module.router,

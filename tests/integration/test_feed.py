@@ -6,6 +6,7 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from fastapi.testclient import TestClient
 from sqlalchemy import update
 
@@ -21,7 +22,9 @@ from aegis.persistence.models import (
     RawObjectRow,
     SourceRow,
 )
+from aegis.security.auth import TokenValidator
 from aegis.security.persistence import SignedManifestRow
+from aegis.security.service_token import mint_service_token
 from aegis.settings import Settings
 from apps.api.main import create_app
 from tests.ingestion.test_pipeline import repository  # noqa: F401
@@ -438,3 +441,55 @@ def test_instrument_filters_narrow_the_feed_and_bind_the_cursor(corpus):
     assert ids(client.get(FEED, params={"venue": "XNYS"}).json()) == docs(1)
     both = client.get(FEED, params={"mapped": True}).json()["data"][0]["instruments"]
     assert [(i["identifier"], i["venue"]) for i in both] == [("ATLS", "XNAS"), ("UNMP", "XNYS")]
+
+
+def test_a_feed_only_service_token_reads_the_feed_and_nothing_else(corpus):
+    _, repository = corpus
+    key = Ed25519PrivateKey.generate()
+    settings = Settings(
+        _env_file=None,
+        security_enabled=True,
+        oidc_issuer="https://owner.test/aegis",
+        oidc_audience="aegisnews",
+        oidc_algorithms=["EdDSA"],
+        otel_enabled=False,
+    )
+    app = create_app(settings)
+    app.state.ingestion_service = SimpleNamespace(repository=repository)
+    app.state.token_validator = TokenValidator(settings, public_keys={"sync": key.public_key()})
+
+    def bearer(*scopes):
+        token = mint_service_token(
+            key,
+            key_id="sync",
+            issuer=settings.oidc_issuer,
+            audience=settings.oidc_audience,
+            client_id="stockviz-sync",
+            scopes=scopes,
+            lifetime=timedelta(minutes=5),
+            maximum_lifetime=timedelta(seconds=settings.oidc_max_token_lifetime),
+        )
+        return {"Authorization": "Bearer " + token}
+
+    with TestClient(app) as client:
+        assert client.get(FEED).status_code == 401
+        feed = client.get(FEED, headers=bearer("feed:read"))
+        assert feed.status_code == 200, feed.text
+        assert ids(feed.json()) == docs(1, 2, 3, 5)
+        listings = client.get("/api/v1/assets/mappings", headers=bearer("feed:read"))
+        assert listings.status_code == 200, listings.text
+        assert [m["identifier"] for m in listings.json()["data"]] == ["ATLS"]
+        # The same token opens no route that returns article text or accepts a write.
+        for method, path in (
+            ("GET", "/api/v1/documents"),
+            ("GET", "/api/v1/documents/" + identity("doc", 1)),
+            ("GET", "/api/v1/events"),
+            ("GET", "/api/v1/sources"),
+            ("POST", "/api/v1/sources"),
+        ):
+            denied = client.request(method, path, headers=bearer("feed:read"))
+            assert denied.status_code == 403, (method, path, denied.status_code)
+        # The document scopes do not open the feed.
+        wide = bearer("documents:read", "events:read")
+        assert client.get(FEED, headers=wide).status_code == 403
+        assert client.get("/api/v1/assets/mappings", headers=wide).status_code == 403

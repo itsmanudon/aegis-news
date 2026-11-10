@@ -88,6 +88,32 @@ class FileKeyProvider:
         return counter.to_bytes(12, "big")
 
 
+def generate_signing_keys(directory: Path, key_id: str) -> tuple[Path, Path]:
+    """Write a new Ed25519 pair and return (private, public). Never overwrites a key."""
+    validate_key_id(key_id)
+    directory.mkdir(mode=0o700, parents=True, exist_ok=True)
+    private = directory / f"{key_id}.ed25519.key"
+    public = directory / f"{key_id}.ed25519.pub"
+    if private.exists() or public.exists():
+        raise FileExistsError("Key already exists; choose a new key id")
+    signing = Ed25519PrivateKey.generate()
+    values = [
+        signing.private_bytes(
+            serialization.Encoding.PEM,
+            serialization.PrivateFormat.PKCS8,
+            serialization.NoEncryption(),
+        ),
+        signing.public_key().public_bytes(
+            serialization.Encoding.PEM, serialization.PublicFormat.SubjectPublicKeyInfo
+        ),
+    ]
+    for path, value in zip((private, public), values, strict=True):
+        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(value)
+    return private, public
+
+
 def generate_development_keys(directory: Path, key_id: str) -> None:
     validate_key_id(key_id)
     directory.mkdir(mode=0o700, parents=True, exist_ok=True)

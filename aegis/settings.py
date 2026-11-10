@@ -44,6 +44,7 @@ class Settings(BaseSettings):
     oidc_public_keys: dict[str, str] = {}
     oidc_algorithms: list[Literal["RS256", "EdDSA"]] = ["RS256"]
     oidc_token_types: list[str] = ["at+jwt"]
+    oidc_max_token_lifetime: int = 86400  # seconds between a token's iat and exp
     security_key_directory: Path = Path(".keys")
     security_rate_limit: int = 60
     security_rate_backend: Literal["memory", "redis"] = "memory"
@@ -54,6 +55,7 @@ class Settings(BaseSettings):
         if (
             not self.oidc_algorithms
             or not self.oidc_token_types
+            or self.oidc_max_token_lifetime < 1
             or self.security_rate_limit < 1
             or self.security_max_body_bytes < 1
         ):
