@@ -119,6 +119,34 @@ async def test_analysis_materialization_retry_rerun_provenance_tamper(integrated
     assert rerun["analysis_id"] not in ids
 
 
+async def test_signing_stamps_availability_once_and_keeps_provenance_verifiable(integrated):
+    service, pipeline, worker, _, _, _ = integrated
+    before = datetime.now(UTC)
+    doc, run_key, ids = await processed(integrated)
+
+    def stamps():
+        with service.repository.sessions() as session:
+            row = session.get(DocumentRow, doc.document_id)
+            return row.available_at, row.last_signed_at
+
+    available, signed = stamps()
+    assert available == signed and before <= available <= datetime.now(UTC)
+    # Repeating the same signed run is idempotent and does not move either stamp.
+    await worker.provenance(doc.document_id, run_key, ids)
+    assert stamps() == (available, signed)
+    # The stamps are outside the signed document record, so verification still passes.
+    assert (await pipeline.verify_document(doc.document_id, service.storage)).valid
+
+    # A later run with a new analysis moves last_signed_at only.
+    second_run = uuid4().hex
+    rerun = await worker.analyze("topics", doc.document_id, second_run, "rerun")
+    assert rerun["analysis_id"] not in ids
+    await worker.provenance(doc.document_id, second_run, [*ids, rerun["analysis_id"]])
+    later_available, later_signed = stamps()
+    assert later_available == available and later_signed > signed
+    assert (await pipeline.verify_document(doc.document_id, service.storage)).valid
+
+
 async def test_product_auth_queries_cutoff_and_live_verification(integrated):
     service, _, _, _, keys_path, entity = integrated
     doc, _, _ = await processed(integrated)

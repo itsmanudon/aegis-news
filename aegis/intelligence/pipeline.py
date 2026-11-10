@@ -7,7 +7,7 @@ from uuid import NAMESPACE_URL, uuid5
 
 from botocore.exceptions import ClientError
 from pydantic import BaseModel
-from sqlalchemy import cast, select
+from sqlalchemy import cast, func, select, update
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Session
 
@@ -267,6 +267,19 @@ class AnalysisPipeline:
             )
             for value in records:
                 session.add(ProvenanceRow(**value.model_dump()))
+            # Availability is a fact about signing, written in the signing transaction:
+            # set once on the first signed run, while last_signed_at follows every run so
+            # a re-analysed document moves forward in the incremental feed.
+            session.execute(
+                update(DocumentRow)
+                .where(DocumentRow.document_id == document_id)
+                .values(
+                    available_at=func.coalesce(DocumentRow.available_at, now),
+                    last_signed_at=func.greatest(
+                        func.coalesce(DocumentRow.last_signed_at, now), now
+                    ),
+                )
+            )
         return provenance_id
 
     def manifests(

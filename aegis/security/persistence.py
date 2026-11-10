@@ -26,7 +26,7 @@ class AuditEventRow(Base):
 class SignedManifestRow(Base):
     __tablename__ = "signed_manifests"
     manifest_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
     key_id: Mapped[str] = mapped_column(String(64))
     manifest: Mapped[dict[str, Any]] = mapped_column(JSON().with_variant(JSONB(), "postgresql"))
 

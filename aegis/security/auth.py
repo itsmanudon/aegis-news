@@ -178,9 +178,13 @@ def require_scopes(*scopes: str) -> Any:
     return Depends(authorize)
 
 
-def product_access(scope: str) -> Any:
-    """Explicit unsecured local mode; secured products share resource-server authorization."""
-    if scope not in KNOWN_SCOPES:
+def product_access(*scopes: str) -> Any:
+    """Explicit unsecured local mode; secured products share resource-server authorization.
+
+    Every named scope is required. A route that needs two takes them in one call, so the
+    token is validated and the rate limit counted once.
+    """
+    if not scopes or any(scope not in KNOWN_SCOPES for scope in scopes):
         raise ValueError("unknown scope")
 
     async def authorize(
@@ -190,7 +194,7 @@ def product_access(scope: str) -> Any:
         if not request.app.state.settings.security_enabled:
             return
         principal = await authenticate(request, credentials)
-        if not principal.permits(scope):
+        if not all(principal.permits(scope) for scope in scopes):
             await run_in_threadpool(
                 request.app.state.audit.emit,
                 "permission_denied",
