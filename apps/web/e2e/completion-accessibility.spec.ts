@@ -158,7 +158,13 @@ test("Complete product supports doubled text sizing and readable mobile chart la
     ).toBe(true);
   }
   await page.setViewportSize({ width: 320, height: 1000 });
-  await page.goto("/analytics");
+  // The mock corpus is dated 3 Oct 2026 and the page defaults to the last 30
+  // days, so without an explicit window the chart is empty from 2 Nov 2026 on
+  // and this label never renders. Pin the window to the fixture, as
+  // analytics.spec.ts and discovery.spec.ts do.
+  await page.goto(
+    "/analytics?start=2026-10-01T00%3A00%3A00Z&end=2026-10-04T00%3A00%3A00Z&time_basis=first_seen_at",
+  );
   const label = page.getByText("Recorded Documents", { exact: true });
   await expect(label).toBeVisible();
   expect(
