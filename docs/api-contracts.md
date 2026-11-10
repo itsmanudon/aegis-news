@@ -25,3 +25,5 @@ Clients may send `X-Request-ID` and `X-Correlation-ID` (1–128 ASCII letters/di
 OpenAPI and JSON schemas are checked in under `schemas/`. Run `uv run python scripts/export_schemas.py` after intentional contract changes; CI fails on drift. Generated SDKs are deferred. Interactive documentation and metrics are local development facilities; production exposure requires explicit access policy.
 
 The implementation follows the official [Pydantic model guidance](https://docs.pydantic.dev/latest/concepts/models/) and [Next.js setup guidance](https://nextjs.org/docs/app/getting-started/installation); frontend lint is a separate CI step.
+
+The incremental feed for scheduled downstream consumers, `GET /api/v1/feed/documents`, is described in [feed.md](feed.md).
