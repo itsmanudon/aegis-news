@@ -5,6 +5,7 @@ from temporalio.contrib.opentelemetry import TracingInterceptor
 from temporalio.worker import Worker
 
 from aegis.ingestion.runtime import make_service
+from aegis.ingestion.service import IngestionService
 from aegis.intelligence.engine import build_engine
 from aegis.intelligence.pipeline import AnalysisPipeline
 from aegis.observability.logging import configure_logging
@@ -12,11 +13,40 @@ from aegis.observability.telemetry import configure_tracing
 from aegis.provenance.service import ProvenanceService
 from aegis.security.crypto import StandardCryptoProvider
 from aegis.security.keys import FileKeyProvider
-from aegis.settings import get_settings
+from aegis.settings import Settings, get_settings
 from apps.worker.activities import foundation_echo
 from apps.worker.ingestion_activities import IngestionActivities
 from apps.worker.intelligence_activities import IntelligenceActivities
 from apps.worker.workflows import FoundationWorkflow, NewsIngestionWorkflow
+
+
+def build_worker(client: Client, settings: Settings, service: IngestionService) -> Worker:
+    """The worker the long-running process and the daily job both run, so they cannot drift."""
+    ingestion = IngestionActivities(service)
+    intelligence = IntelligenceActivities(
+        service,
+        build_engine(settings.ai_profile),
+        AnalysisPipeline(
+            service.repository,
+            ProvenanceService(
+                StandardCryptoProvider(FileKeyProvider(settings.security_key_directory))
+            ),
+            settings.provenance_key_id,
+        ),
+        archive=settings.provenance_archive_enabled,
+    )
+    return Worker(
+        client,
+        task_queue=settings.temporal_task_queue,
+        workflows=[FoundationWorkflow, NewsIngestionWorkflow],
+        activities=[
+            foundation_echo,
+            ingestion.prepare,
+            ingestion.normalize,
+            ingestion.commit,
+            *intelligence.registered(),
+        ],
+    )
 
 
 async def main() -> None:
@@ -29,30 +59,7 @@ async def main() -> None:
         interceptors=[TracingInterceptor()] if settings.otel_enabled else [],
     )
     service = make_service(settings)
-    ingestion = IngestionActivities(service)
-    intelligence = IntelligenceActivities(
-        service,
-        build_engine(settings.ai_profile),
-        AnalysisPipeline(
-            service.repository,
-            ProvenanceService(
-                StandardCryptoProvider(FileKeyProvider(settings.security_key_directory))
-            ),
-            settings.provenance_key_id,
-        ),
-    )
-    worker = Worker(
-        client,
-        task_queue=settings.temporal_task_queue,
-        workflows=[FoundationWorkflow, NewsIngestionWorkflow],
-        activities=[
-            foundation_echo,
-            ingestion.prepare,
-            ingestion.normalize,
-            ingestion.commit,
-            *intelligence.registered(),
-        ],
-    )
+    worker = build_worker(client, settings, service)
     try:
         await worker.run()
     finally:

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 import boto3
 from botocore.config import Config
@@ -16,7 +16,14 @@ from aegis.media.storage import ObjectMetadata
 
 class S3ObjectStorage:
     def __init__(
-        self, *, endpoint_url: str, access_key: str, secret_key: str, bucket: str, region: str
+        self,
+        *,
+        endpoint_url: str,
+        access_key: str,
+        secret_key: str,
+        bucket: str,
+        region: str,
+        addressing_style: Literal["path", "virtual"] = "path",
     ) -> None:
         self.bucket = bucket
         self.client: S3Client = boto3.client(
@@ -29,7 +36,8 @@ class S3ObjectStorage:
                 connect_timeout=2,
                 read_timeout=3,
                 retries={"max_attempts": 0},
-                s3={"addressing_style": "path"},
+                # MinIO uses path-style URLs; Railway buckets use virtual-hosted ones.
+                s3={"addressing_style": addressing_style},
             ),
         )
 

@@ -90,9 +90,17 @@ class ProviderMetrics:
 
 class ProviderRunner:
     def __init__(
-        self, settings: Settings, store: ProviderStore, metrics: ProviderMetrics | None = None
+        self,
+        settings: Settings,
+        store: ProviderStore,
+        metrics: ProviderMetrics | None = None,
+        *,
+        resubmit_unfinished: bool = False,
     ) -> None:
         self.settings, self.store, self.metrics = settings, store, metrics
+        # The daily job's Temporal server forgets every workflow when it stops, so an
+        # article submitted by an interrupted run is submitted again until it has a document.
+        self.resubmit_unfinished = resubmit_unfinished
         self.lock = asyncio.Lock()
 
     def key(self, provider: str) -> str:
@@ -202,7 +210,11 @@ class ProviderRunner:
                                 if duplicate:
                                     duplicates += 1
                                     self.metric("duplicates", name)
-                                retry = row.workflow_id is None or options.retry_failed
+                                retry = (
+                                    row.workflow_id is None
+                                    or options.retry_failed
+                                    or (self.resubmit_unfinished and row.document_id is None)
+                                )
                                 if retry:
                                     result = await gateway.request(
                                         "POST", "/api/v1/ingestions", row.request

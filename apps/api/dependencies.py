@@ -28,6 +28,7 @@ class ReadinessProbe:
             secret_key=settings.s3_secret_key.get_secret_value(),
             bucket=settings.s3_bucket,
             region=settings.s3_region,
+            addressing_style=settings.s3_addressing_style,
         )
 
     def _postgres(self) -> None:
