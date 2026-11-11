@@ -55,21 +55,19 @@ def documents(
     if cursor is not None and since is not None:
         raise ApiException(ErrorCode.INVALID_ARGUMENT, "Give cursor or since, not both", 422)
     try:
-        after = (
-            feed.decode_position(cursor, filters)
-            if cursor is not None
-            else (since.astimezone(UTC), "")
-            if since is not None
-            else feed.START
-        )
+        after = feed.decode_position(cursor, filters) if cursor is not None else feed.START
     except ValueError:
         raise ApiException(ErrorCode.INVALID_ARGUMENT, "Invalid feed cursor", 422) from None
-    bound = datetime.now(UTC) - feed.SAFETY_LAG
+    bound = datetime.now(UTC)
     with repository(request).sessions() as session:
-        items, more = feed.read(
-            session, after, bound, limit, listing if (mapped or listing) else None
+        items, more, last = feed.read(
+            session,
+            after,
+            bound,
+            limit,
+            listing if (mapped or listing) else None,
+            since.astimezone(UTC) if since is not None else None,
         )
-    last = (items[-1].document.last_signed_at, items[-1].document.document_id) if items else after
     position = feed.encode_position(last, filters)
     return FeedResponse(
         data=tuple(items),

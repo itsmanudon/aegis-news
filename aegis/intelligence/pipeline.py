@@ -16,6 +16,7 @@ from aegis.domain.ids import new_id
 from aegis.domain.models import (
     AnalysisResult,
     Entity,
+    EntityExtractionResult,
     EntityMention,
     EntityResolutionResult,
     EventExtractionResult,
@@ -41,6 +42,7 @@ from aegis.persistence.models import (
     NewsEventRow,
     ProvenanceRow,
     RawObjectRow,
+    current_xid,
 )
 from aegis.provenance.service import (
     ProvenanceService,
@@ -93,6 +95,27 @@ class AnalysisPipeline:
         with self.repository.sessions() as session:
             row = session.get(AnalysisRow, analysis_id)
             return from_row(row) if row else None
+
+    def mention_kinds(self, document_id: str, extraction_id: str) -> dict[str, str | None]:
+        """The kind the extraction predicted for each of its mentions, by mention id."""
+        with self.repository.sessions() as session:
+            extraction = session.get(AnalysisRow, extraction_id)
+            if extraction is None or extraction.document_id != document_id:
+                return {}
+            spans = {
+                (output.start_offset, output.end_offset): output.predicted_kind
+                for output in from_row(extraction).outputs
+                if isinstance(output, EntityExtractionResult)
+            }
+            return {
+                row.mention_id: spans.get((row.start_offset, row.end_offset))
+                for row in session.scalars(
+                    select(EntityMentionRow).where(
+                        EntityMentionRow.document_id == document_id,
+                        EntityMentionRow.analysis_id == extraction_id,
+                    )
+                )
+            }
 
     def context(
         self, document_id: str, extraction_id: str
@@ -323,6 +346,7 @@ class AnalysisPipeline:
                     last_signed_at=func.greatest(
                         func.coalesce(DocumentRow.last_signed_at, now), now
                     ),
+                    signed_xid=current_xid(),
                 )
             )
         return provenance_id

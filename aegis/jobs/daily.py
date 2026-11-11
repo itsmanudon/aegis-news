@@ -166,7 +166,7 @@ async def wait_for(
 
 async def run(settings: Settings, adapters: Mapping[str, Acquisition] | None = None) -> JobReport:
     started = datetime.now(UTC)
-    settings = settings.model_copy(update={"provenance_archive_enabled": False})
+    settings = settings.model_copy(update={"provenance_archive_enabled": False, "ai_strict": True})
     with signing_keys(settings) as settings:
         environment = await WorkflowEnvironment.start_local(
             namespace=settings.temporal_namespace,

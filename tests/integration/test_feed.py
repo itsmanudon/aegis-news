@@ -21,6 +21,7 @@ from aegis.persistence.models import (
     NewsEventRow,
     RawObjectRow,
     SourceRow,
+    current_xid,
 )
 from aegis.security.auth import TokenValidator
 from aegis.security.persistence import SignedManifestRow
@@ -83,6 +84,8 @@ def seed_doc(session, number, created, signed=None, last_signed=None, analyses=(
             created_at=created,
             available_at=signed,
             last_signed_at=last_signed or signed,
+            # As AnalysisPipeline.sign does: the signing transaction's id.
+            signed_xid=current_xid() if (last_signed or signed) else None,
         )
     )
     session.flush()
@@ -292,7 +295,7 @@ def test_feed_is_ordered_by_signing_and_carries_no_article_text(corpus):
     assert payload["pagination"] == {"has_more": False, "next_cursor": None}
     assert payload["resume_cursor"]
     as_of = datetime.fromisoformat(payload["as_of"])
-    assert before - timedelta(seconds=61) <= as_of <= datetime.now(UTC) - timedelta(seconds=60)
+    assert before <= as_of <= datetime.now(UTC)
 
     first = payload["data"][0]
     assert set(first) == {
@@ -364,7 +367,7 @@ def test_feed_pages_resumes_and_picks_up_newly_signed_documents(corpus):
         session.execute(
             update(DocumentRow)
             .where(DocumentRow.document_id == identity("doc", 4))
-            .values(available_at=at(13), last_signed_at=at(13))
+            .values(available_at=at(13), last_signed_at=at(13), signed_xid=current_xid())
         )
         manifest(session, 4, at(13))
     later = client.get(FEED, params={"cursor": empty["resume_cursor"]}).json()
@@ -387,7 +390,7 @@ def test_resigned_document_returns_once_more_with_its_new_analysis(corpus):
         session.execute(
             update(DocumentRow)
             .where(DocumentRow.document_id == identity("doc", 1))
-            .values(last_signed_at=at(20))
+            .values(last_signed_at=at(20), signed_xid=current_xid())
         )
         # The second run signs the topic, the resolution and the new sentiment only.
         manifest(session, 1, at(20), salt=1, analyses=(1, 5, 20))
@@ -430,16 +433,33 @@ def test_since_starts_inclusive_and_bad_arguments_are_rejected(corpus):
         assert response.json()["error"]["code"] == "INVALID_ARGUMENT"
 
 
-def test_rows_signed_inside_the_safety_lag_are_held_back(corpus):
+def test_a_signing_transaction_still_open_holds_the_feed_back(corpus):
+    """AG-8: a transaction that commits late is delayed, never skipped."""
     client, repository = corpus
-    now = datetime.now(UTC)
+    done = client.get(FEED).json()["resume_cursor"]
     with repository.sessions.begin() as session:
-        seed_doc(session, 9, now - timedelta(hours=1), now - timedelta(seconds=5))
-    payload = client.get(FEED).json()
-    assert identity("doc", 9) not in ids(payload)
-    assert datetime.fromisoformat(payload["as_of"]) < now - timedelta(seconds=5)
-    # The cursor stops before the held-back row, so the next sync still reaches it.
-    assert ids(payload)[-1] == identity("doc", 5)
+        seed_doc(session, 9, at(14))  # not signed yet
+
+    def sign(session, number, when):
+        session.execute(
+            update(DocumentRow)
+            .where(DocumentRow.document_id == identity("doc", number))
+            .values(available_at=when, last_signed_at=when, signed_xid=current_xid())
+        )
+
+    slow = repository.sessions()
+    try:
+        sign(slow, 4, at(15))  # takes a transaction id, then stays open
+        with repository.sessions.begin() as fast:
+            sign(fast, 9, at(16))  # a later id, committed first
+        held = client.get(FEED, params={"cursor": done}).json()
+        # Document 9 is committed but waits for the older, open transaction.
+        assert held["data"] == [] and held["resume_cursor"] == done
+        slow.commit()
+    finally:
+        slow.close()
+    released = client.get(FEED, params={"cursor": done}).json()
+    assert ids(released) == docs(4, 9)
 
 
 def test_instrument_filters_narrow_the_feed_and_bind_the_cursor(corpus):
