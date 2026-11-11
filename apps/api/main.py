@@ -82,6 +82,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         configure_logging(settings.log_file)
+        # An API that forgot to turn security on would serve every route to anyone.
+        if not settings.security_enabled:
+            if not settings.allow_insecure_local:
+                raise RuntimeError(
+                    "Security is off. Set AEGIS_SECURITY_ENABLED=true, or "
+                    "AEGIS_ALLOW_INSECURE_LOCAL=true on a local machine only."
+                )
+            logger.warning("security_disabled_local_only")
         app.state.probe = ReadinessProbe(settings)
 
         async def retention() -> None:
