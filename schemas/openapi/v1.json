@@ -1690,6 +1690,16 @@
           },
           "source": {
             "$ref": "#/components/schemas/Source"
+          },
+          "withdrawal": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FeedWithdrawal"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -1817,6 +1827,29 @@
           "meta"
         ],
         "title": "FeedResponse",
+        "type": "object"
+      },
+      "FeedWithdrawal": {
+        "additionalProperties": false,
+        "description": "The document was withdrawn. Delete what you hold for it.",
+        "properties": {
+          "reason": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          },
+          "withdrawn_at": {
+            "format": "date-time",
+            "title": "Withdrawn At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "withdrawn_at",
+          "reason"
+        ],
+        "title": "FeedWithdrawal",
         "type": "object"
       },
       "FetchOptions": {

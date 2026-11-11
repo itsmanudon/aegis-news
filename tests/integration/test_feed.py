@@ -306,7 +306,9 @@ def test_feed_is_ordered_by_signing_and_carries_no_article_text(corpus):
         "instruments",
         "events",
         "manifests",
+        "withdrawal",
     }
+    assert first["withdrawal"] is None
     # Every resolved entity, mapped or not, so the consumer can join mappings added later.
     assert [(e["entity_id"], e["confidence"]) for e in first["entities"]] == [
         (identity("ent", 1), 0.9),
@@ -549,3 +551,25 @@ def test_a_feed_only_service_token_reads_the_feed_and_nothing_else(corpus):
         wide = bearer("documents:read", "events:read")
         assert client.get(FEED, headers=wide).status_code == 403
         assert client.get("/api/v1/assets/mappings", headers=wide).status_code == 403
+
+
+def test_a_withdrawn_document_returns_once_as_a_tombstone(corpus):
+    """AG-11: the consumer is told to delete it; nothing is removed from Aegis."""
+    from aegis.jobs.withdraw import withdraw
+
+    client, repository = corpus
+    done = client.get(FEED).json()["resume_cursor"]
+    assert withdraw(repository.sessions, identity("doc", 1), "  publisher takedown ") == "withdrawn"
+    assert withdraw(repository.sessions, identity("doc", 1), "again") == "already_withdrawn"
+    assert withdraw(repository.sessions, identity("doc", 4), "x") == "not_signed"
+    assert withdraw(repository.sessions, identity("doc", 99), "x") == "not_found"
+    with pytest.raises(ValueError):
+        withdraw(repository.sessions, identity("doc", 2), " ")
+    later = client.get(FEED, params={"cursor": done}).json()
+    (item,) = later["data"]
+    assert item["document"]["document_id"] == identity("doc", 1)
+    assert item["withdrawal"]["reason"] == "publisher takedown"
+    assert item["analyses"] == item["entities"] == item["instruments"] == item["events"] == []
+    assert item["manifests"]  # the signatures are kept
+    # Withdrawing again did not move it: the next sync is empty.
+    assert client.get(FEED, params={"cursor": later["resume_cursor"]}).json()["data"] == []

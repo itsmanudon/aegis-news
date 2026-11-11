@@ -1330,6 +1330,7 @@ export interface components {
             /** Manifests */
             manifests: components["schemas"]["FeedManifest"][];
             source: components["schemas"]["Source"];
+            withdrawal?: components["schemas"]["FeedWithdrawal"] | null;
         };
         /** FeedKey */
         FeedKey: {
@@ -1374,6 +1375,19 @@ export interface components {
             pagination: components["schemas"]["CursorPagination"];
             /** Resume Cursor */
             resume_cursor: string;
+        };
+        /**
+         * FeedWithdrawal
+         * @description The document was withdrawn. Delete what you hold for it.
+         */
+        FeedWithdrawal: {
+            /** Reason */
+            reason: string;
+            /**
+             * Withdrawn At
+             * Format: date-time
+             */
+            withdrawn_at: string;
         };
         /** FetchOptions */
         FetchOptions: {

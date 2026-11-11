@@ -96,6 +96,9 @@ class DocumentRow(Versioned, Base):
     # row only once every older transaction has finished, so a slow commit is delayed,
     # never skipped. See aegis.intelligence.feed.
     signed_xid: Mapped[int | None] = mapped_column(BigInteger)
+    # Set by aegis.jobs.withdraw. A withdrawn document stays in the feed as a tombstone.
+    withdrawn_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    withdrawal_reason: Mapped[str | None] = mapped_column(String(200))
     __table_args__ = (
         CheckConstraint("revision >= 1", name="document_revision"),
         CheckConstraint(
@@ -109,6 +112,11 @@ class DocumentRow(Versioned, Base):
         ),
         CheckConstraint(
             "(signed_xid IS NULL) = (last_signed_at IS NULL)", name="document_signed_xid"
+        ),
+        CheckConstraint(
+            "(withdrawn_at IS NULL) = (withdrawal_reason IS NULL) AND "
+            "(withdrawn_at IS NULL OR last_signed_at IS NOT NULL)",
+            name="document_withdrawal",
         ),
         Index("document_feed_position", "last_signed_at", "document_id"),
         Index("document_feed_xid", "signed_xid", "document_id"),

@@ -268,3 +268,20 @@ def test_mappings_route_lists_filters_and_pages(repository):
     assert client.get(path, params={"as_of": "2026-01-04T00:00:00Z"}).json()["data"] == []
     assert client.get(path, params={"scheme": "ticker"}).status_code == 422
     assert UUID(everything["data"][0]["mapping_id"].removeprefix("map_"))
+
+
+def test_the_stockviz_seed_file_registers_without_conflicts(repository):
+    import json
+    from pathlib import Path
+
+    raw = json.loads(Path("data/instruments/stockviz.json").read_text(encoding="utf-8"))
+    with repository.sessions.begin() as session:
+        report = register(session, seeds(*raw), NOW)
+        assert (report.entities_created, report.mappings_created) == (32, 64)
+        assert report.shared_keys == () and report.listing_conflicts == ()
+        again = register(session, seeds(*raw), NOW)
+        assert (again.entities_created, again.mappings_created, again.mappings_existing) == (
+            0,
+            0,
+            64,
+        )
