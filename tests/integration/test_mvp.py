@@ -2,6 +2,7 @@
 # ruff: noqa: F811 -- imported pytest fixtures are dependency-injected by name.
 
 import base64
+import json
 from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
@@ -316,3 +317,55 @@ async def test_provenance_reruns_media_and_old_derived_tampering(integrated):
     with service.repository.sessions.begin() as session:
         session.delete(session.scalar(select(DocumentMediaLinkRow)))
     assert not (await pipeline.verify_document(doc.document_id, service.storage)).valid
+
+
+async def test_a_consumer_verifies_a_bundle_offline_with_the_published_key(
+    integrated, tmp_path_factory, monkeypatch
+):
+    """AG-3 and AG-2: the feed's JSON, the manifest route and the key route are enough."""
+    from aegis.intelligence import feed
+    from aegis.provenance.consumer import verify_bundle
+
+    service, _, _, _, keys_path, entity = integrated
+    doc, _, _ = await processed(integrated)
+    monkeypatch.setattr(feed, "SAFETY_LAG", timedelta(0))
+    # No key files on this host: the public key comes from configuration only.
+    settings = Settings(
+        _env_file=None,
+        security_enabled=False,
+        security_key_directory=tmp_path_factory.mktemp("no-keys"),
+        provenance_key_id="local",
+        provenance_public_key=(keys_path / "local.ed25519.pub").read_text(),
+    )
+    app = create_app(settings)
+    app.state.ingestion_service = service
+    with TestClient(app) as client:
+        (key,) = client.get("/api/v1/feed/keys").json()["data"]
+        assert key["key_id"] == "local" and key["algorithm"] == "Ed25519"
+        (item,) = client.get("/api/v1/feed/documents").json()["data"]
+        assert item["document"]["document_id"] == doc.document_id
+        # AG-2: the resolved entity is in the bundle although it has no listing.
+        assert item["instruments"] == []
+        assert [e["entity_id"] for e in item["entities"]] == [entity.entity_id]
+        latest = item["manifests"][-1]["manifest_hash"]
+        response = client.get(f"/api/v1/feed/manifests/{latest}")
+        assert response.status_code == 200, response.text
+        manifest = response.json()["data"]
+        assert client.get("/api/v1/feed/manifests/" + "0" * 64).status_code == 404
+        assert client.get("/api/v1/feed/manifests/not-a-hash").status_code == 422
+        # The verify route works with the configured key alone.
+        verified = client.post(f"/api/v1/documents/{doc.document_id}/verify")
+        assert verified.status_code == 200 and verified.json()["data"]["valid"], verified.text
+
+    check = verify_bundle(item, manifest, key["public_key_pem"])
+    assert check.valid, check
+    assert sorted(check.analyses_verified) == sorted(a["analysis_id"] for a in item["analyses"])
+    assert len(check.analyses_verified) == 3  # topic, sentiment, entity resolution
+
+    changed = json.loads(json.dumps(item))
+    changed["analyses"][0]["outputs"][0]["confidence"] = 0.123
+    assert verify_bundle(changed, manifest, key["public_key_pem"]).analyses_unverified
+    forged = {**manifest, "key_id": "other"}
+    assert not verify_bundle(item, forged, key["public_key_pem"]).signature_valid
+    other = {**item, "document": {**item["document"], "document_id": "doc_" + str(uuid4())}}
+    assert not verify_bundle(other, manifest, key["public_key_pem"]).document_matches

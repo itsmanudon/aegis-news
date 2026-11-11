@@ -295,7 +295,20 @@ def test_feed_is_ordered_by_signing_and_carries_no_article_text(corpus):
     assert before - timedelta(seconds=61) <= as_of <= datetime.now(UTC) - timedelta(seconds=60)
 
     first = payload["data"][0]
-    assert set(first) == {"document", "source", "analyses", "instruments", "events", "manifests"}
+    assert set(first) == {
+        "document",
+        "source",
+        "analyses",
+        "entities",
+        "instruments",
+        "events",
+        "manifests",
+    }
+    # Every resolved entity, mapped or not, so the consumer can join mappings added later.
+    assert [(e["entity_id"], e["confidence"]) for e in first["entities"]] == [
+        (identity("ent", 1), 0.9),
+        (identity("ent", 2), 0.8),
+    ]
     document = first["document"]
     assert "text" not in document
     assert document["url"] == "https://example.test/story/1"
