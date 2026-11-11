@@ -37,6 +37,8 @@ class Settings(BaseSettings):
     otel_endpoint: str = "http://localhost:4318/v1/traces"
     environment: Literal["development", "test", "production"] = "development"
     security_enabled: bool = False
+    # The API serves with security off only when this is set. Never set it on a host.
+    allow_insecure_local: bool = False
     dev_identity_enabled: bool = False
     oidc_issuer: str = ""
     oidc_audience: str = ""
@@ -63,8 +65,9 @@ class Settings(BaseSettings):
         if self.security_enabled and (not self.oidc_issuer or not self.oidc_audience):
             raise ValueError("Explicit issuer and audience required")
         if self.environment == "production":
-            if self.security_rate_backend != "redis":
-                raise ValueError("Production requires Redis rate limiting")
+            # The in-memory limiter is accepted: it is per process, so run one API instance.
+            if self.allow_insecure_local:
+                raise ValueError("Production forbids AEGIS_ALLOW_INSECURE_LOCAL")
             if not self.security_enabled or self.dev_identity_enabled:
                 raise ValueError(
                     "Production requires OIDC security and forbids development identity"

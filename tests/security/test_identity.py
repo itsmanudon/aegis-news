@@ -114,6 +114,7 @@ def test_api_boundaries_and_headers(identity):
 def test_production_rejects_dev_and_insecure_configuration():
     common = dict(
         environment="production",
+        allow_insecure_local=False,  # conftest sets the variable for local tests
         security_enabled=True,
         oidc_issuer="https://issuer.test",
         oidc_audience="aegis",
@@ -121,8 +122,11 @@ def test_production_rejects_dev_and_insecure_configuration():
         security_rate_backend="redis",
     )
     assert Settings(**common).security_enabled
+    assert Settings(**{**common, "security_rate_backend": "memory"}).security_enabled
     for changes in [
         dict(dev_identity_enabled=True),
+        dict(allow_insecure_local=True),
+        dict(security_enabled=False),
         dict(oidc_jwks_url="http://localhost/keys"),
         dict(cors_origins=["*"]),
     ]:

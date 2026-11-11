@@ -96,9 +96,16 @@ a paid provider. For fully offline testing, use the isolated JWT fixture issuer:
 
 The API never mints tokens. Offline issuance requires the explicit dev flag.
 Production rejects dev identity and disabled security, requires trusted keys,
-HTTPS issuer/JWKS, explicit CORS origins, and Redis rate limiting. The default
-disabled security mode preserves local foundation contracts and is rejected in
-production. Tests generate keys/tokens dynamically; no committed private fixtures.
+HTTPS issuer/JWKS and explicit CORS origins. It accepts either rate limiter; the
+in-memory one counts per process, so a production API using it runs as one
+instance. `/ready` checks Redis only when the limiter uses it.
+
+Security is off by default so local foundation contracts keep working, but the API
+refuses to start with security off unless `AEGIS_ALLOW_INSECURE_LOCAL=true` is
+also set, and production refuses that flag. A host that forgets to turn security
+on therefore fails at start-up instead of serving every route to anyone.
+`.env.example` sets the flag for local use, and the test suite sets it in
+`tests/conftest.py`. Tests generate keys/tokens dynamically; no committed private fixtures.
 
 ## Cryptography and key boundary
 

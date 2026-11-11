@@ -99,6 +99,7 @@ def environment(*, secured: bool = True) -> dict[str, str]:
         AEGIS_AI_PROFILE="offline",
         AEGIS_ENVIRONMENT="development",
         AEGIS_SECURITY_ENABLED=str(secured).lower(),
+        AEGIS_ALLOW_INSECURE_LOCAL=str(not secured).lower(),
         AEGIS_DEV_IDENTITY_ENABLED=str(secured).lower(),
         AEGIS_OIDC_ISSUER="http://aegis-completion.local",
         AEGIS_OIDC_AUDIENCE="aegisnews",
