@@ -41,6 +41,7 @@ apps/web/playwright-report/
 data/*
 !data/samples/
 !data/samples/README.md
+!data/instruments/
 ml/datasets/*
 !ml/datasets/README.md
 !ml/datasets/gold/
