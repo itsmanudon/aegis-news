@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     # Ed25519 private key as PEM, for a host with no persistent disk. When set, the daily
     # job writes it to a private temporary directory instead of reading key files.
     provenance_signing_key: SecretStr = SecretStr("")
+    # Ed25519 public key as PEM for provenance_key_id. Lets a host with no key files verify
+    # manifests, and is what GET /api/v1/feed/keys publishes.
+    provenance_public_key: str = ""
     # The encrypted provenance archive needs a nonce counter kept between runs. The daily
     # job turns it off; the signed manifest does not depend on it.
     provenance_archive_enabled: bool = True

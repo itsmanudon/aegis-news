@@ -35,7 +35,7 @@ from aegis.security.abuse import MemoryRateLimiter, RedisRateLimiter
 from aegis.security.audit import AuditLog, MemoryAuditSink
 from aegis.security.auth import TokenValidator, require_scopes
 from aegis.security.crypto import StandardCryptoProvider
-from aegis.security.keys import FileKeyProvider
+from aegis.security.keys import ConfiguredKeyProvider
 from aegis.security.middleware import SecurityBodyLimit
 from aegis.security.persistence import SQLAuditSink, SQLManifestStore
 from aegis.settings import Settings, get_settings
@@ -164,7 +164,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         SQLAuditSink(app.state.audit_engine) if app.state.audit_engine else MemoryAuditSink()
     )
     app.state.provenance = ProvenanceService(
-        StandardCryptoProvider(FileKeyProvider(settings.security_key_directory)),
+        StandardCryptoProvider(
+            ConfiguredKeyProvider(
+                settings.security_key_directory,
+                {settings.provenance_key_id: settings.provenance_public_key},
+            )
+        ),
         SQLManifestStore(app.state.audit_engine) if app.state.audit_engine else None,
     )
     app.state.security_redis = (

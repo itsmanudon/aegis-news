@@ -16,6 +16,7 @@ from sqlalchemy.orm import Session
 
 from aegis.contracts.feed import (
     FeedDocument,
+    FeedEntity,
     FeedEvent,
     FeedInstrument,
     FeedItem,
@@ -217,6 +218,14 @@ def read(
 
     mappings: dict[str, list[tuple[EntityRow, AssetMappingRow]]] = defaultdict(list)
     entity_ids = {entity for links in resolved.values() for entity in links}
+    entities = (
+        {
+            row.entity_id: row
+            for row in session.scalars(select(EntityRow).where(EntityRow.entity_id.in_(entity_ids)))
+        }
+        if entity_ids
+        else {}
+    )
     if entity_ids:
         for entity, mapping in session.execute(
             select(EntityRow, AssetMappingRow)
@@ -295,6 +304,19 @@ def read(
                 ),
                 source=sources[document.source_id],
                 analyses=tuple(analyses[document.document_id]),
+                entities=tuple(
+                    FeedEntity(
+                        entity_id=entity_id,
+                        canonical_name=entities[entity_id].canonical_name,
+                        kind=entities[entity_id].kind,
+                        resolution_analysis_id=analysis_id,
+                        confidence=confidence,
+                    )
+                    for entity_id, (confidence, analysis_id) in sorted(
+                        resolved[document.document_id].items()
+                    )
+                    if entity_id in entities
+                ),
                 instruments=tuple(instruments),
                 events=tuple(events[document.document_id]),
                 manifests=tuple(manifests[document.document_id]),
