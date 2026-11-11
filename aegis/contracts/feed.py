@@ -81,6 +81,13 @@ class FeedManifest(Contract):
     signed_at: AwareDatetime
 
 
+class FeedWithdrawal(Contract):
+    """The document was withdrawn. Delete what you hold for it."""
+
+    withdrawn_at: AwareDatetime
+    reason: NonEmpty
+
+
 class FeedItem(Contract):
     document: FeedDocument
     source: Source
@@ -89,6 +96,8 @@ class FeedItem(Contract):
     instruments: tuple[FeedInstrument, ...]
     events: tuple[FeedEvent, ...]
     manifests: tuple[FeedManifest, ...]
+    # Present only on a tombstone; analyses, entities, instruments and events are then empty.
+    withdrawal: FeedWithdrawal | None = None
 
 
 class FeedKey(Contract):

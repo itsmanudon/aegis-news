@@ -54,6 +54,22 @@ Exit code 2 means the file was rejected.
 An entity that already exists under the same name is reused, so seeding can attach
 listings to entities that were created earlier.
 
+## The StockViz seed file
+
+`data/instruments/stockviz.json` lists StockViz's 32 symbols, built on 11 Nov 2026. Each
+has its exchange listing (local ticker plus operating MIC) and a `provider_id` listing
+`stockviz:<StockViz symbol>`, so StockViz can join on its own ticker strings. Names that
+differ from the legal name carry aliases ("Google", "Amazon", "Disney", "P&G").
+
+- US venues (Nasdaq or NYSE) were checked against FMP on 11 Nov 2026. Walmart is on
+  Nasdaq.
+- Other venues are operating MICs from the ISO 10383 list (publication of 9 Nov 2026):
+  `XLON`, `XETR`, `XJPX` (Japan Exchange Group, for the Tokyo Stock Exchange; the
+  segment MIC is `XTKS`), `XTSE` and `XNSE`.
+
+Seed it, or reseed after StockViz changes its symbols, with
+`python -m aegis.entities.seed data/instruments/stockviz.json`. Use `--dry-run` first.
+
 ## How a mention finds its entity
 
 Each name and alias is stored under **match keys** in the `entity_names` table

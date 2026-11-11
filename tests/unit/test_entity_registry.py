@@ -152,3 +152,27 @@ async def test_resolve_uses_the_kind_the_extraction_predicted():
     )
     assert [o.entity_id for o in result.outputs] == [None, apple.entity_id]
     assert result.model_version == "3"
+
+
+def test_the_stockviz_seed_file_is_valid_and_each_company_resolves_by_its_names():
+    """AG-15: every StockViz symbol, with a MIC venue and a stockviz: provider id."""
+    import json
+    from pathlib import Path
+
+    from pydantic import TypeAdapter
+
+    raw = json.loads(Path("data/instruments/stockviz.json").read_text(encoding="utf-8"))
+    seeds = TypeAdapter(list[InstrumentSeed]).validate_python(raw)
+    assert len(seeds) == 32
+    providers = [
+        item.identifier for s in seeds for item in s.listings if item.scheme == "provider_id"
+    ]
+    assert len(providers) == len(set(providers)) == 32
+    assert all(p.startswith("stockviz:") for p in providers)
+    entities = [entity(n, s.name) for n, s in enumerate(seeds, start=1)]
+    aliases = {e.entity_id: s.aliases for e, s in zip(entities, seeds, strict=True)}
+    resolver = Resolver()
+    for target, seed in zip(entities, seeds, strict=True):
+        for surface in (seed.name, *seed.aliases):
+            chosen, _ = resolver.choose(resolver.rank(surface, tuple(entities), aliases, None))
+            assert chosen == target.entity_id, surface

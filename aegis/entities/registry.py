@@ -30,6 +30,9 @@ MICS = frozenset(
         "XNSE",  # National Stock Exchange of India
         "XBOM",  # BSE
         "XLON",  # London Stock Exchange
+        "XETR",  # Xetra (Deutsche Börse)
+        "XJPX",  # Japan Exchange Group, which operates the Tokyo Stock Exchange
+        "XTSE",  # Toronto Stock Exchange
     }
 )
 ISIN = re.compile(r"^[A-Z]{2}[A-Z0-9]{9}[0-9]$")

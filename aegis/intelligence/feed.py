@@ -23,6 +23,7 @@ from aegis.contracts.feed import (
     FeedInstrument,
     FeedItem,
     FeedManifest,
+    FeedWithdrawal,
 )
 from aegis.domain.ids import DocumentId
 from aegis.domain.models import AnalysisResult, EntityResolutionResult, EventExtractionResult
@@ -297,6 +298,7 @@ def read(
             )
             for entity, mapping in mappings.get(entity_id, ())
         ]
+        gone = document.withdrawn_at is not None
         items.append(
             FeedItem(
                 document=FeedDocument(
@@ -315,8 +317,10 @@ def read(
                     revision=document.revision,
                 ),
                 source=sources[document.source_id],
-                analyses=tuple(analyses[document.document_id]),
-                entities=tuple(
+                analyses=() if gone else tuple(analyses[document.document_id]),
+                entities=()
+                if gone
+                else tuple(
                     FeedEntity(
                         entity_id=entity_id,
                         canonical_name=entities[entity_id].canonical_name,
@@ -329,9 +333,14 @@ def read(
                     )
                     if entity_id in entities
                 ),
-                instruments=tuple(instruments),
-                events=tuple(events[document.document_id]),
+                instruments=() if gone else tuple(instruments),
+                events=() if gone else tuple(events[document.document_id]),
                 manifests=tuple(manifests[document.document_id]),
+                withdrawal=FeedWithdrawal(
+                    withdrawn_at=document.withdrawn_at, reason=document.withdrawal_reason
+                )
+                if document.withdrawn_at and document.withdrawal_reason
+                else None,
             )
         )
     return items, more, resume

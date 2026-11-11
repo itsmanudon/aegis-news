@@ -104,6 +104,20 @@ An invalid cursor, a timestamp without an offset, or both parameters together re
 - **`manifests`**: the hash, key identifier and signing time of each signed manifest
   that covers the document, oldest first.
 
+## Withdrawals
+
+Aegis never ingests a known article again, and the free provider tiers send no
+corrections or retractions. When a document must go (a publisher takedown, wrong
+content), the owner withdraws it:
+
+    python -m aegis.jobs.withdraw DOCUMENT_ID --reason "publisher takedown"
+
+The document moves forward in the feed and is delivered once more as a tombstone:
+`withdrawal` carries `withdrawn_at` and `reason`, and `analyses`, `entities`,
+`instruments` and `events` are empty. A consumer deletes what it holds for that
+document. Every other bundle has `withdrawal: null`. Aegis keeps the rows and the signed
+manifests. Other read routes, such as `/api/v1/documents`, still return the document.
+
 ## Instruments added later
 
 The cursor moves on signing time, and seeding a mapping does not touch documents. So a
