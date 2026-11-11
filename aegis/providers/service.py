@@ -10,7 +10,7 @@ from uuid import uuid4
 import httpx
 from prometheus_client import CollectorRegistry, Counter
 
-from aegis.providers.adapters import ADAPTERS
+from aegis.providers.adapters import ADAPTERS, MAX_PAGES
 from aegis.providers.models import (
     FetchBatch,
     FetchOptions,
@@ -22,6 +22,9 @@ from aegis.providers.models import (
 from aegis.providers.persistence import ProviderStore
 from aegis.providers.transport import ProviderError, ProviderHttp, make_http_client
 from aegis.settings import Settings
+
+# Refusals that mean "no more today": the day is marked so later runs skip the provider.
+QUOTA_ERRORS = frozenset({"rate_or_quota", "permission_or_quota"})
 
 
 class Acquisition(Protocol):
@@ -107,6 +110,14 @@ class ProviderRunner:
             for name in NAMES
         )
 
+    def over_budget(self, provider: str) -> bool:
+        """True when a full fetch could pass today's budget, or the provider refused today."""
+        budget = self.settings.provider_daily_requests.get(provider)
+        if budget is None:
+            return False
+        used, exhausted = self.store.usage(provider, datetime.now(UTC).date())
+        return exhausted or used + MAX_PAGES > budget
+
     def metric(self, event: str, provider: str, amount: int = 1) -> None:
         if self.metrics:
             self.metrics.add(event, provider, amount)
@@ -130,6 +141,13 @@ class ProviderRunner:
                 for name in names:
                     if name != "gdelt" and not self.key(name):
                         outcomes.append(ProviderOutcome(provider=name, status="disabled"))
+                        continue
+                    if await asyncio.to_thread(self.over_budget, name):
+                        outcomes.append(
+                            ProviderOutcome(
+                                provider=name, status="failed", error="daily_budget_reached"
+                            )
+                        )
                         continue
                     self.metric("fetch", name)
                     fetched = submitted = duplicates = skipped = images = videos = requests = 0
@@ -237,6 +255,13 @@ class ProviderRunner:
                             requests=requests,
                             workflow_ids=tuple(workflows),
                         )
+                    await asyncio.to_thread(
+                        self.store.record_usage,
+                        name,
+                        datetime.now(UTC).date(),
+                        outcome.requests,
+                        outcome.error in QUOTA_ERRORS,
+                    )
                     outcomes.append(outcome)
                     report = report.model_copy(update={"outcomes": tuple(outcomes)})
                     await asyncio.to_thread(self.store.run, report)

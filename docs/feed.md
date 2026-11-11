@@ -19,6 +19,15 @@ The feed is ordered by `(last_signed_at, document_id)` ascending. A document tha
 analysed and signed again moves forward and is returned once more, with its new
 analyses, so a consumer that upserts by `document_id` stays current.
 
+**A bundle is the document as of its latest signed run.** It carries only the analyses
+that run signed, and the instruments and events that follow from them. Analyses from an
+earlier run, and analyses no run has signed yet, are left out. A consumer replaces what
+it holds for the document; an instrument link or event missing from the new bundle is
+gone. The `manifests` list still covers every run, oldest first, so the last entry is
+the run the bundle describes. One gap remains: the instrument filter (`scheme`, `venue`,
+`identifier`) matches a resolution from any run, so a filtered page can return a
+document whose latest run no longer links to that instrument.
+
 A document that was never signed is not in the feed.
 
 The stamps are not part of the canonical `NewsDocument` record. That record is hashed

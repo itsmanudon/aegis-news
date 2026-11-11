@@ -51,6 +51,9 @@ class Settings(BaseSettings):
     security_rate_limit: int = 60
     security_rate_backend: Literal["memory", "redis"] = "memory"
     security_max_body_bytes: int = 262144
+    # Requests each provider may receive per UTC day, counted across runs in Postgres.
+    # A provider not listed has no budget. Defaults are the free tiers in the handover.
+    provider_daily_requests: dict[str, int] = {"newsdata": 200, "gnews": 100, "newsapi": 100}
 
     @model_validator(mode="after")
     def validate_security(self) -> "Settings":
@@ -60,6 +63,7 @@ class Settings(BaseSettings):
             or self.oidc_max_token_lifetime < 1
             or self.security_rate_limit < 1
             or self.security_max_body_bytes < 1
+            or any(value < 1 for value in self.provider_daily_requests.values())
         ):
             raise ValueError("Invalid security policy")
         if self.security_enabled and (not self.oidc_issuer or not self.oidc_audience):

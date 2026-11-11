@@ -8,6 +8,7 @@ from uuid import UUID
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
 
 from aegis.entities.registry import InstrumentSeed, register
 from aegis.intelligence.pipeline import SMALL_UNIVERSE, AnalysisPipeline
@@ -94,6 +95,53 @@ def test_seeding_reuses_an_existing_entity_and_reports_shared_keys(repository):
         assert (report.entities_existing, report.entities_created) == (1, 1)
         assert report.shared_keys == ("atlas labs",)
         assert session.scalar(select(AssetMappingRow.entity_id)) == existing
+
+
+def test_a_listing_belongs_to_one_entity_and_the_seed_reports_what_it_skips(repository):
+    with repository.sessions.begin() as session:
+        register(session, seeds(MERIDIAN), NOW)
+        report = register(
+            session,
+            seeds(
+                # The same NSE listing claimed by a second entity is skipped and reported.
+                {
+                    "name": "Other Freight",
+                    "listings": [{"identifier": "MERIDIAN", "venue": "XNSE"}],
+                },
+                # Meridian's file entry no longer lists the BSE code or the ISIN.
+                {**MERIDIAN, "listings": [{"identifier": "MERIDIAN", "venue": "XNSE"}]},
+            ),
+            NOW,
+        )
+        owner = session.scalar(
+            select(EntityRow.entity_id).where(EntityRow.canonical_name == MERIDIAN["name"])
+        )
+        assert report.listing_conflicts == (
+            f"Other Freight: exchange_symbol:MERIDIAN@XNSE belongs to {owner}",
+        )
+        assert report.listings_not_in_file == (
+            "Meridian Freight Limited: exchange_symbol:512345@XBOM",
+            "Meridian Freight Limited: isin:INE000A01018",
+        )
+        # The seed only adds: the unlisted rows stay, and no second mapping was written.
+        assert session.scalar(select(func.count()).select_from(AssetMappingRow)) == 3
+    # The database holds the rule too, whoever writes.
+    with repository.sessions() as session:
+        session.add(
+            AssetMappingRow(
+                mapping_id="map_direct",
+                entity_id=session.scalar(
+                    select(EntityRow.entity_id).where(EntityRow.canonical_name == "Other Freight")
+                ),
+                scheme="exchange_symbol",
+                identifier="MERIDIAN",
+                venue="XNSE",
+                created_at=NOW,
+            )
+        )
+        with pytest.raises(IntegrityError):
+            session.flush()
+        session.rollback()
 
 
 def mention_fixture(session, surface=None):

@@ -34,9 +34,18 @@ The file is a JSON array. Each item is one entity:
 - **`aliases`** are other names the entity is known by in news text.
 - **`listings`** are asset mappings. The default scheme is `exchange_symbol`, which
   needs a `venue`.
-- **`venue` is an ISO 10383 market identifier code (MIC)**: four upper-case letters or
-  digits, for example `XNAS`, `XNYS`, `XNSE`, `XBOM`. Exchange names are rejected.
+- **`venue` is an ISO 10383 market identifier code (MIC) from an allow-list**: `XNAS`,
+  `XNYS`, `XASE`, `XNSE`, `XBOM`, `XLON`, `ARCX` and `BATS` (`aegis/entities/registry.py`,
+  `MICS`). Exchange names, and four-letter codes that only look like a MIC such as
+  `NYSE` or `NASD`, are rejected. Add a code to the list, checked against ISO 10383,
+  when a new venue is needed.
 - An entity listed on two venues is one item with two listings.
+- **A listing belongs to one entity.** The database holds scheme, identifier and venue
+  unique on their own. A file that gives an existing listing to a different entity
+  skips it and names it under `listing_conflicts` in the report.
+- **The seed only adds.** A listing stored for an entity in the file that the file no
+  longer lists stays, and is named under `listings_not_in_file`. Remove it by hand if
+  it is wrong.
 
 The whole file is validated before anything is written, the write is one transaction,
 and running the same file again changes nothing. The command prints a report as JSON.

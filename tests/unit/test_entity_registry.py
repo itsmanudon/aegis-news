@@ -59,6 +59,8 @@ def test_a_key_shared_by_two_entities_stays_unresolved():
     [
         {"identifier": "AAPL"},  # an exchange symbol needs a venue
         {"identifier": "AAPL", "venue": "NASDAQ"},  # a name, not a MIC code
+        {"identifier": "AAPL", "venue": "NASD"},  # MIC-shaped, and not a MIC code
+        {"identifier": "IBM", "venue": "NYSE"},
         {"identifier": "AAPL", "venue": "xnas"},
         {"identifier": " AAPL", "venue": "XNAS"},
         {"scheme": "isin", "identifier": "US0378331005", "venue": "XNAS"},

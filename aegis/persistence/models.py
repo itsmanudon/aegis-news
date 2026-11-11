@@ -205,9 +205,9 @@ class AssetMappingRow(Versioned, Base):
         CheckConstraint(
             "scheme <> 'exchange_symbol' OR venue IS NOT NULL", name="asset_mapping_venue"
         ),
+        # A listing maps to one entity, so the entity is not part of the identity.
         Index(
-            "asset_mapping_identity",
-            "entity_id",
+            "asset_mapping_listing",
             "scheme",
             "identifier",
             "venue",
