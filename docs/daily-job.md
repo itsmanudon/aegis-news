@@ -52,6 +52,18 @@ interruption. It needs the Temporal CLI on the `PATH` or in `AEGIS_TEMPORAL_CLI`
 | `AEGIS_PROVENANCE_KEY_ID` | `local` | Key identifier written into each signed manifest |
 | `AEGIS_S3_ADDRESSING_STYLE` | `path` | `virtual` for Railway buckets, `path` for MinIO |
 
+The job always runs the analysis in strict mode (`AEGIS_AI_STRICT`): a missing model or
+an invalid prediction fails that article's workflow before it is signed, so it never
+reaches the feed half-analysed. The job exits 1, and the article is retried on the next
+run. A stage that simply finds nothing (no entity, an unsupported language) is not a
+failure.
+
+To analyse and sign documents again, for example after a model was fixed or replaced:
+
+    python -m aegis.jobs.reanalyse DOCUMENT_ID [DOCUMENT_ID ...]
+
+Each document gets a new signed run and moves forward in the feed.
+
 The job always turns off the encrypted provenance archive
 (`AEGIS_PROVENANCE_ARCHIVE_ENABLED`), because it needs a nonce counter kept between runs.
 The signed manifest does not depend on it.

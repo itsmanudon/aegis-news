@@ -1421,6 +1421,53 @@
         "title": "FeedDocument",
         "type": "object"
       },
+      "FeedEntity": {
+        "additionalProperties": false,
+        "description": "An entity the document resolved to, mapped to a listing or not.\n\nA consumer keeps these and joins them to the mapping list itself, so a mapping added\nafter the document was delivered still applies to it.",
+        "properties": {
+          "canonical_name": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Canonical Name",
+            "type": "string"
+          },
+          "confidence": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence",
+            "type": "number"
+          },
+          "entity_id": {
+            "pattern": "^ent_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Entity Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "organization",
+              "person",
+              "location",
+              "other"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "resolution_analysis_id": {
+            "pattern": "^ana_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Resolution Analysis Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "entity_id",
+          "canonical_name",
+          "kind",
+          "resolution_analysis_id",
+          "confidence"
+        ],
+        "title": "FeedEntity",
+        "type": "object"
+      },
       "FeedEvent": {
         "additionalProperties": false,
         "properties": {
@@ -1613,6 +1660,13 @@
           "document": {
             "$ref": "#/components/schemas/FeedDocument"
           },
+          "entities": {
+            "items": {
+              "$ref": "#/components/schemas/FeedEntity"
+            },
+            "title": "Entities",
+            "type": "array"
+          },
           "events": {
             "items": {
               "$ref": "#/components/schemas/FeedEvent"
@@ -1636,17 +1690,78 @@
           },
           "source": {
             "$ref": "#/components/schemas/Source"
+          },
+          "withdrawal": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FeedWithdrawal"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
           "document",
           "source",
           "analyses",
+          "entities",
           "instruments",
           "events",
           "manifests"
         ],
         "title": "FeedItem",
+        "type": "object"
+      },
+      "FeedKey": {
+        "additionalProperties": false,
+        "properties": {
+          "algorithm": {
+            "const": "Ed25519",
+            "title": "Algorithm",
+            "type": "string"
+          },
+          "key_id": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Key Id",
+            "type": "string"
+          },
+          "public_key_pem": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Public Key Pem",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key_id",
+          "algorithm",
+          "public_key_pem"
+        ],
+        "title": "FeedKey",
+        "type": "object"
+      },
+      "FeedKeysResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/FeedKey"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "FeedKeysResponse",
         "type": "object"
       },
       "FeedManifest": {
@@ -1712,6 +1827,29 @@
           "meta"
         ],
         "title": "FeedResponse",
+        "type": "object"
+      },
+      "FeedWithdrawal": {
+        "additionalProperties": false,
+        "description": "The document was withdrawn. Delete what you hold for it.",
+        "properties": {
+          "reason": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          },
+          "withdrawn_at": {
+            "format": "date-time",
+            "title": "Withdrawn At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "withdrawn_at",
+          "reason"
+        ],
+        "title": "FeedWithdrawal",
         "type": "object"
       },
       "FetchOptions": {
@@ -3068,6 +3206,23 @@
           "meta"
         ],
         "title": "SingleResponse[ReadinessStatus]",
+        "type": "object"
+      },
+      "SingleResponse_SignedManifest_": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SignedManifest"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "SingleResponse[SignedManifest]",
         "type": "object"
       },
       "SingleResponse_Source_": {
@@ -5349,6 +5504,112 @@
           }
         ],
         "summary": "Documents",
+        "tags": [
+          "feed"
+        ]
+      }
+    },
+    "/api/v1/feed/keys": {
+      "get": {
+        "description": "The public key manifests are signed with. Pin it; a new key id means a rotation.",
+        "operationId": "keys_api_v1_feed_keys_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedKeysResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Keys",
+        "tags": [
+          "feed"
+        ]
+      }
+    },
+    "/api/v1/feed/manifests/{manifest_hash}": {
+      "get": {
+        "description": "One signed manifest, as listed in a bundle's ``manifests``.\n\nIt holds records of ids and SHA-256 hashes only, the chain hashes, the key id and the\nsignature, so a consumer can check a bundle without trusting the transport. See\naegis.provenance.consumer for the procedure.",
+        "operationId": "manifest_api_v1_feed_manifests__manifest_hash__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "manifest_hash",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Manifest Hash",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleResponse_SignedManifest_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Manifest",
         "tags": [
           "feed"
         ]

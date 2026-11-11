@@ -211,7 +211,7 @@ async def test_candidates_are_found_by_key_beyond_the_old_thousand_entity_cap(re
     result = await Resolver().resolve(document, mentions, candidates, names)
     (output,) = result.outputs
     assert (output.entity_id, output.confidence) == (target, 1.0)
-    assert result.model_version == "2"
+    assert result.model_version == "3"
 
 
 def test_a_small_curated_set_is_still_offered_whole(repository):
@@ -268,3 +268,20 @@ def test_mappings_route_lists_filters_and_pages(repository):
     assert client.get(path, params={"as_of": "2026-01-04T00:00:00Z"}).json()["data"] == []
     assert client.get(path, params={"scheme": "ticker"}).status_code == 422
     assert UUID(everything["data"][0]["mapping_id"].removeprefix("map_"))
+
+
+def test_the_stockviz_seed_file_registers_without_conflicts(repository):
+    import json
+    from pathlib import Path
+
+    raw = json.loads(Path("data/instruments/stockviz.json").read_text(encoding="utf-8"))
+    with repository.sessions.begin() as session:
+        report = register(session, seeds(*raw), NOW)
+        assert (report.entities_created, report.mappings_created) == (32, 64)
+        assert report.shared_keys == () and report.listing_conflicts == ()
+        again = register(session, seeds(*raw), NOW)
+        assert (again.entities_created, again.mappings_created, again.mappings_existing) == (
+            0,
+            0,
+            64,
+        )

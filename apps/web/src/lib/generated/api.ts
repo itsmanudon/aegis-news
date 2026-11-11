@@ -268,6 +268,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/feed/keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Keys
+         * @description The public key manifests are signed with. Pin it; a new key id means a rotation.
+         */
+        get: operations["keys_api_v1_feed_keys_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/feed/manifests/{manifest_hash}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Manifest
+         * @description One signed manifest, as listed in a bundle's ``manifests``.
+         *
+         *     It holds records of ids and SHA-256 hashes only, the chain hashes, the key id and the
+         *     signature, so a consumer can check a bundle without trusting the transport. See
+         *     aegis.provenance.consumer for the procedure.
+         */
+        get: operations["manifest_api_v1_feed_manifests__manifest_hash__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/ingestion-runs/{workflow_id}": {
         parameters: {
             query?: never;
@@ -1193,6 +1237,28 @@ export interface components {
             /** Url */
             url: string | null;
         };
+        /**
+         * FeedEntity
+         * @description An entity the document resolved to, mapped to a listing or not.
+         *
+         *     A consumer keeps these and joins them to the mapping list itself, so a mapping added
+         *     after the document was delivered still applies to it.
+         */
+        FeedEntity: {
+            /** Canonical Name */
+            canonical_name: string;
+            /** Confidence */
+            confidence: number;
+            /** Entity Id */
+            entity_id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "organization" | "person" | "location" | "other";
+            /** Resolution Analysis Id */
+            resolution_analysis_id: string;
+        };
         /** FeedEvent */
         FeedEvent: {
             /** Analysis Id */
@@ -1255,6 +1321,8 @@ export interface components {
             /** Analyses */
             analyses: components["schemas"]["AnalysisResult"][];
             document: components["schemas"]["FeedDocument"];
+            /** Entities */
+            entities: components["schemas"]["FeedEntity"][];
             /** Events */
             events: components["schemas"]["FeedEvent"][];
             /** Instruments */
@@ -1262,6 +1330,25 @@ export interface components {
             /** Manifests */
             manifests: components["schemas"]["FeedManifest"][];
             source: components["schemas"]["Source"];
+            withdrawal?: components["schemas"]["FeedWithdrawal"] | null;
+        };
+        /** FeedKey */
+        FeedKey: {
+            /**
+             * Algorithm
+             * @constant
+             */
+            algorithm: "Ed25519";
+            /** Key Id */
+            key_id: string;
+            /** Public Key Pem */
+            public_key_pem: string;
+        };
+        /** FeedKeysResponse */
+        FeedKeysResponse: {
+            /** Data */
+            data: components["schemas"]["FeedKey"][];
+            meta: components["schemas"]["ResponseMeta"];
         };
         /** FeedManifest */
         FeedManifest: {
@@ -1288,6 +1375,19 @@ export interface components {
             pagination: components["schemas"]["CursorPagination"];
             /** Resume Cursor */
             resume_cursor: string;
+        };
+        /**
+         * FeedWithdrawal
+         * @description The document was withdrawn. Delete what you hold for it.
+         */
+        FeedWithdrawal: {
+            /** Reason */
+            reason: string;
+            /**
+             * Withdrawn At
+             * Format: date-time
+             */
+            withdrawn_at: string;
         };
         /** FetchOptions */
         FetchOptions: {
@@ -1841,6 +1941,11 @@ export interface components {
         /** SingleResponse[ReadinessStatus] */
         SingleResponse_ReadinessStatus_: {
             data: components["schemas"]["ReadinessStatus"];
+            meta: components["schemas"]["ResponseMeta"];
+        };
+        /** SingleResponse[SignedManifest] */
+        SingleResponse_SignedManifest_: {
+            data: components["schemas"]["SignedManifest"];
             meta: components["schemas"]["ResponseMeta"];
         };
         /** SingleResponse[Source] */
@@ -2748,6 +2853,84 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FeedResponse"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    keys_api_v1_feed_keys_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedKeysResponse"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    manifest_api_v1_feed_manifests__manifest_hash__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                manifest_hash: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SingleResponse_SignedManifest_"];
                 };
             };
             /** @description Unprocessable Entity */

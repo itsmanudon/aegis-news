@@ -54,6 +54,22 @@ Exit code 2 means the file was rejected.
 An entity that already exists under the same name is reused, so seeding can attach
 listings to entities that were created earlier.
 
+## The StockViz seed file
+
+`data/instruments/stockviz.json` lists StockViz's 32 symbols, built on 11 Nov 2026. Each
+has its exchange listing (local ticker plus operating MIC) and a `provider_id` listing
+`stockviz:<StockViz symbol>`, so StockViz can join on its own ticker strings. Names that
+differ from the legal name carry aliases ("Google", "Amazon", "Disney", "P&G").
+
+- US venues (Nasdaq or NYSE) were checked against FMP on 11 Nov 2026. Walmart is on
+  Nasdaq.
+- Other venues are operating MICs from the ISO 10383 list (publication of 9 Nov 2026):
+  `XLON`, `XETR`, `XJPX` (Japan Exchange Group, for the Tokyo Stock Exchange; the
+  segment MIC is `XTKS`), `XTSE` and `XNSE`.
+
+Seed it, or reseed after StockViz changes its symbols, with
+`python -m aegis.entities.seed data/instruments/stockviz.json`. Use `--dry-run` first.
+
 ## How a mention finds its entity
 
 Each name and alias is stored under **match keys** in the `entity_names` table
@@ -74,7 +90,19 @@ For each document, the candidates are the entities whose keys equal a key of one
 document's mentions. That is an index lookup per mention. The cost follows the mentions
 in the article, not the number of entities in the table.
 
-The resolver then scores those candidates. A key match scores 1.0.
+The resolver then scores those candidates. A key match scores 1.0, with two exceptions
+(resolver revision 3):
+
+- **Kind.** When the extractor says a mention is a person or a location, it never matches
+  an organisation, and so on. The offline extractor labels every span `other`, which
+  decides nothing.
+- **Short names.** A name of four characters or fewer matches only where it appears, as
+  whole words and with the same capitalisation, in the entity's name or an alias. `SAP`
+  matches `SAP SE`; `Sap` does not.
+
+Names that differ from the legal name ("Amazon" for "Amazon.com, Inc.", "Google" for
+"Alphabet Inc.") need an alias in the seed file. `tests/unit/test_entity_registry.py`
+holds the disambiguation cases. Precision on real articles has not been measured.
 
 ### What stays unresolved, on purpose
 

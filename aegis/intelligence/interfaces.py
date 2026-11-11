@@ -25,6 +25,7 @@ class EntityResolver(Protocol):
         mentions: tuple[EntityMention, ...],
         candidates: tuple[Entity, ...],
         aliases: Mapping[str, tuple[str, ...]] | None = None,
+        kinds: Mapping[str, str | None] | None = None,
     ) -> AnalysisResult: ...
 
 

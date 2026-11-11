@@ -88,6 +88,34 @@ class FileKeyProvider:
         return counter.to_bytes(12, "big")
 
 
+class ConfiguredKeyProvider(FileKeyProvider):
+    """Key files, with verification keys from configuration taking precedence."""
+
+    def __init__(self, directory: Path, public_keys: dict[str, str] | None = None) -> None:
+        super().__init__(directory)
+        self.public_keys = {key: value for key, value in (public_keys or {}).items() if value}
+
+    def verification_key(self, key_id: str) -> Ed25519PublicKey:
+        validate_key_id(key_id)
+        pem = self.public_keys.get(key_id)
+        if pem is None:
+            return super().verification_key(key_id)
+        key = serialization.load_pem_public_key(pem.encode())
+        if not isinstance(key, Ed25519PublicKey):
+            raise ValueError("Ed25519 key required")
+        return key
+
+    def published(self, key_id: str) -> str | None:
+        """The PEM for key_id from configuration or its .pub file, or None."""
+        try:
+            key = self.verification_key(key_id)
+        except ValueError:
+            return None
+        return key.public_bytes(
+            serialization.Encoding.PEM, serialization.PublicFormat.SubjectPublicKeyInfo
+        ).decode()
+
+
 def generate_signing_keys(directory: Path, key_id: str) -> tuple[Path, Path]:
     """Write a new Ed25519 pair and return (private, public). Never overwrites a key."""
     validate_key_id(key_id)

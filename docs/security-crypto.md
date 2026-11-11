@@ -107,6 +107,10 @@ on therefore fails at start-up instead of serving every route to anyone.
 `.env.example` sets the flag for local use, and the test suite sets it in
 `tests/conftest.py`. Tests generate keys/tokens dynamically; no committed private fixtures.
 
+A host with no key files can verify manifests with `AEGIS_PROVENANCE_PUBLIC_KEY`, the
+PEM for `AEGIS_PROVENANCE_KEY_ID`. It takes precedence over a `.pub` file, and
+`GET /api/v1/feed/keys` publishes it.
+
 ## Cryptography and key boundary
 
 StandardCryptoProvider satisfies the existing CryptoProvider with hashlib SHA-256

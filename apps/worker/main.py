@@ -34,6 +34,7 @@ def build_worker(client: Client, settings: Settings, service: IngestionService) 
             settings.provenance_key_id,
         ),
         archive=settings.provenance_archive_enabled,
+        strict=settings.ai_strict,
     )
     return Worker(
         client,

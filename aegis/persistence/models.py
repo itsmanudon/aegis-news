@@ -16,6 +16,8 @@ from sqlalchemy import (
     Table,
     Text,
     UniqueConstraint,
+    cast,
+    func,
     text,
 )
 from sqlalchemy.dialects.postgresql import JSONB
@@ -90,6 +92,13 @@ class DocumentRow(Versioned, Base):
     # model, so a field written after signing would make every verification fail.
     available_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     last_signed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # The transaction id of the latest signing run. The feed orders by it and returns a
+    # row only once every older transaction has finished, so a slow commit is delayed,
+    # never skipped. See aegis.intelligence.feed.
+    signed_xid: Mapped[int | None] = mapped_column(BigInteger)
+    # Set by aegis.jobs.withdraw. A withdrawn document stays in the feed as a tombstone.
+    withdrawn_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    withdrawal_reason: Mapped[str | None] = mapped_column(String(200))
     __table_args__ = (
         CheckConstraint("revision >= 1", name="document_revision"),
         CheckConstraint(
@@ -101,8 +110,27 @@ class DocumentRow(Versioned, Base):
             "(available_at >= created_at AND last_signed_at >= available_at))",
             name="document_availability",
         ),
+        CheckConstraint(
+            "(signed_xid IS NULL) = (last_signed_at IS NULL)", name="document_signed_xid"
+        ),
+        CheckConstraint(
+            "(withdrawn_at IS NULL) = (withdrawal_reason IS NULL) AND "
+            "(withdrawn_at IS NULL OR last_signed_at IS NOT NULL)",
+            name="document_withdrawal",
+        ),
         Index("document_feed_position", "last_signed_at", "document_id"),
+        Index("document_feed_xid", "signed_xid", "document_id"),
     )
+
+
+def current_xid() -> Any:
+    """SQL for the running transaction's 64-bit id, as a BIGINT."""
+    return cast(cast(func.pg_current_xact_id(), Text), BigInteger)
+
+
+def finished_below() -> Any:
+    """SQL for the oldest transaction id still running: every id below it has ended."""
+    return cast(cast(func.pg_snapshot_xmin(func.pg_current_snapshot()), Text), BigInteger)
 
 
 class MediaAssetRow(Versioned, Base):

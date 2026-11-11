@@ -156,3 +156,23 @@ def test_cli_generates_a_key_then_mints_a_token_the_api_accepts(tmp_path, capsys
     failures = capsys.readouterr()
     assert failures.out == "" and "PRIVATE KEY" not in failures.err
     assert failures.err.count("service_token:") == 4
+
+
+def test_a_configured_public_key_takes_precedence_over_key_files(tmp_path):
+    from aegis.security.keys import ConfiguredKeyProvider, generate_signing_keys
+
+    generate_signing_keys(tmp_path, "filed")
+    configured = Ed25519PrivateKey.generate()
+    pem = (
+        configured.public_key()
+        .public_bytes(serialization.Encoding.PEM, serialization.PublicFormat.SubjectPublicKeyInfo)
+        .decode()
+    )
+    provider = ConfiguredKeyProvider(tmp_path, {"configured": pem, "empty": ""})
+    provider.verification_key("configured").verify(configured.sign(b"x"), b"x")
+    assert provider.published("configured") == pem
+    # Without configuration the key file is used, and an unknown key publishes nothing.
+    assert provider.published("filed") == (tmp_path / "filed.ed25519.pub").read_text()
+    assert provider.published("empty") is None and provider.published("missing") is None
+    with pytest.raises(ValueError):
+        ConfiguredKeyProvider(tmp_path, {"bad": "not a key"}).verification_key("bad")

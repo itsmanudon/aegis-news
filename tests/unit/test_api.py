@@ -44,6 +44,8 @@ def test_liveness_info_and_openapi():
             "/api/v1/events",
             "/api/v1/events/{event_id}",
             "/api/v1/feed/documents",
+            "/api/v1/feed/keys",
+            "/api/v1/feed/manifests/{manifest_hash}",
             "/api/v1/search",
             "/api/v1/topics",
             "/api/v1/topics/{topic_id}",

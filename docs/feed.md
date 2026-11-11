@@ -15,9 +15,15 @@ transaction:
 | `available_at` | When the first signed run completed. This is when Aegis made the document available. | Never |
 | `last_signed_at` | When the latest signed run completed. Equal to `available_at` until the document is analysed again. | On every later signed run |
 
-The feed is ordered by `(last_signed_at, document_id)` ascending. A document that is
-analysed and signed again moves forward and is returned once more, with its new
+The feed is ordered by `(signed_xid, document_id)` ascending, where `signed_xid` is the
+id of the transaction that signed the document last. A row is returned only once every
+transaction with a lower id has ended, so a signing transaction that commits late holds
+the feed back until it commits, and is never skipped. Clocks play no part. A document that
+is analysed and signed again moves forward and is returned once more, with its new
 analyses, so a consumer that upserts by `document_id` stays current.
+
+Cursors issued before 11 Nov 2026 were positioned by `last_signed_at` and are refused with
+422. Start again with `since`.
 
 **A bundle is the document as of its latest signed run.** It carries only the analyses
 that run signed, and the instruments and events that follow from them. Analyses from an
@@ -45,7 +51,7 @@ token.
 | --- | --- | --- | --- |
 | `limit` | integer, 1 to 100 | 50 | Page size |
 | `cursor` | opaque string | none | Resume position: a `resume_cursor` or `next_cursor` from an earlier response |
-| `since` | timestamp with offset | none | Start position when there is no cursor. Inclusive. |
+| `since` | timestamp with offset | none | Only documents last signed at or after it, when there is no cursor. Inclusive. |
 | `mapped` | boolean | false | Only documents linked to at least one instrument |
 | `scheme`, `venue`, `identifier` | string | none | Only documents linked to a matching listing. Each implies `mapped`. `venue` is a MIC code. |
 
@@ -78,9 +84,7 @@ An invalid cursor, a timestamp without an offset, or both parameters together re
 
 - **`resume_cursor`** is always present, also on an empty page. Store it and send it as
   `cursor` on the next sync. When `has_more` is true, `next_cursor` holds the same value.
-- **`as_of`** is the bound the server used: the request time minus a 60-second safety
-  lag. The signing transaction reads the clock before it commits, so the newest rows are
-  held back until they are certain to be visible. A sync sees them on its next run.
+- **`as_of`** is the request time. Analyses, events and mappings are read as of it.
 - **`document`**: identifiers, `title`, `url` (the ingestion's source URL), `language`,
   the publisher's `published_at`, `first_seen_at`, `ingested_at`, `created_at`,
   `available_at`, `last_signed_at` and `revision`. There is no `text`.
@@ -88,6 +92,8 @@ An invalid cursor, a timestamp without an offset, or both parameters together re
 - **`analyses`**: canonical `AnalysisResult` records of type `topic`, `sentiment` and
   `entity_resolution`, each with provider, model name, model version, configuration
   hash and its own `available_at`. Ordered by `available_at`, then `analysis_id`.
+- **`entities`**: every entity the document resolved to, mapped to a listing or not, with
+  its name, kind, the resolving analysis and the best resolution confidence.
 - **`instruments`**: one entry per asset mapping of an entity the document resolved to,
   with the mapping's scheme, identifier and venue, the resolving analysis and the best
   resolution confidence. Entities with no mapping are not listed. A filtered feed still
@@ -97,6 +103,52 @@ An invalid cursor, a timestamp without an offset, or both parameters together re
   that produced the event, `occurred_at`, `available_at` and the analysis identifier.
 - **`manifests`**: the hash, key identifier and signing time of each signed manifest
   that covers the document, oldest first.
+
+## Withdrawals
+
+Aegis never ingests a known article again, and the free provider tiers send no
+corrections or retractions. When a document must go (a publisher takedown, wrong
+content), the owner withdraws it:
+
+    python -m aegis.jobs.withdraw DOCUMENT_ID --reason "publisher takedown"
+
+The document moves forward in the feed and is delivered once more as a tombstone:
+`withdrawal` carries `withdrawn_at` and `reason`, and `analyses`, `entities`,
+`instruments` and `events` are empty. A consumer deletes what it holds for that
+document. Every other bundle has `withdrawal: null`. Aegis keeps the rows and the signed
+manifests. Other read routes, such as `/api/v1/documents`, still return the document.
+
+## Instruments added later
+
+The cursor moves on signing time, and seeding a mapping does not touch documents. So a
+mapping added after a document was delivered never brings that document back, and a
+consumer using `mapped` or a listing filter never receives a document that had no mapping
+when it was read.
+
+For a sync, read the feed without instrument filters, keep each bundle's `entities`, and
+read `GET /api/v1/assets/mappings` whole on every sync (the list is small). Join the two
+locally. A new mapping then applies to every document already held. The `instruments`
+field and the filters stay for one-off reads.
+
+## Verifying a bundle offline
+
+Two more routes under the same `feed:read` scope:
+
+- `GET /api/v1/feed/keys` returns the Ed25519 public key manifests are signed with, as
+  `key_id` and PEM. Pin it. A new key id means a rotation.
+- `GET /api/v1/feed/manifests/{manifest_hash}` returns one manifest listed in a bundle's
+  `manifests`: records of ids and SHA-256 hashes, the chain hashes, the key id and the
+  signature. It holds no article text.
+
+`aegis/provenance/consumer.py` is the reference check, written with only the standard
+library and `cryptography` so a consumer can copy it. Given a bundle, its latest manifest
+and the pinned key, it checks the signature, the hash chain, that the manifest names the
+bundle's document, and that every analysis in the bundle hashes to its signed record.
+`tests/integration/test_mvp.py` runs it against JSON read through the API.
+
+What it cannot check: the document and the raw content are hashed with their text, which
+the feed never sends. The title, URL, source, `available_at`, entities, instruments and
+events rest on the authenticated transport.
 
 ## What the feed never returns
 

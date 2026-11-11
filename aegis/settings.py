@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     temporal_task_queue: str = "aegis-foundation"
     temporal_enabled: bool = False
     ai_profile: Literal["offline", "light", "full"] = "offline"
+    # Fail a document's workflow when a model is missing or returns an invalid prediction,
+    # instead of signing it without that analysis. The daily job always turns it on.
+    ai_strict: bool = False
     newsdata_api_key: SecretStr = SecretStr("")
     gnews_api_key: SecretStr = SecretStr("")
     newsapi_api_key: SecretStr = SecretStr("")
@@ -34,6 +37,9 @@ class Settings(BaseSettings):
     # Ed25519 private key as PEM, for a host with no persistent disk. When set, the daily
     # job writes it to a private temporary directory instead of reading key files.
     provenance_signing_key: SecretStr = SecretStr("")
+    # Ed25519 public key as PEM for provenance_key_id. Lets a host with no key files verify
+    # manifests, and is what GET /api/v1/feed/keys publishes.
+    provenance_public_key: str = ""
     # The encrypted provenance archive needs a nonce counter kept between runs. The daily
     # job turns it off; the signed manifest does not depend on it.
     provenance_archive_enabled: bool = True

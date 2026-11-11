@@ -3,13 +3,15 @@
 from datetime import UTC, datetime
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Query, Request
+from fastapi import APIRouter, Path, Query, Request
 from pydantic import AwareDatetime
 
-from aegis.contracts.api import CursorPagination, ErrorCode, ResponseMeta
-from aegis.contracts.feed import FeedResponse
+from aegis.contracts.api import CursorPagination, ErrorCode, ResponseMeta, SingleResponse
+from aegis.contracts.feed import FeedKey, FeedKeysResponse, FeedResponse
 from aegis.intelligence import feed
+from aegis.provenance.service import SignedManifest
 from aegis.security.auth import product_access
+from aegis.security.persistence import SignedManifestRow
 from apps.api.errors import ApiException
 from apps.api.routes.ingestions import repository
 
@@ -53,26 +55,56 @@ def documents(
     if cursor is not None and since is not None:
         raise ApiException(ErrorCode.INVALID_ARGUMENT, "Give cursor or since, not both", 422)
     try:
-        after = (
-            feed.decode_position(cursor, filters)
-            if cursor is not None
-            else (since.astimezone(UTC), "")
-            if since is not None
-            else feed.START
-        )
+        after = feed.decode_position(cursor, filters) if cursor is not None else feed.START
     except ValueError:
         raise ApiException(ErrorCode.INVALID_ARGUMENT, "Invalid feed cursor", 422) from None
-    bound = datetime.now(UTC) - feed.SAFETY_LAG
+    bound = datetime.now(UTC)
     with repository(request).sessions() as session:
-        items, more = feed.read(
-            session, after, bound, limit, listing if (mapped or listing) else None
+        items, more, last = feed.read(
+            session,
+            after,
+            bound,
+            limit,
+            listing if (mapped or listing) else None,
+            since.astimezone(UTC) if since is not None else None,
         )
-    last = (items[-1].document.last_signed_at, items[-1].document.document_id) if items else after
     position = feed.encode_position(last, filters)
     return FeedResponse(
         data=tuple(items),
         as_of=bound,
         pagination=CursorPagination(has_more=more, next_cursor=position if more else None),
         resume_cursor=position,
+        meta=ResponseMeta(request_id=request.state.request_id),
+    )
+
+
+@router.get("/feed/manifests/{manifest_hash}", response_model=SingleResponse[SignedManifest])
+def manifest(
+    request: Request, manifest_hash: Annotated[str, Path(pattern="^[0-9a-f]{64}$")]
+) -> SingleResponse[SignedManifest]:
+    """One signed manifest, as listed in a bundle's ``manifests``.
+
+    It holds records of ids and SHA-256 hashes only, the chain hashes, the key id and the
+    signature, so a consumer can check a bundle without trusting the transport. See
+    aegis.provenance.consumer for the procedure.
+    """
+    with repository(request).sessions() as session:
+        row = session.get(SignedManifestRow, manifest_hash)
+    if row is None:
+        raise ApiException(ErrorCode.NOT_FOUND, "Manifest not found", 404)
+    return SingleResponse(
+        data=SignedManifest.model_validate(row.manifest),
+        meta=ResponseMeta(request_id=request.state.request_id),
+    )
+
+
+@router.get("/feed/keys", response_model=FeedKeysResponse)
+def keys(request: Request) -> FeedKeysResponse:
+    """The public key manifests are signed with. Pin it; a new key id means a rotation."""
+    key_id = request.app.state.settings.provenance_key_id
+    published = getattr(request.app.state.provenance.crypto.keys, "published", None)
+    pem = published(key_id) if published else None
+    return FeedKeysResponse(
+        data=(FeedKey(key_id=key_id, algorithm="Ed25519", public_key_pem=pem),) if pem else (),
         meta=ResponseMeta(request_id=request.state.request_id),
     )

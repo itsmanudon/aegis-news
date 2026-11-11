@@ -1,0 +1,480 @@
+[
+  {
+    "name": "Apple Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "AAPL",
+        "venue": "XNAS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:AAPL"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft Corporation",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "MSFT",
+        "venue": "XNAS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:MSFT"
+      }
+    ]
+  },
+  {
+    "name": "Alphabet Inc.",
+    "aliases": [
+      "Google"
+    ],
+    "listings": [
+      {
+        "identifier": "GOOGL",
+        "venue": "XNAS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:GOOGL"
+      }
+    ]
+  },
+  {
+    "name": "Amazon.com, Inc.",
+    "aliases": [
+      "Amazon"
+    ],
+    "listings": [
+      {
+        "identifier": "AMZN",
+        "venue": "XNAS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:AMZN"
+      }
+    ]
+  },
+  {
+    "name": "Meta Platforms, Inc.",
+    "aliases": [
+      "Meta"
+    ],
+    "listings": [
+      {
+        "identifier": "META",
+        "venue": "XNAS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:META"
+      }
+    ]
+  },
+  {
+    "name": "Tesla, Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "TSLA",
+        "venue": "XNAS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:TSLA"
+      }
+    ]
+  },
+  {
+    "name": "NVIDIA Corporation",
+    "aliases": [
+      "Nvidia"
+    ],
+    "listings": [
+      {
+        "identifier": "NVDA",
+        "venue": "XNAS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:NVDA"
+      }
+    ]
+  },
+  {
+    "name": "JPMorgan Chase & Co.",
+    "aliases": [
+      "JPMorgan",
+      "JP Morgan"
+    ],
+    "listings": [
+      {
+        "identifier": "JPM",
+        "venue": "XNYS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:JPM"
+      }
+    ]
+  },
+  {
+    "name": "Walmart Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "WMT",
+        "venue": "XNAS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:WMT"
+      }
+    ]
+  },
+  {
+    "name": "Johnson & Johnson",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "JNJ",
+        "venue": "XNYS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:JNJ"
+      }
+    ]
+  },
+  {
+    "name": "Visa Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "V",
+        "venue": "XNYS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:V"
+      }
+    ]
+  },
+  {
+    "name": "The Procter & Gamble Company",
+    "aliases": [
+      "P&G"
+    ],
+    "listings": [
+      {
+        "identifier": "PG",
+        "venue": "XNYS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:PG"
+      }
+    ]
+  },
+  {
+    "name": "Mastercard Incorporated",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "MA",
+        "venue": "XNYS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:MA"
+      }
+    ]
+  },
+  {
+    "name": "UnitedHealth Group Incorporated",
+    "aliases": [
+      "UnitedHealth"
+    ],
+    "listings": [
+      {
+        "identifier": "UNH",
+        "venue": "XNYS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:UNH"
+      }
+    ]
+  },
+  {
+    "name": "The Home Depot, Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "HD",
+        "venue": "XNYS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:HD"
+      }
+    ]
+  },
+  {
+    "name": "Bank of America Corporation",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "BAC",
+        "venue": "XNYS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BAC"
+      }
+    ]
+  },
+  {
+    "name": "Exxon Mobil Corporation",
+    "aliases": [
+      "ExxonMobil",
+      "Exxon"
+    ],
+    "listings": [
+      {
+        "identifier": "XOM",
+        "venue": "XNYS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:XOM"
+      }
+    ]
+  },
+  {
+    "name": "Intel Corporation",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "INTC",
+        "venue": "XNAS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:INTC"
+      }
+    ]
+  },
+  {
+    "name": "Pfizer Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "PFE",
+        "venue": "XNYS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:PFE"
+      }
+    ]
+  },
+  {
+    "name": "Cisco Systems, Inc.",
+    "aliases": [
+      "Cisco"
+    ],
+    "listings": [
+      {
+        "identifier": "CSCO",
+        "venue": "XNAS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:CSCO"
+      }
+    ]
+  },
+  {
+    "name": "Adobe Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "ADBE",
+        "venue": "XNAS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:ADBE"
+      }
+    ]
+  },
+  {
+    "name": "Netflix, Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "NFLX",
+        "venue": "XNAS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:NFLX"
+      }
+    ]
+  },
+  {
+    "name": "The Walt Disney Company",
+    "aliases": [
+      "Disney"
+    ],
+    "listings": [
+      {
+        "identifier": "DIS",
+        "venue": "XNYS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:DIS"
+      }
+    ]
+  },
+  {
+    "name": "Salesforce, Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "CRM",
+        "venue": "XNYS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:CRM"
+      }
+    ]
+  },
+  {
+    "name": "The Coca-Cola Company",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "KO",
+        "venue": "XNYS"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:KO"
+      }
+    ]
+  },
+  {
+    "name": "Barclays PLC",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "BARC",
+        "venue": "XLON"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BARC.L"
+      }
+    ]
+  },
+  {
+    "name": "Vodafone Group Plc",
+    "aliases": [
+      "Vodafone"
+    ],
+    "listings": [
+      {
+        "identifier": "VOD",
+        "venue": "XLON"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:VOD.L"
+      }
+    ]
+  },
+  {
+    "name": "SAP SE",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "SAP",
+        "venue": "XETR"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:SAP.DE"
+      }
+    ]
+  },
+  {
+    "name": "Bayerische Motoren Werke AG",
+    "aliases": [
+      "BMW"
+    ],
+    "listings": [
+      {
+        "identifier": "BMW",
+        "venue": "XETR"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BMW.DE"
+      }
+    ]
+  },
+  {
+    "name": "Toyota Motor Corporation",
+    "aliases": [
+      "Toyota"
+    ],
+    "listings": [
+      {
+        "identifier": "7203",
+        "venue": "XJPX"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:7203.T"
+      }
+    ]
+  },
+  {
+    "name": "Shopify Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "SHOP",
+        "venue": "XTSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:SHOP.TO"
+      }
+    ]
+  },
+  {
+    "name": "Reliance Industries Limited",
+    "aliases": [
+      "Reliance"
+    ],
+    "listings": [
+      {
+        "identifier": "RELIANCE",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:RELIANCE.NS"
+      }
+    ]
+  }
+]

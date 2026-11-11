@@ -49,6 +49,20 @@ class FeedInstrument(Contract):
     confidence: Confidence
 
 
+class FeedEntity(Contract):
+    """An entity the document resolved to, mapped to a listing or not.
+
+    A consumer keeps these and joins them to the mapping list itself, so a mapping added
+    after the document was delivered still applies to it.
+    """
+
+    entity_id: EntityId
+    canonical_name: NonEmpty
+    kind: Literal["organization", "person", "location", "other"]
+    resolution_analysis_id: AnalysisId
+    confidence: Confidence
+
+
 class FeedEvent(Contract):
     event_id: NewsEventId
     revision: int = Field(ge=1)
@@ -67,13 +81,34 @@ class FeedManifest(Contract):
     signed_at: AwareDatetime
 
 
+class FeedWithdrawal(Contract):
+    """The document was withdrawn. Delete what you hold for it."""
+
+    withdrawn_at: AwareDatetime
+    reason: NonEmpty
+
+
 class FeedItem(Contract):
     document: FeedDocument
     source: Source
     analyses: tuple[AnalysisResult, ...]
+    entities: tuple[FeedEntity, ...]
     instruments: tuple[FeedInstrument, ...]
     events: tuple[FeedEvent, ...]
     manifests: tuple[FeedManifest, ...]
+    # Present only on a tombstone; analyses, entities, instruments and events are then empty.
+    withdrawal: FeedWithdrawal | None = None
+
+
+class FeedKey(Contract):
+    key_id: NonEmpty
+    algorithm: Literal["Ed25519"]
+    public_key_pem: NonEmpty
+
+
+class FeedKeysResponse(Contract):
+    data: tuple[FeedKey, ...]
+    meta: ResponseMeta
 
 
 class FeedResponse(Contract):
