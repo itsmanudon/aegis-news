@@ -1,16 +1,18 @@
 """Incremental document feed: signed documents in the order they were last signed.
 
-The position of a document is (last_signed_at, document_id). A document enters the feed
-when its first provenance manifest is signed and moves forward when a later run is
-signed, so a consumer that keeps the resume cursor sees each change exactly once per run.
+The position of a document is (signed_xid, document_id): the id of the transaction that
+signed it last. A row is returned only once every older transaction has finished, so a
+transaction that commits late holds the feed back instead of being skipped, whatever the
+clocks say. A document enters the feed when its first run is signed and moves forward when
+a later run is signed, so a consumer that keeps the resume cursor sees each change once.
 Each bundle describes the latest signed run only, so a consumer replaces what it holds.
 """
 
 from collections import defaultdict
-from datetime import UTC, datetime, timedelta
+from datetime import datetime
 from typing import Any, cast
 
-from pydantic import AwareDatetime, TypeAdapter
+from pydantic import TypeAdapter
 from sqlalchemy import select, text, tuple_
 from sqlalchemy.orm import Session
 
@@ -37,15 +39,12 @@ from aegis.persistence.models import (
     IngestionRow,
     NewsEventRow,
     SourceRow,
+    finished_below,
 )
 
-Position = tuple[datetime, str]
+Position = tuple[int, str]
 
-# The signing transaction reads the clock before it commits, so a row can become visible
-# slightly after the time it carries. Holding back the newest rows keeps a reader from
-# moving its cursor past a row that has not committed yet.
-SAFETY_LAG = timedelta(seconds=60)
-START: Position = (datetime(1970, 1, 1, tzinfo=UTC), "")
+START: Position = (-1, "")
 # Analyses a consumer stores. Extraction outputs quote the article and embeddings are
 # large, so neither is returned; event extraction only supplies each event's type.
 FEED_ANALYSES = ("topic", "sentiment", "entity_resolution")
@@ -55,10 +54,10 @@ CURSOR_MAXIMUM = 4096
 def encode_position(position: Position, filters: dict[str, Any]) -> str:
     return pack(
         {
-            "v": 1,
+            "v": 2,
             "kind": "feed",
             "filters": fingerprint(filters),
-            "key": [position[0].astimezone(UTC).isoformat(), position[1]],
+            "key": [position[0], position[1]],
         }
     )
 
@@ -69,18 +68,23 @@ def decode_position(value: str, filters: dict[str, Any]) -> Position:
         raise ValueError("invalid feed cursor")
     if (
         type(data["v"]) is not int
-        or data["v"] != 1
+        or data["v"] != 2
         or data["kind"] != "feed"
         or data["filters"] != fingerprint(filters)
     ):
         raise ValueError("feed cursor filter mismatch")
     key = data["key"]
-    if not isinstance(key, list) or len(key) != 2 or any(not isinstance(v, str) for v in key):
+    if (
+        not isinstance(key, list)
+        or len(key) != 2
+        or type(key[0]) is not int
+        or key[0] < -1
+        or not isinstance(key[1], str)
+    ):
         raise ValueError("invalid feed cursor key")
-    moment = TypeAdapter(AwareDatetime).validate_python(key[0]).astimezone(UTC)
     if key[1]:
         TypeAdapter(DocumentId).validate_python(key[1])
-    return moment, key[1]
+    return key[0], key[1]
 
 
 def linked_to_instrument(bound: datetime, listing: dict[str, str]) -> Any:
@@ -108,8 +112,12 @@ def read(
     bound: datetime,
     limit: int,
     listing: dict[str, str] | None = None,
-) -> tuple[list[FeedItem], bool]:
-    """Return up to ``limit`` bundles after ``after`` and whether more exist at ``bound``.
+    since: datetime | None = None,
+) -> tuple[list[FeedItem], bool, Position]:
+    """Up to ``limit`` bundles after ``after``, whether more exist, and where to resume.
+
+    ``bound`` is the point in time for analyses, events and mappings. ``since`` keeps only
+    documents last signed at or after it.
 
     With ``listing`` given, even empty, only documents linked to an instrument are
     returned; its keys (scheme, venue, identifier) narrow which instrument.
@@ -118,20 +126,24 @@ def read(
         select(DocumentRow, IngestionRow.source_url)
         .join(IngestionRow, IngestionRow.ingestion_id == DocumentRow.ingestion_id)
         .where(
-            DocumentRow.last_signed_at.is_not(None),
-            DocumentRow.last_signed_at <= bound,
-            tuple_(DocumentRow.last_signed_at, DocumentRow.document_id) > tuple_(*after),
+            DocumentRow.signed_xid.is_not(None),
+            # Only transactions that have ended: a running one may still commit below.
+            DocumentRow.signed_xid < finished_below(),
+            tuple_(DocumentRow.signed_xid, DocumentRow.document_id) > tuple_(*after),
         )
-        .order_by(DocumentRow.last_signed_at, DocumentRow.document_id)
+        .order_by(DocumentRow.signed_xid, DocumentRow.document_id)
         .limit(limit + 1)
     )
     if listing is not None:
         query = query.where(linked_to_instrument(bound, listing))
+    if since is not None:
+        query = query.where(DocumentRow.last_signed_at >= since)
     rows = session.execute(query).all()
     more = len(rows) > limit
     rows = rows[:limit]
     if not rows:
-        return [], False
+        return [], False, after
+    resume: Position = (cast(int, rows[-1][0].signed_xid), rows[-1][0].document_id)
     documents = [row[0] for row in rows]
     ids = [document.document_id for document in documents]
 
@@ -322,4 +334,4 @@ def read(
                 manifests=tuple(manifests[document.document_id]),
             )
         )
-    return items, more
+    return items, more, resume

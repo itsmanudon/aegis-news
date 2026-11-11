@@ -320,15 +320,13 @@ async def test_provenance_reruns_media_and_old_derived_tampering(integrated):
 
 
 async def test_a_consumer_verifies_a_bundle_offline_with_the_published_key(
-    integrated, tmp_path_factory, monkeypatch
+    integrated, tmp_path_factory
 ):
     """AG-3 and AG-2: the feed's JSON, the manifest route and the key route are enough."""
-    from aegis.intelligence import feed
     from aegis.provenance.consumer import verify_bundle
 
     service, _, _, _, keys_path, entity = integrated
     doc, _, _ = await processed(integrated)
-    monkeypatch.setattr(feed, "SAFETY_LAG", timedelta(0))
     # No key files on this host: the public key comes from configuration only.
     settings = Settings(
         _env_file=None,
@@ -369,3 +367,45 @@ async def test_a_consumer_verifies_a_bundle_offline_with_the_published_key(
     assert not verify_bundle(item, forged, key["public_key_pem"]).signature_valid
     other = {**item, "document": {**item["document"], "document_id": "doc_" + str(uuid4())}}
     assert not verify_bundle(other, manifest, key["public_key_pem"]).document_matches
+
+
+async def test_strict_mode_fails_a_missing_model_and_reanalyse_signs_again(integrated, monkeypatch):
+    """AG-9: a missing model stops the run before signing; the document can be redone."""
+    from temporalio.exceptions import ApplicationError
+
+    from aegis.intelligence.errors import ModelUnavailable, NoPredictions
+    from aegis.jobs import reanalyse
+
+    service, pipeline, worker, _, keys_path, _ = integrated
+    doc, _, _ = await processed(integrated)
+
+    async def missing(document):
+        raise ModelUnavailable("weights not on disk")
+
+    async def nothing(document):
+        raise NoPredictions("no topic")
+
+    monkeypatch.setattr(worker.engine.sentiment, "analyze", missing)
+    lenient = await worker.analyze("sentiment", doc.document_id, uuid4().hex, "t")
+    assert lenient == {"status": "unavailable", "reason": "ModelUnavailable"}
+    worker.strict = True
+    with pytest.raises(ApplicationError) as failure:
+        await worker.analyze("sentiment", doc.document_id, uuid4().hex, "t")
+    assert failure.value.type == "ModelUnavailable" and failure.value.non_retryable
+    # Finding nothing is a normal outcome, strict or not.
+    monkeypatch.setattr(worker.engine.topics, "classify", nothing)
+    assert (await worker.analyze("topics", doc.document_id, uuid4().hex, "t"))["status"] == (
+        "unavailable"
+    )
+    monkeypatch.undo()
+
+    before = len(pipeline.manifests(doc.document_id))
+    monkeypatch.setattr(reanalyse, "make_service", lambda settings: service)
+    settings = Settings(_env_file=None, security_key_directory=keys_path, provenance_key_id="local")
+    outcome = await reanalyse.reanalyse(settings, [doc.document_id, "doc_" + str(uuid4())])
+    assert outcome == {
+        doc.document_id: "signed",
+        next(iter(outcome.keys() - {doc.document_id})): "not_found",
+    }
+    assert len(pipeline.manifests(doc.document_id)) == before + 1
+    assert (await pipeline.verify_document(doc.document_id, service.storage)).valid

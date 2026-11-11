@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     temporal_task_queue: str = "aegis-foundation"
     temporal_enabled: bool = False
     ai_profile: Literal["offline", "light", "full"] = "offline"
+    # Fail a document's workflow when a model is missing or returns an invalid prediction,
+    # instead of signing it without that analysis. The daily job always turns it on.
+    ai_strict: bool = False
     newsdata_api_key: SecretStr = SecretStr("")
     gnews_api_key: SecretStr = SecretStr("")
     newsapi_api_key: SecretStr = SecretStr("")

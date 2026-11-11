@@ -6,10 +6,11 @@ from collections.abc import Callable
 from typing import Any
 
 from temporalio import activity
+from temporalio.exceptions import ApplicationError
 
 from aegis.ingestion.service import IngestionService
 from aegis.intelligence.engine import IntelligenceEngine
-from aegis.intelligence.errors import IntelligenceError
+from aegis.intelligence.errors import IntelligenceError, InvalidPrediction, ModelUnavailable
 from aegis.intelligence.pipeline import AnalysisPipeline, stable_id
 from aegis.observability.logging import correlation_id_context
 from aegis.provenance.service import canonical
@@ -25,8 +26,12 @@ class IntelligenceActivities:
         engine: IntelligenceEngine,
         pipeline: AnalysisPipeline,
         archive: bool = True,
+        strict: bool = False,
     ) -> None:
         self.ingestion, self.engine, self.pipeline = ingestion, engine, pipeline
+        # Strict: a missing model or an invalid prediction fails the workflow before it
+        # signs, instead of signing a document that lacks that analysis.
+        self.strict = strict
         # The encrypted copy of each manifest. Off in the daily job, which keeps no nonces.
         self.archive = archive
 
@@ -56,14 +61,26 @@ class IntelligenceActivities:
                             stable_id("ana", f"{run_key}:entities"),
                         )
                         if task == "resolution":
+                            kinds = await asyncio.to_thread(
+                                self.pipeline.mention_kinds,
+                                document_id,
+                                stable_id("ana", f"{run_key}:entities"),
+                            )
                             result = await self.engine.resolver.resolve(
-                                document, mentions, candidates, names
+                                document, mentions, candidates, names, kinds
                             )
                         else:
                             result = await self.engine.events.extract(document, ())
                     case _:
                         raise ValueError("unknown AI task")
             except IntelligenceError as exc:
+                if self.strict and isinstance(exc, ModelUnavailable | InvalidPrediction):
+                    logger.error(
+                        "ai_stage_failed", extra={"stage": task, "error_type": type(exc).__name__}
+                    )
+                    raise ApplicationError(
+                        f"{task}: {type(exc).__name__}", type=type(exc).__name__, non_retryable=True
+                    ) from None
                 logger.warning(
                     "ai_stage_unavailable", extra={"stage": task, "error_type": type(exc).__name__}
                 )

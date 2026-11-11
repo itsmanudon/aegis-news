@@ -15,9 +15,15 @@ transaction:
 | `available_at` | When the first signed run completed. This is when Aegis made the document available. | Never |
 | `last_signed_at` | When the latest signed run completed. Equal to `available_at` until the document is analysed again. | On every later signed run |
 
-The feed is ordered by `(last_signed_at, document_id)` ascending. A document that is
-analysed and signed again moves forward and is returned once more, with its new
+The feed is ordered by `(signed_xid, document_id)` ascending, where `signed_xid` is the
+id of the transaction that signed the document last. A row is returned only once every
+transaction with a lower id has ended, so a signing transaction that commits late holds
+the feed back until it commits, and is never skipped. Clocks play no part. A document that
+is analysed and signed again moves forward and is returned once more, with its new
 analyses, so a consumer that upserts by `document_id` stays current.
+
+Cursors issued before 11 Nov 2026 were positioned by `last_signed_at` and are refused with
+422. Start again with `since`.
 
 **A bundle is the document as of its latest signed run.** It carries only the analyses
 that run signed, and the instruments and events that follow from them. Analyses from an
@@ -45,7 +51,7 @@ token.
 | --- | --- | --- | --- |
 | `limit` | integer, 1 to 100 | 50 | Page size |
 | `cursor` | opaque string | none | Resume position: a `resume_cursor` or `next_cursor` from an earlier response |
-| `since` | timestamp with offset | none | Start position when there is no cursor. Inclusive. |
+| `since` | timestamp with offset | none | Only documents last signed at or after it, when there is no cursor. Inclusive. |
 | `mapped` | boolean | false | Only documents linked to at least one instrument |
 | `scheme`, `venue`, `identifier` | string | none | Only documents linked to a matching listing. Each implies `mapped`. `venue` is a MIC code. |
 
@@ -78,9 +84,7 @@ An invalid cursor, a timestamp without an offset, or both parameters together re
 
 - **`resume_cursor`** is always present, also on an empty page. Store it and send it as
   `cursor` on the next sync. When `has_more` is true, `next_cursor` holds the same value.
-- **`as_of`** is the bound the server used: the request time minus a 60-second safety
-  lag. The signing transaction reads the clock before it commits, so the newest rows are
-  held back until they are certain to be visible. A sync sees them on its next run.
+- **`as_of`** is the request time. Analyses, events and mappings are read as of it.
 - **`document`**: identifiers, `title`, `url` (the ingestion's source URL), `language`,
   the publisher's `published_at`, `first_seen_at`, `ingested_at`, `created_at`,
   `available_at`, `last_signed_at` and `revision`. There is no `text`.

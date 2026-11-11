@@ -89,3 +89,66 @@ def test_valid_seed_shapes():
     assert seed.kind == "organization"
     with pytest.raises(ValidationError):
         InstrumentSeed.model_validate({"name": "???"})
+
+
+# Disambiguation cases (audit AG-6). Each line: surface, the kind the extractor predicted,
+# candidate name, stored aliases, and whether the mention should resolve.
+DISAMBIGUATION = [
+    ("Apple", "organization", "Apple Inc.", (), True),
+    ("Apple", None, "Apple Inc.", (), True),
+    ("Apple", "other", "Apple Inc.", (), True),  # the offline extractor's label for any span
+    ("Apple", "person", "Apple Inc.", (), False),
+    ("Jordan", "location", "Jordan Group Ltd", (), False),
+    ("SAP", "organization", "SAP SE", (), True),
+    ("Sap", None, "SAP SE", (), False),  # short: only as written
+    ("Visa", None, "Visa Inc.", (), True),
+    ("VISA", None, "Visa Inc.", (), False),
+    ("Amazon", None, "Amazon.com, Inc.", (), False),  # needs an alias
+    ("Amazon", None, "Amazon.com, Inc.", ("Amazon",), True),
+    ("Google", None, "Alphabet Inc.", ("Google",), True),
+    ("Disney", None, "The Walt Disney Company", ("Disney",), True),
+    ("Reliance Industries", "organization", "Reliance Industries Limited", (), True),
+]
+
+
+@pytest.mark.parametrize(("surface", "kind", "name", "aliases", "resolves"), DISAMBIGUATION)
+def test_disambiguation_cases(surface, kind, name, aliases, resolves):
+    target, other = entity(1, name), entity(2, "Unrelated Holdings")
+    resolver = Resolver()
+    names = {target.entity_id: aliases} if aliases else {}
+    chosen, _ = resolver.choose(resolver.rank(surface, (target, other), names, kind))
+    assert (chosen == target.entity_id) is resolves
+
+
+async def test_resolve_uses_the_kind_the_extraction_predicted():
+    from aegis.domain.models import EntityMention, NewsDocument
+
+    now = datetime(2026, 1, 1, tzinfo=UTC)
+    document = NewsDocument(
+        document_id=f"doc_{UUID(int=9)}",
+        ingestion_id=f"ing_{UUID(int=9)}",
+        source_id=f"src_{UUID(int=9)}",
+        title="Synthetic",
+        text="Apple met Apple.",
+        first_seen_at=now,
+        ingested_at=now,
+        created_at=now,
+    )
+    mentions = tuple(
+        EntityMention(
+            mention_id=f"mention_{UUID(int=n)}",
+            document_id=document.document_id,
+            surface="Apple",
+            start_offset=start,
+            end_offset=start + 5,
+            evidence_kind="model_output",
+            analysis_id=f"ana_{UUID(int=1)}",
+        )
+        for n, start in ((1, 0), (2, 10))
+    )
+    apple = entity(1, "Apple Inc.")
+    result = await Resolver().resolve(
+        document, mentions, (apple,), kinds={mentions[0].mention_id: "person"}
+    )
+    assert [o.entity_id for o in result.outputs] == [None, apple.entity_id]
+    assert result.model_version == "3"

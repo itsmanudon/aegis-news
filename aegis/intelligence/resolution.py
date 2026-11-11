@@ -71,6 +71,12 @@ def match_keys(name: str) -> tuple[str, ...]:
     return tuple(dict.fromkeys(key for key in (full, " ".join(words)) if key))
 
 
+def written_in(surface: str, names: tuple[str, ...]) -> bool:
+    """True when ``surface`` appears as whole words, same capitalisation, in a name."""
+    pattern = re.compile(r"(?<!\w)" + re.escape(surface.strip()) + r"(?!\w)")
+    return any(pattern.search(name) for name in names)
+
+
 class Resolver:
     def __init__(
         self,
@@ -85,13 +91,16 @@ class Resolver:
         self.identifiers = tuple(sorted((k, tuple(v)) for k, v in (identifiers or {}).items()))
         self.threshold, self.ambiguity_margin = threshold, ambiguity_margin
         # Revision 2: a name also matches on its core key (legal forms dropped).
-        self.spec = ModelSpec(backend="baseline", model_name="candidate-resolver", revision="2")
+        # Revision 3: a mention whose extracted kind differs from the candidate's never
+        # matches, and a short name matches only as written.
+        self.spec = ModelSpec(backend="baseline", model_name="candidate-resolver", revision="3")
 
     def rank(
         self,
         surface: str,
         candidates: tuple[Entity, ...],
         aliases: Mapping[str, tuple[str, ...]] | None = None,
+        kind: str | None = None,
     ) -> tuple[tuple[str, float], ...]:
         if len({c.entity_id for c in candidates}) != len(candidates):
             raise ValueError("duplicate candidate IDs")
@@ -105,10 +114,17 @@ class Resolver:
         for candidate in candidates:
             Entity.model_validate(candidate.model_dump())
             names = (candidate.canonical_name, *aliases.get(candidate.entity_id, ()))
+            # The extractor said this is a person or a place: it is not this company.
+            # "other" is what the offline extractor says of every span, so it decides nothing.
+            if kind not in (None, "other") and kind != candidate.kind:
+                ranks.append((candidate.entity_id, 0.0))
+                continue
             if surface.strip().casefold() in (
                 v.strip().casefold() for v in identifiers.get(candidate.entity_id, ())
             ) or any(keys & set(match_keys(n)) for n in names):
-                score = 1.0
+                # "SAP" names a company; "sap" does not. A name of four characters or
+                # fewer matches only where it appears with the same capitalisation.
+                score = 1.0 if len(normalized) > 4 or written_in(surface, names) else 0.0
             else:
                 score = max(
                     SequenceMatcher(None, normalized, normalized_name(n)).ratio() for n in names
@@ -135,8 +151,11 @@ class Resolver:
         mentions: tuple[EntityMention, ...],
         candidates: tuple[Entity, ...],
         aliases: Mapping[str, tuple[str, ...]] | None = None,
+        kinds: Mapping[str, str | None] | None = None,
     ) -> AnalysisResult:
         """Resolve mentions against ``candidates``.
+
+        ``kinds`` maps a mention id to the kind its extraction predicted, when known.
 
         ``aliases`` are stored names for these candidates, supplied per call by the
         caller that looked the candidates up. They add to the aliases the resolver was
@@ -154,7 +173,9 @@ class Resolver:
                 document.text, mention.surface, mention.start_offset, mention.end_offset
             ):
                 raise ValueError("mention evidence does not match document")
-            entity_id, score = self.choose(self.rank(mention.surface, candidates, known))
+            entity_id, score = self.choose(
+                self.rank(mention.surface, candidates, known, (kinds or {}).get(mention.mention_id))
+            )
             outputs.append(
                 EntityResolutionResult(
                     mention_id=mention.mention_id, entity_id=entity_id, confidence=score
@@ -165,7 +186,7 @@ class Resolver:
             self.spec,
             tuple(outputs),
             started,
-            {"resolver": "2"},
+            {"resolver": "3"},
             context={
                 "aliases": tuple(sorted(known.items())),
                 "identifiers": self.identifiers,

@@ -211,7 +211,7 @@ async def test_candidates_are_found_by_key_beyond_the_old_thousand_entity_cap(re
     result = await Resolver().resolve(document, mentions, candidates, names)
     (output,) = result.outputs
     assert (output.entity_id, output.confidence) == (target, 1.0)
-    assert result.model_version == "2"
+    assert result.model_version == "3"
 
 
 def test_a_small_curated_set_is_still_offered_whole(repository):
