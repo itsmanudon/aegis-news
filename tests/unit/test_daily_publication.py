@@ -40,8 +40,22 @@ def signing(previous):
     return signer, trust
 
 
-def metadata(source="nasa", title="Artemis Fixture News", suffix="fixture"):
-    now = datetime.now(UTC) - timedelta(seconds=5)
+@pytest.fixture
+def clock(previous):
+    """A fixed build time, one week after the newest committed record.
+
+    The release builder drops records older than ``daily.RETENTION_DAYS``. Built
+    at the wall clock, a release loses every committed legacy record three weeks
+    after the dataset was last regenerated. The tests that need a legacy-signed
+    record in the release then fail on a date, not on a code change (first seen
+    6 Nov 2026). Deriving the clock from the dataset keeps some legacy records
+    retained and some pruned for as long as the dataset spans over two weeks.
+    """
+    return max(daily.record_time(r) for r in previous.records) + timedelta(days=7)
+
+
+def metadata(source="nasa", title="Artemis Fixture News", suffix="fixture", now=None):
+    now = (now or datetime.now(UTC)) - timedelta(seconds=5)
     return article(
         source,
         title,
@@ -53,23 +67,26 @@ def metadata(source="nasa", title="Artemis Fixture News", suffix="fixture"):
 
 
 @pytest.fixture
-async def release(previous, signing, monkeypatch):
+async def release(previous, signing, clock, monkeypatch):
     monkeypatch.setattr(
         daily,
         "acquire",
         AsyncMock(
             return_value=(
-                [metadata(), metadata("federal-reserve", "Fixture Interest News", "fixture-rate")],
+                [
+                    metadata(now=clock),
+                    metadata("federal-reserve", "Fixture Interest News", "fixture-rate", now=clock),
+                ],
                 {"nasa": "ok"},
             )
         ),
     )
     monkeypatch.setattr(daily, "media", AsyncMock(return_value=[]))
     async with httpx.AsyncClient() as client:
-        export, _ = await daily.candidate(
-            previous, *signing, Fetcher(client, spacing=0), datetime.now(UTC)
-        )
+        export, _ = await daily.candidate(previous, *signing, Fetcher(client, spacing=0), clock)
     assert export
+    # Guard the premise: the release must mix legacy-signed and newly signed records.
+    assert {r.provenance.key_id for r in export.records} == {previous.key_id, "daily-v1"}
     return export
 
 
@@ -250,25 +267,27 @@ async def test_provider_failure_old_dates_and_unknown_publication(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_restart_deduplication_and_no_fabricated_refresh(release, signing, monkeypatch):
+async def test_restart_deduplication_and_no_fabricated_refresh(
+    release, signing, clock, monkeypatch
+):
     new = [r.metadata for r in release.records if r.provenance.key_id == "daily-v1"]
     monkeypatch.setattr(daily, "acquire", AsyncMock(return_value=(new, {})))
     media = AsyncMock(return_value=[])
     monkeypatch.setattr(daily, "media", media)
     async with httpx.AsyncClient() as client:
-        result, report = await daily.candidate(
-            release, *signing, Fetcher(client), datetime.now(UTC)
-        )
+        result, report = await daily.candidate(release, *signing, Fetcher(client), clock)
     assert result is None and report["new_selected"] == 0
     media.assert_not_called()
 
 
 @pytest.mark.asyncio
-async def test_pruned_identity_cannot_reenter_as_new(previous, release, signing, monkeypatch):
+async def test_pruned_identity_cannot_reenter_as_new(
+    previous, release, signing, clock, monkeypatch
+):
     pruned = set(release.seen) - {r.metadata.id for r in release.records}
     assert pruned
     old = next(r.metadata for r in previous.records if r.metadata.id in pruned)
-    now = datetime.now(UTC)
+    now = clock
     rediscovered = article(
         old.source, old.title, old.url, now - timedelta(seconds=10), now - timedelta(seconds=5)
     )

@@ -14,8 +14,13 @@ class ReadinessProbe:
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
         self.engine = make_engine(settings)
-        self.redis: Redis = Redis.from_url(
-            settings.redis_url.get_secret_value(), socket_connect_timeout=2, socket_timeout=2
+        # Redis serves only the rate limiter, so it is checked only when the limiter uses it.
+        self.redis: Redis | None = (
+            Redis.from_url(
+                settings.redis_url.get_secret_value(), socket_connect_timeout=2, socket_timeout=2
+            )
+            if settings.security_rate_backend == "redis"
+            else None
         )
         self.storage = S3ObjectStorage(
             endpoint_url=settings.s3_endpoint_url,
@@ -23,6 +28,7 @@ class ReadinessProbe:
             secret_key=settings.s3_secret_key.get_secret_value(),
             bucket=settings.s3_bucket,
             region=settings.s3_region,
+            addressing_style=settings.s3_addressing_style,
         )
 
     def _postgres(self) -> None:
@@ -37,7 +43,7 @@ class ReadinessProbe:
                 async with asyncio.timeout(5):
                     if name == "postgres":
                         await asyncio.to_thread(self._postgres)
-                    elif name == "redis":
+                    elif name == "redis" and self.redis is not None:
                         await self.redis.ping()
                     elif name == "object_storage":
                         await self.storage.ready()
@@ -51,12 +57,15 @@ class ReadinessProbe:
             except Exception:
                 return DependencyStatus.model_validate({"name": name, "ready": False})
 
-        names = ["postgres", "redis", "object_storage"]
+        names = ["postgres", "object_storage"]
+        if self.redis is not None:
+            names.insert(1, "redis")
         if self.settings.temporal_enabled:
             names.append("temporal")
         return tuple(await asyncio.gather(*(check_one(n) for n in names)))
 
     async def close(self) -> None:
-        await self.redis.aclose()
+        if self.redis is not None:
+            await self.redis.aclose()
         self.storage.client.close()
         self.engine.dispose()

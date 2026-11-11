@@ -319,7 +319,11 @@ def chronological(
     )
     result: list[DocumentDiscoveryItem] = []
     for row in rows(session, sql, params):
-        document = NewsDocument.model_validate(row["document"])
+        # to_jsonb(d) carries every documents column. The canonical record forbids
+        # extras and deliberately omits the feed's signing stamps, so project to it.
+        document = NewsDocument.model_validate(
+            {name: row["document"][name] for name in NewsDocument.model_fields}
+        )
         source = Source.model_validate(row["source"])
         if identity:
             result.append(

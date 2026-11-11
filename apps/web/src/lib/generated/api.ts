@@ -17,6 +17,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/assets/mappings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Mappings
+         * @description Mappings ordered by identifier, optionally narrowed to one entity or listing.
+         */
+        get: operations["mappings_api_v1_assets_mappings_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/discovery": {
         parameters: {
             query?: never;
@@ -213,6 +233,33 @@ export interface paths {
         };
         /** Event */
         get: operations["event_api_v1_events__event_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/feed/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Documents
+         * @description Signed documents after a position, oldest first, without article text.
+         *
+         *     Start with ``since`` or with neither parameter, then pass back ``resume_cursor``.
+         *     It is always present, also when the page is empty, so the next sync resumes from it.
+         *
+         *     ``mapped`` keeps only documents linked to at least one instrument. ``scheme``,
+         *     ``venue`` and ``identifier`` narrow that to matching listings and imply ``mapped``.
+         *     A cursor belongs to the filters it was issued with.
+         */
+        get: operations["documents_api_v1_feed_documents_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -757,6 +804,33 @@ export interface components {
             /** Video Url */
             video_url?: string | null;
         };
+        /** AssetMapping */
+        AssetMapping: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Entity Id */
+            entity_id: string;
+            /** Identifier */
+            identifier: string;
+            /** Mapping Id */
+            mapping_id: string;
+            /**
+             * Schema Version
+             * @default 1
+             * @constant
+             */
+            schema_version: "1";
+            /**
+             * Scheme
+             * @enum {string}
+             */
+            scheme: "exchange_symbol" | "isin" | "provider_id";
+            /** Venue */
+            venue?: string | null;
+        };
         /** AuditEvent */
         AuditEvent: {
             /** Action */
@@ -787,6 +861,13 @@ export interface components {
         BatchRequest: {
             /** Items */
             items: components["schemas"]["IngestionRequest"][];
+        };
+        /** CollectionResponse[AssetMapping] */
+        CollectionResponse_AssetMapping_: {
+            /** Data */
+            data: components["schemas"]["AssetMapping"][];
+            meta: components["schemas"]["ResponseMeta"];
+            pagination: components["schemas"]["CursorPagination"];
         };
         /** CollectionResponse[AuditEvent] */
         CollectionResponse_AuditEvent_: {
@@ -1067,6 +1148,146 @@ export interface components {
              * @constant
              */
             schema_version: "1";
+        };
+        /** FeedDocument */
+        FeedDocument: {
+            /**
+             * Available At
+             * Format: date-time
+             */
+            available_at: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Document Id */
+            document_id: string;
+            /**
+             * First Seen At
+             * Format: date-time
+             */
+            first_seen_at: string;
+            /**
+             * Ingested At
+             * Format: date-time
+             */
+            ingested_at: string;
+            /** Ingestion Id */
+            ingestion_id: string;
+            /** Language */
+            language: string | null;
+            /**
+             * Last Signed At
+             * Format: date-time
+             */
+            last_signed_at: string;
+            /** Published At */
+            published_at: string | null;
+            /** Revision */
+            revision: number;
+            /** Source Id */
+            source_id: string;
+            /** Title */
+            title: string;
+            /** Url */
+            url: string | null;
+        };
+        /** FeedEvent */
+        FeedEvent: {
+            /** Analysis Id */
+            analysis_id: string | null;
+            /**
+             * Available At
+             * Format: date-time
+             */
+            available_at: string;
+            /** Confidence */
+            confidence: number | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Event Id */
+            event_id: string;
+            /** Event Type */
+            event_type: string | null;
+            /**
+             * Evidence Kind
+             * @enum {string}
+             */
+            evidence_kind: "fact" | "model_output";
+            /** Occurred At */
+            occurred_at: string | null;
+            /** Revision */
+            revision: number;
+        };
+        /** FeedInstrument */
+        FeedInstrument: {
+            /** Canonical Name */
+            canonical_name: string;
+            /** Confidence */
+            confidence: number;
+            /** Entity Id */
+            entity_id: string;
+            /** Identifier */
+            identifier: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "organization" | "person" | "location" | "other";
+            /** Mapping Id */
+            mapping_id: string;
+            /** Resolution Analysis Id */
+            resolution_analysis_id: string;
+            /**
+             * Scheme
+             * @enum {string}
+             */
+            scheme: "exchange_symbol" | "isin" | "provider_id";
+            /** Venue */
+            venue: string | null;
+        };
+        /** FeedItem */
+        FeedItem: {
+            /** Analyses */
+            analyses: components["schemas"]["AnalysisResult"][];
+            document: components["schemas"]["FeedDocument"];
+            /** Events */
+            events: components["schemas"]["FeedEvent"][];
+            /** Instruments */
+            instruments: components["schemas"]["FeedInstrument"][];
+            /** Manifests */
+            manifests: components["schemas"]["FeedManifest"][];
+            source: components["schemas"]["Source"];
+        };
+        /** FeedManifest */
+        FeedManifest: {
+            /** Key Id */
+            key_id: string;
+            /** Manifest Hash */
+            manifest_hash: string;
+            /**
+             * Signed At
+             * Format: date-time
+             */
+            signed_at: string;
+        };
+        /** FeedResponse */
+        FeedResponse: {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            /** Data */
+            data: components["schemas"]["FeedItem"][];
+            meta: components["schemas"]["ResponseMeta"];
+            pagination: components["schemas"]["CursorPagination"];
+            /** Resume Cursor */
+            resume_cursor: string;
         };
         /** FetchOptions */
         FetchOptions: {
@@ -1945,6 +2166,52 @@ export interface operations {
             };
         };
     };
+    mappings_api_v1_assets_mappings_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string | null;
+                as_of?: string | null;
+                entity_id?: string | null;
+                scheme?: ("exchange_symbol" | "isin" | "provider_id") | null;
+                venue?: string | null;
+                identifier?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionResponse_AssetMapping_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
     discovery_api_v1_discovery_get: {
         parameters: {
             query?: {
@@ -2435,6 +2702,52 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SingleResponse_NewsEvent_"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
+    documents_api_v1_feed_documents_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string | null;
+                since?: string | null;
+                mapped?: boolean;
+                scheme?: ("exchange_symbol" | "isin" | "provider_id") | null;
+                venue?: string | null;
+                identifier?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedResponse"];
                 };
             };
             /** @description Unprocessable Entity */

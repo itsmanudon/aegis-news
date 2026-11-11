@@ -24,7 +24,7 @@ uv sync --frozen
 pnpm install --frozen-lockfile
 docker compose --profile core up -d postgres redis minio minio-init
 uv run alembic upgrade head
-uv run uvicorn apps.api.main:app --reload --port 8000 --no-access-log
+AEGIS_ALLOW_INSECURE_LOCAL=true uv run uvicorn apps.api.main:app --reload --port 8000 --no-access-log
 # Another terminal:
 cp .env.example apps/web/.env.local
 pnpm web:dev
@@ -33,6 +33,8 @@ docker compose --profile full up -d temporal
 uv run python -m apps.worker.main
 uv run python scripts/temporal_smoke.py
 ```
+
+The API refuses to start with security off unless `AEGIS_ALLOW_INSECURE_LOCAL=true` is set, as above or in a root `.env` copied from `.env.example`. Never set it on a host; production refuses it.
 
 Copying the example for web supplies dummy values only; the frontend uses `AEGIS_API_INTERNAL_URL` server-side and `NEXT_PUBLIC_API_URL` in links. `.env.local` is ignored. Next.js does not load the root `.env` automatically during host development. Stop `api`, `web` and `worker` first if switching from the full Docker stack to host processes.
 

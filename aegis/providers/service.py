@@ -10,7 +10,7 @@ from uuid import uuid4
 import httpx
 from prometheus_client import CollectorRegistry, Counter
 
-from aegis.providers.adapters import ADAPTERS
+from aegis.providers.adapters import ADAPTERS, MAX_PAGES
 from aegis.providers.models import (
     FetchBatch,
     FetchOptions,
@@ -22,6 +22,9 @@ from aegis.providers.models import (
 from aegis.providers.persistence import ProviderStore
 from aegis.providers.transport import ProviderError, ProviderHttp, make_http_client
 from aegis.settings import Settings
+
+# Refusals that mean "no more today": the day is marked so later runs skip the provider.
+QUOTA_ERRORS = frozenset({"rate_or_quota", "permission_or_quota"})
 
 
 class Acquisition(Protocol):
@@ -87,9 +90,17 @@ class ProviderMetrics:
 
 class ProviderRunner:
     def __init__(
-        self, settings: Settings, store: ProviderStore, metrics: ProviderMetrics | None = None
+        self,
+        settings: Settings,
+        store: ProviderStore,
+        metrics: ProviderMetrics | None = None,
+        *,
+        resubmit_unfinished: bool = False,
     ) -> None:
         self.settings, self.store, self.metrics = settings, store, metrics
+        # The daily job's Temporal server forgets every workflow when it stops, so an
+        # article submitted by an interrupted run is submitted again until it has a document.
+        self.resubmit_unfinished = resubmit_unfinished
         self.lock = asyncio.Lock()
 
     def key(self, provider: str) -> str:
@@ -106,6 +117,14 @@ class ProviderRunner:
             ProviderStatus(provider=name, enabled=name == "gdelt" or bool(self.key(name)))
             for name in NAMES
         )
+
+    def over_budget(self, provider: str) -> bool:
+        """True when a full fetch could pass today's budget, or the provider refused today."""
+        budget = self.settings.provider_daily_requests.get(provider)
+        if budget is None:
+            return False
+        used, exhausted = self.store.usage(provider, datetime.now(UTC).date())
+        return exhausted or used + MAX_PAGES > budget
 
     def metric(self, event: str, provider: str, amount: int = 1) -> None:
         if self.metrics:
@@ -130,6 +149,13 @@ class ProviderRunner:
                 for name in names:
                     if name != "gdelt" and not self.key(name):
                         outcomes.append(ProviderOutcome(provider=name, status="disabled"))
+                        continue
+                    if await asyncio.to_thread(self.over_budget, name):
+                        outcomes.append(
+                            ProviderOutcome(
+                                provider=name, status="failed", error="daily_budget_reached"
+                            )
+                        )
                         continue
                     self.metric("fetch", name)
                     fetched = submitted = duplicates = skipped = images = videos = requests = 0
@@ -184,7 +210,11 @@ class ProviderRunner:
                                 if duplicate:
                                     duplicates += 1
                                     self.metric("duplicates", name)
-                                retry = row.workflow_id is None or options.retry_failed
+                                retry = (
+                                    row.workflow_id is None
+                                    or options.retry_failed
+                                    or (self.resubmit_unfinished and row.document_id is None)
+                                )
                                 if retry:
                                     result = await gateway.request(
                                         "POST", "/api/v1/ingestions", row.request
@@ -237,6 +267,13 @@ class ProviderRunner:
                             requests=requests,
                             workflow_ids=tuple(workflows),
                         )
+                    await asyncio.to_thread(
+                        self.store.record_usage,
+                        name,
+                        datetime.now(UTC).date(),
+                        outcome.requests,
+                        outcome.error in QUOTA_ERRORS,
+                    )
                     outcomes.append(outcome)
                     report = report.model_copy(update={"outcomes": tuple(outcomes)})
                     await asyncio.to_thread(self.store.run, report)

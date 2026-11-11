@@ -7,7 +7,7 @@ from uuid import NAMESPACE_URL, uuid5
 
 from botocore.exceptions import ClientError
 from pydantic import BaseModel
-from sqlalchemy import cast, select
+from sqlalchemy import cast, func, select, update
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Session
 
@@ -27,6 +27,7 @@ from aegis.entities.materialize import materialize_mentions
 from aegis.events.outbox import stage_event
 from aegis.ingestion.repository import IngestionRepository, document_value, object_value
 from aegis.intelligence.persistence import append_analysis, from_row
+from aegis.intelligence.resolution import match_keys
 from aegis.media.storage import ObjectStorage
 from aegis.persistence.models import (
     AnalysisRow,
@@ -34,6 +35,7 @@ from aegis.persistence.models import (
     DocumentMediaLinkRow,
     DocumentRow,
     EntityMentionRow,
+    EntityNameRow,
     EntityRow,
     MediaAssetRow,
     NewsEventRow,
@@ -47,6 +49,11 @@ from aegis.provenance.service import (
     canonical,
 )
 from aegis.security.persistence import SignedManifestRow
+
+# Up to this many entities, every entity is a candidate, which is how resolution worked
+# before name keys existed. Beyond it, candidates come only from the key lookup.
+SMALL_UNIVERSE = 1000
+MAX_CANDIDATES = 200
 
 
 def stable_id(prefix: str, identity: str) -> str:
@@ -89,7 +96,8 @@ class AnalysisPipeline:
 
     def context(
         self, document_id: str, extraction_id: str
-    ) -> tuple[tuple[EntityMention, ...], tuple[Entity, ...]]:
+    ) -> tuple[tuple[EntityMention, ...], tuple[Entity, ...], dict[str, tuple[str, ...]]]:
+        """Mentions of one extraction, the entities they could mean, and those names."""
         with self.repository.sessions() as session:
             mentions = tuple(
                 record(EntityMention, row)
@@ -103,13 +111,50 @@ class AnalysisPipeline:
                 )
             )
             # Candidates are curated canonical records, never synthesized from model spans.
+            # They are found by key: every entity whose stored name or alias equals a
+            # mention's match key. That is an index lookup per mention, so the cost does
+            # not grow with the number of entities.
+            keys = {key for mention in mentions for key in match_keys(mention.surface)}
+            ids = (
+                set(
+                    session.scalars(
+                        select(EntityNameRow.entity_id)
+                        .where(EntityNameRow.key.in_(keys))
+                        .order_by(EntityNameRow.entity_id)
+                        .limit(MAX_CANDIDATES)
+                    )
+                )
+                if keys
+                else set()
+            )
+            # A small curated set is also offered whole, as before, so entities written
+            # without name keys (fixtures, the demo seed) still resolve and near-miss
+            # spellings can be scored. Past this size only keyed entities are reachable.
+            small = list(
+                session.scalars(
+                    select(EntityRow.entity_id)
+                    .order_by(EntityRow.entity_id)
+                    .limit(SMALL_UNIVERSE + 1)
+                )
+            )
+            if len(small) <= SMALL_UNIVERSE:
+                ids.update(small)
             candidates = tuple(
                 record(Entity, row)
                 for row in session.scalars(
-                    select(EntityRow).order_by(EntityRow.entity_id).limit(1000)
+                    select(EntityRow)
+                    .where(EntityRow.entity_id.in_(ids))
+                    .order_by(EntityRow.entity_id)
                 )
             )
-            return mentions, candidates
+            names: dict[str, list[str]] = {}
+            for name in session.scalars(
+                select(EntityNameRow)
+                .where(EntityNameRow.entity_id.in_(ids))
+                .order_by(EntityNameRow.entity_id, EntityNameRow.key)
+            ):
+                names.setdefault(name.entity_id, []).append(name.key)
+            return mentions, candidates, {key: tuple(value) for key, value in names.items()}
 
     def persist(self, document: NewsDocument, analysis: AnalysisResult, correlation_id: str) -> str:
         with self.repository.sessions.begin() as session:
@@ -267,6 +312,19 @@ class AnalysisPipeline:
             )
             for value in records:
                 session.add(ProvenanceRow(**value.model_dump()))
+            # Availability is a fact about signing, written in the signing transaction:
+            # set once on the first signed run, while last_signed_at follows every run so
+            # a re-analysed document moves forward in the incremental feed.
+            session.execute(
+                update(DocumentRow)
+                .where(DocumentRow.document_id == document_id)
+                .values(
+                    available_at=func.coalesce(DocumentRow.available_at, now),
+                    last_signed_at=func.greatest(
+                        func.coalesce(DocumentRow.last_signed_at, now), now
+                    ),
+                )
+            )
         return provenance_id
 
     def manifests(

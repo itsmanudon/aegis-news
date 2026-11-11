@@ -9,6 +9,7 @@ class MemoryStage:
         self.rows = {}
         self.evidence = []
         self.runs = {}
+        self.used = {}
 
     def known(self, record):
         return self.rows.get(record.title)
@@ -40,6 +41,13 @@ class MemoryStage:
     def videos(self, values):
         pass
 
+    def usage(self, provider, day):
+        return self.used.get(provider, (0, False))
+
+    def record_usage(self, provider, day, requests, exhausted):
+        used, refused = self.usage(provider, day)
+        self.used[provider] = (used + requests, refused or exhausted)
+
 
 class Gateway:
     def __init__(self):
@@ -57,9 +65,11 @@ class Adapter:
         self.name, self.failure = name, failure
 
     async def fetch(self, query, limit, country):
+        self.calls = getattr(self, "calls", 0) + 1
         if self.failure:
             raise ProviderError("permission_or_quota")
         return FetchBatch(
+            requests=1,
             records=(
                 ExternalNewsRecord(
                     provider=self.name,
@@ -68,7 +78,7 @@ class Adapter:
                     publisher_name="Publisher",
                     article_url="https://publisher.test/story",
                 ),
-            )
+            ),
         )
 
 
@@ -110,3 +120,41 @@ async def test_single_disabled_provider_is_reported_without_network_or_ingestion
     assert result.outcomes[0].status == "disabled"
     assert stage.runs[result.run_id] == result
     assert not gateway.posts and not stage.rows
+
+
+async def test_a_daily_budget_holds_across_runs_and_a_quota_refusal_ends_the_day():
+    stage, gateway = MemoryStage(), Gateway()
+    runner = ProviderRunner(
+        Settings(
+            _env_file=None,
+            newsdata_api_key="test-secret",
+            newsapi_api_key="test-secret",
+            # Room for one full fetch (three pages) and no more.
+            provider_daily_requests={"newsdata": 3, "newsapi": 100},
+        ),
+        stage,
+    )
+    adapters = {"newsdata": Adapter("newsdata"), "newsapi": Adapter("newsapi", True)}
+    first = await runner.execute(["newsdata", "newsapi"], FetchOptions(limit=1), gateway, adapters)
+    assert [o.status for o in first.outcomes] == ["submitted", "failed"]
+    assert stage.used == {"newsdata": (1, False), "newsapi": (0, True)}
+    # The second run sees one request already spent: another full fetch could pass three.
+    second = await runner.execute(["newsdata", "newsapi"], FetchOptions(limit=1), gateway, adapters)
+    assert [(o.status, o.error) for o in second.outcomes] == [
+        ("failed", "daily_budget_reached"),
+        ("failed", "daily_budget_reached"),
+    ]
+    assert adapters["newsdata"].calls == 1 and adapters["newsapi"].calls == 1
+
+
+async def test_a_provider_without_a_budget_is_not_counted_against_one():
+    stage, gateway = MemoryStage(), Gateway()
+    runner = ProviderRunner(
+        Settings(_env_file=None, newsdata_api_key="test-secret", provider_daily_requests={}),
+        stage,
+    )
+    stage.used["newsdata"] = (10_000, False)
+    run = await runner.execute(
+        ["newsdata"], FetchOptions(limit=1), gateway, {"newsdata": Adapter("newsdata")}
+    )
+    assert run.outcomes[0].status == "submitted"

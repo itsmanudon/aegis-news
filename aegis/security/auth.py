@@ -15,6 +15,7 @@ ROLE_SCOPES = {
         {
             "documents:read",
             "events:read",
+            "feed:read",
             "sources:read",
             "sources:write",
             "ingestions:write",
@@ -23,8 +24,10 @@ ROLE_SCOPES = {
             "admin:users",
         }
     ),
-    "analyst": frozenset({"documents:read", "events:read", "sources:read", "security:verify"}),
-    "viewer": frozenset({"documents:read", "events:read", "sources:read"}),
+    "analyst": frozenset(
+        {"documents:read", "events:read", "feed:read", "sources:read", "security:verify"}
+    ),
+    "viewer": frozenset({"documents:read", "events:read", "feed:read", "sources:read"}),
     "source_manager": frozenset({"sources:read", "sources:write", "ingestions:write"}),
     "security_auditor": frozenset({"audit:read", "security:verify"}),
 }
@@ -88,6 +91,10 @@ class TokenValidator:
                 audience=self.settings.oidc_audience,
                 options={"require": ["iss", "aud", "sub", "exp", "iat"]},
             )
+            # A stolen token is useful until it expires, so the issuer may not pick the bound.
+            lifetime = claims["exp"] - claims["iat"]
+            if not 0 < lifetime <= self.settings.oidc_max_token_lifetime:
+                raise ValueError
             subject, roles, scope = claims["sub"], claims.get("roles", []), claims.get("scope", "")
             if not isinstance(subject, str) or not 0 < len(subject) <= 256:
                 raise ValueError
@@ -178,9 +185,13 @@ def require_scopes(*scopes: str) -> Any:
     return Depends(authorize)
 
 
-def product_access(scope: str) -> Any:
-    """Explicit unsecured local mode; secured products share resource-server authorization."""
-    if scope not in KNOWN_SCOPES:
+def product_access(*scopes: str) -> Any:
+    """Explicit unsecured local mode; secured products share resource-server authorization.
+
+    Every named scope is required. A route that needs two takes them in one call, so the
+    token is validated and the rate limit counted once.
+    """
+    if not scopes or any(scope not in KNOWN_SCOPES for scope in scopes):
         raise ValueError("unknown scope")
 
     async def authorize(
@@ -190,7 +201,7 @@ def product_access(scope: str) -> Any:
         if not request.app.state.settings.security_enabled:
             return
         principal = await authenticate(request, credentials)
-        if not principal.permits(scope):
+        if not all(principal.permits(scope) for scope in scopes):
             await run_in_threadpool(
                 request.app.state.audit.emit,
                 "permission_denied",

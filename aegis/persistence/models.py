@@ -84,11 +84,24 @@ class DocumentRow(Versioned, Base):
     ingested_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     revision: Mapped[int] = mapped_column(Integer, default=1, server_default="1")
+    # Stamped by AnalysisPipeline.sign. available_at is the first signed run and never
+    # moves; last_signed_at is the latest one and is the incremental feed's position.
+    # Both stay out of NewsDocument on purpose: the signed normalization hash covers that
+    # model, so a field written after signing would make every verification fail.
+    available_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    last_signed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     __table_args__ = (
         CheckConstraint("revision >= 1", name="document_revision"),
         CheckConstraint(
             "ingested_at >= first_seen_at AND created_at >= ingested_at", name="document_time_order"
         ),
+        CheckConstraint(
+            "(available_at IS NULL) = (last_signed_at IS NULL) AND "
+            "(available_at IS NULL OR "
+            "(available_at >= created_at AND last_signed_at >= available_at))",
+            name="document_availability",
+        ),
+        Index("document_feed_position", "last_signed_at", "document_id"),
     )
 
 
@@ -107,6 +120,25 @@ class EntityRow(Versioned, Base):
     canonical_name: Mapped[str] = mapped_column(String(512))
     kind: Mapped[str] = mapped_column(String(32))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class EntityNameRow(Base):
+    """Match keys under which an entity can be found: its name and its aliases.
+
+    Resolution looks candidates up here by key, so its cost follows the mentions in a
+    document and not the number of entities. Keys come from resolution.match_keys.
+    """
+
+    __tablename__ = "entity_names"
+    entity_id: Mapped[str] = mapped_column(ForeignKey("entities.entity_id"), primary_key=True)
+    key: Mapped[str] = mapped_column(String(512), primary_key=True)
+    kind: Mapped[str] = mapped_column(String(16))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    __table_args__ = (
+        CheckConstraint("kind IN ('name', 'alias')", name="entity_name_kind"),
+        CheckConstraint("key <> ''", name="entity_name_key"),
+        Index("entity_name_lookup", "key"),
+    )
 
 
 class DocumentMediaLinkRow(Versioned, Base):
@@ -173,9 +205,9 @@ class AssetMappingRow(Versioned, Base):
         CheckConstraint(
             "scheme <> 'exchange_symbol' OR venue IS NOT NULL", name="asset_mapping_venue"
         ),
+        # A listing maps to one entity, so the entity is not part of the identity.
         Index(
-            "asset_mapping_identity",
-            "entity_id",
+            "asset_mapping_listing",
             "scheme",
             "identifier",
             "venue",

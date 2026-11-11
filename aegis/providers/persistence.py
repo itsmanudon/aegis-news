@@ -1,12 +1,12 @@
 """Acquisition staging/evidence only. Canonical documents are written by Temporal."""
 
 import base64
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from typing import Any
 from urllib.parse import urlsplit
 from uuid import uuid4
 
-from sqlalchemy import JSON, DateTime, ForeignKey, String, delete, select
+from sqlalchemy import JSON, Date, DateTime, ForeignKey, Integer, String, delete, select
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, Session, mapped_column, sessionmaker
 
@@ -64,6 +64,17 @@ class YouTubeReferenceRow(Base):
     metadata_value: Mapped[dict[str, Any]] = mapped_column(Json)
     last_refreshed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+
+
+class ProviderUsageRow(Base):
+    """Requests sent to one provider on one UTC day, so a budget holds across runs."""
+
+    __tablename__ = "provider_daily_usage"
+    provider: Mapped[str] = mapped_column(String(16), primary_key=True)
+    day: Mapped[date] = mapped_column(Date, primary_key=True)
+    requests: Mapped[int] = mapped_column(Integer)
+    # Set when the provider refused for rate, quota or permission: no more calls today.
+    exhausted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 def utc(value: datetime) -> datetime:
@@ -204,6 +215,31 @@ class ProviderStore:
                     created_at=report.created_at,
                 )
             )
+
+    def document_for_workflow(self, workflow_id: str) -> str | None:
+        with self.sessions() as session:
+            return session.scalar(
+                select(ProviderArticleRow.document_id)
+                .where(ProviderArticleRow.workflow_id == workflow_id)
+                .where(ProviderArticleRow.document_id.is_not(None))
+                .limit(1)
+            )
+
+    def usage(self, provider: str, day: date) -> tuple[int, bool]:
+        """Requests already sent today, and whether the provider has refused today."""
+        with self.sessions() as session:
+            row = session.get(ProviderUsageRow, (provider, day))
+            return (row.requests, row.exhausted_at is not None) if row else (0, False)
+
+    def record_usage(self, provider: str, day: date, requests: int, exhausted: bool) -> None:
+        with self.sessions.begin() as session:
+            row = session.get(ProviderUsageRow, (provider, day), with_for_update=True)
+            if row is None:
+                row = ProviderUsageRow(provider=provider, day=day, requests=0)
+                session.add(row)
+            row.requests += requests
+            if exhausted and row.exhausted_at is None:
+                row.exhausted_at = datetime.now(UTC)
 
     def get_run(self, run_id: str) -> ProviderRun | None:
         with self.sessions() as session:

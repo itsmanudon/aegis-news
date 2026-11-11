@@ -1,8 +1,8 @@
 # API v1 foundation
 
-`GET /health` is process liveness and does not inspect dependencies. `GET /ready` checks PostgreSQL connectivity + the migrated outbox table, Redis PING, and the configured S3 bucket; it checks Temporal when enabled. All probes have timeouts. Readiness failure returns HTTP 503 in the error envelope without credentials or dependency exception text. Probe results on success list required dependencies.
+`GET /health` is process liveness and does not inspect dependencies. `GET /ready` checks PostgreSQL connectivity + the migrated outbox table and the configured S3 bucket; it checks Redis when the rate limiter uses it and Temporal when enabled. All probes have timeouts. Readiness failure returns HTTP 503 in the error envelope without credentials or dependency exception text. Probe results on success list required dependencies.
 
-`GET /api/v1/system/info` returns name, version, foundation stage and architecture. Ingestion adds Source registration, single/batch durable submission, workflow status, and canonical ingestion/document retrieval; see [ingestion operations](ingestion.md). Entity, event, search and asset product handlers remain reserved. `/docs`, `/redoc` and `/openapi.json` expose generated documentation; `/metrics` uses Prometheus text format and is excluded from OpenAPI.
+`GET /api/v1/system/info` returns name, version, foundation stage and architecture. Ingestion adds Source registration, single/batch durable submission, workflow status, and canonical ingestion/document retrieval; see [ingestion operations](ingestion.md). Product handlers for documents, entities, events, search, the incremental feed (`/api/v1/feed/documents`, [feed.md](feed.md)) and asset mappings (`/api/v1/assets/mappings`, [instruments.md](instruments.md)) are served. `/docs`, `/redoc` and `/openapi.json` expose generated documentation; `/metrics` uses Prometheus text format and is excluded from OpenAPI.
 
 ```json
 {"data": {}, "meta": {"request_id": "opaque-id", "api_version": "v1"}}
@@ -12,16 +12,18 @@
 {"data": [], "pagination": {"next_cursor": null, "has_more": false}, "meta": {"request_id": "opaque-id", "api_version": "v1"}}
 ```
 
-Collections use cursor pagination only. Future cursors are opaque tokens bound to stable ordering, filters and a knowledge cutoff when relevant. No pagination engine or public collection endpoint is implemented. `has_more` must agree with `next_cursor` being present.
+Collections use cursor pagination only. Future cursors are opaque tokens bound to stable ordering, filters and a knowledge cutoff when relevant. `has_more` must agree with `next_cursor` being present.
 
 ```json
 {"error": {"code": "INVALID_ARGUMENT", "message": "Request validation failed", "request_id": "opaque-id"}}
 ```
 
-Codes: INVALID_ARGUMENT, UNAUTHORIZED, FORBIDDEN, NOT_FOUND, CONFLICT, RATE_LIMITED, SOURCE_UNAVAILABLE, PROCESSING_FAILED, INTEGRITY_FAILED, INTERNAL_ERROR. HTTP exceptions, validation errors, unmatched routes, method errors and unexpected handler failures share this structure. Preserve useful authentication/retry headers. Error text never includes raw validation input or internal exception details. The foundation adds error codes, not authentication or rate limiting.
+Codes: INVALID_ARGUMENT, UNAUTHORIZED, FORBIDDEN, NOT_FOUND, CONFLICT, RATE_LIMITED, SOURCE_UNAVAILABLE, PROCESSING_FAILED, INTEGRITY_FAILED, INTERNAL_ERROR. HTTP exceptions, validation errors, unmatched routes, method errors and unexpected handler failures share this structure. Preserve useful authentication/retry headers. Error text never includes raw validation input or internal exception details. Authentication, scopes and rate limiting are described in [security-crypto.md](security-crypto.md).
 
 Clients may send `X-Request-ID` and `X-Correlation-ID` (1–128 ASCII letters/digits/period/underscore/hyphen); malformed or oversized values are replaced. Responses echo valid IDs or generated UUIDs. OTel independently handles W3C `traceparent` when enabled. Correlation IDs are observational context and are never authentication/idempotency credentials.
 
 OpenAPI and JSON schemas are checked in under `schemas/`. Run `uv run python scripts/export_schemas.py` after intentional contract changes; CI fails on drift. Generated SDKs are deferred. Interactive documentation and metrics are local development facilities; production exposure requires explicit access policy.
 
 The implementation follows the official [Pydantic model guidance](https://docs.pydantic.dev/latest/concepts/models/) and [Next.js setup guidance](https://nextjs.org/docs/app/getting-started/installation); frontend lint is a separate CI step.
+
+The incremental feed for scheduled downstream consumers, `GET /api/v1/feed/documents`, is described in [feed.md](feed.md).

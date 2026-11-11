@@ -6,6 +6,10 @@ import pytest
 from aegis.domain.ids import new_id
 from aegis.domain.models import AnalysisResult, NewsDocument, TopicResult
 
+# Most tests build the API with security off, which the API refuses unless this is set.
+# tests/security/test_startup_guard.py clears it to check the refusal.
+os.environ.setdefault("AEGIS_ALLOW_INSECURE_LOCAL", "true")
+
 
 def pytest_collection_modifyitems(config, items):
     for item in items:

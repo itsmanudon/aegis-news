@@ -31,6 +31,16 @@ GNews uses query `apikey`, numeric `page`, `max` and `totalArticles/articles`;
 pagination stops at 1,000 upstream items. Current records include `id`, `lang`,
 `source.name/url`, `image`, `publishedAt`. Our manual run is capped much lower.
 403 may indicate daily exhaustion; 429 indicates throttling. No aggressive retry.
+
+**Daily budgets.** Requests are counted per provider per UTC day in the
+`provider_daily_usage` table, so the count holds across runs and restarts. A run skips a
+provider, with the error `daily_budget_reached`, when a full fetch (up to three pages)
+could pass its budget, or when it refused with 403 or 429 earlier that day.
+`AEGIS_PROVIDER_DAILY_REQUESTS` sets the budgets, as JSON; the default is
+`{"newsdata": 200, "gnews": 100, "newsapi": 100}`, the free tiers above. A provider not
+listed has no budget. Retries inside one page can pass the budget by a few requests.
+Providers reset on their own clocks (YouTube at midnight Pacific), so a UTC day is an
+approximation.
 See [authentication](https://docs.gnews.io/authentication),
 [search](https://docs.gnews.io/endpoints/search-endpoint),
 [response](https://docs.gnews.io/json-response), [errors](https://docs.gnews.io/error-handling),

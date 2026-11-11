@@ -14,6 +14,7 @@ def make_service(settings: Settings) -> IngestionService:
         secret_key=settings.s3_secret_key.get_secret_value(),
         bucket=settings.s3_bucket,
         region=settings.s3_region,
+        addressing_style=settings.s3_addressing_style,
     )
     return IngestionService(
         IngestionRepository(session_factory(make_engine(settings))),
