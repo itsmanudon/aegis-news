@@ -2,6 +2,8 @@ from datetime import timedelta
 from uuid import uuid4
 
 import pytest
+from alembic.config import Config
+from alembic.script import ScriptDirectory
 from sqlalchemy import inspect, text
 from sqlalchemy.exc import DBAPIError, IntegrityError
 from sqlalchemy.orm import Session
@@ -88,10 +90,10 @@ def test_extensions_and_schema(engine):
         names = set(connection.execute(text("SELECT extname FROM pg_extension")).scalars())
         assert {"vector", "pg_trgm"} <= names
         assert "outbox_events" in inspect(connection).get_table_names()
-        assert (
-            connection.execute(text("SELECT version_num FROM alembic_version")).scalar()
-            == "entity_names_0001"
-        )
+        # The database must be at the single head of the migration scripts, whatever it is;
+        # tests/contract/test_mvp_migrations.py pins the chain itself.
+        (head,) = ScriptDirectory.from_config(Config("alembic.ini")).get_heads()
+        assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar() == head
 
 
 @pytest.mark.database
