@@ -20,9 +20,15 @@ logger = logging.getLogger("aegis.worker")
 
 class IntelligenceActivities:
     def __init__(
-        self, ingestion: IngestionService, engine: IntelligenceEngine, pipeline: AnalysisPipeline
+        self,
+        ingestion: IngestionService,
+        engine: IntelligenceEngine,
+        pipeline: AnalysisPipeline,
+        archive: bool = True,
     ) -> None:
         self.ingestion, self.engine, self.pipeline = ingestion, engine, pipeline
+        # The encrypted copy of each manifest. Off in the daily job, which keeps no nonces.
+        self.archive = archive
 
     async def analyze(
         self, task: str, document_id: str, run_key: str, correlation_id: str
@@ -112,6 +118,8 @@ class IntelligenceActivities:
         provenance_id = await asyncio.to_thread(
             self.pipeline.sign, document_id, run_key, analysis_ids, raw, media
         )
+        if not self.archive:
+            return provenance_id
         manifest = await asyncio.to_thread(self.pipeline.manifest, document_id, provenance_id)
         content = canonical(manifest.model_dump(mode="json"))
         key = f"provenance/encrypted/{provenance_id}.json"

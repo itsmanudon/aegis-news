@@ -216,6 +216,15 @@ class ProviderStore:
                 )
             )
 
+    def document_for_workflow(self, workflow_id: str) -> str | None:
+        with self.sessions() as session:
+            return session.scalar(
+                select(ProviderArticleRow.document_id)
+                .where(ProviderArticleRow.workflow_id == workflow_id)
+                .where(ProviderArticleRow.document_id.is_not(None))
+                .limit(1)
+            )
+
     def usage(self, provider: str, day: date) -> tuple[int, bool]:
         """Requests already sent today, and whether the provider has refused today."""
         with self.sessions() as session:
