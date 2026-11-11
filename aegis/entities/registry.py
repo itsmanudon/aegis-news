@@ -17,8 +17,21 @@ from aegis.domain.models import NonEmpty
 from aegis.intelligence.resolution import match_keys, normalized_name
 from aegis.persistence.models import AssetMappingRow, EntityNameRow, EntityRow
 
-# ISO 10383 market identifier code, for example XNAS, XNYS, XNSE, XBOM.
-MIC = re.compile(r"^[A-Z0-9]{4}$")
+# ISO 10383 operating MICs for the markets StockViz trades. Four letters alone is not
+# enough: "NYSE" and "NASD" have the shape of a MIC and are not one. Add a code here,
+# checked against the ISO 10383 list, when a new venue is needed.
+MICS = frozenset(
+    {
+        "XNAS",  # Nasdaq
+        "XNYS",  # New York Stock Exchange
+        "XASE",  # NYSE American
+        "ARCX",  # NYSE Arca
+        "BATS",  # Cboe BZX
+        "XNSE",  # National Stock Exchange of India
+        "XBOM",  # BSE
+        "XLON",  # London Stock Exchange
+    }
+)
 ISIN = re.compile(r"^[A-Z]{2}[A-Z0-9]{9}[0-9]$")
 
 
@@ -32,8 +45,11 @@ class Listing(BaseModel):
     def check_vocabulary(self) -> Self:
         if self.identifier != self.identifier.strip():
             raise ValueError("identifier must not have surrounding whitespace")
-        if self.scheme == "exchange_symbol" and not (self.venue and MIC.fullmatch(self.venue)):
-            raise ValueError("an exchange symbol needs a venue that is an ISO 10383 MIC code")
+        if self.scheme == "exchange_symbol" and self.venue not in MICS:
+            raise ValueError(
+                "an exchange symbol needs a venue from the MIC allow-list: "
+                + ", ".join(sorted(MICS))
+            )
         if self.scheme == "isin" and not (ISIN.fullmatch(self.identifier) and self.venue is None):
             raise ValueError("an ISIN is twelve characters and has no venue")
         return self
@@ -63,6 +79,16 @@ class SeedReport(BaseModel):
     # Keys that now lead to more than one entity. A mention that matches such a key is
     # left unresolved, so each one is a name worth disambiguating with an alias.
     shared_keys: tuple[str, ...] = Field(default=())
+    # Listings the file gives to one entity that already belong to another. Each was
+    # skipped; a listing maps to one entity only.
+    listing_conflicts: tuple[str, ...] = Field(default=())
+    # Listings stored for an entity in the file that the file no longer lists. The seed
+    # only adds, so these stay until removed by hand.
+    listings_not_in_file: tuple[str, ...] = Field(default=())
+
+
+def describe(scheme: str, identifier: str, venue: str | None) -> str:
+    return f"{scheme}:{identifier}@{venue}" if venue else f"{scheme}:{identifier}"
 
 
 def stable(prefix: str, identity: str) -> str:
@@ -101,6 +127,8 @@ def register(session: Session, seeds: list[InstrumentSeed], now: datetime) -> Se
         0,
     )
     touched: set[str] = set()
+    conflicts: list[str] = []
+    stale: list[str] = []
     for seed in seeds:
         entity = find_entity(session, seed)
         if entity is None:
@@ -125,17 +153,28 @@ def register(session: Session, seeds: list[InstrumentSeed], now: datetime) -> Se
                 )
                 session.flush()
                 counts["names_added"] += 1
+        listed = {(item.scheme, item.identifier, item.venue) for item in seed.listings}
+        for scheme, identifier, venue in session.execute(
+            select(AssetMappingRow.scheme, AssetMappingRow.identifier, AssetMappingRow.venue)
+            .where(AssetMappingRow.entity_id == entity.entity_id)
+            .order_by(AssetMappingRow.scheme, AssetMappingRow.identifier, AssetMappingRow.venue)
+        ):
+            if (scheme, identifier, venue) not in listed:
+                stale.append(f"{seed.name}: {describe(scheme, identifier, venue)}")
         for listing in seed.listings:
-            existing = session.scalar(
-                select(AssetMappingRow.mapping_id).where(
-                    AssetMappingRow.entity_id == entity.entity_id,
+            owner = session.scalar(
+                select(AssetMappingRow.entity_id).where(
                     AssetMappingRow.scheme == listing.scheme,
                     AssetMappingRow.identifier == listing.identifier,
                     AssetMappingRow.venue.is_not_distinct_from(listing.venue),
                 )
             )
-            if existing:
+            if owner == entity.entity_id:
                 counts["mappings_existing"] += 1
+                continue
+            if owner is not None:
+                label = describe(listing.scheme, listing.identifier, listing.venue)
+                conflicts.append(f"{seed.name}: {label} belongs to {owner}")
                 continue
             identity = "|".join(
                 (entity.entity_id, listing.scheme, listing.identifier, listing.venue or "")
@@ -163,4 +202,9 @@ def register(session: Session, seeds: list[InstrumentSeed], now: datetime) -> Se
         if touched
         else []
     )
-    return SeedReport(**counts, shared_keys=tuple(shared))
+    return SeedReport(
+        **counts,
+        shared_keys=tuple(shared),
+        listing_conflicts=tuple(conflicts),
+        listings_not_in_file=tuple(stale),
+    )

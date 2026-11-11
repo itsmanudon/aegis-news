@@ -3,6 +3,7 @@
 The position of a document is (last_signed_at, document_id). A document enters the feed
 when its first provenance manifest is signed and moves forward when a later run is
 signed, so a consumer that keeps the resume cursor sees each change exactly once per run.
+Each bundle describes the latest signed run only, so a consumer replaces what it holds.
 """
 
 from collections import defaultdict
@@ -142,6 +143,45 @@ def read(
         )
     }
 
+    # A bundle is the document as of its latest signed run: only the analyses that run
+    # signed, and the events and instrument links that follow from them. Analyses from
+    # earlier runs, or not yet signed, are left out.
+    manifests: dict[str, list[FeedManifest]] = defaultdict(list)
+    current: dict[str, set[str]] = defaultdict(set)
+    for signed in session.execute(
+        text(
+            """
+            SELECT r->>'subject_id' AS document_id, s.manifest_hash, s.key_id, s.created_at,
+                   s.manifest->'records' AS records
+            FROM signed_manifests s
+            CROSS JOIN LATERAL jsonb_array_elements(s.manifest->'records') r
+            WHERE s.created_at >= :earliest AND s.created_at <= :bound
+              AND r->>'operation' = 'normalization'
+              AND r->>'subject_id' = ANY(:ids)
+            ORDER BY s.created_at, s.manifest_hash
+            """
+        ),
+        {
+            "ids": ids,
+            "bound": bound,
+            # A manifest cannot predate the first sight of any document it covers.
+            "earliest": min(document.first_seen_at for document in documents),
+        },
+    ).mappings():
+        # Rows arrive oldest first, so the last one per document is its latest run.
+        current[signed["document_id"]] = {
+            record["subject_id"]
+            for record in signed["records"]
+            if record["operation"] == "analysis"
+        }
+        manifests[signed["document_id"]].append(
+            FeedManifest(
+                manifest_hash=signed["manifest_hash"],
+                key_id=signed["key_id"],
+                signed_at=signed["created_at"],
+            )
+        )
+
     analyses: dict[str, list[AnalysisResult]] = defaultdict(list)
     # document -> entity -> (confidence, resolving analysis)
     resolved: dict[str, dict[str, tuple[float, str]]] = defaultdict(dict)
@@ -155,6 +195,8 @@ def read(
         )
         .order_by(AnalysisRow.available_at, AnalysisRow.analysis_id)
     ):
+        if analysis_row.analysis_id not in current[analysis_row.document_id]:
+            continue
         value = from_row(analysis_row)
         if value.analysis_type in FEED_ANALYSES:
             analyses[value.document_id].append(value)
@@ -197,6 +239,9 @@ def read(
         .order_by(NewsEventRow.available_at, NewsEventRow.event_id, NewsEventRow.revision)
     ):
         event = cast(NewsEventRow, linked[0])
+        # A fact event has no analysis and stands on its own.
+        if event.analysis_id and event.analysis_id not in current[cast(str, linked[1])]:
+            continue
         extraction = event_types.get(event.event_id)
         events[cast(str, linked[1])].append(
             FeedEvent(
@@ -209,34 +254,6 @@ def read(
                 available_at=event.available_at,
                 evidence_kind=event.evidence_kind,
                 analysis_id=event.analysis_id,
-            )
-        )
-
-    manifests: dict[str, list[FeedManifest]] = defaultdict(list)
-    for signed in session.execute(
-        text(
-            """
-            SELECT r->>'subject_id' AS document_id, s.manifest_hash, s.key_id, s.created_at
-            FROM signed_manifests s
-            CROSS JOIN LATERAL jsonb_array_elements(s.manifest->'records') r
-            WHERE s.created_at >= :earliest AND s.created_at <= :bound
-              AND r->>'operation' = 'normalization'
-              AND r->>'subject_id' = ANY(:ids)
-            ORDER BY s.created_at, s.manifest_hash
-            """
-        ),
-        {
-            "ids": ids,
-            "bound": bound,
-            # A manifest cannot predate the first sight of any document it covers.
-            "earliest": min(document.first_seen_at for document in documents),
-        },
-    ).mappings():
-        manifests[signed["document_id"]].append(
-            FeedManifest(
-                manifest_hash=signed["manifest_hash"],
-                key_id=signed["key_id"],
-                signed_at=signed["created_at"],
             )
         )
 

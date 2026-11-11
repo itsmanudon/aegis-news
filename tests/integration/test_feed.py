@@ -43,7 +43,7 @@ def identity(prefix, number):
     return f"{prefix}_{UUID(int=number)}"
 
 
-def seed_doc(session, number, created, signed=None, last_signed=None):
+def seed_doc(session, number, created, signed=None, last_signed=None, analyses=()):
     raw_id, ingestion_id = identity("raw", number), identity("ing", number)
     session.add(
         RawObjectRow(
@@ -87,10 +87,11 @@ def seed_doc(session, number, created, signed=None, last_signed=None):
     )
     session.flush()
     if signed:
-        manifest(session, number, signed)
+        manifest(session, number, signed, analyses=analyses)
 
 
-def manifest(session, number, signed, salt=0):
+def manifest(session, number, signed, salt=0, analyses=()):
+    """A signed run of document ``number`` that signed the analyses numbered ``analyses``."""
     session.add(
         SignedManifestRow(
             manifest_hash=f"{number * 1000 + salt:064x}",
@@ -100,6 +101,10 @@ def manifest(session, number, signed, salt=0):
                 "records": [
                     {"subject_id": identity("raw", number), "operation": "raw"},
                     {"subject_id": identity("doc", number), "operation": "normalization"},
+                    *(
+                        {"subject_id": identity("ana", n), "operation": "analysis"}
+                        for n in analyses
+                    ),
                 ]
             },
         )
@@ -137,7 +142,7 @@ def corpus(repository):
             )
         )
         session.flush()
-        seed_doc(session, 1, at(2), at(10))
+        seed_doc(session, 1, at(2), at(10), analyses=range(1, 7))
         # Two documents signed in the same instant: the identifier breaks the tie.
         seed_doc(session, 3, at(4), at(11))
         seed_doc(session, 2, at(3), at(11))
@@ -236,6 +241,15 @@ def corpus(repository):
                 }
             ],
         )
+        # Analysed after the run was signed, so no bundle may show it yet.
+        analysis(
+            session,
+            7,
+            1,
+            "topic",
+            at(9, 6),
+            [{"result_type": "topic", "label": "unsigned", "confidence": 0.9}],
+        )
         event_id = stable_id("evt", f"{identity('ana', 6)}:0")
         session.add(
             NewsEventRow(
@@ -287,7 +301,8 @@ def test_feed_is_ordered_by_signing_and_carries_no_article_text(corpus):
     assert document["url"] == "https://example.test/story/1"
     assert document["available_at"] == document["last_signed_at"] == "2026-01-10T00:00:00Z"
     assert first["source"]["name"] == "Original Synthetic Publisher"
-    # Embeddings and the two extraction analyses are withheld; order is availability.
+    # Embeddings and the two extraction analyses are withheld, and so is analysis 7, which
+    # no run has signed. Order is availability.
     assert [a["analysis_type"] for a in first["analyses"]] == [
         "topic",
         "sentiment",
@@ -361,13 +376,21 @@ def test_resigned_document_returns_once_more_with_its_new_analysis(corpus):
             .where(DocumentRow.document_id == identity("doc", 1))
             .values(last_signed_at=at(20))
         )
-        manifest(session, 1, at(20), salt=1)
+        # The second run signs the topic, the resolution and the new sentiment only.
+        manifest(session, 1, at(20), salt=1, analyses=(1, 5, 20))
     again = client.get(FEED, params={"cursor": done}).json()
     assert ids(again) == docs(1)
     item = again["data"][0]
     assert item["document"]["available_at"] == "2026-01-10T00:00:00Z"
     assert item["document"]["last_signed_at"] == "2026-01-20T00:00:00Z"
-    assert [a["analysis_id"] for a in item["analyses"]][-1] == identity("ana", 20)
+    # The bundle is the latest run: the old sentiment and the event it did not sign are gone.
+    assert [a["analysis_id"] for a in item["analyses"]] == [
+        identity("ana", 1),
+        identity("ana", 5),
+        identity("ana", 20),
+    ]
+    assert item["events"] == []
+    assert [i["mapping_id"] for i in item["instruments"]] == [identity("map", 1)]
     assert [m["signed_at"] for m in item["manifests"]] == [
         "2026-01-10T00:00:00Z",
         "2026-01-20T00:00:00Z",

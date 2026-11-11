@@ -12,6 +12,7 @@ from aegis.providers.persistence import (
     ProviderEvidenceRow,
     ProviderRunRow,
     ProviderStore,
+    ProviderUsageRow,
     YouTubeReferenceRow,
 )
 
@@ -24,6 +25,7 @@ def store():
         ProviderEvidenceRow,
         ProviderRunRow,
         YouTubeReferenceRow,
+        ProviderUsageRow,
     ):
         table.__table__.create(engine)
     return ProviderStore(sessionmaker(engine, expire_on_commit=False))
@@ -115,3 +117,18 @@ def test_restart_marks_only_unfinished_runs_interrupted():
     database.interrupt_runs()
     assert database.get_run("unfinished").status == "interrupted"
     assert database.get_run("finished").status == "submitted"
+
+
+def test_daily_usage_adds_up_per_provider_and_day_and_remembers_a_refusal():
+    database = store()
+    today, tomorrow = datetime(2026, 1, 5).date(), datetime(2026, 1, 6).date()
+    assert database.usage("newsdata", today) == (0, False)
+    database.record_usage("newsdata", today, 2, False)
+    database.record_usage("newsdata", today, 3, False)
+    database.record_usage("gnews", today, 1, True)
+    assert database.usage("newsdata", today) == (5, False)
+    assert database.usage("gnews", today) == (1, True)
+    # A refusal stays marked; the count still grows.
+    database.record_usage("gnews", today, 1, False)
+    assert database.usage("gnews", today) == (2, True)
+    assert database.usage("newsdata", tomorrow) == (0, False)

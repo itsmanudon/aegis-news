@@ -4,7 +4,9 @@ from alembic.script import ScriptDirectory
 
 def test_one_merge_head_preserves_both_feature_parents():
     script = ScriptDirectory.from_config(Config("alembic.ini"))
-    assert script.get_heads() == ["entity_names_0001"]
+    assert script.get_heads() == ["provider_usage_0001"]
+    assert script.get_revision("provider_usage_0001").down_revision == "asset_listing_0001"
+    assert script.get_revision("asset_listing_0001").down_revision == "entity_names_0001"
     assert script.get_revision("entity_names_0001").down_revision == "feed_0001"
     assert script.get_revision("feed_0001").down_revision == "live_providers_0001"
     assert script.get_revision("live_providers_0001").down_revision == "mvp_merge_0001"

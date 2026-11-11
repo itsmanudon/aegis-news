@@ -36,6 +36,10 @@ def date(value: object, timezone: object = None) -> datetime | None:
         return None
 
 
+# Pages one fetch may request. A daily budget keeps this much headroom.
+MAX_PAGES = 3
+
+
 class ArticleProvider:
     name: ProviderName
     endpoint: str
@@ -62,7 +66,7 @@ class ArticleProvider:
         skipped = 0
         initial = self.http.requests
         visited: set[str] = set()
-        for page in range(1, 4):
+        for page in range(1, MAX_PAGES + 1):
             value = await self.http.get(self.endpoint, params, headers)
             if value.get("status") in {"error", "fail"}:
                 raise ProviderError("provider_rejected_request")
