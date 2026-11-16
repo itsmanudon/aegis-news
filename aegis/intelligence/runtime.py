@@ -44,6 +44,12 @@ class BaselineRuntime:
         self, task: str, text: str, spec: ModelSpec, labels: tuple[str, ...] = ()
     ) -> Sequence[Prediction]:
         if task == "entity_extraction":
+            if spec.model_name == "name-spans":
+                return [
+                    {"surface": surface, "start": start, "end": end, "kind": "other", "score": 0.55}
+                    for surface, start, end in name_spans(text)
+                ]
+            # capitalized-spans, revision 1: the public headline baseline pins it.
             return [
                 {
                     "surface": m.group(),
@@ -81,3 +87,49 @@ class BaselineRuntime:
                 values[int.from_bytes(digest[:4]) % spec.dimensions] += 1 if digest[4] % 2 else -1
             return [{"values": normalize_vector(values)}]
         raise ValueError(f"unsupported task: {task}")
+
+
+# A name word starts with a capital and may continue with letters, digits and the
+# joiners companies use ("AT&T", "Coca-Cola", "Amazon.com"); "NVIDIA" and "JPMorgan"
+# qualify. This is the "name-spans" extractor (16 Nov 2026). The older
+# "capitalized-spans" matched only runs of two or more capitalised words, so "Apple",
+# "Nvidia" or "Bank of America" were never extracted and no general news story
+# resolved to a company; it stays, unchanged, for the public headline baseline.
+_NAME_WORD = r"[A-Z][A-Za-z0-9]*(?:[&'.\-][A-Za-z0-9]+)*"
+# Small words a name may contain between capitalised words.
+_JOINERS = r"(?:of|and|&|the|de|du)"
+_NAME_RUN = re.compile(
+    rf"(?<![\w&'.\-]){_NAME_WORD}(?:\s+(?:{_JOINERS}\s+)?{_NAME_WORD})*(?![\w&'-])"
+)
+_TOKEN = re.compile(rf"{_NAME_WORD}|{_JOINERS}")
+MAX_SPAN_WORDS = 6
+
+
+def name_spans(text: str) -> list[tuple[str, int, int]]:
+    """Every run of capitalised words and every contiguous part of it.
+
+    The resolver keeps only the parts that equal a known company's name or alias,
+    so "Shares of Home Depot" yields "Home Depot" and "Apple Inc" yields both
+    "Apple Inc" and "Apple". A part never starts or ends on a joiner. Each span is
+    returned once, with offsets into ``text``.
+    """
+    spans: dict[tuple[int, int], str] = {}
+    for run in _NAME_RUN.finditer(text):
+        tokens = [
+            (m.group(), run.start() + m.start(), run.start() + m.end())
+            for m in _TOKEN.finditer(run.group())
+        ]
+        for i, (first, start, _) in enumerate(tokens):
+            if re.fullmatch(_JOINERS, first):
+                continue
+            words = 0
+            for j in range(i, len(tokens)):
+                last, _, end = tokens[j]
+                if re.fullmatch(_JOINERS, last):
+                    continue
+                words += 1
+                if words > MAX_SPAN_WORDS:
+                    break
+                if end - start <= 512:
+                    spans[(start, end)] = text[start:end]
+    return [(surface, start, end) for (start, end), surface in sorted(spans.items())]

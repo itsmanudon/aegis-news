@@ -277,11 +277,11 @@ def test_the_stockviz_seed_file_registers_without_conflicts(repository):
     raw = json.loads(Path("data/instruments/stockviz.json").read_text(encoding="utf-8"))
     with repository.sessions.begin() as session:
         report = register(session, seeds(*raw), NOW)
-        assert (report.entities_created, report.mappings_created) == (32, 64)
+        assert (report.entities_created, report.mappings_created) == (161, 246)
         assert report.shared_keys == () and report.listing_conflicts == ()
         again = register(session, seeds(*raw), NOW)
         assert (again.entities_created, again.mappings_created, again.mappings_existing) == (
             0,
             0,
-            64,
+            246,
         )
