@@ -84,6 +84,12 @@ joiners inside a word ("AT&T", "Coca-Cola", "Amazon.com"), and offers each run a
 part of it up to six words. The resolver keeps only the parts that equal a known name or
 alias, so "Shares of Home Depot" links Home Depot and "Apple" links Apple Inc.
 
+Revision 2 (same day): a part that lies wholly inside a finance phrase such as
+"Price Target" or "Target Price" (`runtime.NON_NAME_PHRASES`) is not offered. In the
+43 stored production headlines, revision 1 linked four analyst notes to Target
+Corporation through "Price Target"; revision 2 links four headlines, each a real
+mention (Amgen, Accenture, Simon Property Group, Bank of America).
+
 The earlier `capitalized-spans` extractor matched only runs of two or more capitalised
 words, so a headline naming "Apple" or "Nvidia" produced no mention. In production on
 16 Nov 2026 that left 43 documents with no entity at all. `capitalized-spans` stays,
