@@ -51,7 +51,8 @@ def profile(name: str) -> Profile:
         return Profile(
             # name-spans (16 Nov 2026): single words and names with "of" or "&", so news
             # naming "Apple" or "Bank of America" resolves (runtime.name_spans).
-            ner=baseline("name-spans"),
+            # Revision 2: no company from inside "Price Target" and similar phrases.
+            ner=ModelSpec(backend="baseline", model_name="name-spans", revision="2"),
             topic=baseline("keyword-topics"),
             sentiment=baseline("lexicon-sentiment"),
             embedding=baseline("hash-vectors"),
