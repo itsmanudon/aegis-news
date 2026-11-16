@@ -35,8 +35,26 @@ object store:
 - The provider budget (`AEGIS_PROVIDER_DAILY_REQUESTS`) is counted in Postgres, so it holds
   across runs on the same day.
 
-`tests/integration/test_daily_job.py` covers a first run, a repeat run and a run after an
-interruption. It needs the Temporal CLI on the `PATH` or in `AEGIS_TEMPORAL_CLI`.
+`tests/integration/test_daily_job.py` covers a first run, a repeat run, a run after an
+interruption, company searches and the daily budget. It needs the Temporal CLI on the `PATH` or in `AEGIS_TEMPORAL_CLI`.
+
+## Company searches
+
+The general query rarely names a StockViz company, so most symbols got no news. Since
+16 Nov 2026 (the owner approved the NewsData.io allowance) the job then searches the
+companies in `AEGIS_JOB_COMPANY_FILE` by name (`aegis/jobs/company_queries.py`): each
+company's shortest alias of four or more characters, else its name without legal forms
+(a long name uses its three-letter acronym: BMW, AMD, TCS), quoted when it has a space,
+joined with OR into queries of at most 100 characters. The 161 StockViz companies fit in
+24 queries, one request each, `AEGIS_JOB_LIMIT` articles each. Production sends all 24
+nightly (25 requests with the general query, under the 200 a day budget). With fewer
+requests than queries, each day starts where the last stopped.
+
+The provider's daily budget is checked before every request: a search past it is
+recorded as `daily_budget_reached`, which does not fail the run. An article several
+searches return is stored once. A search only fetches candidates; a document links to a
+company only when entity extraction and the resolver say so. A query of nine names
+returns ten articles, so a busy name (Apple) can take most of a query's articles.
 
 ## Settings
 
@@ -46,6 +64,8 @@ interruption. It needs the Temporal CLI on the `PATH` or in `AEGIS_TEMPORAL_CLI`
 | `AEGIS_JOB_QUERY` | `stocks OR markets OR earnings` | Provider query |
 | `AEGIS_JOB_LIMIT` | `10` | Articles per provider per run, 1 to 30. NewsData.io returns 10 per page |
 | `AEGIS_JOB_COUNTRY` | none | `in` or `us` |
+| `AEGIS_JOB_COMPANY_FILE` | none | Seed file whose companies are searched by name, e.g. `data/instruments/stockviz.json` |
+| `AEGIS_JOB_COMPANY_REQUESTS` | `0` | NewsData.io requests for company searches per run, 0 to 50. 0 turns them off |
 | `AEGIS_JOB_TIMEOUT_SECONDS` | `1200` | How long to wait for the workflows |
 | `AEGIS_TEMPORAL_CLI_PATH` | `temporal` | The CLI to start |
 | `AEGIS_PROVENANCE_SIGNING_KEY` | none | Ed25519 private key as PEM. When set, the job writes it to a private temporary directory for the run |

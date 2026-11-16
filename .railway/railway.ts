@@ -22,8 +22,9 @@ import { bucket, defineRailway, github, preserve, project, service } from "railw
  * The database is the shared `Postgres` service, owned by the `stockviz`
  * partial. Aegis reaches it through `AEGIS_DATABASE_URL`.
  *
- * Every variable is `preserve()`: the values live on Railway (and in Doppler)
- * and never in source. Set or rotate them with `railway variable set`; a
+ * Every secret is `preserve()`: the values live on Railway (and in Doppler)
+ * and never in source. The two non-secret company-search settings on
+ * `aegis-daily` are written here. Set or rotate them with `railway variable set`; a
  * re-apply keeps them. A variable that exists on Railway but is missing here
  * is planned for deletion, so add new ones here as `preserve()` first.
  *
@@ -96,6 +97,10 @@ export default defineRailway(() => {
     deploy: { cronSchedule: "30 21 * * *", restartPolicyType: "NEVER" },
     env: {
       ...common,
+      // Company searches (owner-approved NewsData allowance, 16 Nov 2026): 24
+      // requests cover all 161 StockViz companies, under the 200/day budget.
+      AEGIS_JOB_COMPANY_FILE: "data/instruments/stockviz.json",
+      AEGIS_JOB_COMPANY_REQUESTS: "24",
       AEGIS_JOB_LIMIT: preserve(),
       AEGIS_JOB_PROVIDERS: preserve(),
       AEGIS_JOB_QUERY: preserve(),

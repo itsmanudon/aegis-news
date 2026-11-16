@@ -20,7 +20,7 @@ import sys
 import tempfile
 from collections.abc import Iterator, Mapping
 from contextlib import contextmanager
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -37,10 +37,11 @@ from aegis.ingestion.inputs import IngestionRequest, decode_content, decode_medi
 from aegis.ingestion.repository import IngestionRepository
 from aegis.ingestion.runtime import make_service
 from aegis.ingestion.submissions import TemporalSubmissions
+from aegis.jobs.company_queries import company_queries, load_seeds, todays_queries
 from aegis.normalization.article import parse_article
 from aegis.observability.logging import configure_logging
 from aegis.persistence.database import make_engine, session_factory
-from aegis.providers.models import FetchOptions, ProviderRun
+from aegis.providers.models import FetchOptions, ProviderName, ProviderRun
 from aegis.providers.persistence import ProviderStore
 from aegis.providers.service import Acquisition, ProviderRunner
 from aegis.security.keys import validate_key_id
@@ -56,6 +57,10 @@ class JobReport(BaseModel):
     started_at: datetime
     finished_at: datetime
     run: ProviderRun
+    # One run per company query (company_queries.py), in the order sent.
+    company_queries: tuple[str, ...] = ()
+    company_runs: tuple[ProviderRun, ...] = ()
+    company_error: str | None = None
     completed: int = 0
     already_done: int = 0
     failed: tuple[str, ...] = ()
@@ -64,9 +69,10 @@ class JobReport(BaseModel):
     def ok(self) -> bool:
         providers_ok = all(
             outcome.status == "submitted" or outcome.error in EXPECTED_SKIPS
-            for outcome in self.run.outcomes
+            for run in (self.run, *self.company_runs)
+            for outcome in run.outcomes
         )
-        return providers_ok and not self.failed
+        return providers_ok and not self.failed and self.company_error is None
 
 
 class DirectGateway:
@@ -164,6 +170,22 @@ async def wait_for(
     return completed, already, tuple(sorted(set(failed)))
 
 
+COMPANY_PROVIDER: ProviderName = "newsdata"
+
+
+def planned_company_queries(settings: Settings, day: date) -> tuple[list[str], str | None]:
+    """Today's company queries, and why there are none when the file cannot be read."""
+    if settings.job_company_requests == 0 or settings.job_company_file is None:
+        return [], None
+    try:
+        seeds = load_seeds(settings.job_company_file)
+    except (OSError, ValueError) as exc:
+        # The type only, as main() does: the general query's news still goes through.
+        logger.error("company_file_unreadable", extra={"error": type(exc).__name__})
+        return [], type(exc).__name__
+    return todays_queries(company_queries(seeds), settings.job_company_requests, day), None
+
+
 async def run(settings: Settings, adapters: Mapping[str, Acquisition] | None = None) -> JobReport:
     started = datetime.now(UTC)
     settings = settings.model_copy(update={"provenance_archive_enabled": False, "ai_strict": True})
@@ -181,18 +203,39 @@ async def run(settings: Settings, adapters: Mapping[str, Acquisition] | None = N
             submissions = TemporalSubmissions(settings)
             submissions.client = environment.client
             async with build_worker(environment.client, settings, service):
-                report = await ProviderRunner(settings, store, resubmit_unfinished=True).execute(
+                runner = ProviderRunner(settings, store, resubmit_unfinished=True)
+                gateway = DirectGateway(service.repository, submissions)
+                report = await runner.execute(
                     list(settings.job_providers),
                     FetchOptions(
                         query=settings.job_query,
                         limit=settings.job_limit,
                         country=settings.job_country,
                     ),
-                    DirectGateway(service.repository, submissions),
+                    gateway,
                     adapters,
                 )
+                queries, company_error = planned_company_queries(settings, started.date())
+                company_runs = []
+                for query in queries:
+                    # The runner checks the provider's daily budget before each request.
+                    company_runs.append(
+                        await runner.execute(
+                            [COMPANY_PROVIDER],
+                            FetchOptions(query=query, limit=settings.job_limit),
+                            gateway,
+                            adapters,
+                        )
+                    )
+                every = report.model_copy(
+                    update={
+                        "outcomes": tuple(
+                            outcome for run in (report, *company_runs) for outcome in run.outcomes
+                        )
+                    }
+                )
                 completed, already, failed = await wait_for(
-                    environment.client, store, report, settings.job_timeout_seconds
+                    environment.client, store, every, settings.job_timeout_seconds
                 )
         finally:
             service.repository.close()
@@ -202,6 +245,9 @@ async def run(settings: Settings, adapters: Mapping[str, Acquisition] | None = N
         started_at=started,
         finished_at=datetime.now(UTC),
         run=report,
+        company_queries=tuple(queries),
+        company_runs=tuple(company_runs),
+        company_error=company_error,
         completed=completed,
         already_done=already,
         failed=failed,
