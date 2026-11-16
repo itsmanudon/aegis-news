@@ -238,3 +238,19 @@ def test_offline_extraction_links_names_with_joiners_and_aliases():
 
 def test_offline_extraction_ignores_ordinary_capitalised_words():
     assert _linked("Shares Fell As The Market Closed Lower On Monday.") == set()
+
+
+def test_price_target_is_not_target_corporation():
+    """Revision 2: four of 43 stored production headlines (16 Nov 2026) linked to
+    Target Corporation through "Price Target"."""
+    assert _linked("ITG (NASDAQ:ITG) Given New $13.00 Price Target at Bank of America") == {
+        "Bank of America Corporation"
+    }
+    assert _linked("D-Wave Quantum (NASDAQ:QBTS) Price Target Cut to $30.00 by Analysts") == set()
+    assert _linked("Target Price Raised for Apple") == {"Apple Inc."}
+    assert _linked("Analysts Lift Apple Price Targets") == {"Apple Inc."}
+
+
+def test_target_itself_still_links():
+    assert _linked("Target Shares Fall After Earnings") == {"Target Corporation"}
+    assert _linked("Price Target Raised for Target") == {"Target Corporation"}

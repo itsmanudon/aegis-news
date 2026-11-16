@@ -103,6 +103,22 @@ _NAME_RUN = re.compile(
 )
 _TOKEN = re.compile(rf"{_NAME_WORD}|{_JOINERS}")
 MAX_SPAN_WORDS = 6
+# Revision 2 (16 Nov 2026): phrases whose capitalised words are not company names.
+# Title-case finance headlines write "Price Target", and "Target" alone resolved to
+# Target Corporation (4 of 43 stored headlines). A part of a run that lies wholly
+# inside one of these phrases is not offered; the whole run still is.
+NON_NAME_PHRASES = frozenset(
+    {
+        ("price", "target"),
+        ("price", "targets"),
+        ("target", "price"),
+        ("target", "prices"),
+        ("target", "date"),
+        ("target", "range"),
+        ("target", "rate"),
+        ("on", "target"),
+    }
+)
 
 
 def name_spans(text: str) -> list[tuple[str, int, int]]:
@@ -119,6 +135,13 @@ def name_spans(text: str) -> list[tuple[str, int, int]]:
             (m.group(), run.start() + m.start(), run.start() + m.end())
             for m in _TOKEN.finditer(run.group())
         ]
+        # Token indexes covered by a non-name phrase, one set per occurrence.
+        phrases = [
+            set(range(k, k + len(phrase)))
+            for k in range(len(tokens))
+            for phrase in NON_NAME_PHRASES
+            if tuple(t.lower() for t, _, _ in tokens[k : k + len(phrase)]) == phrase
+        ]
         for i, (first, start, _) in enumerate(tokens):
             if re.fullmatch(_JOINERS, first):
                 continue
@@ -130,6 +153,9 @@ def name_spans(text: str) -> list[tuple[str, int, int]]:
                 words += 1
                 if words > MAX_SPAN_WORDS:
                     break
+                inside = set(range(i, j + 1))
+                if any(inside < phrase for phrase in phrases):
+                    continue
                 if end - start <= 512:
                     spans[(start, end)] = text[start:end]
     return [(surface, start, end) for (start, end), surface in sorted(spans.items())]
