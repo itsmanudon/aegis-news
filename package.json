@@ -10,5 +10,8 @@
     "web:test": "pnpm --filter @aegisnews/web test",
     "web:api:check": "pnpm --filter @aegisnews/web api:check",
     "web:test:e2e": "pnpm --filter @aegisnews/web test:e2e"
+  },
+  "devDependencies": {
+    "railway": "^3.17.0"
   }
 }
