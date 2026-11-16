@@ -94,7 +94,16 @@ async def test_analysis_materialization_retry_rerun_provenance_tamper(integrated
         )
         assert all(m.entity_id is None for m in mentions)
         resolution = session.get(AnalysisRow, ids[4])
-        assert all(o["entity_id"] == entity.entity_id for o in resolution.outputs)
+        # name-spans also offers parts such as "Labs"; those stay unresolved.
+        surfaces = {m.mention_id: m.surface for m in mentions}
+        linked = {o["mention_id"] for o in resolution.outputs if o["entity_id"]}
+        assert {surfaces[m] for m in linked} >= {"Atlas Labs"}
+        assert all(o["entity_id"] in (None, entity.entity_id) for o in resolution.outputs)
+        assert all(
+            o["entity_id"] == entity.entity_id
+            for o in resolution.outputs
+            if surfaces[o["mention_id"]] == "Atlas Labs"
+        )
         assert session.scalar(select(func.count()).select_from(NewsEventRow)) >= 1
         count = session.scalar(select(func.count()).select_from(OutboxRow))
     assert await service.prepare(submission) == doc.ingestion_id

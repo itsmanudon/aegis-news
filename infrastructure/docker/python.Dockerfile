@@ -11,6 +11,8 @@ COPY migrations ./migrations
 COPY alembic.ini ./
 COPY scripts ./scripts
 COPY data/samples ./data/samples
+# The StockViz seed: the daily job's company searches and `aegis.entities.seed`.
+COPY data/instruments ./data/instruments
 RUN uv sync --frozen --no-dev --no-editable && useradd --uid 10001 --create-home aegis && mkdir -p /var/log/aegis && chown aegis:aegis /var/log/aegis
 ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1
 USER aegis

@@ -73,6 +73,11 @@ class Settings(BaseSettings):
     job_limit: int = 10  # articles per provider per run, at most 30
     job_country: Literal["in", "us"] | None = None
     job_timeout_seconds: int = 1200
+    # Company searches (16 Nov 2026, owner-approved NewsData allowance): after the
+    # general query, up to this many provider requests search the seeded companies by
+    # name (jobs/company_queries.py), job_limit articles each. 0 turns them off.
+    job_company_file: Path | None = None
+    job_company_requests: int = 0
     # The Temporal CLI the job starts as a throwaway development server.
     temporal_cli_path: str = "temporal"
 
@@ -87,6 +92,8 @@ class Settings(BaseSettings):
             or any(value < 1 for value in self.provider_daily_requests.values())
             or not self.job_providers
             or not 1 <= self.job_limit <= 30
+            or not 0 <= self.job_company_requests <= 50
+            or (self.job_company_requests > 0 and self.job_company_file is None)
             or self.job_timeout_seconds < 60
         ):
             raise ValueError("Invalid security policy")

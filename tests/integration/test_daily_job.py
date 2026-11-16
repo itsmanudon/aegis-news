@@ -3,6 +3,7 @@ the object store. Runs where a Temporal CLI is on the PATH (or AEGIS_TEMPORAL_CL
 
 import os
 import shutil
+from pathlib import Path
 from uuid import uuid4
 
 import pytest
@@ -139,3 +140,70 @@ async def test_a_missing_cli_stops_the_job_before_anything_runs(job_settings):
     with pytest.raises(FileNotFoundError):
         await run(settings.model_copy(update={"temporal_cli_path": "no-such-temporal"}))
     assert count(engine, DocumentRow.__table__) == 0
+
+
+class ByQuery:
+    """One article per query plus one every query returns, as syndicated news does."""
+
+    def __init__(self) -> None:
+        self.queries: list[str] = []
+
+    async def fetch(self, query, limit, country=None):
+        self.queries.append(query)
+        n = len(self.queries)
+        records = [
+            ExternalNewsRecord(
+                provider="newsdata",
+                provider_item_id=f"query-{n}",
+                title=f"Apple and Microsoft headline {n}",
+                description="Synthetic description for the company search test.",
+                article_url=f"https://publisher.test/query/{n}",
+                publisher_name="Synthetic Publisher",
+            ),
+            ExternalNewsRecord(
+                provider="newsdata",
+                provider_item_id="shared",
+                title="Nvidia shares rise",
+                description="Synthetic description for the company search test.",
+                article_url="https://publisher.test/shared",
+                publisher_name="Synthetic Publisher",
+            ),
+        ]
+        return FetchBatch(records=tuple(records), requests=1)
+
+
+SEED = Path("data/instruments/stockviz.json")
+
+
+async def test_company_searches_follow_the_general_query_without_duplicates(job_settings):
+    settings, engine = job_settings
+    settings = settings.model_copy(update={"job_company_file": SEED, "job_company_requests": 2})
+    adapter = ByQuery()
+    report = await run(settings, {"newsdata": adapter})
+    assert report.ok, report
+    assert adapter.queries[0] == settings.job_query
+    assert adapter.queries[1:] == list(report.company_queries)
+    assert len(report.company_queries) == 2 and len(report.company_runs) == 2
+    # Three per-query articles and the shared one, each stored once.
+    assert (report.completed, report.failed) == (4, ())
+    assert count(engine, DocumentRow.__table__) == 4
+
+
+async def test_company_searches_stop_at_the_daily_budget(job_settings):
+    settings, engine = job_settings
+    settings = settings.model_copy(
+        update={
+            "job_company_file": SEED,
+            "job_company_requests": 3,
+            # Each fetch reserves MAX_PAGES (3) requests before it starts: 1 + 3 <= 4,
+            # then 2 + 3 > 4.
+            "provider_daily_requests": {"newsdata": 4},
+        }
+    )
+    adapter = ByQuery()
+    report = await run(settings, {"newsdata": adapter})
+    # The budget is expected, not a failure: the general query and one company search ran.
+    assert report.ok, report
+    assert len(adapter.queries) == 2
+    errors = [o.error for r in report.company_runs for o in r.outcomes]
+    assert errors == [None, "daily_budget_reached", "daily_budget_reached"]

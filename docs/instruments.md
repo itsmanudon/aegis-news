@@ -56,7 +56,8 @@ listings to entities that were created earlier.
 
 ## The StockViz seed file
 
-`data/instruments/stockviz.json` lists StockViz's 32 symbols, built on 11 Nov 2026. Each
+`data/instruments/stockviz.json` lists StockViz's 161 symbols (32 built on 11 Nov 2026,
+the other 129 added on 16 Nov 2026 from StockViz's `seed-data/companies.json`). Each
 has its exchange listing (local ticker plus operating MIC) and a `provider_id` listing
 `stockviz:<StockViz symbol>`, so StockViz can join on its own ticker strings. Names that
 differ from the legal name carry aliases ("Google", "Amazon", "Disney", "P&G").
@@ -69,6 +70,28 @@ differ from the legal name carry aliases ("Google", "Amazon", "Disney", "P&G").
 
 Seed it, or reseed after StockViz changes its symbols, with
 `python -m aegis.entities.seed data/instruments/stockviz.json`. Use `--dry-run` first.
+
+The 129 added on 16 Nov 2026 are the Nifty 50 (exchange listing on `XNSE`) and US large
+caps. The US ones carry only the `provider_id` listing for now: their venues were not
+checked against a reference, so no exchange symbol is claimed. Common short names are
+aliases ("Airtel", "SBI", "L&T", "Goldman Sachs", "3M").
+
+## How the offline profile finds mentions
+
+The offline profile's extractor is `name-spans` (`runtime.name_spans`, 16 Nov 2026). It
+takes every run of capitalised words, allowing "of", "and", "&", "the" inside a run and
+joiners inside a word ("AT&T", "Coca-Cola", "Amazon.com"), and offers each run and every
+part of it up to six words. The resolver keeps only the parts that equal a known name or
+alias, so "Shares of Home Depot" links Home Depot and "Apple" links Apple Inc.
+
+The earlier `capitalized-spans` extractor matched only runs of two or more capitalised
+words, so a headline naming "Apple" or "Nvidia" produced no mention. In production on
+16 Nov 2026 that left 43 documents with no entity at all. `capitalized-spans` stays,
+unchanged, for the public headline showcase, whose signed records pin it
+(`config.headline_baseline`).
+
+Documents analysed before the change keep their old analyses. New documents get the new
+extractor.
 
 ## How a mention finds its entity
 

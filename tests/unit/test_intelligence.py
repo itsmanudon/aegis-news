@@ -49,8 +49,9 @@ async def test_typed_pipeline_and_envelope_metadata(news):
         with pytest.raises(ValidationError):
             result.provider = "changed"
         assert type(result).model_validate_json(result.model_dump_json()) == result
-    span = results[0].outputs[0]
-    assert news.text[span.start_offset : span.end_offset] == span.surface == "Acme Labs"
+    # name-spans also offers "Acme" and "Labs"; the resolver keeps only known names.
+    span = next(o for o in results[0].outputs if o.surface == "Acme Labs")
+    assert news.text[span.start_offset : span.end_offset] == span.surface
     assert results[1].outputs[0].label == "business.earnings"
     assert results[2].outputs[0].label == "positive"
     assert len(results[3].outputs[0].values) == 64
@@ -156,10 +157,11 @@ async def test_resolver_alias_ambiguity_unknown_and_lineage(news, now):
     from aegis.intelligence.resolution import Resolver
 
     extraction = await engine().entities.extract(news)
-    mentions = materialize_mentions(news, extraction)
+    mentions = tuple(m for m in materialize_mentions(news, extraction) if m.surface == "Acme Labs")
+    assert len(mentions) == 1
     assert mentions[0].analysis_id == extraction.analysis_id
     assert mentions[0].evidence_kind == "model_output"
-    assert materialize_mentions(news, extraction) == mentions
+    assert set(mentions) <= set(materialize_mentions(news, extraction))
     a = Entity(
         entity_id=new_id("ent"), canonical_name="Acme Research", kind="organization", created_at=now
     )

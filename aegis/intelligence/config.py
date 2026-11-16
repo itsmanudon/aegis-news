@@ -34,13 +34,24 @@ class Profile(BaseModel):
     event: ModelSpec
 
 
+def headline_baseline() -> Profile:
+    """The public showcase's fixed analyses: the original offline set, with the
+    capitalized-spans extractor its signed records pin (showcase/contracts.py)."""
+    base = profile("offline")
+    return base.model_copy(
+        update={"ner": ModelSpec(backend="baseline", model_name="capitalized-spans", revision="1")}
+    )
+
+
 def profile(name: str) -> Profile:
     def baseline(model: str) -> ModelSpec:
         return ModelSpec(backend="baseline", model_name=model, revision="1")
 
     if name == "offline":
         return Profile(
-            ner=baseline("capitalized-spans"),
+            # name-spans (16 Nov 2026): single words and names with "of" or "&", so news
+            # naming "Apple" or "Bank of America" resolves (runtime.name_spans).
+            ner=baseline("name-spans"),
             topic=baseline("keyword-topics"),
             sentiment=baseline("lexicon-sentiment"),
             embedding=baseline("hash-vectors"),
