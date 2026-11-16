@@ -163,11 +163,11 @@ def test_the_stockviz_seed_file_is_valid_and_each_company_resolves_by_its_names(
 
     raw = json.loads(Path("data/instruments/stockviz.json").read_text(encoding="utf-8"))
     seeds = TypeAdapter(list[InstrumentSeed]).validate_python(raw)
-    assert len(seeds) == 32
+    assert len(seeds) == 161
     providers = [
         item.identifier for s in seeds for item in s.listings if item.scheme == "provider_id"
     ]
-    assert len(providers) == len(set(providers)) == 32
+    assert len(providers) == len(set(providers)) == 161
     assert all(p.startswith("stockviz:") for p in providers)
     entities = [entity(n, s.name) for n, s in enumerate(seeds, start=1)]
     aliases = {e.entity_id: s.aliases for e, s in zip(entities, seeds, strict=True)}
@@ -176,3 +176,65 @@ def test_the_stockviz_seed_file_is_valid_and_each_company_resolves_by_its_names(
         for surface in (seed.name, *seed.aliases):
             chosen, _ = resolver.choose(resolver.rank(surface, tuple(entities), aliases, None))
             assert chosen == target.entity_id, surface
+
+
+def _seeded():
+    """The StockViz seed as candidate entities, with their aliases."""
+    import json
+    from pathlib import Path
+
+    from pydantic import TypeAdapter
+
+    raw = json.loads(Path("data/instruments/stockviz.json").read_text(encoding="utf-8"))
+    seeds = TypeAdapter(list[InstrumentSeed]).validate_python(raw)
+    entities = tuple(entity(n, s.name) for n, s in enumerate(seeds, start=1))
+    aliases = {e.entity_id: s.aliases for e, s in zip(entities, seeds, strict=True)}
+    return entities, aliases
+
+
+def _linked(text: str) -> set[str]:
+    """Company names the offline extractor plus the resolver find in ``text``."""
+    from aegis.intelligence.config import profile
+    from aegis.intelligence.runtime import BaselineRuntime
+
+    entities, aliases = _seeded()
+    resolver = Resolver()
+    names = {e.entity_id: e.canonical_name for e in entities}
+    found = set()
+    for p in BaselineRuntime().predict("entity_extraction", text, profile("offline").ner):
+        assert text[p["start"] : p["end"]] == p["surface"]
+        chosen, _ = resolver.choose(resolver.rank(p["surface"], entities, aliases, p["kind"]))
+        if chosen:
+            found.add(names[chosen])
+    return found
+
+
+def test_offline_extraction_links_companies_named_in_one_word():
+    """Revision 1 matched only runs of two or more capitalised words, so news naming
+    "Apple" or "Nvidia" linked to nothing (production, 16 Nov 2026: 43 documents, 0
+    entity links)."""
+    assert _linked("Apple shares rose 2% after Nvidia and Microsoft beat estimates.") == {
+        "Apple Inc.",
+        "NVIDIA Corporation",
+        "Microsoft Corporation",
+    }
+
+
+def test_offline_extraction_links_names_with_joiners_and_aliases():
+    text = (
+        "Shares of Home Depot and Bank of America fell, while Johnson & Johnson, "
+        "AT&T, Airtel and SBI rose; Google gained."
+    )
+    assert _linked(text) == {
+        "The Home Depot, Inc.",
+        "Bank of America Corporation",
+        "Johnson & Johnson",
+        "AT&T Inc.",
+        "Bharti Airtel",
+        "State Bank of India",
+        "Alphabet Inc.",
+    }
+
+
+def test_offline_extraction_ignores_ordinary_capitalised_words():
+    assert _linked("Shares Fell As The Market Closed Lower On Monday.") == set()

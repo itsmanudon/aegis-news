@@ -18,6 +18,7 @@ from cryptography.hazmat.primitives import serialization
 from aegis.domain.ids import new_id
 from aegis.domain.models import NewsDocument, ProvenanceRecord
 from aegis.ingestion.inputs import IngestionRequest, decode_content
+from aegis.intelligence.config import headline_baseline
 from aegis.intelligence.engine import build_engine
 from aegis.intelligence.errors import NoPredictions
 from aegis.intelligence.runtime import BaselineRuntime
@@ -160,7 +161,8 @@ async def process(
         ingested_at=now,
         created_at=now,
     )
-    engine = build_engine("offline", runtime=BaselineRuntime())
+    # The signed headline records pin these analyses; never the news pipeline's profile.
+    engine = build_engine(headline_baseline(), runtime=BaselineRuntime())
     analyses = []
     for task in (
         engine.topics.classify(document),

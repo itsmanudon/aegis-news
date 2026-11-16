@@ -476,5 +476,1633 @@
         "identifier": "stockviz:RELIANCE.NS"
       }
     ]
+  },
+  {
+    "name": "Adani Enterprises",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "ADANIENT",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:ADANIENT.NS"
+      }
+    ]
+  },
+  {
+    "name": "Adani Ports and SEZ",
+    "aliases": [
+      "Adani Ports"
+    ],
+    "listings": [
+      {
+        "identifier": "ADANIPORTS",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:ADANIPORTS.NS"
+      }
+    ]
+  },
+  {
+    "name": "Apollo Hospitals",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "APOLLOHOSP",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:APOLLOHOSP.NS"
+      }
+    ]
+  },
+  {
+    "name": "Asian Paints",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "ASIANPAINT",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:ASIANPAINT.NS"
+      }
+    ]
+  },
+  {
+    "name": "Axis Bank",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "AXISBANK",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:AXISBANK.NS"
+      }
+    ]
+  },
+  {
+    "name": "Bajaj Auto",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "BAJAJ-AUTO",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BAJAJ-AUTO.NS"
+      }
+    ]
+  },
+  {
+    "name": "Bajaj Finance",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "BAJFINANCE",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BAJFINANCE.NS"
+      }
+    ]
+  },
+  {
+    "name": "Bajaj Finserv",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "BAJAJFINSV",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BAJAJFINSV.NS"
+      }
+    ]
+  },
+  {
+    "name": "Bharat Electronics",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "BEL",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BEL.NS"
+      }
+    ]
+  },
+  {
+    "name": "Bharti Airtel",
+    "aliases": [
+      "Airtel"
+    ],
+    "listings": [
+      {
+        "identifier": "BHARTIARTL",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BHARTIARTL.NS"
+      }
+    ]
+  },
+  {
+    "name": "Bharat Petroleum",
+    "aliases": [
+      "BPCL"
+    ],
+    "listings": [
+      {
+        "identifier": "BPCL",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BPCL.NS"
+      }
+    ]
+  },
+  {
+    "name": "Britannia Industries",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "BRITANNIA",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BRITANNIA.NS"
+      }
+    ]
+  },
+  {
+    "name": "Cipla",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "CIPLA",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:CIPLA.NS"
+      }
+    ]
+  },
+  {
+    "name": "Coal India",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "COALINDIA",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:COALINDIA.NS"
+      }
+    ]
+  },
+  {
+    "name": "Divi's Laboratories",
+    "aliases": [
+      "Divi's Labs"
+    ],
+    "listings": [
+      {
+        "identifier": "DIVISLAB",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:DIVISLAB.NS"
+      }
+    ]
+  },
+  {
+    "name": "Dr. Reddy's Laboratories",
+    "aliases": [
+      "Dr Reddy's"
+    ],
+    "listings": [
+      {
+        "identifier": "DRREDDY",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:DRREDDY.NS"
+      }
+    ]
+  },
+  {
+    "name": "Eicher Motors",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "EICHERMOT",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:EICHERMOT.NS"
+      }
+    ]
+  },
+  {
+    "name": "Eternal Limited",
+    "aliases": [
+      "Eternal",
+      "Zomato"
+    ],
+    "listings": [
+      {
+        "identifier": "ETERNAL",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:ETERNAL.NS"
+      }
+    ]
+  },
+  {
+    "name": "Grasim Industries",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "GRASIM",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:GRASIM.NS"
+      }
+    ]
+  },
+  {
+    "name": "HCL Technologies",
+    "aliases": [
+      "HCLTech",
+      "HCL Tech"
+    ],
+    "listings": [
+      {
+        "identifier": "HCLTECH",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:HCLTECH.NS"
+      }
+    ]
+  },
+  {
+    "name": "HDFC Bank",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "HDFCBANK",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:HDFCBANK.NS"
+      }
+    ]
+  },
+  {
+    "name": "HDFC Life Insurance",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "HDFCLIFE",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:HDFCLIFE.NS"
+      }
+    ]
+  },
+  {
+    "name": "Hero MotoCorp",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "HEROMOTOCO",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:HEROMOTOCO.NS"
+      }
+    ]
+  },
+  {
+    "name": "Hindalco Industries",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "HINDALCO",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:HINDALCO.NS"
+      }
+    ]
+  },
+  {
+    "name": "Hindustan Unilever",
+    "aliases": [
+      "HUL"
+    ],
+    "listings": [
+      {
+        "identifier": "HINDUNILVR",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:HINDUNILVR.NS"
+      }
+    ]
+  },
+  {
+    "name": "ICICI Bank",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "ICICIBANK",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:ICICIBANK.NS"
+      }
+    ]
+  },
+  {
+    "name": "InterGlobe Aviation",
+    "aliases": [
+      "IndiGo"
+    ],
+    "listings": [
+      {
+        "identifier": "INDIGO",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:INDIGO.NS"
+      }
+    ]
+  },
+  {
+    "name": "IndusInd Bank",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "INDUSINDBK",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:INDUSINDBK.NS"
+      }
+    ]
+  },
+  {
+    "name": "Infosys",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "INFY",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:INFY.NS"
+      }
+    ]
+  },
+  {
+    "name": "ITC",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "ITC",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:ITC.NS"
+      }
+    ]
+  },
+  {
+    "name": "Jio Financial Services",
+    "aliases": [
+      "Jio Financial"
+    ],
+    "listings": [
+      {
+        "identifier": "JIOFIN",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:JIOFIN.NS"
+      }
+    ]
+  },
+  {
+    "name": "JSW Steel",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "JSWSTEEL",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:JSWSTEEL.NS"
+      }
+    ]
+  },
+  {
+    "name": "Kotak Mahindra Bank",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "KOTAKBANK",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:KOTAKBANK.NS"
+      }
+    ]
+  },
+  {
+    "name": "Larsen & Toubro",
+    "aliases": [
+      "L&T"
+    ],
+    "listings": [
+      {
+        "identifier": "LT",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:LT.NS"
+      }
+    ]
+  },
+  {
+    "name": "Maruti Suzuki India",
+    "aliases": [
+      "Maruti Suzuki",
+      "Maruti"
+    ],
+    "listings": [
+      {
+        "identifier": "MARUTI",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:MARUTI.NS"
+      }
+    ]
+  },
+  {
+    "name": "Max Healthcare Institute",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "MAXHEALTH",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:MAXHEALTH.NS"
+      }
+    ]
+  },
+  {
+    "name": "Nestle India",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "NESTLEIND",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:NESTLEIND.NS"
+      }
+    ]
+  },
+  {
+    "name": "NTPC",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "NTPC",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:NTPC.NS"
+      }
+    ]
+  },
+  {
+    "name": "Oil and Natural Gas Corporation",
+    "aliases": [
+      "ONGC"
+    ],
+    "listings": [
+      {
+        "identifier": "ONGC",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:ONGC.NS"
+      }
+    ]
+  },
+  {
+    "name": "Power Grid Corporation of India",
+    "aliases": [
+      "Power Grid"
+    ],
+    "listings": [
+      {
+        "identifier": "POWERGRID",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:POWERGRID.NS"
+      }
+    ]
+  },
+  {
+    "name": "SBI Life Insurance",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "SBILIFE",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:SBILIFE.NS"
+      }
+    ]
+  },
+  {
+    "name": "State Bank of India",
+    "aliases": [
+      "SBI"
+    ],
+    "listings": [
+      {
+        "identifier": "SBIN",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:SBIN.NS"
+      }
+    ]
+  },
+  {
+    "name": "Shriram Finance",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "SHRIRAMFIN",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:SHRIRAMFIN.NS"
+      }
+    ]
+  },
+  {
+    "name": "Sun Pharmaceutical Industries",
+    "aliases": [
+      "Sun Pharma"
+    ],
+    "listings": [
+      {
+        "identifier": "SUNPHARMA",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:SUNPHARMA.NS"
+      }
+    ]
+  },
+  {
+    "name": "Tata Consumer Products",
+    "aliases": [
+      "Tata Consumer"
+    ],
+    "listings": [
+      {
+        "identifier": "TATACONSUM",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:TATACONSUM.NS"
+      }
+    ]
+  },
+  {
+    "name": "Tata Motors Passenger Vehicles",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "TMPV",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:TMPV.NS"
+      }
+    ]
+  },
+  {
+    "name": "Tata Steel",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "TATASTEEL",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:TATASTEEL.NS"
+      }
+    ]
+  },
+  {
+    "name": "Tata Consultancy Services",
+    "aliases": [
+      "TCS"
+    ],
+    "listings": [
+      {
+        "identifier": "TCS",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:TCS.NS"
+      }
+    ]
+  },
+  {
+    "name": "Tech Mahindra",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "TECHM",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:TECHM.NS"
+      }
+    ]
+  },
+  {
+    "name": "Titan Company",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "TITAN",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:TITAN.NS"
+      }
+    ]
+  },
+  {
+    "name": "Trent",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "TRENT",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:TRENT.NS"
+      }
+    ]
+  },
+  {
+    "name": "UltraTech Cement",
+    "aliases": [
+      "UltraTech"
+    ],
+    "listings": [
+      {
+        "identifier": "ULTRACEMCO",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:ULTRACEMCO.NS"
+      }
+    ]
+  },
+  {
+    "name": "Wipro",
+    "aliases": [],
+    "listings": [
+      {
+        "identifier": "WIPRO",
+        "venue": "XNSE"
+      },
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:WIPRO.NS"
+      }
+    ]
+  },
+  {
+    "name": "AbbVie Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:ABBV"
+      }
+    ]
+  },
+  {
+    "name": "Abbott Laboratories",
+    "aliases": [
+      "Abbott"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:ABT"
+      }
+    ]
+  },
+  {
+    "name": "Accenture plc",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:ACN"
+      }
+    ]
+  },
+  {
+    "name": "American International Group",
+    "aliases": [
+      "AIG"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:AIG"
+      }
+    ]
+  },
+  {
+    "name": "Advanced Micro Devices",
+    "aliases": [
+      "AMD"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:AMD"
+      }
+    ]
+  },
+  {
+    "name": "Amgen Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:AMGN"
+      }
+    ]
+  },
+  {
+    "name": "American Tower Corporation",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:AMT"
+      }
+    ]
+  },
+  {
+    "name": "Broadcom Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:AVGO"
+      }
+    ]
+  },
+  {
+    "name": "American Express",
+    "aliases": [
+      "Amex"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:AXP"
+      }
+    ]
+  },
+  {
+    "name": "The Boeing Company",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BA"
+      }
+    ]
+  },
+  {
+    "name": "Booking Holdings",
+    "aliases": [
+      "Booking.com"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BKNG"
+      }
+    ]
+  },
+  {
+    "name": "BlackRock, Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BLK"
+      }
+    ]
+  },
+  {
+    "name": "Bristol-Myers Squibb",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BMY"
+      }
+    ]
+  },
+  {
+    "name": "Berkshire Hathaway Inc.",
+    "aliases": [
+      "Berkshire Hathaway",
+      "Berkshire"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:BRK-B"
+      }
+    ]
+  },
+  {
+    "name": "Citigroup Inc.",
+    "aliases": [
+      "Citi"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:C"
+      }
+    ]
+  },
+  {
+    "name": "Caterpillar Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:CAT"
+      }
+    ]
+  },
+  {
+    "name": "Charter Communications",
+    "aliases": [
+      "Charter"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:CHTR"
+      }
+    ]
+  },
+  {
+    "name": "Colgate-Palmolive",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:CL"
+      }
+    ]
+  },
+  {
+    "name": "Comcast Corporation",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:CMCSA"
+      }
+    ]
+  },
+  {
+    "name": "Capital One Financial",
+    "aliases": [
+      "Capital One"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:COF"
+      }
+    ]
+  },
+  {
+    "name": "ConocoPhillips",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:COP"
+      }
+    ]
+  },
+  {
+    "name": "Costco Wholesale",
+    "aliases": [
+      "Costco"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:COST"
+      }
+    ]
+  },
+  {
+    "name": "CVS Health",
+    "aliases": [
+      "CVS"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:CVS"
+      }
+    ]
+  },
+  {
+    "name": "Chevron Corporation",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:CVX"
+      }
+    ]
+  },
+  {
+    "name": "Deere & Company",
+    "aliases": [
+      "John Deere",
+      "Deere"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:DE"
+      }
+    ]
+  },
+  {
+    "name": "Danaher Corporation",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:DHR"
+      }
+    ]
+  },
+  {
+    "name": "Duke Energy",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:DUK"
+      }
+    ]
+  },
+  {
+    "name": "Emerson Electric",
+    "aliases": [
+      "Emerson"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:EMR"
+      }
+    ]
+  },
+  {
+    "name": "Ford Motor Company",
+    "aliases": [
+      "Ford"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:F"
+      }
+    ]
+  },
+  {
+    "name": "FedEx Corporation",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:FDX"
+      }
+    ]
+  },
+  {
+    "name": "General Dynamics",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:GD"
+      }
+    ]
+  },
+  {
+    "name": "GE Aerospace",
+    "aliases": [
+      "GE",
+      "General Electric"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:GE"
+      }
+    ]
+  },
+  {
+    "name": "Gilead Sciences",
+    "aliases": [
+      "Gilead"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:GILD"
+      }
+    ]
+  },
+  {
+    "name": "General Motors",
+    "aliases": [
+      "GM"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:GM"
+      }
+    ]
+  },
+  {
+    "name": "The Goldman Sachs Group",
+    "aliases": [
+      "Goldman Sachs",
+      "Goldman"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:GS"
+      }
+    ]
+  },
+  {
+    "name": "Honeywell International",
+    "aliases": [
+      "Honeywell"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:HON"
+      }
+    ]
+  },
+  {
+    "name": "International Business Machines",
+    "aliases": [
+      "IBM"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:IBM"
+      }
+    ]
+  },
+  {
+    "name": "Intuit Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:INTU"
+      }
+    ]
+  },
+  {
+    "name": "Intuitive Surgical",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:ISRG"
+      }
+    ]
+  },
+  {
+    "name": "Linde plc",
+    "aliases": [
+      "Linde"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:LIN"
+      }
+    ]
+  },
+  {
+    "name": "Eli Lilly and Company",
+    "aliases": [
+      "Eli Lilly",
+      "Lilly"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:LLY"
+      }
+    ]
+  },
+  {
+    "name": "Lockheed Martin",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:LMT"
+      }
+    ]
+  },
+  {
+    "name": "Lowe's Companies",
+    "aliases": [
+      "Lowe's"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:LOW"
+      }
+    ]
+  },
+  {
+    "name": "McDonald's Corporation",
+    "aliases": [
+      "McDonald's"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:MCD"
+      }
+    ]
+  },
+  {
+    "name": "Mondelez International",
+    "aliases": [
+      "Mondelez"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:MDLZ"
+      }
+    ]
+  },
+  {
+    "name": "Medtronic plc",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:MDT"
+      }
+    ]
+  },
+  {
+    "name": "MetLife, Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:MET"
+      }
+    ]
+  },
+  {
+    "name": "3M Company",
+    "aliases": [
+      "3M"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:MMM"
+      }
+    ]
+  },
+  {
+    "name": "Altria Group",
+    "aliases": [
+      "Altria"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:MO"
+      }
+    ]
+  },
+  {
+    "name": "Merck & Co.",
+    "aliases": [
+      "Merck"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:MRK"
+      }
+    ]
+  },
+  {
+    "name": "Morgan Stanley",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:MS"
+      }
+    ]
+  },
+  {
+    "name": "NextEra Energy",
+    "aliases": [
+      "NextEra"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:NEE"
+      }
+    ]
+  },
+  {
+    "name": "Nike, Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:NKE"
+      }
+    ]
+  },
+  {
+    "name": "ServiceNow, Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:NOW"
+      }
+    ]
+  },
+  {
+    "name": "Oracle Corporation",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:ORCL"
+      }
+    ]
+  },
+  {
+    "name": "PepsiCo, Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:PEP"
+      }
+    ]
+  },
+  {
+    "name": "Palantir Technologies",
+    "aliases": [
+      "Palantir"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:PLTR"
+      }
+    ]
+  },
+  {
+    "name": "Philip Morris International",
+    "aliases": [
+      "Philip Morris"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:PM"
+      }
+    ]
+  },
+  {
+    "name": "PayPal Holdings",
+    "aliases": [
+      "PayPal"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:PYPL"
+      }
+    ]
+  },
+  {
+    "name": "Qualcomm Incorporated",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:QCOM"
+      }
+    ]
+  },
+  {
+    "name": "RTX Corporation",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:RTX"
+      }
+    ]
+  },
+  {
+    "name": "Starbucks Corporation",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:SBUX"
+      }
+    ]
+  },
+  {
+    "name": "Charles Schwab",
+    "aliases": [
+      "Schwab"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:SCHW"
+      }
+    ]
+  },
+  {
+    "name": "The Southern Company",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:SO"
+      }
+    ]
+  },
+  {
+    "name": "Simon Property Group",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:SPG"
+      }
+    ]
+  },
+  {
+    "name": "AT&T Inc.",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:T"
+      }
+    ]
+  },
+  {
+    "name": "Target Corporation",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:TGT"
+      }
+    ]
+  },
+  {
+    "name": "Thermo Fisher Scientific",
+    "aliases": [
+      "Thermo Fisher"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:TMO"
+      }
+    ]
+  },
+  {
+    "name": "T-Mobile US",
+    "aliases": [
+      "T-Mobile"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:TMUS"
+      }
+    ]
+  },
+  {
+    "name": "Texas Instruments",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:TXN"
+      }
+    ]
+  },
+  {
+    "name": "Uber Technologies",
+    "aliases": [],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:UBER"
+      }
+    ]
+  },
+  {
+    "name": "Union Pacific",
+    "aliases": [
+      "Union Pacific"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:UNP"
+      }
+    ]
+  },
+  {
+    "name": "United Parcel Service",
+    "aliases": [
+      "UPS"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:UPS"
+      }
+    ]
+  },
+  {
+    "name": "U.S. Bancorp",
+    "aliases": [
+      "U.S. Bank"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:USB"
+      }
+    ]
+  },
+  {
+    "name": "Verizon Communications",
+    "aliases": [
+      "Verizon"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:VZ"
+      }
+    ]
+  },
+  {
+    "name": "Wells Fargo & Company",
+    "aliases": [
+      "Wells Fargo"
+    ],
+    "listings": [
+      {
+        "scheme": "provider_id",
+        "identifier": "stockviz:WFC"
+      }
+    ]
   }
 ]
